@@ -1,0 +1,67 @@
+/* Container principal - centraliza tudo na tela */
+.min-h-screen {
+  min-height: 100vh;
+}
+
+/* Centraliza o flashcard */
+.flex.items-center.justify-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Container do flashcard com perspectiva 3D */
+.flashcard-container {
+  perspective: 1000px;
+  width: 100%;
+  max-width: 24rem;          /* 384px - tamanho bom para mobile e desktop */
+  margin: 1rem auto;         /* centraliza horizontalmente se precisar */
+}
+
+/* O cartão que vira */
+.flashcard {
+  width: 100%;
+  aspect-ratio: 3 / 4;       /* proporção legal para flashcards (ajuste se quiser) */
+  position: relative;
+  transition: transform 0.7s ease;
+  transform-style: preserve-3d;
+}
+
+/* Quando virado */
+.flashcard.flipped {
+  transform: rotateY(180deg);
+}
+
+/* Faces do cartão */
+.front,
+.back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+.front {
+  background: #4f46e5; /* indigo-600 */
+  color: white;
+}
+
+.back {
+    color: rgb(29, 29, 29);
+  background: white;
+  transform: rotateY(180deg);
+}
+
+/* Melhora a experiência mobile */
+@media (max-width: 640px) {
+  .flashcard-container {
+    max-width: 90vw;
+  }
+}

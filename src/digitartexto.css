@@ -1,0 +1,12 @@
+.digitar-texto .card-digitar-texto{
+    height:220px !important
+}
+.digitar-texto .flashcard{
+    aspect-ratio: initial;
+}
+
+.digitar-text .card-front,
+.digitar-text .card-back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}

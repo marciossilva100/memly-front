@@ -1,0 +1,178 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* seu CSS customizado abaixo */
+
+:root {
+  /* =========================
+     SUA PALETA (documentação)
+     ========================= */
+  --blue-primary: #3487bf;
+  --blue-light: #5B7CFA;
+  --blue-soft: #EAF0FF;
+
+  --green-primary: #2DBE60;
+  --green-hover: #27A654;
+  --green-soft: #E9F8EF;
+
+  --white: #FFFFFF;
+  --gray-bg: #F5F7FB;
+  --gray-border: #DDE2EE;
+  --gray-text: #7A859E;
+  --gray-dark: #1F2937;
+
+  --error: #E5533D;
+  --warning: #F4B740;
+  --info: #3B82F6;
+
+  /* =========================
+     BOOTSTRAP (valores diretos)
+     ========================= */
+  --bs-primary: #2F5BEA;
+  --bs-primary-rgb: 47, 91, 234;
+
+  --bs-success: #2DBE60;
+  --bs-success-rgb: 45, 190, 96;
+
+  --bs-danger: #E5533D;
+  --bs-danger-rgb: 229, 83, 61;
+
+  --bs-warning: #F4B740;
+  --bs-warning-rgb: 244, 183, 64;
+
+  --bs-info: #3B82F6;
+  --bs-info-rgb: 59, 130, 246;
+
+  --bs-body-bg: #F5F7FB;
+  --bs-body-color: #1F2937;
+  --bs-border-color: #DDE2EE;
+  --bs-link-color: #2F5BEA;
+  --bs-link-hover-color: #5B7CFA;
+}
+
+
+.text-primary-aux{
+  color: var(--blue-primary);
+}
+
+
+
+.bg-primary {
+  background-color: var(--blue-primary);
+}
+
+
+
+.ff-inter{
+  font-family: 'Inter';
+}
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+ /*  display: flex; */
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+.center-vertical {
+  min-height: 100vh;
+  position: relative;
+}
+.container{
+  min-height: calc(100vh - 127px);
+  position: relative;
+} 
+.center-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: calc(100dvh - 70px);
+  width: 100%;
+  position: relative; /* importante */
+  /* position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 100%; */
+}
+.logo-coruja{
+  width: 100px;
+}
+
+/* Sessao Header */
+  .section-header .setaLink{
+    position:absolute;
+    left:0
+  }
+
+.input-group-text{
+  border:none
+}
+/* Sessao login */
+.input-group{
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+input{
+  /* border: none !important; */
+}
+
+.perspective {
+  perspective: 1000px;
+}
+
+.flashcard .card {
+  width: 300px;
+  height: 320px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.8s ease;
+}
+
+.card.flip {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: white;
+  /* box-shadow: 0 20px 40px rgba(0,0,0,0.15); */
+}
+.card-back {
+  background: white;
+
+}
+.card-front{
+  background-color: #4f46e5;
+}
+
+.card-front {
+  transform: rotateY(0deg);
+}
+
+.card-back {
+  transform: rotateY(180deg);
+}
+
+
+
+

@@ -88,7 +88,7 @@ export default function Login({ setTitulo }) {
             navigate("/escolheridioma")
 
 
-          
+
 
         } catch (error) {
             setErro('Erro ao conectar com o servidor')
@@ -140,12 +140,12 @@ export default function Login({ setTitulo }) {
     //if (finish) return;
 
     return (
-        <div className="max-w-6xl mx-auto px-8 section-login mt-4 overflow-auto h-screen">
-            <div className="flex justify-center">
+        <div className="max-w-6xl mx-auto px-8 section-login mt-4 min-h-[100dvh] flex flex-col">
+            <div className="flex-1 justify-center overflow-auto">
                 <div className="w-full max-w-md text-center mt-4">
 
                     <div className="flex justify-center mb-2">
-                        <img className="w-60" src={imgZaldemy} alt="Login"/>
+                        <img className="w-60" src={imgZaldemy} alt="Login" />
                     </div>
 
                     <h2 className="text-slate-500 text-2xl font-semibold">

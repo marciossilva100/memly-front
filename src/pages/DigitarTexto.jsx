@@ -60,7 +60,7 @@ export default function DigitarTexto() {
         })
             .then(res => res.json())
             .then(data => {
-               
+
                 setFrases(data || []);
 
             })
@@ -74,7 +74,7 @@ export default function DigitarTexto() {
     }, [id, mode]);
 
 
-    
+
 
     function virarFlashcard() {
         setIsFlipped(true);
@@ -218,128 +218,102 @@ export default function DigitarTexto() {
 
 
     return (
-        <div className="h-screen pt-5 bg-slate-100  digitar-texto p-6">
-            <div className="relative text-left mb-4">
-                <div
-                    className=" cursor-pointer"
-                    onClick={() => navigate(-1)}
-                >
-                    <i className="bi bi-arrow-left text-xl"></i>
-                </div>
-            </div>
-            {!isFlipped && (
-                <div className="justify-start mb-4 w-full">
-                    <h2 className="text-slate-700">O que você quer dizer em inglês?</h2>
-                    <span className="text-slate-500 text-xs">Digite como você falaria essa frase.</span>
-                </div>
-            )}
-            <div className="perspective flashcard justify-center flex ">
-                <div
-                    className={`card card-digitar-texto ${isFlipped ? "flip" : ""}`}
+        <div className="bg-slate-100 flex flex-col" style={{ height: "var(--app-height)" }}>
 
-                >
-                    {/* FRENTE */}
-                    <div className="rounded-lg card-front bg-default-gradient shadow-[0_10px_40px_rgba(0,0,0,0.08)] p-4 text-center">
-                        <span className="text-md">
-                            {frases[index].texto_nativo}
+            <div className=" pt-5  digitar-texto p-6">
 
-                        </span>
-                    </div>
-
-                    {/* VERSO */}
-                    <div className="rounded-lg card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] p-4 text-center">
-                        <span className="text-md text-avocado-700">
-                            {showBackContent && frases[index].texto_traduzido}
-                        </span>
+                <div className="relative text-left mb-4">
+                    <div
+                        className="cursor-pointer"
+                        onClick={() => navigate(-1)}
+                    >
+                        <i className="bi bi-arrow-left text-xl"></i>
                     </div>
                 </div>
-            </div>
 
-            {diff && !diff.isCorrect && (
+                {!isFlipped && (
+                    <div className="mb-4">
+                        <h2 className="text-slate-700">
+                            O que você quer dizer em inglês?
+                        </h2>
 
-                <div className="mt-8 w-full ">
-                    <span className="w-full flex justify-center mb-4 font-semibold text-slate-700">
-                        Você digitou:
-                    </span>
+                        <span className="text-slate-500 text-xs">
+                            Digite como você falaria essa frase.
+                        </span>
+                    </div>
+                )}
 
-                    <div className="rounded-lg w-full p-5 shadow-lg bg-white">
-                        <div className="text-2xl  justify-center items-center text-center">
-                            {diff.diff.map((item, i) => (
-                                <span
-                                    key={i}
-                                    className={item.match ? "text-slate-700" : "text-red-700"}
-                                >
-                                    {item.char}
+                {/* conteúdo normal da página */}
+                <div>
+
+                    <div className="perspective flashcard justify-center flex">
+                        <div className={`card card-digitar-texto ${isFlipped ? "flip" : ""}`}>
+
+                            <div className="rounded-lg card-front bg-default-gradient shadow-[0_10px_40px_rgba(0,0,0,0.08)] p-4 text-center">
+                                <span className="text-md">
+                                    {frases[index].texto_nativo}
                                 </span>
-                            ))}
+                            </div>
+
+                            <div className="rounded-lg card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] p-4 text-center">
+                                <span className="text-md text-avocado-700">
+                                    {showBackContent && frases[index].texto_traduzido}
+                                </span>
+                            </div>
+
                         </div>
                     </div>
-                </div>
-            )}
 
-            <div className="w-full  mt-8">
-                <form onSubmit={handleSubmit}>
-                    <div className="flex justify-center mb-8">
-                        {!isFlipped && (
-                            <textarea
-                                placeholder="Digite sua resposta aqui..."
-                                ref={textareaRef}
-                                value={resposta}
-                                onChange={(e) => setResposta(e.target.value)}
-                                className="focus:outline-none w-full h-32 pt-6 text-center rounded-lg border border-gray-300 resize-none transition focus:ring-2 focus:ring-blue-500"
-                            />
-                        )}
-                    </div>
+                    {diff && !diff.isCorrect && (
+                        <div className="mt-8">
+                            <span className="flex justify-center mb-4 font-semibold text-slate-700">
+                                Você digitou:
+                            </span>
 
-                    {!isFlipped && (
-                        <div className="left-0 fixed bottom-6 w-full px-6">
-                            <button
-                                type="submit"
-                                className="flex justify-center shadow-md w-full bg-[#4cb8c4] text-white font-medium py-3 rounded-full transition"
-                            >
-                                <i className="bi bi-chat-dots ps-2 me-2"></i>  Responder
-                            </button>
-                        </div>
-                    )}
-                </form>
-            </div>
-
-            {diff && (
-                !diff.isCorrect ? (
-                    <div className="w-full flex left-0 fixed bottom-6 justify-center gap-3 px-10">
-                        <button
-                            onClick={repeatCard}
-                            className="w-full bg-red-400 text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95"
-                        >
-                            Tentar novamente
-                        </button>
-
-                        {/* <button
-                            onClick={nextCard}
-                            className="bg-blue-400 text-white px-5 py-3 rounded-xl shadow-lg transition active:scale-95"
-                        >
-                            Pular
-                        </button> */}
-                    </div>
-                ) : (
-                    <div className="px-10">
-                        <div className="flex items-center justify-center mt-20">
-                            <div className="rounded-full bg-green-600 p-4">
-                                <Check className="text-white" />
+                            <div className="rounded-lg p-5 shadow-lg bg-white">
+                                <div className="text-2xl text-center">
+                                    {diff.diff.map((item, i) => (
+                                        <span
+                                            key={i}
+                                            className={item.match ? "text-slate-700" : "text-red-700"}
+                                        >
+                                            {item.char}
+                                        </span>
+                                    ))}
+                                </div>
                             </div>
                         </div>
+                    )}
 
-                        <div className="fixed left-0 w-full bottom-0 p-10">
-                            <button
-                                onClick={nextCard}
-                                className="shadow-md w-full bg-avocado-500 text-white font-medium py-3 rounded-full transition"
-                            >
-                                Próximo
-                            </button>
-                        </div>
-                    </div>
-                )
-            )}
+                </div>
+
+                {/* form empurrado para baixo */}
+                {!isFlipped && (
+                    <form
+                        onSubmit={handleSubmit}
+                        className="mt-auto pt-8"
+                    >
+
+                        <textarea
+                            placeholder="Digite sua resposta aqui..."
+                            ref={textareaRef}
+                            value={resposta}
+                            onChange={(e) => setResposta(e.target.value)}
+                            className="focus:outline-none w-full h-32 pt-6 text-center rounded-lg border border-gray-300 resize-none transition focus:ring-2 focus:ring-blue-500"
+                        />
+
+                        <button
+                            type="submit"
+                            className="mt-4 flex justify-center shadow-md w-full bg-[#4cb8c4] text-white font-medium py-3 rounded-full transition"
+                        >
+                            <i className="bi bi-chat-dots ps-2 me-2"></i>
+                            Responder
+                        </button>
+
+                    </form>
+                )}
+
+            </div>
         </div>
     );
 }

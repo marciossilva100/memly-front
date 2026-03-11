@@ -38,6 +38,7 @@ window.addEventListener('resize', setRealViewportHeight); */
 
 
 
+
 function PrivateRoute({ children }) {
 
   const { user, loading, checkAuth } = useAuth()
@@ -88,7 +89,7 @@ function Layout({ titulo, setTitulo }) {
     return (
       <div className="flex h-screen items-center justify-center bg-white-100">
         <img
-          src={imgMemly}
+          src={imgChapeuFormatura}
           alt="Carregando"
           className="w-28 animate-pulse"
         />
@@ -227,6 +228,23 @@ function Layout({ titulo, setTitulo }) {
 
 
 function App() {
+
+  useEffect(() => {
+  // função para atualizar a altura da tela
+  const setAppHeight = () => {
+    const vh = window.innerHeight;
+    document.documentElement.style.setProperty('--app-height', `${vh}px`);
+  };
+
+  // define no load
+  setAppHeight();
+
+  // atualiza quando a tela muda (resize ou teclado)
+  window.addEventListener('resize', setAppHeight);
+
+  // limpa o listener ao desmontar
+  return () => window.removeEventListener('resize', setAppHeight);
+}, []);
 
   const [titulo, setTitulo] = useState('')
 

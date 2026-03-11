@@ -6,6 +6,7 @@ import imgGoogle from '../assets/img/google.png'
 import imgFacebook from '../assets/img/logo-face.webp'
 import imgCoruja from '../assets/img/coruja.png'
 import imgMemly from "../assets/img/mascote-memly.png"
+import imgZaldemy from "../assets/img/zaldemy.png"
 import { useAuth } from "../context/AuthContext";
 
 
@@ -17,7 +18,7 @@ export default function Login({ setTitulo }) {
 
 
     const [form, setForm] = useState({
-        email: 'marciossilva.dev@gmail.com',
+        email: '',
         password: ''
     })
     const [erro, setErro] = useState('')
@@ -96,7 +97,6 @@ export default function Login({ setTitulo }) {
         }
 
 
-
         // setLoading(true)
         // fetch('http://localhost:8081/controller/auth.php', {
         //     method: 'POST',
@@ -139,15 +139,15 @@ export default function Login({ setTitulo }) {
     //if (finish) return;
 
     return (
-        <div className="max-w-6xl mx-auto px-8 section-login mt-8">
-            <div className="flex justify-center">
+    <div className="max-w-6xl mx-auto px-8 section-login py-4 h-[calc(100svh-20px)]">
+            <div className="flex justify-center ">
                 <div className="w-full max-w-md text-center mt-4">
 
-                    <div className="flex justify-center mb-4">
-                        <img className="logo-coruja" src={imgMemly} alt="Login" />
+                    <div className="flex justify-center mb-2">
+                        <img width={200} src={imgZaldemy} alt="Login"/>
                     </div>
 
-                    <h2 className="text-primary-aux text-2xl font-semibold">
+                    <h2 className="text-slate-500 text-2xl font-semibold">
                         Bem-vindo!
                     </h2>
 
@@ -210,7 +210,7 @@ export default function Login({ setTitulo }) {
                         <button
                             disabled={loading}
                             type="submit"
-                            className="w-full bg-avocado-500  text-white py-3 rounded-full fw-800"
+                            className="w-full bg-[#4cb8c4] text-white py-3 rounded-full fw-800 "
                         >
                             {loading ? "Entrando..." : "Entrar"}
                         </button>
@@ -234,7 +234,7 @@ export default function Login({ setTitulo }) {
                     <br />
 
                     {/* Facebook */}
-                    <button className="text-sm w-full bg-blue-500 hover:bg-blue-700 text-white py-3 rounded-full flex items-center justify-center gap-3">
+                    <button className="text-sm w-full bg-blue-500 hover:bg-blue-700 text-white py-2 rounded-full flex items-center justify-center gap-3">
                         <img src={imgFacebook} alt="Facebook icone" width={30} />
                         <span className="ff-inter">Entrar com Facebook</span>
                     </button>

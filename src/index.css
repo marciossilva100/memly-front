@@ -69,7 +69,6 @@
 }
 
 
-
 .ff-inter{
   font-family: 'Inter';
 }
@@ -137,7 +136,7 @@ input{
 }
 
 .flashcard .card {
-  width: 300px;
+  width: 100%;
   height: 320px;
   position: relative;
   transform-style: preserve-3d;

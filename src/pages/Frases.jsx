@@ -117,7 +117,9 @@ export default function Frases() {
                 </div>
             )}
 
-            {loading && <span>Carregando...{id}</span>}
+            {loading && <div className="h-screen flex items-center justify-center">
+                Carregando...
+            </div>}
             <div className="h-[calc(100vh-160px)] overflow-y-auto">
 
                 {!loading && frases.map(item => (

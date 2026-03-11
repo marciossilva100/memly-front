@@ -21,7 +21,7 @@
 /* O cartão que vira */
 .flashcard {
   width: 100%;
-  aspect-ratio: 3 / 4;       /* proporção legal para flashcards (ajuste se quiser) */
+  /*aspect-ratio: 3 / 4;       /* proporção legal para flashcards (ajuste se quiser) */
   position: relative;
   transition: transform 0.7s ease;
   transform-style: preserve-3d;

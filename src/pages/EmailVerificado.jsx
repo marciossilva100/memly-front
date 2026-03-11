@@ -86,7 +86,8 @@ export default function EmailVerificado() {
     return (
         <div className="text-center mt-10">
              <div className="flex justify-center mb-5">
-                    <img className="logo-coruja" src={imgMemly} alt="Cadastro" />
+                <img width={200} src={imgZaldemy} alt="logo zaldemy" />
+                    
                 </div>
             <h2 className="text-green-600 text-lg">
                 Email confirmado com sucesso!

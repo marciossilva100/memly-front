@@ -35,6 +35,8 @@ function PrivateRoute({ children }) {
     checkAuth()
   }, [checkAuth])
 
+  console.log("PrivateRoute - user:", user, "loading:", loading)
+
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center bg-white-100">
@@ -48,6 +50,7 @@ function PrivateRoute({ children }) {
   }
 
   if (!user) {
+    console.log("Redirecionando para login - sem usuário")
     return <Navigate to="/login" replace />
   }
 

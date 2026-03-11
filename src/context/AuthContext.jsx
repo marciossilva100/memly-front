@@ -21,6 +21,8 @@ export function AuthProvider({ children }) {
 
       const data = await res.json();
 
+      console.log("Auth check response:", data);
+
       setUser(data.authenticated ? data.user : null);
 
     } catch (error) {

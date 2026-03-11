@@ -6,6 +6,7 @@ import imgGoogle from '../assets/img/google.png'
 import imgFacebook from '../assets/img/logo-face.webp'
 import imgCoruja from '../assets/img/coruja.png'
 import imgMemly from "../assets/img/mascote-memly.png"
+import imgZaldemy from "../assets/img/zaldemy.png"
 import { useAuth } from "../context/AuthContext";
 
 
@@ -143,8 +144,8 @@ export default function Login({ setTitulo }) {
             <div className="flex justify-center">
                 <div className="w-full max-w-md text-center mt-4">
 
-                    <div className="flex justify-center mb-4">
-                        <img className="logo-coruja" src={imgMemly} alt="Login" />
+                    <div className="flex justify-center mb-2">
+                        <img className="w-60" src={imgZaldemy} alt="Login" />
                     </div>
 
                     <h2 className="text-primary-aux text-2xl font-semibold">
@@ -210,7 +211,7 @@ export default function Login({ setTitulo }) {
                         <button
                             disabled={loading}
                             type="submit"
-                            className="w-full bg-avocado-500  text-white py-3 rounded-full fw-800"
+                            className="w-full bg-[#4cb8c4] text-white py-3 rounded-full fw-800 "
                         >
                             {loading ? "Entrando..." : "Entrar"}
                         </button>

@@ -325,7 +325,7 @@ const progressBar = frases.length
 
         {!isFlipped && (
 
-          <div className="fixed bottom-6 left-1/2 -translate-x-1/2">
+          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 ">
 
             <svg width="96" height="96">
 
@@ -369,18 +369,18 @@ const progressBar = frases.length
 
         {isFlipped && (
 
-          <div className="flex fixed bottom-6 items-center justify-center gap-3">
+          <div className="flex fixed bottom-6 items-center justify-center gap-3 w-full px-6">
 
             <button
               onClick={() => nextCard(false)}
-              className="bg-red-400 text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95"
+              className="bg-red-400 text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full"
             >
               Não lembrei
             </button>
 
             <button
               onClick={() => nextCard(true)}
-              className="bg-[#4cb8c4] text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95"
+              className="bg-[#4cb8c4] text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full"
             >
               Lembrei
             </button>

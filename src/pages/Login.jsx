@@ -139,7 +139,7 @@ export default function Login({ setTitulo }) {
     //if (finish) return;
 
     return (
-        <div className="max-w-6xl mx-auto px-8 section-login mt-8">
+        <div className="max-w-6xl mx-auto px-8 section-login mt-6">
             <div className="flex justify-center">
                 <div className="w-full max-w-md text-center mt-4">
 
@@ -234,7 +234,7 @@ export default function Login({ setTitulo }) {
                     <br />
 
                     {/* Facebook */}
-                    <button className="text-sm w-full bg-blue-500 hover:bg-blue-700 text-white py-3 rounded-full flex items-center justify-center gap-3">
+                    <button className="text-sm w-full bg-blue-500 hover:bg-blue-700 text-white py-2 rounded-full flex items-center justify-center gap-3">
                         <img src={imgFacebook} alt="Facebook icone" width={30} />
                         <span className="ff-inter">Entrar com Facebook</span>
                     </button>

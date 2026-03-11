@@ -58,7 +58,6 @@ function Layout({ titulo, setTitulo }) {
   const { user, loading } = useAuth()
 
   const rotasSemHeader = new Set([
-    '/',
     //'/login',
     //'/escolheridioma',
     //'/emparelhar',

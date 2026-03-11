@@ -140,7 +140,7 @@ export default function Login({ setTitulo }) {
     //if (finish) return;
 
     return (
-        <div className="max-w-6xl mx-auto px-8 section-login mt-6">
+        <div className="max-w-6xl mx-auto px-8 section-login mt-4">
             <div className="flex justify-center">
                 <div className="w-full max-w-md text-center mt-4">
 
@@ -148,7 +148,7 @@ export default function Login({ setTitulo }) {
                         <img className="w-60" src={imgZaldemy} alt="Login" />
                     </div>
 
-                    <h2 className="text-primary-aux text-2xl font-semibold">
+                    <h2 className="text-slate-600 text-2xl font-semibold">
                         Bem-vindo!
                     </h2>
 

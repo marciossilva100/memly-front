@@ -19,10 +19,10 @@ export default function Cadastro({ setTitulo }) {
     const [loading, setLoading] = useState(false);
     const [finish, setFinish] = useState(false)
     const [form, setForm] = useState({
-        name: 'marcios',
-        email: 'marciossilva.dev@gmail.com',
-        password: '123123',
-        confirm_password: '123123'
+        name: '',
+        email: '',
+        password: '',
+        confirm_password: ''
     })
     const [erro, setErro] = useState('')
     const navigate = useNavigate();

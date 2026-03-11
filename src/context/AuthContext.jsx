@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useMemo } from "react";
+import { createContext, useContext, useEffect, useState, useMemo, useCallback } from "react";
 
 const AuthContext = createContext();
 
@@ -7,7 +7,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  async function checkAuth() {
+  const checkAuth = useCallback(async () => {
     try {
 
       const res = await fetch("https://zaldemy.com/controller/me.php", {
@@ -21,8 +21,6 @@ export function AuthProvider({ children }) {
 
       const data = await res.json();
 
-      console.log("Auth check response:", data);
-
       setUser(data.authenticated ? data.user : null);
 
     } catch (error) {
@@ -31,15 +29,11 @@ export function AuthProvider({ children }) {
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
   useEffect(() => {
     checkAuth();
-  }, []);
-
-  // function logout() {
-  //   setUser(null);
-  // }
+  }, [checkAuth]);
 
   async function logout() {
     try {
@@ -60,7 +54,7 @@ export function AuthProvider({ children }) {
     loading,
     checkAuth,
     logout
-  }), [user, loading]);
+  }), [user, loading, checkAuth]);
 
   return (
     <AuthContext.Provider value={value}>

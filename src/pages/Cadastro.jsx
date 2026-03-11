@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from "react-router-dom";
 
 import { Link } from "react-router-dom";
+import imgZaldemy from "../assets/img/zaldemy.png"
 
 import imgLogin from '../assets/img/img-login.png'
 import imgGoogle from '../assets/img/google.png'
@@ -98,7 +99,7 @@ export default function Cadastro({ setTitulo }) {
                 setLoading(false)
 
                 navigate(`/verificaremail`, {
-                    state: { email:form.email }
+                    state: { email: form.email }
                 })
 
             })
@@ -122,15 +123,17 @@ export default function Cadastro({ setTitulo }) {
     if (finish) return;
 
     return (
-        <div className="max-w-6xl mx-auto px-4 px-8">
+        <div className="max-w-6xl mx-auto px-4 px-8 py-4 h-[calc(100svh-20px)]">
             <div className="flex justify-center">
                 <div className="w-full max-w-md text-center mt-4">
 
-                    <div className="flex justify-center">
-                        <img className="logo-coruja" src={imgMemly} alt="Cadastro" />
+                    <div className="flex justify-center mb-2">
+                        <img className="w-50" src={imgZaldemy} alt="Login" />
                     </div>
-
-                    <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+                    <h5 className="text-sm text-gray-600">
+                        Faça seu cadastro
+                    </h5>
+                    <form onSubmit={handleSubmit} className="mt-4 space-y-4">
 
                         {/* Nome */}
                         <div className="flex items-center border rounded-full overflow-hidden py-3">
@@ -233,7 +236,7 @@ export default function Cadastro({ setTitulo }) {
                     {/* Google */}
                     <button className="text-sm w-full border border-gray-300 py-3 rounded-full flex items-center justify-center gap-3">
                         <img src={imgGoogle} alt="Google icone" width={20} />
-                        <span className="ff-inter ">Entrar com Google</span> 
+                        <span className="ff-inter ">Entrar com Google</span>
                     </button>
 
                     <br />

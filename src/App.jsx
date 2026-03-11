@@ -26,6 +26,16 @@ import EnglishVideos from './pages/EnglishVideos'
 import imgMemly from "./assets/img/mascote-memly.png"
 
 
+/* function setRealViewportHeight() {
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+setRealViewportHeight();
+
+window.addEventListener('resize', setRealViewportHeight); */
+
+
 
 function PrivateRoute({ children }) {
 
@@ -35,7 +45,7 @@ function PrivateRoute({ children }) {
     checkAuth()
   }, [checkAuth])
 
-  console.log("PrivateRoute - user:", user, "loading:", loading)
+  //console.log("PrivateRoute - user:", user, "loading:", loading)
 
   if (loading) {
     return (

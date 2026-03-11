@@ -5,6 +5,7 @@ import imgGlobe from "../assets/img/globe.png"
 import imgMemly from "../assets/img/mascote-memly.png"
 import { idiomas } from "../data/idiomas"
 import { useAuth } from "../context/AuthContext";
+import imgZaldemy from "../assets/img/zaldemy.png"
 
 import {
     Plus,
@@ -149,8 +150,8 @@ export default function Header({ titulo }) {
             >
                 <div className="p-4 flex justify-between items-center border-b">
                     <div className='text-md font-bold text-gray-700 flex items-center '>
-                        <img src={imgMemly} alt="" width='40' />
-                        <span>Memly</span>
+                        <img className="w-32" src={imgZaldemy} alt="Login" />
+
                     </div>
                     <button onClick={() => setOpen(false)}>✕</button>
                 </div>

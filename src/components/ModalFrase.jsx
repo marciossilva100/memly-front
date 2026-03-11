@@ -74,7 +74,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
 
         e.preventDefault();
 
-        const res = await fetch('http://localhost:8081/controller/libreTranslate.php', {
+        const res = await fetch('https://zaldemy.com/controller/libreTranslate.php', {
             method: 'POST',
             credentials: "include",
             headers: {

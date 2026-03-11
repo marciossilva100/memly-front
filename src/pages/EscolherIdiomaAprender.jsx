@@ -141,13 +141,13 @@ export default function EscolherIdiomaAprender() {
 
         {/* TOPO */}
         <div className="w-full max-w-md mx-auto text-center mb-6">
-          <div className="flex justify-center mb-3">
+      {/*     <div className="flex justify-center mb-3">
             <img
               src={imgMemly}
               alt="Coruja"
               className="w-28"
             />
-          </div>
+          </div> */}
           <h4 className="text-lg font-medium text-slate-700">
             Escolha o idioma que você quer aprender.
           </h4>
@@ -212,7 +212,7 @@ export default function EscolherIdiomaAprender() {
             className="
           block
           w-full
-          bg-avocado-500
+          bg-[#4cb8c4]
           bottom-0
           text-white
           font-medium

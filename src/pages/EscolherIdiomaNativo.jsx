@@ -138,13 +138,13 @@ export default function EscolherIdiomaNativo() {
 
         {/* TOPO */}
         <div className="w-lg max-w-md mx-auto text-center mb-6">
-          <div className="flex justify-center mb-3">
+       {/*    <div className="flex justify-center mb-3">
             <img
               src={imgMemly}
               alt="Coruja"
               className="w-28 "
             />
-          </div>
+          </div> */}
           <h4 className="text-lg font-medium text-slate-700">
             Escolha seu idioma nativo
           </h4>
@@ -210,7 +210,7 @@ export default function EscolherIdiomaNativo() {
             className="
           block
           w-full
-          bg-avocado-500
+          bg-[#4cb8c4]
           bottom-0
           text-white
           font-medium

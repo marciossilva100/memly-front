@@ -148,7 +148,7 @@ export default function Login({ setTitulo }) {
                         <img className="w-60" src={imgZaldemy} alt="Login" />
                     </div>
 
-                    <h2 className="text-slate-600 text-2xl font-semibold">
+                    <h2 className="text-slate-500 text-2xl font-semibold">
                         Bem-vindo!
                     </h2>
 

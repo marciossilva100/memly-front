@@ -57,7 +57,12 @@
   color: var(--blue-primary);
 }
 
-
+.bg-default-gradient{
+  --tw-gradient-to: #47a8b3 var(--tw-gradient-to-position);
+  --tw-gradient-from: #085078 var(--tw-gradient-from-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  background-image:linear-gradient(to right, var(--tw-gradient-stops))
+}
 
 .bg-primary {
   background-color: var(--blue-primary);
@@ -148,7 +153,7 @@ input{
   position: absolute;
   inset: 0;
   backface-visibility: hidden;
-  border-radius: 16px;
+  /* border-radius: 16px; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -162,7 +167,8 @@ input{
 
 }
 .card-front{
-  background-color: #4f46e5;
+  /* background-color: #4f46e5; */
+  
 }
 
 .card-front {

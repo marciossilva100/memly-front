@@ -2,6 +2,7 @@ import imgPlus from '../assets/img/plus.png'
 import imgBook from '../assets/img/book.png'
 import imgSetting from '../assets/img/setting.png'
 import imgEstatistica from '../assets/img/estatistic.png'
+import imgPlay from '../assets/img/play.png'
 
 import { useState, useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
@@ -30,7 +31,7 @@ export default function Home() {
     const navigate = useNavigate();
 
     const carregarCategorias = () => {
-        fetch('http://localhost:8081/controller/categorias.php', {
+        fetch('https://zaldemy.com/controller/categorias.php', {
             method: 'POST',
             credentials: "include",
             headers: {
@@ -65,17 +66,17 @@ export default function Home() {
 
 
     return (
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto ">
 
             <div className="lista-categoria border-t-2 py-4 overflow-auto h-[calc(100vh-110px)]" id="lista-categoria">
                 <div className="min-h-screen items-center justify-center px-4 ">
 
                     {/* Item */}
                     {categorias.map((item) => (
-                        <div key={item.id} onClick={() => validar(item.quantidade, item.id)} className="flex bg-white items-center justify-between py-3 px-4  rounded-xl border shadow-lg mb-4">
+                        <div key={item.id} onClick={() => validar(item.quantidade, item.id)} className="flex bg-gradient-to-r to-[#4cb8c4] from-[#085078] items-center justify-between py-3 px-4  rounded-xl border shadow-lg mb-4">
                             <div>
 
-                                <p className="text-base text-slate-800 mt-1 font-medium">
+                                <p className="text-base text-white mt-1 font-medium">
                                     {item.categoria}
                                 </p>
                                 <div className="flex items-center gap-3">
@@ -103,13 +104,14 @@ export default function Home() {
 
                 </div>
 
-                <div className="bg-white   fixed bottom-0  w-full justify-items-center justify-center items-center pt-4 ">
+                <div className="bg-white fixed bottom-0  w-full justify-items-center justify-center items-center pt-4 ">
                     <div>
                         <button className="
                         px-6
                         py-3
+                        shadow-md
                         rounded-full
-                        bg-avocado-500
+                        bg-[#4cb8c4]
                         text-white
                         font-medium
                        
@@ -137,6 +139,12 @@ export default function Home() {
                             <div className=' p-3 flex justify-center items-center'>
                                 {/*  <BookOpen className='text-white' /> */}
                                 <img src={imgEstatistica} alt="" width={40} />
+                            </div>
+                        </a>
+                         <a href="/videos">
+                            <div className=' p-3 flex justify-center items-center'>
+                                {/*  <BookOpen className='text-white' /> */}
+                                <img src={imgPlay} alt="" width={40} />
                             </div>
                         </a>
                     </div>

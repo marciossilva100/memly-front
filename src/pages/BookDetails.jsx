@@ -35,13 +35,18 @@ export default function BookDetails() {
       : book.description?.value;
 
   return (
-    <div className=" bg-gray-900 text-white p-8 h-[calc(100vh-40px)] overflow-y-auto">
+    <div className=" bg-gray-900 text-white px-6  overflow-y-auto ">
+      <div className="relative text-left mb-3 w-full mt-3">
+        <div
+          className=" cursor-pointer"
+          onClick={() => navigate(-1)}
+        >
+          <i className="bi bi-arrow-left text-xl"></i>
+        </div>
+      </div>
+      <div className="max-w-3xl mx-auto h-[calc(100vh-50px)] overflow-y-auto">
 
-
-
-      <div className="max-w-3xl mx-auto">
-
-        <h1 className="text-3xl font-bold mb-4">
+        <h1 className="text-xl font-bold mb-4">
           {book.title}
         </h1>
 

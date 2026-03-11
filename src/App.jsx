@@ -21,6 +21,7 @@ import LeituraDigital from './pages/LeituraDigital'
 import BookDetails from "./pages/BookDetails";
 import VerificarEmail from './pages/VerificarEmail'
 import EmailVerificado from './pages/EmailVerificado'
+import EnglishVideos from './pages/EnglishVideos'
 
 import imgMemly from "./assets/img/mascote-memly.png"
 
@@ -58,8 +59,10 @@ function Layout({ titulo, setTitulo }) {
 
   const rotasSemHeader = new Set([
     '/',
-    '/login',
-    '/escolheridioma'
+    //'/login',
+    //'/escolheridioma',
+    //'/emparelhar',
+    '/home'
   ])
 
   const esconderHeader = rotasSemHeader.has(location.pathname)
@@ -78,7 +81,7 @@ function Layout({ titulo, setTitulo }) {
 
   return (
     <>
-      {!esconderHeader && <Header titulo={titulo} />}
+      {esconderHeader && <Header titulo={titulo} />}
 
       <Routes>
 
@@ -143,7 +146,7 @@ function Layout({ titulo, setTitulo }) {
         />
 
         <Route
-          path="/emparelhar/:id"
+          path="/emparelhar/:id/:mode"
           element={
             <PrivateRoute>
               <Emparelhar />
@@ -170,7 +173,7 @@ function Layout({ titulo, setTitulo }) {
         />
 
         <Route
-          path="/digitartexto/:id"
+          path="/digitartexto/:id/:mode"
           element={
             <PrivateRoute>
               <DigitarTexto />
@@ -198,7 +201,7 @@ function Layout({ titulo, setTitulo }) {
 
         <Route path="/verificaremail" element={<VerificarEmail />} />
         <Route path="/emailverificado" element={<EmailVerificado />} />
-
+          <Route path="/videos" element={<EnglishVideos query="english listening practice" />}/>
       </Routes>
     </>
   )

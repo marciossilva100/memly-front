@@ -41,7 +41,7 @@ export default function ModalTreinoAdvinhar({ setOpenTreinoAdvinhar, openTreinoA
                         <div className="flex flex-col cursor-pointer" onClick={() => {
                             if (!categoriaId) return;
                             setOpenTreinoAdvinhar(false);
-                            navigate(`/emparelhar/${categoriaId}`);
+                            navigate(`/emparelhar/${categoriaId}/traine`);
                         }}> 
                             <span className="text-base ">Emparelhar</span>
                         </div>
@@ -62,7 +62,11 @@ export default function ModalTreinoAdvinhar({ setOpenTreinoAdvinhar, openTreinoA
                         <div className="flex justify-center items-center me-3">
                             <Type size={25} className="text-blue-400" />
                         </div>
-                        <div className="flex flex-col ">
+                        <div className="flex flex-col " onClick={() => {
+                            if (!categoriaId) return;
+                            setOpenTreinoAdvinhar(false);
+                            navigate(`/digitartexto/${categoriaId}/traine`);
+                        }}>
                             <span className="text-base leading-tight  flex">Digitar</span>
                         </div>
                     </div>

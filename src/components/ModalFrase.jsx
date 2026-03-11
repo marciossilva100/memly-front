@@ -33,7 +33,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
         setLoading(true);
 
         try {
-            const res = await fetch('http://localhost:8081/controller/frases.php', {
+            const res = await fetch('https://zaldemy.com/controller/frases.php', {
                 method: 'POST',
                 credentials: "include",
                 headers: {

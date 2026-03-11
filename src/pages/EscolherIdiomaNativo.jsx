@@ -28,7 +28,7 @@ export default function EscolherIdiomaNativo() {
   }, [])
 
   useEffect(() => {
-    fetch('http://localhost:8081/controller/language.php',
+    fetch('https://zaldemy.com/controller/language.php',
       {
         method: 'POST',
         credentials: "include",
@@ -52,7 +52,7 @@ export default function EscolherIdiomaNativo() {
   function languageRegister() {
 
     //   setLoading(true)
-    fetch('http://localhost:8081/controller/language.php', {
+    fetch('https://zaldemy.com/controller/language.php', {
       method: 'POST',
       credentials: "include",
       headers: {

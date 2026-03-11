@@ -10,7 +10,8 @@ export function AuthProvider({ children }) {
   async function checkAuth() {
     try {
 
-      const res = await fetch("http://localhost:8081/controller/me.php", {
+      const res = await fetch("https://zaldemy.com/controller/me.php", {
+        method: "GET",
         credentials: "include"
       });
 

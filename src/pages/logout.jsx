@@ -9,7 +9,7 @@ export default function Logout() {
     async function handleLogout() {
       try {
         const response = await fetch(
-          "http://localhost:8081/controller/logout.php",
+          "https://zaldemy.com/controller/logout.php",
           {
             method: "POST",
             credentials: "include", // importante para destruir a sessão

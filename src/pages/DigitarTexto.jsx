@@ -2,10 +2,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { makePerfectDiff } from "../utils/makePerfectDiff";
 import '../digitartexto.css'
-import { Check } from "lucide-react";
+import { Check, MessageCircle } from "lucide-react";
 
 export default function DigitarTexto() {
-    const { id} = useParams();
+    const { id, mode } = useParams();
 
     const [diff, setDiff] = useState(null)
     const [frases, setFrases] = useState([]);
@@ -16,6 +16,7 @@ export default function DigitarTexto() {
     const [finished, setFinished] = useState(false);
     const [progress, setProgress] = useState(0);
     const [listIdCorrectPhrase, setListIdCorrectPhrase] = useState([]);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     const textareaRef = useRef(null);
@@ -44,28 +45,36 @@ export default function DigitarTexto() {
 
     // 🔹 Busca frases
     useEffect(() => {
-        fetch("http://localhost:8081/controller/frases.php", {
+        let endpoint =
+            mode === "traine" ? "controller/treino.php" : "controller/frases.php";
+        setLoading(true);
+
+        fetch(`https://zaldemy.com/${endpoint}`, {
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                action: "learn",
+                action: mode,
                 category_id: id,
-
             })
         })
             .then(res => res.json())
             .then(data => {
-                setFrases(data);
-                setIndex(0);
-                setIsFlipped(false);
-                setFinished(false);
-                setProgress(0);
-                setShowBackContent(false);
+               
+                setFrases(data || []);
 
+            })
+            .catch(() => {
+                setFrases([]);
+            })
+            .finally(() => {
+                setLoading(false);
             });
 
-    }, [id]);
+    }, [id, mode]);
+
+
+    
 
     function virarFlashcard() {
         setIsFlipped(true);
@@ -78,7 +87,35 @@ export default function DigitarTexto() {
         }, 200);
     }
 
-   
+    async function trainingUpdate(updatedList, updatedIncorrectList, actionToSend) {
+        try {
+            const res = await fetch("https://zaldemy.com/controller/treino.php", {
+                method: "POST",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    action: actionToSend,
+                    updatedList: updatedList,
+                    updatedIncorrectList: updatedIncorrectList,
+                    category_id: id
+                })
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                console.log(data.message);
+            }
+
+            return
+
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
 
 
     const playAudio = (text) => {
@@ -118,7 +155,7 @@ export default function DigitarTexto() {
 
             //await trainingUpdate();
 
-           navigate(`/flashcards/${id}/learn`)
+            navigate(`/flashcards/${id}/learn`)
         }
 
         console.log('tamanho ', index)
@@ -155,10 +192,18 @@ export default function DigitarTexto() {
     }
 
 
-    if (!frases.length) {
+    if (loading) {
         return (
             <div className="h-screen flex items-center justify-center">
                 Carregando...
+            </div>
+        );
+    }
+
+    if (!frases.length) {
+        return (
+            <div className="h-screen flex items-center justify-center">
+                Nenhuma frase encontrada
             </div>
         );
     }
@@ -172,27 +217,38 @@ export default function DigitarTexto() {
     }
 
 
-
-
     return (
-        <div className="h-screen pt-5 bg-slate-50 justify-items-center digitar-texto">
-
+        <div className="h-screen pt-5 bg-slate-100  digitar-texto p-6">
+            <div className="relative text-left mb-4">
+                <div
+                    className=" cursor-pointer"
+                    onClick={() => navigate(-1)}
+                >
+                    <i className="bi bi-arrow-left text-xl"></i>
+                </div>
+            </div>
+            {!isFlipped && (
+                <div className="justify-start mb-4 w-full">
+                    <h2 className="text-slate-700">O que você quer dizer em inglês?</h2>
+                    <span className="text-slate-500 text-xs">Digite como você falaria essa frase.</span>
+                </div>
+            )}
             <div className="perspective flashcard justify-center flex ">
                 <div
                     className={`card card-digitar-texto ${isFlipped ? "flip" : ""}`}
 
                 >
                     {/* FRENTE */}
-                    <div className="card-front shadow-[0_10px_40px_rgba(0,0,0,0.08)] p-4 text-center">
-                        <span className="text-2xl">
+                    <div className="rounded-lg card-front bg-default-gradient shadow-[0_10px_40px_rgba(0,0,0,0.08)] p-4 text-center">
+                        <span className="text-md">
                             {frases[index].texto_nativo}
 
                         </span>
                     </div>
 
                     {/* VERSO */}
-                    <div className="card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] p-4 text-center">
-                        <span className="text-2xl text-avocado-700">
+                    <div className="rounded-lg card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] p-4 text-center">
+                        <span className="text-md text-avocado-700">
                             {showBackContent && frases[index].texto_traduzido}
                         </span>
                     </div>
@@ -201,7 +257,7 @@ export default function DigitarTexto() {
 
             {diff && !diff.isCorrect && (
 
-                <div className="mt-8 w-full px-8">
+                <div className="mt-8 w-full ">
                     <span className="w-full flex justify-center mb-4 font-semibold text-slate-700">
                         Você digitou:
                     </span>
@@ -221,11 +277,12 @@ export default function DigitarTexto() {
                 </div>
             )}
 
-            <div className="w-full px-9 mt-8">
+            <div className="w-full  mt-8">
                 <form onSubmit={handleSubmit}>
                     <div className="flex justify-center mb-8">
                         {!isFlipped && (
                             <textarea
+                                placeholder="Digite sua resposta aqui..."
                                 ref={textareaRef}
                                 value={resposta}
                                 onChange={(e) => setResposta(e.target.value)}
@@ -235,12 +292,12 @@ export default function DigitarTexto() {
                     </div>
 
                     {!isFlipped && (
-                        <div className="left-0 fixed bottom-6 w-full px-10">
+                        <div className="left-0 fixed bottom-6 w-full px-6">
                             <button
                                 type="submit"
-                                className="shadow-md w-full bg-avocado-500 text-white font-medium py-3 rounded-2xl transition"
+                                className="flex justify-center shadow-md w-full bg-[#4cb8c4] text-white font-medium py-3 rounded-full transition"
                             >
-                                Responder
+                                <i className="bi bi-chat-dots ps-2 me-2"></i>  Responder
                             </button>
                         </div>
                     )}
@@ -249,10 +306,10 @@ export default function DigitarTexto() {
 
             {diff && (
                 !diff.isCorrect ? (
-                    <div className="w-full flex fixed bottom-6 justify-center gap-3 px-10">
+                    <div className="w-full flex left-0 fixed bottom-6 justify-center gap-3 px-10">
                         <button
                             onClick={repeatCard}
-                            className="w-full bg-red-400 text-white px-5 py-3 rounded-xl shadow-lg transition active:scale-95"
+                            className="w-full bg-red-400 text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95"
                         >
                             Tentar novamente
                         </button>
@@ -275,7 +332,7 @@ export default function DigitarTexto() {
                         <div className="fixed left-0 w-full bottom-0 p-10">
                             <button
                                 onClick={nextCard}
-                                className="shadow-md w-full bg-avocado-500 text-white font-medium py-3 rounded-2xl transition"
+                                className="shadow-md w-full bg-avocado-500 text-white font-medium py-3 rounded-full transition"
                             >
                                 Próximo
                             </button>

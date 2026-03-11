@@ -5,7 +5,6 @@ import { gerarAudio } from "../services/elevenlabs";
 export default function Flashcards() {
 
   const { id, mode } = useParams();
-  const navigate = useNavigate();
 
   const [frases, setFrases] = useState([]);
   const [index, setIndex] = useState(0);
@@ -13,17 +12,16 @@ export default function Flashcards() {
   const [showBackContent, setShowBackContent] = useState(false);
   const [finished, setFinished] = useState(false);
   const [progress, setProgress] = useState(0);
-
   const [listIdCorrectPhrase, setListIdCorrectPhrase] = useState([]);
   const [listIdIncorrectPhrase, setListIdIncorrectPhrase] = useState([]);
+  const navigate = useNavigate();
 
   const FLIP_TIME = 5000;
-  const FLIP_DURATION = 400;
-
+  const FLIP_DURATION = 400; // ⚠️ deve bater com o CSS transition
   const RADIUS = 42;
   const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
-  // preload vozes
+  // 🔹 Pré-carrega vozes
   useEffect(() => {
     const loadVoices = () => window.speechSynthesis.getVoices();
     loadVoices();
@@ -34,14 +32,15 @@ export default function Flashcards() {
     window.speechSynthesis.cancel();
   }, []);
 
-  // carregar frases
+
+  // 🔹 Busca frases
   useEffect(() => {
 
     const endpoint = ['traine'].includes(mode)
       ? 'controller/treino.php'
       : 'controller/frases.php';
 
-    fetch(`https://zaldemy.com/${endpoint}`, {
+    fetch(`/api/${endpoint}`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -52,24 +51,17 @@ export default function Flashcards() {
     })
       .then(res => res.json())
       .then(data => {
-
         setFrases(data);
         setIndex(0);
         setIsFlipped(false);
         setShowBackContent(false);
         setFinished(false);
         setProgress(0);
-
-        setListIdCorrectPhrase([]);
-        setListIdIncorrectPhrase([]);
-
       });
-
   }, [id, mode]);
 
-  // progresso e flip automático
+  // 🔹 Flip automático + progresso
   useEffect(() => {
-
     if (!frases.length || finished || isFlipped) {
       setProgress(0);
       return;
@@ -78,58 +70,48 @@ export default function Flashcards() {
     const start = Date.now();
 
     const interval = setInterval(() => {
-
       const elapsed = Date.now() - start;
       const percent = Math.min((elapsed / FLIP_TIME) * 100, 100);
-
       setProgress(percent);
 
       if (percent === 100) {
         clearInterval(interval);
         flipCard();
       }
-
     }, 100);
 
     return () => clearInterval(interval);
-
   }, [index, frases, finished, isFlipped]);
 
   async function playEleven() {
-
     // const url = await gerarAudio(frases[index].texto_traduzido);
-    const url = false;
-
-    if (!url) return;
+    const url = false
 
     const audio = new Audio(url);
-    audio.playbackRate = 0.9;
+    audio.playbackRate = 0.90; // 25% mais rápido
     audio.play();
-
   }
 
+  // 🔹 Função centralizada de flip
   const flipCard = () => {
+
 
     setIsFlipped(true);
     setShowBackContent(false);
 
     setTimeout(() => {
-
       setShowBackContent(true);
-      playEleven();
-
+      playEleven()
+      // playAudio(frases[index].texto_traduzido);
     }, FLIP_DURATION / 2);
-
   };
 
+  // 🔹 Áudio
   const playAudio = (text) => {
-
     if (!text) return;
 
     const utterance = new SpeechSynthesisUtterance(text);
-
     const voices = window.speechSynthesis.getVoices();
-
     const voice =
       voices.find(v => v.lang === "en-US") ||
       voices.find(v => v.lang.startsWith("en"));
@@ -142,14 +124,12 @@ export default function Flashcards() {
 
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utterance);
-
   };
 
+
   async function trainingUpdate(updatedList, updatedIncorrectList, actionToSend) {
-
     try {
-
-      const res = await fetch("https://zaldemy.com/controller/treino.php", {
+      const res = await fetch("/api/controller/treino.php", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -167,86 +147,91 @@ export default function Flashcards() {
         console.log(data.message);
       }
 
+      return
+
+
     } catch (error) {
-
       console.log(error);
-
     }
-
   }
 
+  // useEffect(() => {
+  //   if (mode && frases.length > 0 && frases[index]) {
+  //     setListIdCorrectPhrase(prev => [
+  //       ...prev,
+  //       frases[index].id
+  //     ]);
+  //   }
+
+  // }, [mode]);
+
+  // 🔹 Próximo card
   const nextCard = async (correct = false) => {
 
     let updatedList = listIdCorrectPhrase;
     let updatedIncorrectList = listIdIncorrectPhrase;
 
     if (correct) {
-
       updatedList = [...listIdCorrectPhrase, frases[index].id];
       setListIdCorrectPhrase(updatedList);
+    }
 
-    } else {
-
+    if (!correct) {
       updatedIncorrectList = [...listIdIncorrectPhrase, frases[index].id];
       setListIdIncorrectPhrase(updatedIncorrectList);
-
     }
 
     window.speechSynthesis.cancel();
-
     setIsFlipped(false);
     setShowBackContent(false);
     setProgress(0);
 
     if (index + 1 < frases.length) {
-
       setIndex(prev => prev + 1);
-
     } else {
 
       const actionToSend =
         mode === 'traine' ? 'trainee_finish' : mode;
 
-      await trainingUpdate(updatedList, updatedIncorrectList, actionToSend);
+      //if (mode === 'learn')
+      await trainingUpdate(updatedList, updatedIncorrectList, actionToSend); // 👈 passa a lista correta
 
       setFinished(true);
-
     }
-
   };
 
   if (!frases.length) {
-
     return (
       <div className="h-screen flex items-center justify-center">
         Carregando...
       </div>
     );
-
   }
 
-  const acertos = listIdCorrectPhrase.length;
-  const erros = listIdIncorrectPhrase.length;
-  const totalPerguntas = frases.length;
+  if (finished) {
+    navigate(`/home`)
+
+    // return (
+    //   <div className="h-screen flex items-center justify-center text-xl font-semibold bg-slate-50">
+    //     🎉 Treino finalizado
+    //   </div>
+    // );
+  }
 
   const porcentagem = totalPerguntas
     ? Math.round((acertos / totalPerguntas) * 100)
     : 0;
 
   function mensagemFinal() {
-
-    if (porcentagem === 100) return "🏆 Parabéns! Você acertou tudo!";
+    if (porcentagem === 100) return "🏆 Parabéns! Você é um mestre!";
     if (porcentagem >= 80) return "🔥 Excelente desempenho!";
     if (porcentagem >= 60) return "👏 Muito bom! Continue assim!";
     return "💪 Continue treinando, você vai evoluir!";
-
   }
 
-  if (finished) {
-
+  if (finalizado) {
     return (
       <div className="h-screen flex items-center justify-center bg-gradient-to-r from-[#4cb8c4] to-[#085078] px-10">
-
         <div className="bg-white p-10 rounded-2xl shadow-2xl text-center max-w-md">
 
           <p className="text-xl mb-4">{mensagemFinal()}</p>
@@ -259,76 +244,65 @@ export default function Flashcards() {
             {acertos} acertos • {erros} erros
           </p>
 
-          <button
-            onClick={() => navigate("/home")}
-            className="px-6 py-3 bg-indigo-600 text-white  hover:bg-indigo-700 transition rounded-full"
+          {/* <button
+            onClick={carregarFrases}
+            className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
           >
-            Voltar ao início
-          </button>
+            🔁 Jogar novamente
+          </button> */}
 
         </div>
-
       </div>
     );
-
   }
 
-const progressBar = frases.length
-  ? ((index + (isFlipped ? 1 : 0)) / frases.length) * 100
-  : 0;
-
+  const progressBar = frases.length
+    ? (index / frases.length) * 100
+    : 0;
   return (
-
     <div className="p-6 bg-slate-50">
 
-      <div className="relative text-center mb-6">
-
+      <div className="relative text-center mb-6 ">
         <div
           className="absolute left-0 top-1/2 -translate-y-1/2 cursor-pointer"
           onClick={() => navigate(-1)}
         >
           <i className="bi bi-arrow-left text-xl"></i>
         </div>
-
       </div>
-
+      {/* BARRA DE PROGRESSO SUPERIOR */}
       <div className="top-0 left-0 w-full h-2 bg-slate-200">
-
         <div
-          className="h-full bg-slate-400 transition-all duration-300"
+          className="h-full bg-avocado-500 transition-all duration-300"
           style={{ width: `${progressBar}%` }}
         />
-
       </div>
-
-      <div className="h-screen flex justify-center pt-8">
+      <div className="h-screen flex justify-center pt-8 ">
 
         <div className="perspective flashcard justify-center flex">
-
           <div className={`card ${isFlipped ? "flip" : ""}`}>
 
-            <div className="card-front shadow-[0_10px_40px_rgba(0,0,0,0.08)] text-center p-8 bg-default-gradient rounded-lg">
+            {/* FRENTE */}
+            <div className="card-front shadow-[0_10px_40px_rgba(0,0,0,0.08)] text-center p-8">
               <span className="text-2xl">
                 {frases[index].texto_nativo}
               </span>
             </div>
 
-            <div className="card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] text-center p-8 rounded-lg">
+            {/* VERSO */}
+            <div className="card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] text-center p-8">
               <span className="text-2xl text-slate-700">
                 {showBackContent && frases[index].texto_traduzido}
               </span>
             </div>
 
           </div>
-
         </div>
 
+        {/* PROGRESSO */}
         {!isFlipped && (
-
           <div className="fixed bottom-6 left-1/2 -translate-x-1/2">
-
             <svg width="96" height="96">
-
               <circle
                 cx="48"
                 cy="48"
@@ -337,7 +311,6 @@ const progressBar = frases.length
                 strokeWidth="8"
                 fill="none"
               />
-
               <circle
                 cx="48"
                 cy="48"
@@ -353,24 +326,23 @@ const progressBar = frases.length
                   transformOrigin: "50% 50%"
                 }}
               />
-
             </svg>
 
             <button
               onClick={flipCard}
-              className="absolute inset-0 m-auto bg-[#4cb8c4] text-white rounded-full w-20 h-20 shadow-lg transition active:scale-95"
+              className="absolute inset-0 m-auto
+                       bg-blue-600 text-white rounded-full
+                       w-20 h-20 shadow-lg
+                       transition active:scale-95"
             >
               Mostrar
             </button>
-
           </div>
-
         )}
 
+        {/* BOTÕES APÓS VIRAR */}
         {isFlipped && (
-
           <div className="flex fixed bottom-6 items-center justify-center gap-3">
-
             <button
               onClick={() => nextCard(false)}
               className="bg-red-400 text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95"
@@ -380,19 +352,14 @@ const progressBar = frases.length
 
             <button
               onClick={() => nextCard(true)}
-              className="bg-[#4cb8c4] text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95"
+              className="bg-blue-400 text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95"
             >
               Lembrei
             </button>
-
           </div>
-
         )}
-
       </div>
-
     </div>
 
   );
-
 }

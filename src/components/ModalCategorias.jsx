@@ -25,7 +25,7 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
         setLoading(true);
 
         try {
-            const res = await fetch('http://localhost:8081/controller/categorias.php', {
+            const res = await fetch('https://zaldemy.com/controller/categorias.php', {
                 method: 'POST',
                 credentials: "include",
                 headers: {
@@ -93,7 +93,7 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
                                 Cancelar
                             </button>
 
-                            <button type="submit" disabled={loading} className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm ">
+                            <button type="submit" disabled={loading} className="bg-[#4cb8c4] text-white px-4 py-2 rounded-full text-sm ">
                                 Salvar
                             </button>
                         </div>

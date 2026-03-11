@@ -1,5 +1,6 @@
 .digitar-texto .card-digitar-texto{
-    height:220px !important
+    height:220px !important;
+    width:100% !important
 }
 .digitar-texto .flashcard{
     aspect-ratio: initial;

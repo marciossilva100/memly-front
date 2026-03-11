@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { Loader2,Volume} from "lucide-react";
+import { Loader2, Volume } from "lucide-react";
+import { useParams, useNavigate } from "react-router-dom";
+
 import "../treinoIA.css";
 
 export default function TreinoIA() {
@@ -8,6 +10,7 @@ export default function TreinoIA() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [flipped, setFlipped] = useState(false);
+    const navigate = useNavigate();
 
     const jaBuscou = useRef(false);
 
@@ -18,7 +21,7 @@ export default function TreinoIA() {
         setLoading(true);
         setError(null);
 
-        fetch('http://localhost:8081/controller/aiController.php', {
+        fetch('https://zaldemy.com/controller/aiController.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
         })
@@ -68,17 +71,25 @@ export default function TreinoIA() {
 
     return (
         <div className="min-h-[calc(100vh-70px)] flex flex-col items-center justify-center px-4 gap-4 ">
+            <div className="relative text-left w-full mt-3">
+                <div
+                    className="left-0  cursor-pointer"
+                    onClick={() => navigate(-1)}
+                >
+                    <i className="bi bi-arrow-left text-xl"></i>
+                </div>
+            </div>
             <div
                 className="flashcard-container cursor-pointer select-none"
                 onClick={() => setFlipped(!flipped)}
             >
                 <div className={`flashcard ${flipped ? "flipped" : ""}`}>
-                    <div className="front flex items-center justify-center p-6 text-center text-white-700">
+                    <div className="bg-default-gradient text-white shadow-md rounded-lg flex items-center justify-center p-6 text-center text-white-700">
                         <p className="text-xl md:text-2xl font-medium ">
                             {textoTraduzido}
                         </p>
                     </div>
-                    <div className="back flex items-center justify-center p-6 text-center">
+                    <div className="back rounded-lg flex items-center justify-center p-6 text-center bg-white">
                         <p className="text-xl md:text-2xl font-medium">
                             {textoNativo}
                         </p>

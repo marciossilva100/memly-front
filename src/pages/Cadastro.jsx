@@ -70,7 +70,7 @@ export default function Cadastro({ setTitulo }) {
 
     function cadastrar() {
         setLoading(true)
-        fetch('http://localhost:8081/controller/auth.php', {
+        fetch('https://zaldemy.com/controller/auth.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

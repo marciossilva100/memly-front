@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom'
 
 import { AuthProvider, useAuth } from './context/AuthContext'
@@ -29,7 +29,11 @@ import imgMemly from "./assets/img/mascote-memly.png"
 
 function PrivateRoute({ children }) {
 
-  const { user, loading } = useAuth()
+  const { user, loading, checkAuth } = useAuth()
+
+  useEffect(() => {
+    checkAuth()
+  }, [checkAuth])
 
   if (loading) {
     return (

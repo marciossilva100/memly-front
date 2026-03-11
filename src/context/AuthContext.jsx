@@ -41,7 +41,7 @@ export function AuthProvider({ children }) {
 
   async function logout() {
     try {
-      await fetch("http://localhost:8081/controller/logout.php", {
+      await fetch("https://zaldemy.com/controller/logout.php", {
         method: "POST",
         credentials: "include"
       });

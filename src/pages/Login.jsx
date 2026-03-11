@@ -144,7 +144,7 @@ export default function Login({ setTitulo }) {
                 <div className="w-full max-w-md text-center mt-4">
 
                     <div className="flex justify-center mb-2">
-                        <img className="w-60" src={imgZaldemy} alt="Login"/>
+                        <img width={200} src={imgZaldemy} alt="Login"/>
                     </div>
 
                     <h2 className="text-slate-500 text-2xl font-semibold">

@@ -128,7 +128,7 @@ export default function Cadastro({ setTitulo }) {
                 <div className="w-full max-w-md text-center mt-4">
 
                     <div className="flex justify-center mb-2">
-                        <img className="w-50" src={imgZaldemy} alt="Login" />
+                        <img className="" width={200} src={imgZaldemy} alt="Login" />
                     </div>
                     <h5 className="text-sm text-gray-600">
                         Faça seu cadastro

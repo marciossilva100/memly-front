@@ -24,6 +24,7 @@ import EmailVerificado from './pages/EmailVerificado'
 import EnglishVideos from './pages/EnglishVideos'
 
 import imgMemly from "./assets/img/mascote-memly.png"
+import imgChapeuFormatura from "./assets/img/chapeu_formatura.png"
 
 
 /* function setRealViewportHeight() {
@@ -51,7 +52,7 @@ function PrivateRoute({ children }) {
     return (
       <div className="flex h-screen items-center justify-center bg-white-100">
         <img
-          src={imgMemly}
+          src={imgChapeuFormatura}
           alt="Carregando"
           className="w-28 animate-pulse"
         />

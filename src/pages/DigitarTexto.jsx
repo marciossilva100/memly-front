@@ -220,7 +220,7 @@ export default function DigitarTexto() {
 
 
     return (
-        <div className="h-dvh flex flex-col  bg-slate-100 digitar-texto px-6">
+        <div className="h-dvh flex flex-col  bg-slate-100 digitar-texto px-6 pb-5">
             <div className="flex-1 overflow-y-auto scrollbar-hide pt-2">
                 <div className="relative text-left mb-4">
                     <div

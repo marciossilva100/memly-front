@@ -109,6 +109,16 @@ body {
 
   width: 100%; */
 }
+
+/* esconde scrollbar mas mantém scroll */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE e Edge antigo */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari */
+}
 .logo-coruja{
   width: 100px;
 }

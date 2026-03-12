@@ -219,7 +219,7 @@ function Layout({ titulo, setTitulo }) {
 
         <Route path="/verificaremail" element={<VerificarEmail />} />
         <Route path="/emailverificado" element={<EmailVerificado />} />
-          <Route path="/videos" element={<EnglishVideos query="english listening practice" />}/>
+        <Route path="/videos" element={<EnglishVideos query="english listening practice" />} />
       </Routes>
     </>
   )
@@ -229,22 +229,22 @@ function Layout({ titulo, setTitulo }) {
 
 function App() {
 
-  useEffect(() => {
-  // função para atualizar a altura da tela
-  const setAppHeight = () => {
-    const vh = window.innerHeight;
-    document.documentElement.style.setProperty('--app-height', `${vh}px`);
-  };
+  // useEffect(() => {
+  //   // função para atualizar a altura da tela
+  //   const setAppHeight = () => {
+  //     const vh = window.innerHeight;
+  //     document.documentElement.style.setProperty('--app-height', `${vh}px`);
+  //   };
 
-  // define no load
-  setAppHeight();
+  //   // define no load
+  //   setAppHeight();
 
-  // atualiza quando a tela muda (resize ou teclado)
-  window.addEventListener('resize', setAppHeight);
+  //   // atualiza quando a tela muda (resize ou teclado)
+  //   window.addEventListener('resize', setAppHeight);
 
-  // limpa o listener ao desmontar
-  return () => window.removeEventListener('resize', setAppHeight);
-}, []);
+  //   // limpa o listener ao desmontar
+  //   return () => window.removeEventListener('resize', setAppHeight);
+  // }, []);
 
   const [titulo, setTitulo] = useState('')
 

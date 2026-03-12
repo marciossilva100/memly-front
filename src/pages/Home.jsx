@@ -18,7 +18,7 @@ import { BookOpen } from "lucide-react";
 
 
 export default function Home() {
-    const { user,setUser } = useAuth();
+    const { user, setUser } = useAuth();
     const [open, setOpen] = useState(false);
     const [openTreino, setOpenTreino] = useState(false)
     const [categorias, setCategorias] = useState([]);
@@ -34,6 +34,7 @@ export default function Home() {
         fetch('https://zaldemy.com/controller/categorias.php', {
             method: 'POST',
             headers: {
+                "Content-Type": "application/json",
                 "Authorization": "Bearer " + localStorage.getItem("token")
             },
             body: JSON.stringify({
@@ -42,6 +43,7 @@ export default function Home() {
         })
             .then(res => res.json())
             .then(data => {
+
                 const categoriasFormatadas = data.map(cat => ({
                     id: cat.id,
                     categoria: cat.categoria,
@@ -49,11 +51,12 @@ export default function Home() {
                 }));
 
                 setCategorias(categoriasFormatadas);
+
             });
     };
 
     useEffect(() => {
-        console.log('home ',user)
+        console.log('home ', user)
         carregarCategorias();
     }, []);
 
@@ -140,7 +143,7 @@ export default function Home() {
                                 <img src={imgEstatistica} alt="" width={40} />
                             </div>
                         </a>
-                         <a href="/videos">
+                        <a href="/videos">
                             <div className=' p-3 flex justify-center items-center'>
                                 {/*  <BookOpen className='text-white' /> */}
                                 <img src={imgPlay} alt="" width={40} />

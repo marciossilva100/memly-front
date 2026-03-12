@@ -27,7 +27,9 @@ export default function () {
 
         fetch('https://zaldemy.com/controller/DailyQuestionController.php', {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
         })
             .then(res => {
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -40,7 +42,7 @@ export default function () {
             .catch(err => {
                 console.error(err);
                 setError('Não foi possível gerar o treino.');
-              //  setQuestion('teste');
+                //  setQuestion('teste');
 
             })
             .finally(() => setLoading(false));
@@ -54,7 +56,9 @@ export default function () {
         try {
             const res = await fetch('/api/controller/DailyQuestionController.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
                 body: JSON.stringify({ question, answer })
             });
 
@@ -72,7 +76,7 @@ export default function () {
         }
     };
 
-    function tryAgain(e){
+    function tryAgain(e) {
         jaBuscou.current = true;
         e.preventDefault()
         setResponse('')
@@ -112,17 +116,17 @@ export default function () {
 
             </div>
             {response &&
-            <form action="" onSubmit={handleSubmit} className="w-full ">
-                <div>
+                <form action="" onSubmit={handleSubmit} className="w-full ">
+                    <div>
 
-                    <div className="flex border p-4 text-center shadow-md overflow-y-auto  relative justify-between bg-white-800  rounded-lg h-[calc(100vh-160px)] flex items-center">
-                        <p className="text-md">{response}</p>
+                        <div className="flex border p-4 text-center shadow-md overflow-y-auto  relative justify-between bg-white-800  rounded-lg h-[calc(100vh-160px)] flex items-center">
+                            <p className="text-md">{response}</p>
+                        </div>
+
                     </div>
+                    <div className=" bg-white fixed bottom-0 left-0 w-full justify-center items-center py-4 text-center">
 
-                </div>
-                <div className=" bg-white fixed bottom-0 left-0 w-full justify-center items-center py-4 text-center">
-                 
-                    <button onClick={(e)=>tryAgain(e)} className="
+                        <button onClick={(e) => tryAgain(e)} className="
                         px-6
                         py-3
                         rounded-full
@@ -132,21 +136,21 @@ export default function () {
                         hover:bg-blue-600
                         transition
                         " >
-                        Tentar novamente
-                    </button>
-                </div>
-            </form>
+                            Tentar novamente
+                        </button>
+                    </div>
+                </form>
             }
             {!response &&
-            <form action="" onSubmit={handleSubmit} className="w-full">
-                <div>
+                <form action="" onSubmit={handleSubmit} className="w-full">
+                    <div>
 
-                    <div className="flex border p-4 text-center shadow-md relative justify-between bg-purple-800 text-white rounded-lg h-60 flex items-center">
-                        <p className="text-xl">{question}</p>
-                    </div>
+                        <div className="flex border p-4 text-center shadow-md relative justify-between bg-purple-800 text-white rounded-lg h-60 flex items-center">
+                            <p className="text-xl">{question}</p>
+                        </div>
 
-                    <div className="text-center w-full justify-center flex mt-5 ">
-                        <button onClick={(e)=>speakText(e)} className="
+                        <div className="text-center w-full justify-center flex mt-5 ">
+                            <button onClick={(e) => speakText(e)} className="
                      
                     px-4 flex
                     py-2
@@ -157,22 +161,22 @@ export default function () {
                     hover:bg-blue-600
                     transition
                     " >
-                            <Volume className="text-sm   w-5 h-5 p-0" />
+                                <Volume className="text-sm   w-5 h-5 p-0" />
 
-                            Ouvir
-                        </button>
+                                Ouvir
+                            </button>
+                        </div>
+
+
+
                     </div>
+                    <div className=" bg-white fixed bottom-0 left-0 w-full justify-center items-center py-4 text-center">
+                        <div className=" mt-3 px-6">
+                            {/*               <input onChange={(e) => setAnswer(e.target.value)} type="text" className="w-full px-3 py-2 outline-none" placeholder="Resposta" /> */}
+                            <textarea
 
-
-
-                </div>
-                <div className=" bg-white fixed bottom-0 left-0 w-full justify-center items-center py-4 text-center">
-                    <div className=" mt-3 px-6">
-                        {/*               <input onChange={(e) => setAnswer(e.target.value)} type="text" className="w-full px-3 py-2 outline-none" placeholder="Resposta" /> */}
-                        <textarea
-
-                            onChange={(e) => setAnswer(e.target.value)}
-                            className="
+                                onChange={(e) => setAnswer(e.target.value)}
+                                className="
                             w-full
                                 mb-6
                                 text-lg
@@ -185,10 +189,10 @@ export default function () {
                                 rounded-lg border border-gray-300
                                 resize-none transition
                             "
-                        />
-                    </div>
+                            />
+                        </div>
 
-                    <button className="
+                        <button className="
                     px-6
                     py-3
                     rounded-full
@@ -198,10 +202,10 @@ export default function () {
                     hover:bg-blue-600
                     transition
                     " >
-                        Enviar
-                    </button>
-                </div>
-            </form>
+                            Enviar
+                        </button>
+                    </div>
+                </form>
             }
         </div>
     )

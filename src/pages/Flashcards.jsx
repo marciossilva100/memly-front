@@ -43,8 +43,9 @@ export default function Flashcards() {
 
     fetch(`https://zaldemy.com/${endpoint}`, {
       method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
       body: JSON.stringify({
         action: mode,
         category_id: id
@@ -151,8 +152,9 @@ export default function Flashcards() {
 
       const res = await fetch("https://zaldemy.com/controller/treino.php", {
         method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
+       headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
         body: JSON.stringify({
           action: actionToSend,
           updatedList: updatedList,

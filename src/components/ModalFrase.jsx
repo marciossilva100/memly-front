@@ -35,9 +35,8 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
         try {
             const res = await fetch('https://zaldemy.com/controller/frases.php', {
                 method: 'POST',
-                credentials: "include",
                 headers: {
-                    'Content-Type': 'application/json'
+                    "Authorization": "Bearer " + localStorage.getItem("token")
                 },
                 body: JSON.stringify({
                     action: 'add_phrase',
@@ -76,9 +75,8 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
 
         const res = await fetch('https://zaldemy.com/controller/libreTranslate.php', {
             method: 'POST',
-            credentials: "include",
             headers: {
-                'Content-Type': 'application/json'
+                "Authorization": "Bearer " + localStorage.getItem("token")
             },
             body: JSON.stringify({
                 phrase: phrase,
@@ -95,7 +93,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
         }
 
         setTranslatedPhrase(data.message)
-        
+
     }
 
     if (error) {
@@ -166,11 +164,11 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
 
                         <div className="mt-6 flex justify-end gap-2">
                             <button
-                                onClick={() =>{
+                                onClick={() => {
                                     setOpenPhrase(false);
                                     setTranslatedPhrase('');
                                     setPhrase('');
-                                } }
+                                }}
                                 className="text-sm text-slate-600"
                             >
                                 Cancelar

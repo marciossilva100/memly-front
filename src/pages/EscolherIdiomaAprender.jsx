@@ -32,10 +32,9 @@ export default function EscolherIdiomaAprender() {
     fetch('https://zaldemy.com/controller/language.php',
       {
         method: 'POST',
-        credentials: "include",
         headers: {
-          'Content-Type': 'application/json'
-        },
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
 
         body: JSON.stringify({
           action: 'list_languages_learning',
@@ -56,11 +55,9 @@ export default function EscolherIdiomaAprender() {
     //   setLoading(true)
     fetch('https://zaldemy.com/controller/language.php', {
       method: 'POST',
-      credentials: "include",
       headers: {
-        'Content-Type': 'application/json'
+        "Authorization": "Bearer " + localStorage.getItem("token")
       },
-
       body: JSON.stringify({
         action: 'set_learning_language',
         learning_language: form.learning_language,

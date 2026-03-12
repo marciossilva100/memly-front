@@ -27,9 +27,8 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
         try {
             const res = await fetch('https://zaldemy.com/controller/categorias.php', {
                 method: 'POST',
-                credentials: "include",
                 headers: {
-                    'Content-Type': 'application/json'
+                    "Authorization": "Bearer " + localStorage.getItem("token")
                 },
                 body: JSON.stringify({
                     action: 'adicionar_categoria',

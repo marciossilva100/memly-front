@@ -87,8 +87,9 @@ export default function JogoFrases() {
 
     fetch(`https://zaldemy.com/${endpoint}`, {
       method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
       body: JSON.stringify({
         action: mode,
         category_id: id,

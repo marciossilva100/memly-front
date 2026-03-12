@@ -33,9 +33,8 @@ export default function ModalTreino({
 
     fetch("https://zaldemy.com/controller/treino.php", {
       method: "POST",
-      credentials: "include",
       headers: {
-        "Content-Type": "application/json"
+        "Authorization": "Bearer " + localStorage.getItem("token")
       },
       body: JSON.stringify({
         action: "training_stats",
@@ -128,9 +127,8 @@ export default function ModalTreino({
 
     fetch("https://zaldemy.com/controller/treino.php", {
       method: "POST",
-      credentials: "include",
       headers: {
-        "Content-Type": "application/json"
+        "Authorization": "Bearer " + localStorage.getItem("token")
       },
       body: JSON.stringify({
         action: "update_repeat",
@@ -162,7 +160,7 @@ export default function ModalTreino({
     const diff = targetDate - now;
 
 
-    if (diff <= 0  || countPhrases.repeat < 1) {
+    if (diff <= 0 || countPhrases.repeat < 1) {
       return {
         text: <span className="text-base">Repetir</span>,
         waiting: false

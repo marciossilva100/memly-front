@@ -8,11 +8,22 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   const checkAuth = useCallback(async () => {
+
     try {
+
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        setUser(null);
+        setLoading(false);
+        return;
+      }
 
       const res = await fetch("https://zaldemy.com/controller/me.php", {
         method: "GET",
-        credentials: "include"
+        headers: {
+          "Authorization": "Bearer " + token
+        }
       });
 
       if (!res.ok) {
@@ -24,11 +35,16 @@ export function AuthProvider({ children }) {
       setUser(data.authenticated ? data.user : null);
 
     } catch (error) {
+
       console.log("Erro auth:", error);
       setUser(null);
+
     } finally {
+
       setLoading(false);
+
     }
+
   }, []);
 
   useEffect(() => {
@@ -36,16 +52,31 @@ export function AuthProvider({ children }) {
   }, [checkAuth]);
 
   async function logout() {
+
     try {
-      await fetch("https://zaldemy.com/controller/logout.php", {
-        method: "POST",
-        credentials: "include"
-      });
+
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        await fetch("https://zaldemy.com/controller/logout.php", {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        });
+      }
+
     } catch (err) {
+
       console.log("Erro ao deslogar:", err);
+
     } finally {
+
+      localStorage.removeItem("token");
       setUser(null);
+
     }
+
   }
 
   const value = useMemo(() => ({

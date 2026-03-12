@@ -51,9 +51,8 @@ export default function DigitarTexto() {
 
         fetch(`https://zaldemy.com/${endpoint}`, {
             method: "POST",
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            },
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 action: mode,
                 category_id: id,
@@ -92,9 +91,8 @@ export default function DigitarTexto() {
         try {
             const res = await fetch("https://zaldemy.com/controller/treino.php", {
                 method: "POST",
-                headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            },
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     action: actionToSend,
                     updatedList: updatedList,
@@ -219,7 +217,7 @@ export default function DigitarTexto() {
     }
 
 
-          return (
+    return (
         <div className="h-screen pt-5 bg-slate-100  digitar-texto p-6">
             <div className="relative text-left mb-4">
                 <div

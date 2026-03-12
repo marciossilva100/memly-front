@@ -23,7 +23,9 @@ export default function TreinoIA() {
 
         fetch('https://zaldemy.com/controller/aiController.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
         })
             .then(res => {
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);

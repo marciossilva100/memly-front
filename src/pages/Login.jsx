@@ -62,7 +62,7 @@ export default function Login({ setTitulo }) {
         try {
             const res = await fetch('https://zaldemy.com/controller/auth.php', {
                 method: 'POST',
-                credentials: "include",
+               // credentials: "include",
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -82,7 +82,8 @@ export default function Login({ setTitulo }) {
                 return
             }
 
-
+            localStorage.setItem("token", data.token);
+            
             await checkAuth()
 
             navigate("/escolheridioma")

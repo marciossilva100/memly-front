@@ -30,9 +30,8 @@ export default function Frases() {
 
         fetch('https://zaldemy.com/controller/frases.php', {
             method: 'POST',
-            credentials: "include",
             headers: {
-                'Content-Type': 'application/json'
+                "Authorization": "Bearer " + localStorage.getItem("token")
             },
             body: JSON.stringify({
                 action: 'frases',
@@ -56,9 +55,8 @@ export default function Frases() {
 
             const res = await fetch('https://zaldemy.com/controller/frases.php', {
                 method: 'POST',
-                credentials: "include",
                 headers: {
-                    'Content-Type': 'application/json'
+                    "Authorization": "Bearer " + localStorage.getItem("token")
                 },
                 body: JSON.stringify({
                     action: 'delete_phrase',

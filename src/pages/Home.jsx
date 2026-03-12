@@ -33,9 +33,8 @@ export default function Home() {
     const carregarCategorias = () => {
         fetch('https://zaldemy.com/controller/categorias.php', {
             method: 'POST',
-            credentials: "include",
             headers: {
-                'Content-Type': 'application/json'
+                "Authorization": "Bearer " + localStorage.getItem("token")
             },
             body: JSON.stringify({
                 action: 'listar-com-quantidade'

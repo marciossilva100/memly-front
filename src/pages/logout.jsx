@@ -12,7 +12,9 @@ export default function Logout() {
           "https://zaldemy.com/controller/logout.php",
           {
             method: "POST",
-            credentials: "include", // importante para destruir a sessão
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
           }
         );
 

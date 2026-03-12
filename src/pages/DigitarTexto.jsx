@@ -220,7 +220,7 @@ export default function DigitarTexto() {
 
 
           return (
-        <div className="h-screen pt-5 bg-slate-100  digitar-texto p-6">
+        <div className="h-dvh pt-5 bg-slate-100  digitar-texto p-6">
             <div className="relative text-left mb-4">
                 <div
                     className=" cursor-pointer"

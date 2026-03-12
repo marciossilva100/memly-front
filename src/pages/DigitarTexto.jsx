@@ -294,7 +294,7 @@ export default function DigitarTexto() {
                     </div>
 
                     {!isFlipped && (
-                        <div className="left-0 fixed bottom-6 w-full px-6">
+                        <div className="left-0  bottom-6 w-full px-6">
                             <button
                                 type="submit"
                                 className="flex justify-center shadow-md w-full bg-[#4cb8c4] text-white font-medium py-3 rounded-full transition"
@@ -308,7 +308,7 @@ export default function DigitarTexto() {
 
             {diff && (
                 !diff.isCorrect ? (
-                    <div className="w-full flex left-0 fixed bottom-6 justify-center gap-3 px-10">
+                    <div className="w-full flex left-0  bottom-6 justify-center gap-3 px-10">
                         <button
                             onClick={repeatCard}
                             className="w-full bg-red-400 text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95"
@@ -331,7 +331,7 @@ export default function DigitarTexto() {
                             </div>
                         </div>
 
-                        <div className="fixed left-0 w-full bottom-0 p-10">
+                        <div className="left-0 w-full bottom-0 p-10">
                             <button
                                 onClick={nextCard}
                                 className="shadow-md w-full bg-avocado-500 text-white font-medium py-3 rounded-full transition"

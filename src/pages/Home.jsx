@@ -106,7 +106,7 @@ export default function Home() {
 
                 </div>
 
-                <div className="bg-white fixed bottom-0  w-full justify-items-center justify-center items-center pt-4 ">
+                <div className="bg-white fixed bottom-0 text-center w-full justify-items-center justify-center items-center pt-4 ">
                     <div>
                         <button className="
                         px-6

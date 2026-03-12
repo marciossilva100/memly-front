@@ -17,6 +17,7 @@
 body {
   font-family: 'Inter', sans-serif;
   overflow: hidden;
+      scrollbar-width: none;
 }
 
 h2,h3,h4{
@@ -33,6 +34,7 @@ h2,h3,h4{
   height: 100%;
  /*  overflow: hidden; */
  overflow-y: auto;
+     scrollbar-width: none;
   padding: 0;
 }
 

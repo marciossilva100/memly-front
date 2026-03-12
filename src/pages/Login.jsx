@@ -140,8 +140,8 @@ export default function Login({ setTitulo }) {
     //if (finish) return;
 
     return (
-    <div className="max-w-6xl mx-auto px-8 section-login py-4 h-[calc(100svh-20px)]">
-            <div className="flex justify-center ">
+    <div className="max-w-6xl mx-auto px-8 section-login py-4 h-dvh">
+            <div className="flex-1 justify-center overflow-y-auto scrollbar-hide">
                 <div className="w-full max-w-md text-center mt-4">
 
                     <div className="flex justify-center mb-2">

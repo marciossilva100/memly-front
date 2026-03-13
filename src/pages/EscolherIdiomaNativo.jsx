@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import imgCoruja from "../assets/img/coruja.png"
 import { idiomas } from "../data/idiomas"
 import { useAuth } from "../context/AuthContext";
+import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
 import imgMemly from "../assets/img/mascote-memly.png"
 import { useNavigate } from "react-router-dom";
@@ -53,7 +54,6 @@ export default function EscolherIdiomaNativo() {
     //   setLoading(true)
     fetch('https://zaldemy.com/controller/language.php', {
       method: 'POST',
-      credentials: "include",
         headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token")
             },
@@ -137,13 +137,13 @@ export default function EscolherIdiomaNativo() {
 
         {/* TOPO */}
         <div className="w-lg max-w-md mx-auto text-center mb-6">
-       {/*    <div className="flex justify-center mb-3">
+       {    <div className="flex justify-center mb-3">
             <img
-              src={imgMemly}
+              src={imgChapeuFormatura}
               alt="Coruja"
               className="w-28 "
             />
-          </div> */}
+          </div> }
           <h4 className="text-lg font-medium text-slate-700">
             Escolha seu idioma nativo
           </h4>

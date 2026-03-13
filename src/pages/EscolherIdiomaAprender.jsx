@@ -4,6 +4,7 @@ import { idiomas } from "../data/idiomas"
 import imgMemly from "../assets/img/mascote-memly.png"
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
 
 export default function EscolherIdiomaAprender() {
@@ -138,13 +139,13 @@ export default function EscolherIdiomaAprender() {
 
         {/* TOPO */}
         <div className="w-full max-w-md mx-auto text-center mb-6">
-      {/*     <div className="flex justify-center mb-3">
+      {     <div className="flex justify-center mb-3">
             <img
-              src={imgMemly}
+              src={imgChapeuFormatura}
               alt="Coruja"
               className="w-28"
             />
-          </div> */}
+          </div> }
           <h4 className="text-lg font-medium text-slate-700">
             Escolha o idioma que você quer aprender.
           </h4>

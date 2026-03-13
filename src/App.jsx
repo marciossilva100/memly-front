@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom'
 
 import { AuthProvider, useAuth } from './context/AuthContext'
@@ -245,6 +245,37 @@ function App() {
   //   // limpa o listener ao desmontar
   //   return () => window.removeEventListener('resize', setAppHeight);
   // }, []);
+
+  const containerRef = useRef(null);
+  const [hasOverflow, setHasOverflow] = useState(false);
+
+  // Saber a altura da tela
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const checkOverflow = () => {
+      setHasOverflow(el.scrollHeight > el.clientHeight);
+    };
+
+    checkOverflow();
+    window.addEventListener("resize", checkOverflow);
+
+    return () => window.removeEventListener("resize", checkOverflow);
+  }, []);
+
+  useEffect(() => {
+    const observer = new ResizeObserver(() => {
+      const el = containerRef.current;
+      if (el) setHasOverflow(el.scrollHeight > el.clientHeight);
+    });
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   const [titulo, setTitulo] = useState('')
 

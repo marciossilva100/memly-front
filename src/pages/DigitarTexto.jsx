@@ -18,7 +18,8 @@ export default function DigitarTexto() {
     const [listIdCorrectPhrase, setListIdCorrectPhrase] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
-
+    const containerRef = useRef(null);
+    const [hasOverflow, setHasOverflow] = useState(false);
     const textareaRef = useRef(null);
 
     useEffect(() => {
@@ -221,7 +222,7 @@ export default function DigitarTexto() {
 
     return (
         <div className="h-dvh flex flex-col  bg-slate-100 digitar-texto px-6 pb-5">
-            <div className="flex-1 overflow-y-auto scrollbar-hide pt-2">
+            <div className="flex-1 overflow-y-auto scrollbar-hide pt-2" ref={containerRef}>
                 <div className="relative text-left mb-4">
                     <div
                         className=" cursor-pointer"
@@ -295,12 +296,19 @@ export default function DigitarTexto() {
                         </div>
 
                         {!isFlipped && (
-                            <div className="left-0  bottom-6 w-full px-6">
+                            <div
+                                className={
+                                    hasOverflow
+                                        ? "w-full"
+                                        : "fixed bottom-6 left-0 w-full px-6"
+                                }
+                            >
                                 <button
                                     type="submit"
                                     className="flex justify-center shadow-md w-full bg-[#4cb8c4] text-white font-medium py-3 rounded-full transition"
                                 >
-                                    <i className="bi bi-chat-dots ps-2 me-2"></i>  Responder
+                                    <i className="bi bi-chat-dots ps-2 me-2"></i>
+                                    Responder
                                 </button>
                             </div>
                         )}

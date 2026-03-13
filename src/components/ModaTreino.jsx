@@ -162,14 +162,14 @@ export default function ModalTreino({
 
     if (diff <= 0 || countPhrases.repeat < 1) {
       return {
-        text: <span className="text-base">Repetir</span>,
+        text: <span className="text-lg">Repetir</span>,
         waiting: false
       };
     }
 
     if (countPhrases.repeat_traine > 0) {
       return {
-        text: <span className="text-base">Repetir</span>,
+        text: <span className="text-lg">Repetir</span>,
         waiting: false
       };
     }
@@ -257,7 +257,7 @@ export default function ModalTreino({
             <Play size={32} className="text-blue-400 me-2" />
 
             <div className="flex flex-col">
-              <span className="text-base">Aprender</span>
+              <span className="text-lg">Aprender</span>
               <span className="text-xs">{countPhrases.learn} palavras</span>
             </div>
 
@@ -298,7 +298,7 @@ export default function ModalTreino({
             <Check size={32} className="text-green-400 me-2" />
 
             <div className="flex flex-col">
-              <span className="text-base leading-tight">
+              <span className="text-lg leading-tight">
                 Revisar palavras
                 <br />
                 aprendidas
@@ -318,7 +318,7 @@ export default function ModalTreino({
 
             <Bot size={32} className="text-blue-600 me-2" />
 
-            <span className="text-sm flex items-center">
+            <span className="text-lg flex items-center">
               Treino diário com IA
               <Crown size={18} className="ms-2 text-yellow-500" />
             </span>

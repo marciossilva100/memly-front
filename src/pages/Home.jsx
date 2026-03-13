@@ -68,10 +68,10 @@ export default function Home() {
 
 
     return (
-        <div className="max-w-7xl mx-auto ">
+        <div className="h-dvh flex flex-col max-w-7xl mx-auto  ">
 
-            <div className="lista-categoria border-t-2 py-4 overflow-auto h-[calc(100vh-110px)]" id="lista-categoria">
-                <div className="min-h-screen items-center justify-center px-4 ">
+            <div className="lista-categoria border-t-2 flex-1 overflow-y-auto py-4" id="lista-categoria">
+                <div className=" items-center justify-center px-4 ">
 
                     {/* Item */}
                     {categorias.map((item) => (
@@ -105,11 +105,11 @@ export default function Home() {
                     {/* Item */}
 
                 </div>
+                <div className="bg-white sticky z-10 bottom-0 text-center w-full justify-items-center justify-center items-center pt-4 pb-16">
 
-                <div className="bg-white fixed bottom-0 text-center w-full justify-items-center justify-center items-center pt-4 ">
-                    <div>
-                        <button className="
+                    <button className="
                         px-6
+                        mb-4
                         py-3
                         shadow-md
                         rounded-full
@@ -119,40 +119,42 @@ export default function Home() {
                        text-lg
                         transition
                         " onClick={() => setOpen(true)}>
-                            Adicionar categoria
-                        </button>
+                        Adicionar categoria
+                    </button>
+<hr />
+                    <div className=''>
+                        <div className='flex  left-0   w-full justify-center py-1'>
+                            {/*  <a href="/leituradigital"> <div className='bg-blue-400 rounded-full p-3 flex justify-center items-center'> */}
+
+                            <a href="/leituradigital">
+                                <div className=' p-3 flex justify-center items-center'>
+                                    {/*  <BookOpen className='text-white' /> */}
+                                    <img src={imgSetting} alt="" width={40} />
+                                </div>
+                            </a>
+                            <a href="/leituradigital">
+                                <div className=' p-3 flex justify-center items-center'>
+                                    <img src={imgBook} alt="" width={40} />
+                                </div>
+                            </a>
+                            <a href="/leituradigital">
+                                <div className=' p-3 flex justify-center items-center'>
+                                    {/*  <BookOpen className='text-white' /> */}
+                                    <img src={imgEstatistica} alt="" width={40} />
+                                </div>
+                            </a>
+                            <a href="/videos">
+                                <div className=' p-3 flex justify-center items-center'>
+                                    {/*  <BookOpen className='text-white' /> */}
+                                    <img src={imgPlay} alt="" width={40} />
+                                </div>
+                            </a>
+                        </div>
                     </div>
 
-                    <div className='flex  left-0 bottom-0 mt-3 border-t-2  w-full justify-center py-1'>
-                        {/*  <a href="/leituradigital"> <div className='bg-blue-400 rounded-full p-3 flex justify-center items-center'> */}
-
-                        <a href="/leituradigital">
-                            <div className=' p-3 flex justify-center items-center'>
-                                {/*  <BookOpen className='text-white' /> */}
-                                <img src={imgSetting} alt="" width={40} />
-                            </div>
-                        </a>
-                        <a href="/leituradigital">
-                            <div className=' p-3 flex justify-center items-center'>
-                                <img src={imgBook} alt="" width={40} />
-                            </div>
-                        </a>
-                        <a href="/leituradigital">
-                            <div className=' p-3 flex justify-center items-center'>
-                                {/*  <BookOpen className='text-white' /> */}
-                                <img src={imgEstatistica} alt="" width={40} />
-                            </div>
-                        </a>
-                        <a href="/videos">
-                            <div className=' p-3 flex justify-center items-center'>
-                                {/*  <BookOpen className='text-white' /> */}
-                                <img src={imgPlay} alt="" width={40} />
-                            </div>
-                        </a>
-                    </div>
                 </div>
-
             </div>
+
             <ModalCategorias
                 setOpen={setOpen}
                 open={open}

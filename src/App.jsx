@@ -229,53 +229,46 @@ function Layout({ titulo, setTitulo }) {
 
 function App() {
 
-  // useEffect(() => {
-  //   // função para atualizar a altura da tela
-  //   const setAppHeight = () => {
-  //     const vh = window.innerHeight;
-  //     document.documentElement.style.setProperty('--app-height', `${vh}px`);
-  //   };
-
-  //   // define no load
-  //   setAppHeight();
-
-  //   // atualiza quando a tela muda (resize ou teclado)
-  //   window.addEventListener('resize', setAppHeight);
-
-  //   // limpa o listener ao desmontar
-  //   return () => window.removeEventListener('resize', setAppHeight);
-  // }, []);
-
   const containerRef = useRef(null);
   const [hasOverflow, setHasOverflow] = useState(false);
 
   // Saber a altura da tela
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
+  // useEffect(() => {
+  //   const checkOverflow = () => {
+  //     const el = containerRef.current;
+  //     if (!el) return;
 
-    const checkOverflow = () => {
-      setHasOverflow(el.scrollHeight > el.clientHeight);
-    };
+  //     const rect = el.getBoundingClientRect();
+  //     const viewportHeight = window.visualViewport?.height || window.innerHeight;
 
-    checkOverflow();
-    window.addEventListener("resize", checkOverflow);
+  //     setHasOverflow(rect.height > viewportHeight);
+  //   };
 
-    return () => window.removeEventListener("resize", checkOverflow);
-  }, []);
+  //   const timeout = setTimeout(checkOverflow, 100);
 
-  useEffect(() => {
-    const observer = new ResizeObserver(() => {
-      const el = containerRef.current;
-      if (el) setHasOverflow(el.scrollHeight > el.clientHeight);
-    });
+  //   window.addEventListener("resize", checkOverflow);
+  //   window.visualViewport?.addEventListener("resize", checkOverflow);
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
+  //   return () => {
+  //     clearTimeout(timeout);
+  //     window.removeEventListener("resize", checkOverflow);
+  //     window.visualViewport?.removeEventListener("resize", checkOverflow);
+  //   };
 
-    return () => observer.disconnect();
-  }, []);
+  // }, [frases, index, diff, isFlipped]);
+
+  // useEffect(() => {
+  //   const observer = new ResizeObserver(() => {
+  //     const el = containerRef.current;
+  //     if (el) setHasOverflow(el.scrollHeight > el.clientHeight);
+  //   });
+
+  //   if (containerRef.current) {
+  //     observer.observe(containerRef.current);
+  //   }
+
+  //   return () => observer.disconnect();
+  // }, []);
 
   const [titulo, setTitulo] = useState('')
 

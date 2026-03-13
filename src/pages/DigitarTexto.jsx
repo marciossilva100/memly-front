@@ -280,8 +280,8 @@ export default function DigitarTexto() {
                     </div>
                 )}
 
-                <div className="w-full  mt-8">
-                    <form onSubmit={handleSubmit}>
+                <div className="w-full  mt-8 ">
+                    <form onSubmit={handleSubmit} id="respostaForm">
                         <div className="flex justify-center mb-8">
                             {!isFlipped && (
                                 <textarea
@@ -294,16 +294,7 @@ export default function DigitarTexto() {
                             )}
                         </div>
 
-                        {!isFlipped && (
-                            <div className="sticky left-0  bottom-6 w-full px-6">
-                                <button
-                                    type="submit"
-                                    className="flex justify-center shadow-md w-full bg-[#4cb8c4] text-white font-medium py-3 rounded-full transition"
-                                >
-                                    <i className="bi bi-chat-dots ps-2 me-2"></i>  Responder
-                                </button>
-                            </div>
-                        )}
+
                     </form>
                 </div>
 
@@ -344,7 +335,16 @@ export default function DigitarTexto() {
                     )
                 )}
             </div>
-
+            {!isFlipped && (
+                <div className="sticky bottom-0 left-0  bottom-6 w-full px-6">
+                    <button
+                        type="submit"
+                        className="flex justify-center shadow-md w-full bg-[#4cb8c4] text-white font-medium py-3 rounded-full transition"
+                    >
+                        <i className="bi bi-chat-dots ps-2 me-2"></i>  Responder
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

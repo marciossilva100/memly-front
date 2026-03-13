@@ -37,6 +37,7 @@ export default function Login({ setTitulo }) {
                 const response = await axios.post(
                     "https://zaldemy.com/controller/auth.php?action=login_google",
                     {
+                        action: "login_google",
                         token: tokenResponse.access_token
                     }
                 );

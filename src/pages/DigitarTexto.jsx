@@ -18,6 +18,7 @@ export default function DigitarTexto() {
     const [listIdCorrectPhrase, setListIdCorrectPhrase] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+    const [idPhrases, setIdPhrases] = useState([])
 
     const textareaRef = useRef(null);
 
@@ -64,6 +65,9 @@ export default function DigitarTexto() {
 
                 setFrases(data || []);
 
+                const ids = data.map(item => item.id);
+                setIdPhrases(ids);
+
             })
             .catch(() => {
                 setFrases([]);
@@ -73,7 +77,6 @@ export default function DigitarTexto() {
             });
 
     }, [id, mode]);
-
 
 
 
@@ -88,8 +91,9 @@ export default function DigitarTexto() {
         }, 200);
     }
 
-    async function trainingUpdate(updatedList, updatedIncorrectList, actionToSend) {
+    async function trainingUpdate(updatedList, actionToSend) {
         try {
+
             const res = await fetch("https://zaldemy.com/controller/treino.php", {
                 method: "POST",
                 headers: {
@@ -98,7 +102,6 @@ export default function DigitarTexto() {
                 body: JSON.stringify({
                     action: actionToSend,
                     updatedList: updatedList,
-                    updatedIncorrectList: updatedIncorrectList,
                     category_id: id
                 })
             });
@@ -155,7 +158,11 @@ export default function DigitarTexto() {
 
         if (index === frases.length - 1) {
 
-            //await trainingUpdate();
+            if(mode == 'traine'){
+                await trainingUpdate(idPhrases, 'trainee_finish');
+                navigate(`/home`)
+                return
+            }
 
             navigate(`/flashcards/${id}/learn`)
         }

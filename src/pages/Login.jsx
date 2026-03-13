@@ -56,9 +56,13 @@ export default function Login({ setTitulo }) {
 
                 localStorage.setItem("token", data.token);
 
-                await checkAuth();
+               console.log("ANTES DO CHECKAUTH");
 
-                navigate("/escolheridioma");
+await checkAuth();
+
+console.log("DEPOIS DO CHECKAUTH");
+
+navigate("/escolheridioma");
 
             } catch (error) {
                 setErro('Erro ao conectar com o servidor');

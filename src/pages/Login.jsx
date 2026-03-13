@@ -34,24 +34,40 @@ export default function Login({ setTitulo }) {
 
             try {
 
-                const response = await axios.post(
-                    "https://zaldemy.com/controller/auth.php?action=login_google",
-                    {
-                        action: "login_google",
+                const res = await fetch('https://zaldemy.com/controller/auth.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'login_google',
                         token: tokenResponse.access_token
-                    }
-                );
+                    })
+                });
 
-                console.log(response.data);
+                const data = await res.json();
+
+                console.log("DATA:", data);
+
+                if (!data.sucesso) {
+                    setErro(data.erro || "Erro ao fazer login com Google");
+                    return;
+                }
+
+                localStorage.setItem("token", data.token);
+
+                await checkAuth();
+
+                navigate("/escolheridioma");
 
             } catch (error) {
-                console.error("Erro no login:", error);
+                setErro('Erro ao conectar com o servidor');
             }
 
         },
 
         onError: () => {
-            console.log("Login Failed");
+            setErro("Erro ao autenticar com Google");
         }
     });
 
@@ -125,43 +141,6 @@ export default function Login({ setTitulo }) {
             setLoading(false)
         }
 
-
-        // setLoading(true)
-        // fetch('http://localhost:8081/controller/auth.php', {
-        //     method: 'POST',
-        //     credentials: "include",
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-
-        //     body: JSON.stringify({
-        //         action: 'login',
-        //         email: form.email,
-        //         password: form.password,
-        //     })
-        // })
-        //     .then(res => res.json())
-        //     .then(data => {
-
-        //         console.log(data);
-
-        //         if (data.erro) {
-        //             setLoading(false)
-        //             setErro(data.erro);
-        //             return
-        //         }
-        //         //   setFinish(true)
-        //         setLoading(false)
-
-        //         navigate(`/escolheridioma`, {
-        //             state: { email: form.email }
-        //         })
-
-        //     })
-        //     .catch(() => {
-        //         setLoading(false)
-        //         setErro('Erro ao conectar com o servidor')
-        //     })
 
     }
 

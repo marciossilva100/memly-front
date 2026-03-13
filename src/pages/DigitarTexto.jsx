@@ -298,50 +298,54 @@ export default function DigitarTexto() {
                     </form>
                 </div>
 
-                {diff && (
-                    !diff.isCorrect ? (
-                        <div className="w-full flex left-0  bottom-6 justify-center gap-3 px-10">
-                            <button
-                                onClick={repeatCard}
-                                className="w-full bg-red-400 text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95"
-                            >
-                                Tentar novamente
-                            </button>
 
-                            {/* <button
+            </div>
+
+            {diff && (
+                !diff.isCorrect ? (
+                    <div className="sticky  left-0  bottom-6 w-full flex justify-center gap-3 px-10">
+                        <button
+                            onClick={repeatCard}
+                            className="w-full bg-red-400 text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95"
+                        >
+                            Tentar novamente
+                        </button>
+
+                        {/* <button
                             onClick={nextCard}
                             className="bg-blue-400 text-white px-5 py-3 rounded-xl shadow-lg transition active:scale-95"
                         >
                             Pular
                         </button> */}
-                        </div>
-                    ) : (
-                        <div className="px-10">
-                            <div className="flex items-center justify-center mt-20">
-                                <div className="rounded-full bg-green-600 p-4">
-                                    <Check className="text-white" />
-                                </div>
+                    </div>
+                ) : (
+                    <div className="px-10 sticky  bottom-6">
+                        <div className="flex items-center justify-center mt-20">
+                            <div className="rounded-full bg-green-600 p-4">
+                                <Check className="text-white" />
                             </div>
+                        </div>
 
-                            <div className="left-0 w-full bottom-0 p-10">
-                                <button
-                                    onClick={nextCard}
-                                    className="shadow-md w-full bg-avocado-500 text-white font-medium py-3 rounded-full transition"
-                                >
-                                    Próximo
-                                </button>
-                            </div>
+                        <div className="left-0 w-full bottom-0 p-10">
+                            <button
+                                onClick={nextCard}
+                                className="shadow-md w-full bg-avocado-500 text-white font-medium py-3 rounded-full transition"
+                            >
+                                Próximo
+                            </button>
                         </div>
-                    )
-                )}
-            </div>
+                    </div>
+                )
+            )}
             {!isFlipped && (
-                <div className="sticky bottom-0 left-0  bottom-6 w-full px-6 pt-4">
+                <div className="sticky bottom-6 w-full px-6 pt-4 pb-[env(safe-area-inset-bottom)] bg-slate-100">
                     <button
                         type="submit"
+                        form="respostaForm"
                         className="flex justify-center shadow-md w-full bg-[#4cb8c4] text-white font-medium py-3 rounded-full transition"
                     >
-                        <i className="bi bi-chat-dots ps-2 me-2"></i>  Responder
+                        <i className="bi bi-chat-dots ps-2 me-2"></i>
+                        Responder
                     </button>
                 </div>
             )}

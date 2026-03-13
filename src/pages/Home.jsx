@@ -78,7 +78,7 @@ export default function Home() {
                         <div key={item.id} onClick={() => validar(item.quantidade, item.id)} className="flex bg-gradient-to-r to-[#4cb8c4] from-[#085078] items-center justify-between py-3 px-4  rounded-xl border shadow-lg mb-4">
                             <div>
 
-                                <p className="text-base text-white mt-1 font-medium">
+                                <p className="text-lg text-white mt-1 font-medium">
                                     {item.categoria}
                                 </p>
                                 <div className="flex items-center gap-3">
@@ -89,7 +89,7 @@ export default function Home() {
                             </div>
 
                             <div className="flex items-center gap-3">
-                                <button className="shadow-md px-4 py-1 text-sm font-medium rounded-full bg-blue-400 text-white hover:bg-slate-600 "
+                                <button className="shadow-md px-4 py-1 text-lg font-medium rounded-full bg-blue-400 text-white hover:bg-slate-600 "
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setCategoriaId(item.id);
@@ -116,7 +116,7 @@ export default function Home() {
                         bg-[#4cb8c4]
                         text-white
                         font-medium
-                       
+                       text-lg
                         transition
                         " onClick={() => setOpen(true)}>
                             Adicionar categoria

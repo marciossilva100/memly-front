@@ -88,7 +88,7 @@ export default function Frases() {
                     className="left-0  cursor-pointer"
                     onClick={() => navigate(-1)}
                 >
-                    <i className="bi bi-arrow-left text-xl"></i>
+                    <i className="bi bi-arrow-left text-2xl"></i>
                 </div>
             </div>
             <div className={`mt-4 `}>
@@ -99,7 +99,7 @@ export default function Frases() {
 
                     <input
                         type="email"
-                        className="w-full px-3 py-2 outline-none text-sm"
+                        className="w-full px-3 py-2 outline-none text-lg"
                         placeholder="Buscar"
                         value={textoBusca}
                         onChange={(e) => {
@@ -118,10 +118,10 @@ export default function Frases() {
             {loading && <div className="h-screen flex items-center justify-center">
                 Carregando...
             </div>}
-            <div className="h-[calc(100vh-160px)] overflow-y-auto">
+            <div className="h-[calc(100vh-160px)] overflow-y-auto scrollbar-hide">
 
                 {!loading && frases.map(item => (
-                    <div key={item.id} className="grid grid-cols-[1fr_1fr_auto] gap-4 items-center  py-3 border-b-2 overflow" >
+                    <div key={item.id} className="text-lg grid grid-cols-[1fr_1fr_auto] gap-4 items-center  py-3 border-b-2 overflow" >
                         <div>{item.texto_nativo}</div>
                         <div>{item.texto_traduzido}</div>
                         <div className="flex justify-center">
@@ -139,7 +139,7 @@ export default function Frases() {
                     rounded-full
                     bg-[#4cb8c4]
                     text-white
-                    font-medium
+                    text-lg
                     hover:bg-blue-600
                     transition
                     " onClick={() => setOpenFrase(true)}>

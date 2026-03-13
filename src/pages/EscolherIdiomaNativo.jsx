@@ -54,9 +54,9 @@ export default function EscolherIdiomaNativo() {
     fetch('https://zaldemy.com/controller/language.php', {
       method: 'POST',
       credentials: "include",
-      headers: {
-        'Content-Type': 'application/json'
-      },
+        headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
 
       body: JSON.stringify({
         action: 'set_native_language',

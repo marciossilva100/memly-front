@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom'
-
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider, useAuth } from './context/AuthContext'
 
 import Login from './pages/Login'
@@ -232,52 +232,16 @@ function App() {
   const containerRef = useRef(null);
   const [hasOverflow, setHasOverflow] = useState(false);
 
-  // Saber a altura da tela
-  // useEffect(() => {
-  //   const checkOverflow = () => {
-  //     const el = containerRef.current;
-  //     if (!el) return;
-
-  //     const rect = el.getBoundingClientRect();
-  //     const viewportHeight = window.visualViewport?.height || window.innerHeight;
-
-  //     setHasOverflow(rect.height > viewportHeight);
-  //   };
-
-  //   const timeout = setTimeout(checkOverflow, 100);
-
-  //   window.addEventListener("resize", checkOverflow);
-  //   window.visualViewport?.addEventListener("resize", checkOverflow);
-
-  //   return () => {
-  //     clearTimeout(timeout);
-  //     window.removeEventListener("resize", checkOverflow);
-  //     window.visualViewport?.removeEventListener("resize", checkOverflow);
-  //   };
-
-  // }, [frases, index, diff, isFlipped]);
-
-  // useEffect(() => {
-  //   const observer = new ResizeObserver(() => {
-  //     const el = containerRef.current;
-  //     if (el) setHasOverflow(el.scrollHeight > el.clientHeight);
-  //   });
-
-  //   if (containerRef.current) {
-  //     observer.observe(containerRef.current);
-  //   }
-
-  //   return () => observer.disconnect();
-  // }, []);
-
   const [titulo, setTitulo] = useState('')
 
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Layout titulo={titulo} setTitulo={setTitulo} />
-      </BrowserRouter>
-    </AuthProvider>
+     <GoogleOAuthProvider clientId="1055075063152-tkobce7c2j9eq1t4doi0419votjlemis.apps.googleusercontent.com">
+      <AuthProvider>
+        <BrowserRouter>
+          <Layout titulo={titulo} setTitulo={setTitulo} />
+        </BrowserRouter>
+      </AuthProvider>
+    </GoogleOAuthProvider>
   )
 }
 

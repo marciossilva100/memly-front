@@ -8,7 +8,9 @@ import imgCoruja from '../assets/img/coruja.png'
 import imgMemly from "../assets/img/mascote-memly.png"
 import imgZaldemy from "../assets/img/zaldemy.png"
 import { useAuth } from "../context/AuthContext";
-
+import { GoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
+import axios from "axios";
 
 export default function Login({ setTitulo }) {
     const navigate = useNavigate();
@@ -26,6 +28,31 @@ export default function Login({ setTitulo }) {
     useEffect(() => {
         setTitulo('Login')
     }, [])
+
+    const login = useGoogleLogin({
+        onSuccess: async (tokenResponse) => {
+
+            try {
+
+                const response = await axios.post(
+                    "https://zaldemy.com/controller/auth.php?action=login_google",
+                    {
+                        token: tokenResponse.access_token
+                    }
+                );
+
+                console.log(response.data);
+
+            } catch (error) {
+                console.error("Erro no login:", error);
+            }
+
+        },
+
+        onError: () => {
+            console.log("Login Failed");
+        }
+    });
 
     function handleChange(e) {
         setForm({
@@ -62,7 +89,7 @@ export default function Login({ setTitulo }) {
         try {
             const res = await fetch('https://zaldemy.com/controller/auth.php', {
                 method: 'POST',
-               // credentials: "include",
+                // credentials: "include",
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -83,13 +110,13 @@ export default function Login({ setTitulo }) {
             }
 
             localStorage.setItem("token", data.token);
-            
+
             await checkAuth()
 
             navigate("/escolheridioma")
 
 
-          
+
 
         } catch (error) {
             setErro('Erro ao conectar com o servidor')
@@ -140,12 +167,12 @@ export default function Login({ setTitulo }) {
     //if (finish) return;
 
     return (
-    <div className="max-w-6xl mx-auto px-8 section-login py-4 h-dvh">
+        <div className="max-w-6xl mx-auto px-8 section-login py-4 h-dvh">
             <div className="flex-1 justify-center overflow-y-auto scrollbar-hide">
                 <div className="w-full max-w-md text-center mt-4">
 
                     <div className="flex justify-center mb-2">
-                        <img width={200} src={imgZaldemy} alt="Login"/>
+                        <img width={200} src={imgZaldemy} alt="Login" />
                     </div>
 
                     <h2 className="text-slate-500 text-2xl font-semibold">
@@ -227,11 +254,17 @@ export default function Login({ setTitulo }) {
                     </div>
 
                     {/* Google */}
-                    <button className="text-sm w-full border border-gray-300 py-2 rounded-full flex items-center justify-center gap-3">
+                    {/* <button className="text-sm w-full border border-gray-300 py-2 rounded-full flex items-center justify-center gap-3">
+                        <img src={imgGoogle} alt="Google icone" width={30} />
+                        <span className="ff-inter">Entrar com Google</span>
+                    </button> */}
+                    <button
+                        onClick={() => login()}
+                        className="text-sm w-full border border-gray-300 py-2 rounded-full flex items-center justify-center gap-3"
+                    >
                         <img src={imgGoogle} alt="Google icone" width={30} />
                         <span className="ff-inter">Entrar com Google</span>
                     </button>
-
                     <br />
 
                     {/* Facebook */}

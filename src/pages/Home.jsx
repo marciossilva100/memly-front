@@ -105,7 +105,9 @@ export default function Home() {
                     {/* Item */}
 
                 </div>
-                <div className="bg-white sticky z-10 bottom-0 text-center w-full justify-items-center justify-center items-center pt-4 pb-16">
+                
+            </div>
+<div className="bg-white sticky z-10 bottom-0 text-center w-full justify-items-center justify-center items-center pt-4 pb-16">
 
                     <button className="
                         px-6
@@ -153,8 +155,6 @@ export default function Home() {
                     </div>
 
                 </div>
-            </div>
-
             <ModalCategorias
                 setOpen={setOpen}
                 open={open}

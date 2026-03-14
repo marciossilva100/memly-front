@@ -13,6 +13,7 @@ export default defineConfig({
       },
 
       manifest: {
+        id: "/",
         name: 'Zaldemy',
         short_name: 'App',
         start_url: '.',

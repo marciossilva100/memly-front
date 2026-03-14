@@ -24,7 +24,7 @@ export default defineConfig({
       manifest: {
         name: 'Zaldemy',
         short_name: 'App',
-        start_url: 'https://memly-jijk.vercel.app/',
+        start_url: '.',
         display: 'standalone',
         background_color: '#ffffff',
         theme_color: '#000000',

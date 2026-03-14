@@ -1,19 +1,5 @@
-// import { defineConfig } from 'vite'
-// import react from '@vitejs/plugin-react'
-
-// export default defineConfig({
-//   plugins: [react()],
-//   server: {
-//     host: '0.0.0.0',
-//     port: 5173,
-//     strictPort: true,
-//     allowedHosts: true
-//   }
-// })
-
-
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
@@ -21,6 +7,11 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+
+      workbox: {
+        maximumFileSizeToCacheInBytes: 5000000
+      },
+
       manifest: {
         name: 'Zaldemy',
         short_name: 'App',
@@ -43,14 +34,19 @@ export default defineConfig({
       }
     })
   ],
+
   server: {
-    port: 5173, // porta do React
+    host: '0.0.0.0',
+    port: 5173,
+    strictPort: true,
+    allowedHosts: true,
+
     proxy: {
       '/api': {
         target: 'https://zaldemy.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
+        rewrite: (path) => path.replace(/^\/api/, '')
       }
     }
   }
-});
+})

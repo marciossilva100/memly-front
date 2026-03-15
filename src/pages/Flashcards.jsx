@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { gerarAudio } from "../services/elevenlabs";
+import { useAuth } from "../context/AuthContext";
 
 export default function Flashcards() {
 
@@ -16,6 +17,7 @@ export default function Flashcards() {
 
   const [listIdCorrectPhrase, setListIdCorrectPhrase] = useState([]);
   const [listIdIncorrectPhrase, setListIdIncorrectPhrase] = useState([]);
+  const { user, setUser } = useAuth();
 
   const FLIP_TIME = 5000;
   const FLIP_DURATION = 400;
@@ -24,15 +26,15 @@ export default function Flashcards() {
   const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
   // preload vozes
-  useEffect(() => {
-    const loadVoices = () => window.speechSynthesis.getVoices();
-    loadVoices();
-    window.speechSynthesis.onvoiceschanged = loadVoices;
+  // useEffect(() => {
+  //   const loadVoices = () => window.speechSynthesis.getVoices();
+  //   loadVoices();
+  //   window.speechSynthesis.onvoiceschanged = loadVoices;
 
-    const silentUtterance = new SpeechSynthesisUtterance("");
-    window.speechSynthesis.speak(silentUtterance);
-    window.speechSynthesis.cancel();
-  }, []);
+  //   const silentUtterance = new SpeechSynthesisUtterance("");
+  //   window.speechSynthesis.speak(silentUtterance);
+  //   window.speechSynthesis.cancel();
+  // }, []);
 
   // carregar frases
   useEffect(() => {
@@ -44,8 +46,8 @@ export default function Flashcards() {
     fetch(`https://zaldemy.com/${endpoint}`, {
       method: "POST",
       headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            },
+        "Authorization": "Bearer " + localStorage.getItem("token")
+      },
       body: JSON.stringify({
         action: mode,
         category_id: id
@@ -117,7 +119,7 @@ export default function Flashcards() {
     setTimeout(() => {
 
       setShowBackContent(true);
-      playEleven();
+      playAudio(frases[index].texto_traduzido);
 
     }, FLIP_DURATION / 2);
 
@@ -127,22 +129,15 @@ export default function Flashcards() {
 
     if (!text) return;
 
-    const utterance = new SpeechSynthesisUtterance(text);
+    const url =
+      "/api/controller/treino.php?action=voice" +
+      "&text=" + encodeURIComponent(text) +
+      "&lang=" + encodeURIComponent(user.learning_language);
 
-    const voices = window.speechSynthesis.getVoices();
+    const audio = new Audio(url);
+    audio.playbackRate = 0.9;
 
-    const voice =
-      voices.find(v => v.lang === "en-US") ||
-      voices.find(v => v.lang.startsWith("en"));
-
-    if (voice) utterance.voice = voice;
-
-    utterance.lang = "en-US";
-    utterance.rate = 0.9;
-    utterance.pitch = 1;
-
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utterance);
+    audio.play().catch(() => { });
 
   };
 
@@ -152,9 +147,9 @@ export default function Flashcards() {
 
       const res = await fetch("https://zaldemy.com/controller/treino.php", {
         method: "POST",
-       headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            },
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem("token")
+        },
         body: JSON.stringify({
           action: actionToSend,
           updatedList: updatedList,
@@ -275,9 +270,9 @@ export default function Flashcards() {
 
   }
 
-const progressBar = frases.length
-  ? ((index + (isFlipped ? 1 : 0)) / frases.length) * 100
-  : 0;
+  const progressBar = frases.length
+    ? ((index + (isFlipped ? 1 : 0)) / frases.length) * 100
+    : 0;
 
   return (
 

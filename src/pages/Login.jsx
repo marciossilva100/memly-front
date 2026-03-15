@@ -17,6 +17,7 @@ export default function Login({ setTitulo }) {
     const [loading, setLoading] = useState(false);
     const [finish, setFinish] = useState(false)
     const { checkAuth } = useAuth();
+    const [installPrompt, setInstallPrompt] = useState(null);
 
 
     const [form, setForm] = useState({
@@ -28,6 +29,38 @@ export default function Login({ setTitulo }) {
     useEffect(() => {
         setTitulo('Login')
     }, [])
+
+    useEffect(() => {
+        setTitulo('Login')
+
+        const handler = (e) => {
+            e.preventDefault()
+            setInstallPrompt(e)
+        }
+
+        window.addEventListener("beforeinstallprompt", handler)
+
+        return () => {
+            window.removeEventListener("beforeinstallprompt", handler)
+        }
+
+    }, [])
+
+
+    async function instalarApp() {
+        if (!installPrompt) return
+
+        installPrompt.prompt()
+
+        const choice = await installPrompt.userChoice
+
+        if (choice.outcome === "accepted") {
+            console.log("Usuário instalou o app")
+        }
+
+        setInstallPrompt(null)
+    }
+
 
     const login = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
@@ -56,13 +89,13 @@ export default function Login({ setTitulo }) {
 
                 localStorage.setItem("token", data.token);
 
-               console.log("ANTES DO CHECKAUTH");
+                console.log("ANTES DO CHECKAUTH");
 
-await checkAuth();
+                await checkAuth();
 
-console.log("DEPOIS DO CHECKAUTH");
+                console.log("DEPOIS DO CHECKAUTH");
 
-navigate("/escolheridioma");
+                navigate("/escolheridioma");
 
             } catch (error) {
                 setErro('Erro ao conectar com o servidor');
@@ -150,10 +183,12 @@ navigate("/escolheridioma");
 
     //if (finish) return;
 
+
+
     return (
-        <div className="max-w-6xl mx-auto px-8 section-login py-4 h-dvh">
-            <div className="flex-1 justify-center overflow-y-auto scrollbar-hide">
-                <div className="w-full max-w-md text-center mt-4">
+        <div className="max-w-6xl mx-auto px-8 section-login py-4 h-dvh flex items-center">
+            <div className="flex-1 justify-center overflow-y-auto scrollbar-hide ">
+                <div className="w-full max-w-md text-center">
 
                     <div className="flex justify-center mb-2">
                         <img width={200} src={imgZaldemy} alt="Login" />
@@ -268,6 +303,16 @@ navigate("/escolheridioma");
                             Cadastrar
                         </Link>
                     </p>
+
+                    {installPrompt && (
+                        <button
+                            onClick={instalarApp}
+                            className="mb-4 bg-green-600 text-white px-4 py-2 rounded-full text-sm"
+                        >
+                            📲 Instalar aplicativo
+                        </button>
+                    )}
+
                 </div>
             </div>
         </div>

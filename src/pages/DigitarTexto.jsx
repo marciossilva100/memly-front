@@ -230,13 +230,13 @@ export default function DigitarTexto() {
     }
 
     if (!frases.length) {
-            navigate(`/home`);
-            return
+        navigate(`/home`);
+        return
 
         return (
             <div className="h-screen flex items-center justify-center">
                 Nenhuma frase encontrada
-                {}
+                { }
             </div>
         );
     }
@@ -314,31 +314,34 @@ export default function DigitarTexto() {
                     </div>
                 )}
 
-                <div className="perspective flashcard justify-center flex">
+                <div className="h-[40%] flex">
+                    <div className="perspective flashcard justify-center flex">
 
-                    <div
-                        className={`card card-digitar-texto ${isFlipped ? "flip" : ""}`}
-                    >
+                        <div
+                            className={`card card-digitar-texto ${isFlipped ? "flip" : ""}`}
+                        >
 
-                        <div className="rounded-lg card-front bg-default-gradient shadow-[0_10px_40px_rgba(0,0,0,0.08)] p-4 text-center">
+                            <div className="rounded-lg card-front bg-default-gradient shadow-[0_10px_40px_rgba(0,0,0,0.08)] p-4 text-center">
 
-                            <span className="text-md">
-                                {frases[index].texto_nativo}
-                            </span>
+                                <span className="text-md">
+                                    {frases[index].texto_nativo}
+                                </span>
 
-                        </div>
+                            </div>
 
-                        <div className="rounded-lg card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] p-4 text-center">
+                            <div className="rounded-lg card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] p-4 text-center">
 
-                            <span className="text-md text-avocado-700">
-                                {showBackContent && frases[index].texto_traduzido}
-                            </span>
+                                <span className="text-md text-avocado-700">
+                                    {showBackContent && frases[index].texto_traduzido}
+                                </span>
+
+                            </div>
 
                         </div>
 
                     </div>
-
                 </div>
+
 
                 {diff && !diff.isCorrect && (
 
@@ -377,9 +380,9 @@ export default function DigitarTexto() {
 
                 <div className="w-full mt-8">
 
-                    <form onSubmit={handleSubmit} id="respostaForm">
+                    <form onSubmit={handleSubmit} id="respostaForm" className="h-40">
 
-                        <div className="flex justify-center mb-8">
+                        <div className="h-[100%] justify-center mb-8">
 
                             {!isFlipped && (
 
@@ -388,7 +391,7 @@ export default function DigitarTexto() {
                                     ref={textareaRef}
                                     value={resposta}
                                     onChange={(e) => setResposta(e.target.value)}
-                                    className="outline-none w-full h-32 pt-6 text-center rounded-lg border border-gray-300 resize-none text-lg"
+                                    className="outline-none w-full h-[100%] pt-6 text-center rounded-lg border border-gray-300 resize-none text-lg"
                                 />
 
                             )}

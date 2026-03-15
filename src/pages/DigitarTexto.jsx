@@ -287,7 +287,7 @@ export default function DigitarTexto() {
 
         <div className="h-dvh flex flex-col bg-slate-100 digitar-texto px-6 pb-5">
 
-            <div className="flex-1 overflow-y-auto scrollbar-hide pt-2">
+            <div className="flex-1 overflow-y-auto scrollbar-hide pt-3">
 
                 <div className="relative text-left mb-4">
 
@@ -295,7 +295,7 @@ export default function DigitarTexto() {
                         className="cursor-pointer"
                         onClick={() => navigate(-1)}
                     >
-                        <i className="bi bi-arrow-left text-xl"></i>
+                        <i className="bi bi-arrow-left text-2xl"></i>
                     </div>
 
                 </div>
@@ -450,7 +450,7 @@ export default function DigitarTexto() {
 
             {!isFlipped && (
 
-                <div className="sticky bottom-6 w-full px-6 bg-slate-100">
+                <div className="sticky bottom-6 w-full bg-slate-100">
 
                     <button
                         type="submit"

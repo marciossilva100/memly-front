@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider, useAuth } from './context/AuthContext'
+import { registerSW } from "virtual:pwa-register";
+
 
 import Login from './pages/Login'
 import Cadastro from './pages/Cadastro'
@@ -236,8 +238,19 @@ function App() {
 
   const [titulo, setTitulo] = useState('')
 
+
+  registerSW({
+    onNeedRefresh() {
+      console.log("Nova versão disponível");
+      window.location.reload();
+    },
+    onOfflineReady() {
+      console.log("App pronto para offline");
+    }
+  });
+
   return (
-     <GoogleOAuthProvider clientId="1055075063152-tkobce7c2j9eq1t4doi0419votjlemis.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId="1055075063152-tkobce7c2j9eq1t4doi0419votjlemis.apps.googleusercontent.com">
       <AuthProvider>
         <BrowserRouter>
           <Layout titulo={titulo} setTitulo={setTitulo} />

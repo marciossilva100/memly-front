@@ -10,7 +10,6 @@ export default defineConfig({
       registerType: "autoUpdate",
 
       workbox: {
-
         maximumFileSizeToCacheInBytes: 5000000,
 
         globPatterns: [
@@ -22,12 +21,9 @@ export default defineConfig({
           // CACHE DE IMAGENS
           {
             urlPattern: ({ request }) => request.destination === "image",
-
             handler: "CacheFirst",
-
             options: {
               cacheName: "images-cache",
-
               expiration: {
                 maxEntries: 100,
                 maxAgeSeconds: 60 * 60 * 24 * 30
@@ -38,7 +34,7 @@ export default defineConfig({
           // CACHE DO ÁUDIO TTS
           {
             urlPattern: ({ url }) =>
-              url.pathname.includes("/controller/treino.php") &&
+              url.pathname.includes("/api/controller/treino.php") &&
               url.searchParams.get("action") === "voice",
 
             handler: "CacheFirst",
@@ -64,11 +60,8 @@ export default defineConfig({
         id: "/",
         name: "Zaldemy",
         short_name: "App",
-
         start_url: "/",
-
         display: "standalone",
-
         background_color: "#ffffff",
         theme_color: "#000000",
 

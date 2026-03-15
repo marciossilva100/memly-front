@@ -162,7 +162,7 @@ export default function JogoFrases() {
     }
 
     const url =
-      "https://zaldemy.com/controller/treino.php?action=voice" +
+      "/api/controller/treino.php?action=voice" +
       "&text=" + encodeURIComponent(texto) +
       "&lang=" + encodeURIComponent(user.learning_language);
 

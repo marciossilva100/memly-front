@@ -9,11 +9,29 @@ export default defineConfig({
       registerType: 'autoUpdate',
 
       workbox: {
-        maximumFileSizeToCacheInBytes: 5000000
+        maximumFileSizeToCacheInBytes: 5000000,
+
+        globPatterns: [
+          '**/*.{js,css,html,ico,png,svg,jpg,jpeg,webp}'
+        ],
+
+        runtimeCaching: [
+          {
+            urlPattern: ({ request }) => request.destination === 'image',
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'images-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24 * 30
+              }
+            }
+          }
+        ]
       },
 
       manifest: {
-        id: "/",
+        id: '/',
         name: 'Zaldemy',
         short_name: 'App',
         start_url: '.',

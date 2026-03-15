@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, Smartphone, Download, Share2, Safari } from "lucide-react";
+import { Mail, Smartphone, Download, Share2,Globe } from "lucide-react";
 import imgLogin from '../assets/img/img-login.png'
 import imgGoogle from '../assets/img/google.png'
 import imgFacebook from '../assets/img/logo-face.webp'
@@ -253,7 +253,7 @@ export default function Login({ setTitulo }) {
 
                                 <div className="mt-6 p-3 bg-white/50 rounded-lg">
                                     <p className="text-xs text-gray-500">
-                                        <Safari className="w-3 h-3 inline mr-1" />
+                                        <Globe className="w-3 h-3 inline mr-1" />
                                         Após instalar, o Zaldemy funcionará como um app nativo!
                                     </p>
                                 </div>

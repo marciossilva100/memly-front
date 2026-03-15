@@ -21,9 +21,12 @@ export default defineConfig({
           // CACHE DE IMAGENS
           {
             urlPattern: ({ request }) => request.destination === "image",
+
             handler: "CacheFirst",
+
             options: {
               cacheName: "images-cache",
+
               expiration: {
                 maxEntries: 100,
                 maxAgeSeconds: 60 * 60 * 24 * 30
@@ -49,6 +52,27 @@ export default defineConfig({
 
               cacheableResponse: {
                 statuses: [200]
+              }
+            }
+          },
+
+          // CACHE DA API DE LIVROS
+          {
+            urlPattern: ({ url }) =>
+              url.hostname === "openlibrary.org",
+
+            handler: "StaleWhileRevalidate",
+
+            options: {
+              cacheName: "books-api-cache",
+
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 24
+              },
+
+              cacheableResponse: {
+                statuses: [0, 200]
               }
             }
           }

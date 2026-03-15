@@ -70,7 +70,7 @@ export default function Home() {
     return (
         <div className="h-dvh flex flex-col max-w-7xl mx-auto  ">
 
-            <div className="lista-categoria border-t-2 flex-1 overflow-y-auto py-4" id="lista-categoria">
+            <div className="lista-categoria border-t-2 flex-1 overflow-y-auto py-4 scrollbar-hide" id="lista-categoria">
                 <div className=" items-center justify-center px-4 ">
 
                     {/* Item */}

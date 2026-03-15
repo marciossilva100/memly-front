@@ -68,7 +68,7 @@ export default function LeituraDigital() {
                 )}
 
                 {/* Lista com altura controlada + scroll */}
-                <div className="h-[calc(100vh-120px)] overflow-y-auto">
+                <div className="h-[calc(100vh-120px)] overflow-y-auto scrollbar-hide">
                     <div className="flex flex-wrap -mx-3">
                         {books.map((book) => {
                             const cover = book.cover_i

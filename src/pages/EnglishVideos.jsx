@@ -51,7 +51,7 @@ export default function EnglishVideos({ query = "english conversation", max = 6 
                     <i className="bi bi-arrow-left text-xl"></i>
                 </div>
             </div>
-            <div className="h-[calc(100vh-50px)] overflow-y-auto">
+            <div className="h-[calc(100vh-50px)] overflow-y-auto scrollbar-hide">
                 {/* VIDEO PLAYER */}
                 {selectedVideo && (
                     <div className="mb-6">

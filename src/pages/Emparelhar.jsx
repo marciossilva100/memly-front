@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function JogoFrases() {
   const { id, mode } = useParams();
@@ -27,6 +28,7 @@ export default function JogoFrases() {
   const [erros, setErros] = useState(0);
 
   const [finalizado, setFinalizado] = useState(false);
+  const { user, setUser } = useAuth();
 
   const navigate = useNavigate();
 
@@ -59,8 +61,8 @@ export default function JogoFrases() {
       const res = await fetch("https://zaldemy.com/controller/treino.php", {
         method: "POST",
         headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            },
+          "Authorization": "Bearer " + localStorage.getItem("token")
+        },
         body: JSON.stringify({
           action: actionToSend,
           updatedList: updatedList,
@@ -89,8 +91,8 @@ export default function JogoFrases() {
     fetch(`https://zaldemy.com/${endpoint}`, {
       method: "POST",
       headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            },
+        "Authorization": "Bearer " + localStorage.getItem("token")
+      },
       body: JSON.stringify({
         action: mode,
         category_id: id,
@@ -153,20 +155,30 @@ export default function JogoFrases() {
   }
 
   function falarTexto(texto, callback) {
-    if (!("speechSynthesis" in window)) {
-      callback();
+
+    if (!texto) {
+      if (callback) callback();
       return;
     }
 
-    const utterance = new SpeechSynthesisUtterance(texto);
-    utterance.lang = "en-US";
-    utterance.rate = 1;
+    const url =
+      "https://zaldemy.com/controller/treino.php?action=voice" +
+      "&text=" + encodeURIComponent(texto) +
+      "&lang=" + encodeURIComponent(user.learning_language);
 
-    utterance.onend = callback;
-    utterance.onerror = callback;
+    const audio = new Audio(url);
 
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utterance);
+    audio.onended = () => {
+      if (callback) callback();
+    };
+
+    audio.onerror = () => {
+      if (callback) callback();
+    };
+
+    audio.play().catch(() => {
+      if (callback) callback();
+    });
   }
 
   useEffect(() => {
@@ -239,7 +251,7 @@ export default function JogoFrases() {
 
   if (finalizado) {
     return (
-      <div className="h-screen flex items-center justify-center bg-gradient-to-r from-[#4cb8c4] to-[#085078] px-10">
+      <div className="h-dvh flex items-center justify-center bg-gradient-to-r from-[#4cb8c4] to-[#085078] px-10">
         <div className="bg-white p-10 rounded-2xl shadow-2xl text-center max-w-md">
 
           <p className="text-xl mb-4">{mensagemFinal()}</p>
@@ -272,15 +284,15 @@ export default function JogoFrases() {
   }
 
   return (
-    <div className="p-6 h-screen grid grid-rows-[auto,1fr] overflow-hidden bg-gradient-to-r from-[#4cb8c4] to-[#085078]">
+    <div className="px-6 pt-4 h-screen grid grid-rows-[auto,1fr] overflow-hidden bg-gradient-to-r from-[#4cb8c4] to-[#085078]">
 
       {/* HEADER */}
-      <div className="relative text-center mb-6">
+      <div className="relative  mb-4 text-left">
         <div
-          className="absolute left-0 top-1/2 -translate-y-1/2 cursor-pointer"
+          className=" cursor-pointer"
           onClick={() => navigate(-1)}
         >
-          <i className="bi bi-arrow-left text-xl"></i>
+          <i className="bi bi-arrow-left text-2xl"></i>
         </div>
       </div>
 

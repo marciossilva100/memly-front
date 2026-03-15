@@ -16,6 +16,8 @@ export default defineConfig({
         ],
 
         runtimeCaching: [
+
+          // cache de imagens
           {
             urlPattern: ({ request }) => request.destination === 'image',
             handler: 'CacheFirst',
@@ -26,7 +28,31 @@ export default defineConfig({
                 maxAgeSeconds: 60 * 60 * 24 * 30
               }
             }
+          },
+
+          // cache do áudio TTS vindo da sua API
+          {
+            urlPattern: ({ url }) =>
+              url.origin === 'https://zaldemy.com' &&
+              url.pathname.includes('/controller/treino.php') &&
+              url.search.includes('action=voice'),
+
+            handler: 'CacheFirst',
+
+            options: {
+              cacheName: 'tts-cache',
+
+              expiration: {
+                maxEntries: 200,
+                maxAgeSeconds: 60 * 60 * 24 * 365
+              },
+
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
           }
+
         ]
       },
 
@@ -38,6 +64,7 @@ export default defineConfig({
         display: 'standalone',
         background_color: '#ffffff',
         theme_color: '#000000',
+
         icons: [
           {
             src: '/icon-192.png',

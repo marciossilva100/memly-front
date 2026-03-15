@@ -193,7 +193,7 @@ export default function Login({ setTitulo }) {
                         
                         {/* Logo */}
                         <div className="flex justify-center mb-6">
-                            <img width={200} src={imgZaldemy} alt="Zaldemy" />
+                            <img width={250} src={imgZaldemy} alt="Zaldemy" />
                         </div>
 
                         {/* Mascote */}

@@ -281,20 +281,20 @@ const progressBar = frases.length
 
   return (
 
-    <div className="p-6 bg-slate-50">
+    <div className="px-6 bg-slate-50 h-dvh pt-4">
 
-      <div className="relative text-center mb-6">
+      <div className="relative text-center mb-4">
 
         <div
-          className="absolute left-0 top-1/2 -translate-y-1/2 cursor-pointer"
+          className="text-left cursor-pointer"
           onClick={() => navigate(-1)}
         >
-          <i className="bi bi-arrow-left text-xl"></i>
+          <i className="bi bi-arrow-left text-2xl"></i>
         </div>
 
       </div>
 
-      <div className="top-0 left-0 w-full h-2 bg-slate-200">
+      <div className="top-0 left-0 w-full h-2 bg-slate-200 pt-2">
 
         <div
           className="h-full bg-slate-400 transition-all duration-300"
@@ -303,7 +303,7 @@ const progressBar = frases.length
 
       </div>
 
-      <div className="h-screen flex justify-center pt-8">
+      <div className="h-screen flex justify-center pt-8 h-[50%]">
 
         <div className="perspective flashcard justify-center flex">
 

@@ -298,7 +298,7 @@ export default function Flashcards() {
 
       </div>
 
-      <div className="h-screen flex justify-center pt-8 h-[50%]">
+      <div className=" flex justify-center pt-8 h-[50%]">
 
         <div className="perspective flashcard justify-center flex">
 

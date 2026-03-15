@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import imgCoruja from "../assets/img/coruja.png"
 import imgGlobe from "../assets/img/globe.png"
 import imgMemly from "../assets/img/mascote-memly.png"
@@ -18,6 +18,8 @@ import {
     Search
 } from "lucide-react";
 
+
+
 function BotaoLogout() {
     const { logout } = useAuth();
     const navigate = useNavigate();
@@ -31,12 +33,36 @@ function BotaoLogout() {
 }
 
 export default function Header({ titulo }) {
+
     const navigate = useNavigate()
     const { pathname } = useLocation();
     const rotaBase = pathname.split('/')[1] || 'home';
     const [open, setOpen] = useState(false)
     const [idioma, setIdioma] = useState("")
     const [textoBusca, setTextoBusca] = useState("")
+    const [languageList, setLanguageList] = useState([])
+    const { user, setUser } = useAuth();
+
+    useEffect(() => {
+        fetch('https://zaldemy.com/controller/language.php',
+            {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+
+                body: JSON.stringify({
+                    action: 'list_languages',
+                })
+            }
+        ).then(res => res.json())
+            .then(data => {
+                setLanguageList(data)
+                // console.log(data)
+            }).catch(() => {
+                setErro('Erro ao conectar com o servidor');
+            });
+    }, [])
 
     return (
         <div className={`w-full section-header ${rotaBase === '/home' ? 'shadow-md pb-1' : ''}`}>
@@ -89,9 +115,10 @@ export default function Header({ titulo }) {
                                     outline-none
                                 "
                                     >
-                                        {idiomas.map((item) => (
-                                            <option key={item.value} value={item.value}>
-                                                {item.label}
+                                        <option value="">Selecione um idioma</option>
+                                        {languageList.map((item) => (
+                                            <option key={item.id} value={item.id}>
+                                                {item.idioma}
                                             </option>
                                         ))}
                                     </select>

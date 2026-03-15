@@ -2,10 +2,12 @@ import { Dialog } from "@headlessui/react";
 import { Play, Repeat, Check, Crown, Bot } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function ModalTreino({
   openTreino,
   onClose,
+  onOpenPremium,
   onOpenAdvinhar,
   onOpenIA,
   categoriaId
@@ -14,6 +16,7 @@ export default function ModalTreino({
   const navigate = useNavigate();
 
   const [mensagem, setMensagem] = useState(<span className="text-base">Repetir</span>);
+  const { user, setUser } = useAuth();
   const [waiting, setWaiting] = useState(false);
 
   const [countPhrases, setCountPhrases] = useState({
@@ -227,6 +230,16 @@ export default function ModalTreino({
 
   }
 
+  function verifyPlan(e){
+    if(user.plano > 0){
+      onOpenIA()
+      return
+    }
+    onOpenPremium()
+     // navigate('/premiumplan');
+
+  }
+
 
 
   return (
@@ -313,7 +326,9 @@ export default function ModalTreino({
 
           <div
             className="flex gap-2 items-center cursor-pointer"
-            onClick={onOpenIA}
+            onClick={(e)=>{
+              verifyPlan();
+            }}
           >
 
             <Bot size={32} className="text-blue-600 me-2" />

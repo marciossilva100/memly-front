@@ -35,7 +35,7 @@ export default function BookDetails() {
       : book.description?.value;
 
   return (
-    <div className=" bg-gray-900 text-white px-6  overflow-y-auto ">
+    <div className=" bg-gray-900 text-white px-6  overflow-y-auto scrollbar-hide">
       <div className="relative text-left mb-3 w-full mt-3">
         <div
           className=" cursor-pointer"
@@ -44,7 +44,7 @@ export default function BookDetails() {
           <i className="bi bi-arrow-left text-xl"></i>
         </div>
       </div>
-      <div className="max-w-3xl mx-auto h-[calc(100vh-50px)] overflow-y-auto">
+      <div className="max-w-3xl mx-auto h-[calc(100vh-50px)] overflow-y-auto scrollbar-hide">
 
         <h1 className="text-xl font-bold mb-4">
           {book.title}

@@ -25,6 +25,7 @@ import EnglishVideos from './pages/EnglishVideos'
 
 import imgMemly from "./assets/img/mascote-memly.png"
 import imgChapeuFormatura from "./assets/img/chapeu_formatura.png"
+import PremiumPlan from './components/PremiumModal';
 
 
 /* function setRealViewportHeight() {
@@ -218,6 +219,7 @@ function Layout({ titulo, setTitulo }) {
         />
 
         <Route path="/verificaremail" element={<VerificarEmail />} />
+        <Route path="/premiumplan" element={<PremiumPlan />} />
         <Route path="/emailverificado" element={<EmailVerificado />} />
         <Route path="/videos" element={<EnglishVideos query="english listening practice" />} />
       </Routes>

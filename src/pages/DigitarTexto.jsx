@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { makePerfectDiff } from "../utils/makePerfectDiff";
 import '../digitartexto.css'
 import { Check } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 export default function DigitarTexto() {
 
@@ -24,6 +25,7 @@ export default function DigitarTexto() {
 
     const navigate = useNavigate();
     const textareaRef = useRef(null);
+  const { user, setUser } = useAuth();
 
     useEffect(() => {
 
@@ -136,26 +138,19 @@ export default function DigitarTexto() {
 
     const playAudio = (text) => {
 
-        if (!text) return;
+    if (!text) return;
 
-        const utterance = new SpeechSynthesisUtterance(text);
+    const url =
+      "/api/controller/treino.php?action=voice" +
+      "&text=" + encodeURIComponent(text) +
+      "&lang=" + encodeURIComponent(user.learning_language);
 
-        const voices = window.speechSynthesis.getVoices();
+    const audio = new Audio(url);
+    audio.playbackRate = 0.9;
 
-        const voice =
-            voices.find(v => v.lang === "en-US") ||
-            voices.find(v => v.lang.startsWith("en"));
+    audio.play().catch(() => { });
 
-        if (voice) utterance.voice = voice;
-
-        utterance.lang = "en-US";
-        utterance.rate = 0.9;
-        utterance.pitch = 1;
-
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(utterance);
-
-    };
+  };
 
     const nextCard = async () => {
 

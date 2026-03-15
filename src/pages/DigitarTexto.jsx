@@ -25,7 +25,7 @@ export default function DigitarTexto() {
 
     const navigate = useNavigate();
     const textareaRef = useRef(null);
-  const { user, setUser } = useAuth();
+    const { user, setUser } = useAuth();
 
     useEffect(() => {
 
@@ -138,19 +138,19 @@ export default function DigitarTexto() {
 
     const playAudio = (text) => {
 
-    if (!text) return;
+        if (!text) return;
 
-    const url =
-      "/api/controller/treino.php?action=voice" +
-      "&text=" + encodeURIComponent(text) +
-      "&lang=" + encodeURIComponent(user.learning_language);
+        const url =
+            "/api/controller/treino.php?action=voice" +
+            "&text=" + encodeURIComponent(text) +
+            "&lang=" + encodeURIComponent(user.learning_language);
 
-    const audio = new Audio(url);
-    audio.playbackRate = 0.9;
+        const audio = new Audio(url);
+        audio.playbackRate = 0.9;
 
-    audio.play().catch(() => { });
+        audio.play().catch(() => { });
 
-  };
+    };
 
     const nextCard = async () => {
 
@@ -386,7 +386,7 @@ export default function DigitarTexto() {
                                     ref={textareaRef}
                                     value={resposta}
                                     onChange={(e) => setResposta(e.target.value)}
-                                    className="outline-none w-full h-[100%] pt-6 text-center rounded-lg border border-gray-300 resize-none text-lg"
+                                    className="text-xl toutline-none w-full h-[100%] pt-6 text-center rounded-lg border border-gray-300 resize-none"
                                 />
 
                             )}
@@ -415,29 +415,31 @@ export default function DigitarTexto() {
                     </div>
 
                 ) : (
+                    <div>
 
-                    <div className="px-10 sticky bottom-6">
-
-                        <div className="flex items-center justify-center mt-20">
+                        <div className="flex items-center justify-center mb-20">
 
                             <div className="rounded-full bg-green-600 p-4">
                                 <Check className="text-white" />
                             </div>
 
                         </div>
+                        <div className="px-10 sticky ">
 
-                        <div className="left-0 w-full bottom-0 p-10">
+                            <div className="left-0 w-full bottom-0">
 
-                            <button
-                                onClick={nextCard}
-                                className="shadow-md w-full bg-avocado-500 text-white font-medium py-3 rounded-full transition"
-                            >
-                                Próximo
-                            </button>
+                                <button
+                                    onClick={nextCard}
+                                    className="shadow-md w-full bg-avocado-500 text-white font-medium py-3 rounded-full transition"
+                                >
+                                    Próximo
+                                </button>
+
+                            </div>
 
                         </div>
-
                     </div>
+
 
                 )
 

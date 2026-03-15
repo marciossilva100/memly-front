@@ -197,9 +197,9 @@ export default function Login({ setTitulo }) {
                         </div>
 
                         {/* Mascote */}
-                        <div className="flex justify-center mb-6">
+                        {/* <div className="flex justify-center mb-6">
                             <img width={150} src={imgMemly} alt="Memly - Mascote Zaldemy" className="animate-bounce" />
-                        </div>
+                        </div> */}
 
                         <h2 className="text-[#085078] text-2xl font-bold mb-4">
                             📱 Instale nosso App

@@ -46,9 +46,9 @@ function PrivateRoute({ children }) {
 
   const { user, loading, checkAuth } = useAuth()
 
-  useEffect(() => {
-    checkAuth()
-  }, [checkAuth])
+  // useEffect(() => {
+  //   checkAuth()
+  // }, [checkAuth])
 
   //console.log("PrivateRoute - user:", user, "loading:", loading)
 
@@ -238,6 +238,7 @@ function App() {
 
   const [titulo, setTitulo] = useState('')
 
+alert(localStorage.getItem("token"));
 
   registerSW({
     onNeedRefresh() {

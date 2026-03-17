@@ -238,8 +238,6 @@ function App() {
 
   const [titulo, setTitulo] = useState('')
 
-alert(localStorage.getItem("token"));
-
   registerSW({
     onNeedRefresh() {
       console.log("Nova versão disponível");

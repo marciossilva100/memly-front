@@ -1,8 +1,9 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { makePerfectDiff } from "../utils/makePerfectDiff";
+import { playAudio } from "../utils/audioPlayer";
 import '../digitartexto.css'
-import { Play,Check } from "lucide-react";
+import { Play, Check } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 
@@ -103,7 +104,7 @@ export default function DigitarTexto() {
         setTimeout(() => {
 
             setShowBackContent(true);
-            playAudio(frases[index].texto_traduzido);
+            playAudio(frases[index].texto_traduzido, user);
 
         }, 200);
 
@@ -137,21 +138,6 @@ export default function DigitarTexto() {
 
     }
 
-    const playAudio = (text) => {
-
-        if (!text) return;
-
-        const url =
-            "/api/controller/treino.php?action=voice" +
-            "&text=" + encodeURIComponent(text) +
-            "&lang=" + encodeURIComponent(user.learning_language);
-
-        const audio = new Audio(url);
-        audio.playbackRate = 0.9;
-
-        audio.play().catch(() => { });
-
-    };
 
     const nextCard = async () => {
 
@@ -373,14 +359,14 @@ export default function DigitarTexto() {
                     </div>
 
                 )}
+                {!isFlipped && (
+                    <div className="w-full mt-8">
 
-                <div className="w-full mt-8">
+                        <form onSubmit={handleSubmit} id="respostaForm" className="h-40">
 
-                    <form onSubmit={handleSubmit} id="respostaForm" className="h-40">
+                            <div className="h-[100%] justify-center mb-8">
 
-                        <div className="h-[100%] justify-center mb-8">
 
-                            {!isFlipped && (
 
                                 <textarea
                                     placeholder="Digite sua resposta aqui..."
@@ -390,19 +376,19 @@ export default function DigitarTexto() {
                                     className="text-xl toutline-none w-full h-[100%] pt-6 text-center rounded-lg border border-gray-300 resize-none"
                                 />
 
-                            )}
 
-                        </div>
+                            </div>
 
-                    </form>
+                        </form>
 
-                </div>
+                    </div>
+                )}
 
                 {diff && diff.isCorrect && (
-                    <div className="items-center justify-center mb-20 text-center">
+                    <div className="items-center justify-center mb-20 text-center mt-10">
                         <div className="mb-4 flex justify-center">
-                            <div className="rounded-full bg-green-600 w-20 h-20 flex items-center justify-center">
-                                <Check className="text-white" height={50} width={50} />
+                            <div className="rounded-full bg-green-600 w-16 h-16 flex items-center justify-center">
+                                <Check className="text-white" height={38} width={38} />
                             </div>
                         </div>
 
@@ -418,11 +404,11 @@ export default function DigitarTexto() {
 
                 !diff.isCorrect ? (
 
-                    <div className="sticky bottom-6 w-full flex justify-center gap-3 px-10">
+                    <div className="sticky bottom-6 w-full flex justify-center gap-3 ">
 
                         <button
                             onClick={repeatCard}
-                            className="w-full bg-red-400 text-white text-lg px-5 py-3 rounded-full shadow-lg"
+                            className="w-full bg-red-400 text-white text-lg  py-3 rounded-full shadow-lg"
                         >
                             Tentar novamente
                         </button>
@@ -439,7 +425,7 @@ export default function DigitarTexto() {
 
                                 <button
                                     onClick={nextCard}
-                                    className="shadow-md w-full bg-avocado-500 text-white font-medium py-3 rounded-full transition"
+                                    className="shadow-md w-full bg-avocado-500 text-white font-medium py-3 rounded-full transition text-lg"
                                 >
                                     Próximo
                                 </button>

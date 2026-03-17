@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { playAudio } from "../utils/audioPlayer";
+
 
 export default function JogoFrases() {
   const { id, mode } = useParams();
@@ -194,9 +196,10 @@ export default function JogoFrases() {
 
       setAcertos((prev) => prev + 1);
 
-      falarTexto(selecionadaDireita.texto_traduzido, () => {
-        finalizarAcerto();
-      });
+      // falarTexto(selecionadaDireita.texto_traduzido, () => {
+      //   finalizarAcerto();
+      // });
+      playAudio(selecionadaDireita.texto_traduzido,user)
 
     } else {
 

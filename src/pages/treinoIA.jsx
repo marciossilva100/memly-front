@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader2, Volume } from "lucide-react";
+import { playAudio } from "../utils/audioPlayer";
 import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { RefreshCw } from "lucide-react";
+
 
 import "../treinoIA.css";
 
@@ -11,6 +15,7 @@ export default function TreinoIA() {
     const [error, setError] = useState(null);
     const [flipped, setFlipped] = useState(false);
     const navigate = useNavigate();
+  const { user, setUser } = useAuth();
 
     const jaBuscou = useRef(false);
 
@@ -44,15 +49,15 @@ export default function TreinoIA() {
     }, []);
 
     // Função para pronunciar o texto traduzido
-    const speakText = () => {
-        if ('speechSynthesis' in window) {
-            const utterance = new SpeechSynthesisUtterance(textoTraduzido);
-            utterance.lang = 'en-US'; // ou 'en-US' para inglês
-            window.speechSynthesis.speak(utterance);
-        } else {
-            console.warn('Speech Synthesis não suportado nesse navegador.');
-        }
-    };
+    // const speakText = () => {
+    //     if ('speechSynthesis' in window) {
+    //         const utterance = new SpeechSynthesisUtterance(textoTraduzido);
+    //         utterance.lang = 'en-US'; // ou 'en-US' para inglês
+    //         window.speechSynthesis.speak(utterance);
+    //     } else {
+    //         console.warn('Speech Synthesis não suportado nesse navegador.');
+    //     }
+    // };
 
     if (loading) {
         return (
@@ -87,21 +92,29 @@ export default function TreinoIA() {
                     onClick={() => setFlipped(!flipped)}
                 >
                     <div className={`flashcard ${flipped ? "flipped" : ""} `}>
-                        <div className="py-20 bg-default-gradient text-white shadow-md rounded-lg flex items-center justify-center p-6 text-center text-white-700">
+                        <div className="relative py-20 bg-default-gradient text-white shadow-md rounded-lg flex items-center justify-center p-6 text-center text-white-700">
                             <p className="text-2xl md:text-2xl font-medium ">
                                 {textoTraduzido}
                             </p>
+                            <div className="absolute right-0 top-0 mt-3 me-3">
+                                <RefreshCw />
+
+                            </div>
                         </div>
-                        <div className="py-20 back rounded-lg flex items-center justify-center p-6 text-center bg-white">
+                        <div className="relative py-20 back rounded-lg flex items-center justify-center p-6 text-center bg-white">
                             <p className="text-2xl md:text-2xl font-medium">
                                 {textoNativo}
                             </p>
+                              <div className="absolute right-0 top-0 mt-3 me-3">
+                                <RefreshCw />
+
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div className="w-full flex justify-center items-center">
                     <button
-                        onClick={speakText}
+                        onClick={()=>playAudio(textoTraduzido,user)}
                         className="mt-2 px-4 py-2 bg-slate-400 text-white rounded hover:bg-indigo-700 flex items-center gap-2"
                     >
                         <Volume /> Ouvir

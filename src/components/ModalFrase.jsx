@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { translateText } from "../services/translateText"
 import { useAuth } from "../context/AuthContext";
 import { Play, PlayCircle, PlaySquare, Repeat, Check, Crown, Bot } from "lucide-react";
+import { playAudio } from "../utils/audioPlayer";
 
 
 export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listPhrase, onOpenPremium }) {
@@ -80,22 +81,6 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
 
     }
 
-    const playAudio = (text) => {
-
-        if (!text) return;
-
-        const url =
-            "/api/controller/treino.php?action=voice" +
-            "&text=" + encodeURIComponent(text) +
-            "&lang=" + encodeURIComponent(user.learning_language);
-
-        const audio = new Audio(url);
-        audio.playbackRate = 0.9;
-
-        audio.play().catch(() => { });
-
-    };
-
     async function translationSuggested(e) {
 
         e.preventDefault();
@@ -167,7 +152,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                             <div className="flex justify-between">
                                 <label className="font-medium text-sm mb-3 text-slate-800">Tradução</label>
                                 {translatedPhrase && (
-                                    <PlayCircle className="text-[#4cb8c4]" onClick={()=>playAudio(translatedPhrase)} />
+                                    <PlayCircle className="text-[#4cb8c4]" onClick={()=>playAudio(translatedPhrase,user)} />
                                 )}
 
                             </div>

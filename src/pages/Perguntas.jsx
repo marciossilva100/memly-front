@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react"
 import { Volume, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { playAudio } from "../utils/audioPlayer";
+import { useAuth } from "../context/AuthContext";
 
 
 export default function () {
@@ -12,11 +14,14 @@ export default function () {
     const jaBuscou = useRef(false);
     const [textLoading, setTextLoading] = useState('')
     const navigate = useNavigate();
+    const { user, setUser } = useAuth();
 
     useEffect(() => {
-        // setResponse('Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.');
 
-        //  return
+        /*Teste*/
+        // setResponse(' when an unknown printer took a galley of  It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.');
+        // return
+
         if (jaBuscou.current) return;
         jaBuscou.current = true;
         //   if (jaBuscou.current) return;
@@ -92,65 +97,55 @@ export default function () {
     }
 
     // Função para pronunciar o texto traduzido
-    const speakText = (e) => {
-        e.preventDefault()
-        if ('speechSynthesis' in window) {
-            const utterance = new SpeechSynthesisUtterance(question);
-            utterance.lang = 'en-US'; // ou 'en-US' para inglês
-            window.speechSynthesis.speak(utterance);
-        } else {
-            console.warn('Speech Synthesis não suportado nesse navegador.');
-        }
-    };
+    // const speakText = (e) => {
+    //     e.preventDefault()
+    //     if ('speechSynthesis' in window) {
+    //         const utterance = new SpeechSynthesisUtterance(question);
+    //         utterance.lang = 'en-US'; // ou 'en-US' para inglês
+    //         window.speechSynthesis.speak(utterance);
+    //     } else {
+    //         console.warn('Speech Synthesis não suportado nesse navegador.');
+    //     }
+    // };
 
     return (
-        <div className="p-4 justify-center  w-full px-6">
-            <div className="relative  mb-6">
+        <div className="p-4 justify-center  w-full px-6 h-dvh flex flex-col">
+            <div className="flex-1 overflow-y-auto scrollbar-hide ">
+                <div className="relative  mb-6">
 
-                <div
-                    className=" cursor-pointer"
-                    onClick={() => navigate(-1)}
-                >
-                    <i className="bi bi-arrow-left text-xl"></i>
+                    <div
+                        className=" cursor-pointer"
+                        onClick={() => navigate(-1)}
+                    >
+                        <i className="bi bi-arrow-left text-2xl"></i>
+                    </div>
+
                 </div>
+                {response &&
+                    <form action="" onSubmit={handleSubmit} className="w-full " id="responderForm">
+                        <div>
 
-            </div>
-            {response &&
-                <form action="" onSubmit={handleSubmit} className="w-full ">
-                    <div>
+                            <div className="flex border p-4 text-center shadow-md overflow-y-auto  relative justify-between bg-white-800  rounded-lg min-h-80 flex items-center">
+                                <p className="text-md text-lg">{response}</p>
+                            </div>
 
-                        <div className="flex border p-4 text-center shadow-md overflow-y-auto  relative justify-between bg-white-800  rounded-lg h-[calc(100vh-160px)] flex items-center">
-                            <p className="text-md">{response}</p>
                         </div>
 
-                    </div>
-                    <div className=" bg-white fixed bottom-0 left-0 w-full justify-center items-center py-4 text-center">
+                    </form>
+                }
+                {!response &&
+                    <form action="" onSubmit={handleSubmit} className="w-full" id="respostaForm">
+                        <div>
 
-                        <button onClick={(e) => tryAgain(e)} className="
-                        px-6
-                        py-3
-                        rounded-full
-                        bg-blue-500
-                        text-white
-                        font-medium
-                        hover:bg-blue-600
-                        transition
-                        " >
-                            Tentar novamente
-                        </button>
-                    </div>
-                </form>
-            }
-            {!response &&
-                <form action="" onSubmit={handleSubmit} className="w-full">
-                    <div>
+                            <div className="flex border p-6 text-center shadow-md relative justify-between bg-gradient-to-r from-[#4cb8c4] to-[#085078] text-white rounded-lg min-h-80 flex items-center justify-center">
+                                <p className="text-2xl">{question}</p>
+                            </div>
 
-                        <div className="flex border p-4 text-center shadow-md relative justify-between bg-purple-800 text-white rounded-lg h-60 flex items-center">
-                            <p className="text-xl">{question}</p>
-                        </div>
-
-                        <div className="text-center w-full justify-center flex mt-5 ">
-                            <button onClick={(e) => speakText(e)} className="
+                            <div className="text-center w-full justify-center flex mt-5 ">
+                                <button onClick={(e) => {
+                                    e.preventDefault();
+                                    playAudio(question, user);
+                                }} className="
                      
                     px-4 flex
                     py-2
@@ -161,52 +156,87 @@ export default function () {
                     hover:bg-blue-600
                     transition
                     " >
-                                <Volume className="text-sm   w-5 h-5 p-0" />
+                                    <Volume className="text-sm   w-5 h-5 p-0" />
 
-                                Ouvir
-                            </button>
+                                    Ouvir
+                                </button>
+                            </div>
+
+
+
                         </div>
+                        <div className=" bg-white  bottom-0 left-0 w-full justify-center items-center py-4 text-center">
+                            <div className=" mt-3">
+                                {/*               <input onChange={(e) => setAnswer(e.target.value)} type="text" className="w-full px-3 py-2 outline-none" placeholder="Resposta" /> */}
+                                <textarea
 
-
-
-                    </div>
-                    <div className=" bg-white fixed bottom-0 left-0 w-full justify-center items-center py-4 text-center">
-                        <div className=" mt-3 px-6">
-                            {/*               <input onChange={(e) => setAnswer(e.target.value)} type="text" className="w-full px-3 py-2 outline-none" placeholder="Resposta" /> */}
-                            <textarea
-
-                                onChange={(e) => setAnswer(e.target.value)}
-                                className="
+                                    onChange={(e) => setAnswer(e.target.value)}
+                                    className="
                             w-full
                                 mb-6
                                 text-lg
                                 focus:outline-none focus:ring-0 
+                                toutline-none
                                 h-32
                                 pt-6
                                 text-center
                                 focus:outline-none
-                                focus:ring-2 focus:ring-blue-500
+                            
                                 rounded-lg border border-gray-300
                                 resize-none transition
                             "
-                            />
-                        </div>
+                                />
+                            </div>
 
-                        <button className="
-                    px-6
-                    py-3
-                    rounded-full
-                    bg-blue-500
-                    text-white
-                    font-medium
-                    hover:bg-blue-600
-                    transition
-                    " >
-                            Enviar
-                        </button>
-                    </div>
-                </form>
+                        </div>
+                    </form>
+
+
+                }
+
+            </div>
+            {!response &&
+                <div className=" bg-white sticky bottom-0 left-0 w-full justify-center items-center py-4 text-center">
+
+
+                    <button form="respostaForm" className="
+                            px-6
+                            py-3
+                            rounded-full
+                            bg-[#4cb8c4]
+                            text-white
+                            font-medium
+                            hover:bg-blue-600
+                            transition
+                            w-full
+                            "
+                        type="submit"
+
+                    >
+                        Enviar
+                    </button>
+                </div>
+            }
+            {response &&
+                <div className=" bg-white sticky bottom-0 left-0 w-full justify-center items-center py-4 text-center">
+
+                    <button form="responderForm" onClick={(e) => tryAgain(e)} className="
+                                px-6
+                                py-3
+                                w-full
+                                rounded-full
+                                bg-red-400
+                                text-lg
+                                text-white
+                                font-medium
+                                hover:bg-blue-600
+                                transition
+                                " >
+                        Tentar novamente
+                    </button>
+                </div>
             }
         </div>
+
     )
 }

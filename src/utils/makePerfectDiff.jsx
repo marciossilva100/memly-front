@@ -13,7 +13,7 @@ export function makePerfectDiff(correct, user) {
 
     result.push({
       char: userChar,
-      match: correctChar === userChar,
+      match: correctChar.toLowerCase() === userChar.toLowerCase(),
     });
   }
 

@@ -1,5 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { playAudio } from "../utils/audioPlayer";
+
 // import { gerarAudio } from "../services/elevenlabs";
 import { useAuth } from "../context/AuthContext";
 
@@ -25,18 +27,7 @@ export default function Flashcards() {
   const RADIUS = 42;
   const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
-  // preload vozes
-  // useEffect(() => {
-  //   const loadVoices = () => window.speechSynthesis.getVoices();
-  //   loadVoices();
-  //   window.speechSynthesis.onvoiceschanged = loadVoices;
 
-  //   const silentUtterance = new SpeechSynthesisUtterance("");
-  //   window.speechSynthesis.speak(silentUtterance);
-  //   window.speechSynthesis.cancel();
-  // }, []);
-
-  // carregar frases
   useEffect(() => {
 
     const endpoint = ['traine'].includes(mode)
@@ -118,105 +109,14 @@ export default function Flashcards() {
     setTimeout(() => {
 
       setShowBackContent(true);
-      playAudio(frases[index].texto_traduzido);
+      playAudio(frases[index].texto_traduzido, user);
 
     }, FLIP_DURATION / 2);
 
   };
 
 
-
-  async function gerarAudio(texto) {
-    try {
-      const res = await fetch("/api/controller/elevenlabs.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          action: "stream_audio",
-          texto: texto
-        })
-      });
-
-      // 🔥 valida resposta HTTP
-      if (!res.ok) {
-        throw new Error("Erro HTTP: " + res.status);
-      }
-
-      // 🔥 valida se é áudio mesmo
-      const contentType = res.headers.get("content-type");
-
-      if (!contentType || !contentType.includes("audio")) {
-        const text = await res.text(); // pega erro real do PHP
-        console.error("Resposta não é áudio:", text);
-        throw new Error("API não retornou áudio");
-      }
-
-      const blob = await res.blob();
-
-      // 🔥 valida tamanho
-      if (blob.size === 0) {
-        throw new Error("Áudio vazio");
-      }
-
-      const url = URL.createObjectURL(blob);
-
-      return url;
-
-    } catch (err) {
-      console.error("Erro ao gerar áudio:", err);
-      return null;
-    }
-  }
-
-
-
-  let currentAudio = null;
-
-  const playAudio = async (text) => {
-
-    if (!text) return;
-
-    // 🔥 cancela áudio anterior
-    if (currentAudio) {
-      currentAudio.pause();
-      currentAudio = null;
-    }
-
-    if (user.plano === 1) {
-
-      const url = await gerarAudio(text);
-      if (!url) return;
-
-      const audio = new Audio(url);
-      currentAudio = audio;
-
-      audio.playbackRate = 0.9;
-      audio.play().catch(() => { });
-
-      audio.onended = () => {
-        URL.revokeObjectURL(url);
-        currentAudio = null;
-      };
-
-      return;
-    }
-
-    const url =
-      "/api/controller/treino.php?action=voice" +
-      "&text=" + encodeURIComponent(text) +
-      "&lang=" + encodeURIComponent(user.learning_language);
-
-    const audio = new Audio(url);
-    currentAudio = audio;
-
-    audio.playbackRate = 0.9;
-    audio.play().catch(() => { });
-
-  };
-
-  async function trainingUpdate(updatedList, updatedIncorrectList, actionToSend) {
+  async function trainingUpdate(updatedList, updatedIncorrectList, actionToSend, metrics) {
 
     try {
 
@@ -229,7 +129,11 @@ export default function Flashcards() {
           action: actionToSend,
           updatedList: updatedList,
           updatedIncorrectList: updatedIncorrectList,
-          category_id: id
+          category_id: id,
+          acertos: metrics.acertos,
+          erros: metrics.erros,
+          total: metrics.totalPerguntas,
+          porcentagem: metrics.porcentagem
         })
       });
 
@@ -276,13 +180,28 @@ export default function Flashcards() {
 
     } else {
 
+      const updatedCorrect = updatedList;
+      const updatedIncorrect = updatedIncorrectList;
+
+      const acertos = updatedCorrect.length;
+      const erros = updatedIncorrect.length;
+      const totalPerguntas = frases.length;
+
+      const porcentagem = totalPerguntas
+        ? Math.round((acertos / totalPerguntas) * 100)
+        : 0;
+
       const actionToSend =
         mode === 'traine' ? 'trainee_finish' : mode;
 
-      await trainingUpdate(updatedList, updatedIncorrectList, actionToSend);
+      await trainingUpdate(
+        updatedCorrect,
+        updatedIncorrect,
+        actionToSend,
+        { acertos, erros, totalPerguntas, porcentagem }
+      );
 
       setFinished(true);
-
     }
 
   };
@@ -380,13 +299,13 @@ export default function Flashcards() {
           <div className={`card ${isFlipped ? "flip" : ""}`}>
 
             <div className="card-front shadow-[0_10px_40px_rgba(0,0,0,0.08)] text-center p-8 bg-default-gradient rounded-lg">
-              <span className="text-2xl">
+              <span className="text-3xl">
                 {frases[index].texto_nativo}
               </span>
             </div>
 
             <div className="card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] text-center p-8 rounded-lg">
-              <span className="text-2xl text-slate-700">
+              <span className="text-3xl text-slate-700">
                 {showBackContent && frases[index].texto_traduzido}
               </span>
             </div>

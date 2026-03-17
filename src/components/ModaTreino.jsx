@@ -3,6 +3,8 @@ import { Play, Repeat, Check, Crown, Bot } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { playAudio } from "../utils/audioPlayer";
+
 
 export default function ModalTreino({
   openTreino,
@@ -199,75 +201,6 @@ export default function ModalTreino({
   }
 
 
-
-  // =========================
-  // CALCULAR TEMPO
-  // =========================
-  // function getTimeRemaining(targetDate) {
-
-  //   const now = new Date();
-  //   const diff = targetDate - now;
-
-
-  //   if (diff <= 0 || countPhrases.repeat < 1) {
-  //     return {
-  //       text: <span className="text-lg">Repetir</span>,
-  //       waiting: false
-  //     };
-  //   }
-
-  //   if (countPhrases.repeat_traine > 0) {
-  //     return {
-  //       text: <span className="text-lg">Repetir</span>,
-  //       waiting: false
-  //     };
-  //   }
-
-  //   const totalSeconds = Math.floor(diff / 1000);
-
-  //   const hours = Math.floor(totalSeconds / 3600);
-  //   const minutes = Math.floor((totalSeconds % 3600) / 60);
-  //   const seconds = totalSeconds % 60;
-
-  //   if (hours > 0) {
-
-  //     return {
-  //       text: (
-  //         <span className="text-sm text-red-700">
-  //           Próximo treino em {hours}h {minutes}m
-  //         </span>
-  //       ),
-  //       waiting: true
-  //     };
-
-  //   }
-
-  //   if (minutes > 0) {
-
-  //     return {
-  //       text: (
-  //         <span className="text-sm text-red-700">
-  //           Próximo treino em {minutes}m {seconds}s
-  //         </span>
-  //       ),
-  //       waiting: true
-  //     };
-
-  //   }
-
-  //   return {
-  //     text: (
-  //       <span className="text-sm text-red-700">
-  //         Faltam {seconds}s
-  //       </span>
-  //     ),
-  //     waiting: true
-  //   };
-
-  // }
-
-
-
   function go(endpoint, leng) {
 
     if (leng > 0) {
@@ -381,7 +314,7 @@ export default function ModalTreino({
 
             <span className="text-lg flex items-center">
               Treino diário com IA
-              <Crown size={18} className="ms-2 text-yellow-500" />
+              {user.plan === 2 &&(<Crown size={18} className="ms-2 text-yellow-500" />)}
             </span>
 
           </div>

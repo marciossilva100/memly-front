@@ -4,7 +4,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { registerSW } from "virtual:pwa-register";
 
-
+import AuthGate from "./components/AuthGate";
 import Login from './pages/Login'
 import Cadastro from './pages/Cadastro'
 import EsqueciSenha from './pages/EsqueciSenha'
@@ -52,17 +52,17 @@ function PrivateRoute({ children }) {
 
   //console.log("PrivateRoute - user:", user, "loading:", loading)
 
-  if (loading) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-white-100">
-        <img
-          src={imgChapeuFormatura}
-          alt="Carregando"
-          className="w-28 animate-pulse"
-        />
-      </div>
-    )
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="flex h-screen items-center justify-center bg-white-100">
+  //       <img
+  //         src={imgChapeuFormatura}
+  //         alt="Carregando"
+  //         className="w-28 animate-pulse"
+  //       />
+  //     </div>
+  //   )
+  // }
 
   if (!user) {
     console.log("Redirecionando para login - sem usuário")
@@ -88,17 +88,17 @@ function Layout({ titulo, setTitulo }) {
 
   const esconderHeader = rotasSemHeader.has(location.pathname)
 
-  if (loading) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-white-100">
-        <img
-          src={imgChapeuFormatura}
-          alt="Carregando"
-          className="w-28 animate-pulse"
-        />
-      </div>
-    )
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="flex h-screen items-center justify-center bg-white-100">
+  //       <img
+  //         src={imgChapeuFormatura}
+  //         alt="Carregando"
+  //         className="w-28 animate-pulse"
+  //       />
+  //     </div>
+  //   )
+  // }
 
   return (
     <>
@@ -251,9 +251,11 @@ function App() {
   return (
     <GoogleOAuthProvider clientId="1055075063152-tkobce7c2j9eq1t4doi0419votjlemis.apps.googleusercontent.com">
       <AuthProvider>
-        <BrowserRouter>
-          <Layout titulo={titulo} setTitulo={setTitulo} />
-        </BrowserRouter>
+        <AuthGate>
+          <BrowserRouter>
+            <Layout titulo={titulo} setTitulo={setTitulo} />
+          </BrowserRouter>
+        </AuthGate>
       </AuthProvider>
     </GoogleOAuthProvider>
   )

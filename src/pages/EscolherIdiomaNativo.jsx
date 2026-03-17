@@ -5,36 +5,33 @@ import { useAuth } from "../context/AuthContext";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
 import imgMemly from "../assets/img/mascote-memly.png"
-import { useNavigate } from "react-router-dom";
+import {Navigate, useNavigate } from "react-router-dom";
 
 
 export default function EscolherIdiomaNativo() {
   const { user, setUser } = useAuth();
   const [erro, setErro] = useState('')
   const [languageList, setLanguageList] = useState([])
+  const [finishStep, setFinishStep] = useState(false)
+
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
     native_language: ''
   })
 
-  useEffect(() => {
-    console.log(user)
-    if (user.step > 0) {
-      navigate("/escolheridiomaaprender", {
-        state: { email: form.email }
-      })
-    }
-    return
-  }, [])
+
+  if (user?.step > 0) {
+    return <Navigate to="/escolheridiomaaprender" replace />
+  }
 
   useEffect(() => {
     fetch('https://zaldemy.com/controller/language.php',
       {
         method: 'POST',
         headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            },
+          "Authorization": "Bearer " + localStorage.getItem("token")
+        },
 
         body: JSON.stringify({
           action: 'list_languages',
@@ -54,9 +51,9 @@ export default function EscolherIdiomaNativo() {
     //   setLoading(true)
     fetch('https://zaldemy.com/controller/language.php', {
       method: 'POST',
-        headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            },
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("token")
+      },
 
       body: JSON.stringify({
         action: 'set_native_language',
@@ -120,6 +117,8 @@ export default function EscolherIdiomaNativo() {
     languageRegister();
   }
 
+
+
   return (
     <div
       className="
@@ -137,13 +136,13 @@ export default function EscolherIdiomaNativo() {
 
         {/* TOPO */}
         <div className="w-lg max-w-md mx-auto text-center mb-6">
-       {    <div className="flex justify-center mb-3">
+          {<div className="flex justify-center mb-3">
             <img
               src={imgChapeuFormatura}
               alt="Coruja"
               className="w-28 "
             />
-          </div> }
+          </div>}
           <h4 className="text-lg font-medium text-slate-700">
             Escolha seu idioma nativo
           </h4>

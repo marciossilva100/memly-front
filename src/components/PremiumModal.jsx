@@ -69,14 +69,14 @@ const PremiumModal = ({ isOpen, onClose }) => {
       />
       
       {/* Container do Modal */}
-      <div className="flex min-h-full items-center justify-center p-5">
+      <div className="flex min-h-full items-center justify-center p-3 mt-3">
         {/* Card do Modal */}
-        <div className="relative bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto scrollbar-hide">
+        <div className="relative bg-white rounded-3xl shadow-2xl max-w-4xl w-full h-[calc(100vh-30px)] overflow-y-auto scrollbar-hide ">
           
           {/* Botão de fechar */}
           <button
             onClick={onClose}
-            className="fixed top-5 right-3 z-10 bg-white/90 hover:bg-white text-gray-500 hover:text-gray-700 rounded-full p-2 shadow-lg transition-all hover:scale-110 border border-gray-200"
+            className="fixed top-3 right-3 z-10 bg-white/90 hover:bg-white text-gray-500 hover:text-gray-700 rounded-full p-2 shadow-lg transition-all hover:scale-110 border border-gray-200"
           >
             <X className="w-5 h-5" />
           </button>
@@ -86,7 +86,7 @@ const PremiumModal = ({ isOpen, onClose }) => {
             
 
             {/* Main Content */}
-            <div className="px-8 py-8">
+            <div className="px-2 py-8">
               {/* Cabeçalho da seção Premium */}
               <div className="text-center mb-8">
               

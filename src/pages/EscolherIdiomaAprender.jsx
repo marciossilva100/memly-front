@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import imgCoruja from "../assets/img/coruja.png"
 import { idiomas } from "../data/idiomas"
 import imgMemly from "../assets/img/mascote-memly.png"
-import { useNavigate } from "react-router-dom";
+import {Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
@@ -14,28 +14,23 @@ export default function EscolherIdiomaAprender() {
   const [erro, setErro] = useState('')
   const [idioma, setIdioma] = useState("")
   const [languageList, setLanguageList] = useState([])
+  const [finishStep, setFinishStep] = useState(false)
+
   const [form, setForm] = useState({
     learning_language: ''
   })
 
-  useEffect(() => {
-    console.log(user)
-
-    if (user.step > 1) {
-      navigate("/home", {
-        state: { email: form.email }
-      })
-    }
-    return
-  }, [])
+  if (user?.step > 1) {
+    return <Navigate to="/referenciausuario" replace />
+  }
 
   useEffect(() => {
     fetch('https://zaldemy.com/controller/language.php',
       {
         method: 'POST',
         headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            },
+          "Authorization": "Bearer " + localStorage.getItem("token")
+        },
 
         body: JSON.stringify({
           action: 'list_languages_learning',
@@ -83,7 +78,9 @@ export default function EscolherIdiomaAprender() {
           learning_language: form.acronym
         }));
 
-        navigate("/home", {
+        console.log('passou aqui 2')
+
+        navigate("/referenciausuario", {
           state: { email: form.email }
         })
 
@@ -123,6 +120,7 @@ export default function EscolherIdiomaAprender() {
     languageRegister();
   }
 
+
   return (
     <div
       className="
@@ -139,13 +137,13 @@ export default function EscolherIdiomaAprender() {
 
         {/* TOPO */}
         <div className="w-full max-w-md mx-auto text-center mb-6">
-      {     <div className="flex justify-center mb-3">
+          {<div className="flex justify-center mb-3">
             <img
               src={imgChapeuFormatura}
               alt="Coruja"
               className="w-28"
             />
-          </div> }
+          </div>}
           <h4 className="text-lg font-medium text-slate-700">
             Escolha o idioma que você quer aprender.
           </h4>

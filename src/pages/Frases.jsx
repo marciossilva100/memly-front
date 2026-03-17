@@ -2,6 +2,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import ModalFrase from "../components/ModalFrase";
 import { useAuth } from "../context/AuthContext";
+import PremiumModal from '../components/PremiumModal';
+
 import {
     Trash,
     Search,
@@ -18,10 +20,12 @@ export default function Frases() {
     const [loading, setLoading] = useState(false);
     const [textoBusca, setTextoBusca] = useState("")
     const [openFrase, setOpenFrase] = useState(false)
+    const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+
     const navigate = useNavigate();
 
     useEffect(() => {
-        console.log('agora sim', user)
+
         listPhrase()
     }, []);
 
@@ -48,6 +52,21 @@ export default function Frases() {
             });
     }
 
+    const playAudio = (text) => {
+
+        if (!text) return;
+
+        const url =
+            "/api/controller/treino.php?action=voice" +
+            "&text=" + encodeURIComponent(text) +
+            "&lang=" + encodeURIComponent(user.learning_language);
+
+        const audio = new Audio(url);
+        audio.playbackRate = 0.9;
+
+        audio.play().catch(() => { });
+
+    };
 
     async function deletePhrase(id) {
 
@@ -146,7 +165,13 @@ export default function Frases() {
                     Adicionar
                 </button>
             </div>
-            <ModalFrase openPhrase={openFrase} setOpenPhrase={setOpenFrase} category={id} listPhrase={listPhrase} />
+            <ModalFrase openPhrase={openFrase} setOpenPhrase={setOpenFrase} category={id} listPhrase={listPhrase}
+                onOpenPremium={() => {
+                    setIsPremiumModalOpen(true);
+                    setOpenFrase(false);
+                }} />
+            <PremiumModal isOpen={isPremiumModalOpen} setIsPremiumModalOpen={setIsPremiumModalOpen} onClose={() => setIsPremiumModalOpen(false)} />
+
         </div>
     );
 }

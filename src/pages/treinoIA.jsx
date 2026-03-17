@@ -72,40 +72,44 @@ export default function TreinoIA() {
     }
 
     return (
-        <div className="min-h-[calc(100vh-70px)] flex flex-col items-center justify-center px-4 gap-4 ">
+        <div className="h-[100dvh] flex flex-col items-center  px-4 gap-4 ">
             <div className="relative text-left w-full mt-3">
                 <div
                     className="left-0  cursor-pointer"
                     onClick={() => navigate(-1)}
                 >
-                    <i className="bi bi-arrow-left text-xl"></i>
+                    <i className="bi bi-arrow-left text-2xl"></i>
                 </div>
             </div>
-            <div
-                className="flashcard-container cursor-pointer select-none"
-                onClick={() => setFlipped(!flipped)}
-            >
-                <div className={`flashcard ${flipped ? "flipped" : ""}`}>
-                    <div className="bg-default-gradient text-white shadow-md rounded-lg flex items-center justify-center p-6 text-center text-white-700">
-                        <p className="text-xl md:text-2xl font-medium ">
-                            {textoTraduzido}
-                        </p>
-                    </div>
-                    <div className="back rounded-lg flex items-center justify-center p-6 text-center bg-white">
-                        <p className="text-xl md:text-2xl font-medium">
-                            {textoNativo}
-                        </p>
+            <div>
+                <div
+                    className="flashcard-container cursor-pointer select-none "
+                    onClick={() => setFlipped(!flipped)}
+                >
+                    <div className={`flashcard ${flipped ? "flipped" : ""} `}>
+                        <div className="py-20 bg-default-gradient text-white shadow-md rounded-lg flex items-center justify-center p-6 text-center text-white-700">
+                            <p className="text-2xl md:text-2xl font-medium ">
+                                {textoTraduzido}
+                            </p>
+                        </div>
+                        <div className="py-20 back rounded-lg flex items-center justify-center p-6 text-center bg-white">
+                            <p className="text-2xl md:text-2xl font-medium">
+                                {textoNativo}
+                            </p>
+                        </div>
                     </div>
                 </div>
+                <div className="w-full flex justify-center items-center">
+                    <button
+                        onClick={speakText}
+                        className="mt-2 px-4 py-2 bg-slate-400 text-white rounded hover:bg-indigo-700 flex items-center gap-2"
+                    >
+                        <Volume /> Ouvir
+                    </button>
+                </div>
+
             </div>
 
-            {/* Botão para ouvir a pronúncia */}
-            <button
-                onClick={speakText}
-                className="mt-2 px-4 py-2 bg-slate-400 text-white rounded hover:bg-indigo-700 transition flex"
-            >
-                <Volume /> Ouvir
-            </button>
         </div>
     );
 }

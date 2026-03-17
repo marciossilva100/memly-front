@@ -2,9 +2,10 @@ import { Dialog } from "@headlessui/react";
 import { useState, useEffect } from "react";
 import { translateText } from "../services/translateText"
 import { useAuth } from "../context/AuthContext";
+import { Play, PlayCircle, PlaySquare, Repeat, Check, Crown, Bot } from "lucide-react";
 
 
-export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listPhrase }) {
+export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listPhrase, onOpenPremium }) {
     const { user, setUser } = useAuth();
 
     const [loading, setLoading] = useState(false)
@@ -68,6 +69,32 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
         }
     }
 
+    function verifyPlan(e) {
+        if (user.plano === 1) {
+            console.log("kk")
+            translationSuggested(e)
+            return
+        }
+        onOpenPremium()
+        // navigate('/premiumplan');
+
+    }
+
+    const playAudio = (text) => {
+
+        if (!text) return;
+
+        const url =
+            "/api/controller/treino.php?action=voice" +
+            "&text=" + encodeURIComponent(text) +
+            "&lang=" + encodeURIComponent(user.learning_language);
+
+        const audio = new Audio(url);
+        audio.playbackRate = 0.9;
+
+        audio.play().catch(() => { });
+
+    };
 
     async function translationSuggested(e) {
 
@@ -117,15 +144,17 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                     </Dialog.Title> */}
                     <form action="" onSubmit={handleSubmit}>
                         <div>
-                            <label className="font-medium text-sm mb-3 text-slate-800">Palavra ou frase em inglês</label>
+                            <div className="">
+                                <label className="font-medium text-sm mb-3 text-slate-800">Palavra ou frase em português</label>
+                            </div>
                             <textarea
                                 onChange={(e) => {
                                     setPhrase(e.target.value);
                                     setErrorPhrase('');
                                 }}
                                 value={phrase}
-                                placeholder="I will travel tomorrow"
-                                className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-2 text-sm
+                                placeholder="Eu adoro estudar"
+                                className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-2 text-lg
                                     focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20
                                     outline-none"
                             ></textarea>
@@ -134,7 +163,15 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                             }
                         </div>
                         <div className="mt-4">
-                            <label className="font-medium text-sm mb-3 text-slate-800">Tradução</label>
+
+                            <div className="flex justify-between">
+                                <label className="font-medium text-sm mb-3 text-slate-800">Tradução</label>
+                                {translatedPhrase && (
+                                    <PlayCircle className="text-[#4cb8c4]" onClick={()=>playAudio(translatedPhrase)} />
+                                )}
+
+                            </div>
+
 
                             <textarea
                                 onChange={(e) => {
@@ -144,14 +181,18 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                                 }}
                                 value={translatedPhrase}
                                 placeholder=""
-                                className="w-full rounded-xl border border-slate-300 px-4 py-2 text-sm
+                                className="w-full rounded-xl border border-slate-300 px-4 py-2 text-lg
                                     focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20
                                     outline-none"
                             ></textarea>
 
                             {phrase?.length > 1 && (
                                 <div>
-                                    <button type="button" className="text-xs bg-avocado-500 text-white px-4 py-1 rounded-full" onClick={translationSuggested}>
+                                    <button type="button" className="flex text-sm bg-blue-500 text-white px-4 py-1 rounded-full" onClick={verifyPlan}>
+                                        {user.plano === 2 && (
+                                            <Crown size={20} className="me-2 text-yellow-500" />
+                                        )}
+
                                         Sugerir tradução
                                     </button>
                                 </div>
@@ -174,7 +215,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                                 Cancelar
                             </button>
 
-                            <button type="submit" disabled={loading} className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm ">
+                            <button type="submit" disabled={loading} className="bg-avocado-500 text-white px-4 py-2 rounded-full text-sm ">
                                 Salvar
                             </button>
                         </div>
@@ -182,5 +223,6 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                 </Dialog.Panel>
             </div>
         </Dialog>
+
     )
 }

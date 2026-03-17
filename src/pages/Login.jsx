@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from "react-router-dom";
-import { Mail, Smartphone, Download, Share2,Globe } from "lucide-react";
+import { Link, useNavigate, Navigate } from "react-router-dom";
+import { Mail, Smartphone, Download, Share2, Globe } from "lucide-react";
 import imgLogin from '../assets/img/img-login.png'
 import imgGoogle from '../assets/img/google.png'
 import imgFacebook from '../assets/img/logo-face.webp'
@@ -40,8 +40,8 @@ export default function Login({ setTitulo }) {
         setIsIOS(ios);
 
         // Detectar se está rodando como app instalado (standalone)
-        const standalone = window.matchMedia('(display-mode: standalone)').matches || 
-                          window.navigator.standalone === true;
+        const standalone = window.matchMedia('(display-mode: standalone)').matches ||
+            window.navigator.standalone === true;
         setIsStandalone(standalone);
 
         // Detectar se é mobile
@@ -108,6 +108,17 @@ export default function Login({ setTitulo }) {
 
                 console.log("DEPOIS DO CHECKAUTH");
 
+                // if (data.step > 2) {
+                //     setFinishStep(true)
+
+                // }
+
+                if (data.step > 2) {
+                    navigate("/home", { replace: true })
+                    return
+                }
+
+
                 navigate("/escolheridioma");
 
             } catch (error) {
@@ -173,7 +184,17 @@ export default function Login({ setTitulo }) {
 
             localStorage.setItem("token", data.token);
 
+
             await checkAuth()
+
+            // if (data.usuario.step > 2) {
+            //     setFinishStep(true)
+            // }
+
+            if (data.usuario.step > 2) {
+                navigate("/home", { replace: true })
+                return
+            }
 
             navigate("/escolheridioma")
 
@@ -184,13 +205,24 @@ export default function Login({ setTitulo }) {
         }
     }
 
+    // if (finishStep) {
+    //     console.log('passou aqui 1')
+
+    //     navigate("/home")
+    //     return
+    // }
+
+
+
+
+
     // Se for mobile e não estiver instalado como app, mostrar apenas tela de instalação
     if (isMobile && !isStandalone) {
         return (
             <div className="max-w-6xl mx-auto px-8 section-login py-4 h-dvh flex items-center">
                 <div className="flex-1 justify-center overflow-y-auto scrollbar-hide ">
                     <div className="w-full max-w-md text-center">
-                        
+
                         {/* Logo */}
                         <div className="flex justify-center mb-6">
                             <img width={250} src={imgZaldemy} alt="Zaldemy" />
@@ -217,11 +249,11 @@ export default function Login({ setTitulo }) {
                                         <Share2 className="w-8 h-8 text-white" />
                                     </div>
                                 </div>
-                                
+
                                 <h3 className="text-lg font-semibold text-[#085078] mb-3">
                                     Como instalar no iPhone/iPad
                                 </h3>
-                                
+
                                 <div className="space-y-4 text-left">
                                     <div className="flex items-start gap-3">
                                         <div className="bg-[#4cb8c4]/20 rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -231,7 +263,7 @@ export default function Login({ setTitulo }) {
                                             Toque no <span className="font-semibold">botão Compartilhar</span> <Share2 className="w-4 h-4 inline text-[#4cb8c4]" /> na barra do Safari
                                         </p>
                                     </div>
-                                    
+
                                     <div className="flex items-start gap-3">
                                         <div className="bg-[#4cb8c4]/20 rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">
                                             <span className="text-[#085078] font-bold text-sm">2</span>
@@ -240,7 +272,7 @@ export default function Login({ setTitulo }) {
                                             Role para baixo e selecione <span className="font-semibold">"Adicionar à Tela de Início"</span>
                                         </p>
                                     </div>
-                                    
+
                                     <div className="flex items-start gap-3">
                                         <div className="bg-[#4cb8c4]/20 rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">
                                             <span className="text-[#085078] font-bold text-sm">3</span>
@@ -387,7 +419,7 @@ export default function Login({ setTitulo }) {
                         <img src={imgGoogle} alt="Google icone" width={30} />
                         <span className="ff-inter">Entrar com Google</span>
                     </button>
-                    
+
                     <br />
 
                     {/* Facebook */}

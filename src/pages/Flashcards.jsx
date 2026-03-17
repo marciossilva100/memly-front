@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { gerarAudio } from "../services/elevenlabs";
+// import { gerarAudio } from "../services/elevenlabs";
 import { useAuth } from "../context/AuthContext";
 
 export default function Flashcards() {
@@ -98,18 +98,17 @@ export default function Flashcards() {
 
   }, [index, frases, finished, isFlipped]);
 
-  async function playEleven() {
+  // async function playEleven() {
 
-    // const url = await gerarAudio(frases[index].texto_traduzido);
-    const url = false;
+  //   const url = await gerarAudio(frases[index].texto_traduzido);
 
-    if (!url) return;
+  //   if (!url) return;
 
-    const audio = new Audio(url);
-    audio.playbackRate = 0.9;
-    audio.play();
+  //   const audio = new Audio(url);
+  //   audio.playbackRate = 0.9;
+  //   audio.play();
 
-  }
+  // }
 
   const flipCard = () => {
 
@@ -125,9 +124,84 @@ export default function Flashcards() {
 
   };
 
-  const playAudio = (text) => {
+
+
+  async function gerarAudio(texto) {
+    try {
+      const res = await fetch("/api/controller/elevenlabs.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          action: "stream_audio",
+          texto: texto
+        })
+      });
+
+      // 🔥 valida resposta HTTP
+      if (!res.ok) {
+        throw new Error("Erro HTTP: " + res.status);
+      }
+
+      // 🔥 valida se é áudio mesmo
+      const contentType = res.headers.get("content-type");
+
+      if (!contentType || !contentType.includes("audio")) {
+        const text = await res.text(); // pega erro real do PHP
+        console.error("Resposta não é áudio:", text);
+        throw new Error("API não retornou áudio");
+      }
+
+      const blob = await res.blob();
+
+      // 🔥 valida tamanho
+      if (blob.size === 0) {
+        throw new Error("Áudio vazio");
+      }
+
+      const url = URL.createObjectURL(blob);
+
+      return url;
+
+    } catch (err) {
+      console.error("Erro ao gerar áudio:", err);
+      return null;
+    }
+  }
+
+
+
+  let currentAudio = null;
+
+  const playAudio = async (text) => {
 
     if (!text) return;
+
+    // 🔥 cancela áudio anterior
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio = null;
+    }
+
+    if (user.plano === 1) {
+
+      const url = await gerarAudio(text);
+      if (!url) return;
+
+      const audio = new Audio(url);
+      currentAudio = audio;
+
+      audio.playbackRate = 0.9;
+      audio.play().catch(() => { });
+
+      audio.onended = () => {
+        URL.revokeObjectURL(url);
+        currentAudio = null;
+      };
+
+      return;
+    }
 
     const url =
       "/api/controller/treino.php?action=voice" +
@@ -135,8 +209,9 @@ export default function Flashcards() {
       "&lang=" + encodeURIComponent(user.learning_language);
 
     const audio = new Audio(url);
-    audio.playbackRate = 0.9;
+    currentAudio = audio;
 
+    audio.playbackRate = 0.9;
     audio.play().catch(() => { });
 
   };

@@ -2,8 +2,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { makePerfectDiff } from "../utils/makePerfectDiff";
 import '../digitartexto.css'
-import { Check } from "lucide-react";
+import { Play,Check } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+
 
 export default function DigitarTexto() {
 
@@ -309,16 +310,16 @@ export default function DigitarTexto() {
                     </div>
                 )}
 
-                <div className="h-[40%] flex">
+                <div className="flex">
                     <div className="perspective flashcard justify-center flex">
 
                         <div
-                            className={`card card-digitar-texto ${isFlipped ? "flip" : ""}`}
+                            className={`card card-digitar-texto ${isFlipped ? "flip" : ""} h-[280px]`}
                         >
 
                             <div className="rounded-lg card-front bg-default-gradient shadow-[0_10px_40px_rgba(0,0,0,0.08)] p-4 text-center">
 
-                                <span className="text-md">
+                                <span className="text-3xl">
                                     {frases[index].texto_nativo}
                                 </span>
 
@@ -326,7 +327,7 @@ export default function DigitarTexto() {
 
                             <div className="rounded-lg card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] p-4 text-center">
 
-                                <span className="text-md text-avocado-700">
+                                <span className="text-3xl text-avocado-700">
                                     {showBackContent && frases[index].texto_traduzido}
                                 </span>
 
@@ -397,6 +398,20 @@ export default function DigitarTexto() {
 
                 </div>
 
+                {diff && diff.isCorrect && (
+                    <div className="items-center justify-center mb-20 text-center">
+                        <div className="mb-4 flex justify-center">
+                            <div className="rounded-full bg-green-600 w-20 h-20 flex items-center justify-center">
+                                <Check className="text-white" height={50} width={50} />
+                            </div>
+                        </div>
+
+                        <span className="text-2xl font-semibold text-green-700">
+                            Correto
+                        </span>
+                    </div>
+                )}
+
             </div>
 
             {diff && (
@@ -417,14 +432,8 @@ export default function DigitarTexto() {
                 ) : (
                     <div>
 
-                        <div className="flex items-center justify-center mb-20">
 
-                            <div className="rounded-full bg-green-600 p-4">
-                                <Check className="text-white" />
-                            </div>
-
-                        </div>
-                        <div className="px-10 sticky ">
+                        <div className=" sticky ">
 
                             <div className="left-0 w-full bottom-0">
 
@@ -440,14 +449,13 @@ export default function DigitarTexto() {
                         </div>
                     </div>
 
-
                 )
 
             )}
 
             {!isFlipped && (
 
-                <div className="sticky bottom-6 w-full bg-slate-100">
+                <div className="sticky bottom-6 w-full bg-slate-100 pt-4">
 
                     <button
                         type="submit"

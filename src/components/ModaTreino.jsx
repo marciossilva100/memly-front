@@ -56,7 +56,7 @@ export default function ModalTreino({
           repeat: repeat,
           repeat_traine: data.data?.[2]?.total ?? 0,
           review: data.data?.[3]?.total ?? 0,
-          traine: data.data?.[1]?.data_liberacao ?? null
+          traine: data.data?.[1]?.segundos_restantes ?? 0
         };
 
         setCountPhrases(newState);
@@ -75,20 +75,52 @@ export default function ModalTreino({
   // =========================
   useEffect(() => {
 
-    if (!countPhrases.traine) {
+    if (!countPhrases.traine || countPhrases.repeat < 1) {
       setMensagem(<span className="text-base">Repetir</span>);
       setWaiting(false);
       return;
     }
 
-    const targetDate = new Date(countPhrases.traine);
+    let seconds = countPhrases.traine;
 
     function atualizar() {
 
-      const result = getTimeRemaining(targetDate);
+      if (seconds <= 0) {
+        setMensagem(<span className="text-base">Repetir</span>);
+        setWaiting(false);
+        return;
+      }
 
-      setMensagem(result.text);
-      setWaiting(result.waiting);
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const sec = seconds % 60;
+
+      if (hours > 0) {
+        setMensagem(
+          <span className="text-sm text-red-700">
+            Próximo treino em {hours}h {minutes}m
+          </span>
+        );
+        setWaiting(true);
+      }
+      else if (minutes > 0) {
+        setMensagem(
+          <span className="text-sm text-red-700">
+            Próximo treino em {minutes}m {sec}s
+          </span>
+        );
+        setWaiting(true);
+      }
+      else {
+        setMensagem(
+          <span className="text-sm text-red-700">
+            Faltam {sec}s
+          </span>
+        );
+        setWaiting(true);
+      }
+
+      seconds--;
 
     }
 
@@ -121,7 +153,21 @@ export default function ModalTreino({
 
   }, [openTreino]);
 
+  const playAudio = (text) => {
 
+    if (!text) return;
+
+    const url =
+      "/api/controller/treino.php?action=voice" +
+      "&text=" + encodeURIComponent(text) +
+      "&lang=" + encodeURIComponent(user.learning_language);
+
+    const audio = new Audio(url);
+    audio.playbackRate = 0.9;
+
+    audio.play().catch(() => { });
+
+  };
 
   // =========================
   // UPDATE TREINO
@@ -157,68 +203,68 @@ export default function ModalTreino({
   // =========================
   // CALCULAR TEMPO
   // =========================
-  function getTimeRemaining(targetDate) {
+  // function getTimeRemaining(targetDate) {
 
-    const now = new Date();
-    const diff = targetDate - now;
+  //   const now = new Date();
+  //   const diff = targetDate - now;
 
 
-    if (diff <= 0 || countPhrases.repeat < 1) {
-      return {
-        text: <span className="text-lg">Repetir</span>,
-        waiting: false
-      };
-    }
+  //   if (diff <= 0 || countPhrases.repeat < 1) {
+  //     return {
+  //       text: <span className="text-lg">Repetir</span>,
+  //       waiting: false
+  //     };
+  //   }
 
-    if (countPhrases.repeat_traine > 0) {
-      return {
-        text: <span className="text-lg">Repetir</span>,
-        waiting: false
-      };
-    }
+  //   if (countPhrases.repeat_traine > 0) {
+  //     return {
+  //       text: <span className="text-lg">Repetir</span>,
+  //       waiting: false
+  //     };
+  //   }
 
-    const totalSeconds = Math.floor(diff / 1000);
+  //   const totalSeconds = Math.floor(diff / 1000);
 
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
+  //   const hours = Math.floor(totalSeconds / 3600);
+  //   const minutes = Math.floor((totalSeconds % 3600) / 60);
+  //   const seconds = totalSeconds % 60;
 
-    if (hours > 0) {
+  //   if (hours > 0) {
 
-      return {
-        text: (
-          <span className="text-sm text-red-700">
-            Próximo treino em {hours}h {minutes}m
-          </span>
-        ),
-        waiting: true
-      };
+  //     return {
+  //       text: (
+  //         <span className="text-sm text-red-700">
+  //           Próximo treino em {hours}h {minutes}m
+  //         </span>
+  //       ),
+  //       waiting: true
+  //     };
 
-    }
+  //   }
 
-    if (minutes > 0) {
+  //   if (minutes > 0) {
 
-      return {
-        text: (
-          <span className="text-sm text-red-700">
-            Próximo treino em {minutes}m {seconds}s
-          </span>
-        ),
-        waiting: true
-      };
+  //     return {
+  //       text: (
+  //         <span className="text-sm text-red-700">
+  //           Próximo treino em {minutes}m {seconds}s
+  //         </span>
+  //       ),
+  //       waiting: true
+  //     };
 
-    }
+  //   }
 
-    return {
-      text: (
-        <span className="text-sm text-red-700">
-          Faltam {seconds}s
-        </span>
-      ),
-      waiting: true
-    };
+  //   return {
+  //     text: (
+  //       <span className="text-sm text-red-700">
+  //         Faltam {seconds}s
+  //       </span>
+  //     ),
+  //     waiting: true
+  //   };
 
-  }
+  // }
 
 
 
@@ -230,13 +276,13 @@ export default function ModalTreino({
 
   }
 
-  function verifyPlan(e){
-    if(user.plano > 0){
+  function verifyPlan(e) {
+    if (user.plano === 1) {
       onOpenIA()
       return
     }
     onOpenPremium()
-     // navigate('/premiumplan');
+    // navigate('/premiumplan');
 
   }
 
@@ -326,7 +372,7 @@ export default function ModalTreino({
 
           <div
             className="flex gap-2 items-center cursor-pointer"
-            onClick={(e)=>{
+            onClick={(e) => {
               verifyPlan();
             }}
           >

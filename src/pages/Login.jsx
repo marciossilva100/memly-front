@@ -103,12 +103,14 @@ export default function Login({ setTitulo }) {
                 localStorage.setItem("token", data.token);
 
                 console.log("ANTES DO CHECKAUTH");
+                console.log('dados ', data);
 
                 //await checkAuth();
-                setUser(data.usuario || data.user);
+                setUser(data);
 
-                console.log("DEPOIS DO CHECKAUTH");
-
+                setTimeout(() => {
+                    checkAuth();
+                }, 0);
                 // if (data.step > 2) {
                 //     setFinishStep(true)
 
@@ -184,6 +186,12 @@ export default function Login({ setTitulo }) {
             localStorage.setItem("token", data.token);
 
             setUser(data.usuario);
+
+            setTimeout(() => {
+                checkAuth();
+            }, 0);
+
+            console.log('dados ', data);
 
             if (data.usuario.step > 2) {
                 navigate("/home", { replace: true })

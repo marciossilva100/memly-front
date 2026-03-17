@@ -21,7 +21,8 @@ export default function Login({ setTitulo }) {
     const [isIOS, setIsIOS] = useState(false);
     const [isStandalone, setIsStandalone] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
-    const { setUser } = useAuth();
+    const { user,setUser } = useAuth(); 
+
     const [form, setForm] = useState({
         email: '',
         password: ''

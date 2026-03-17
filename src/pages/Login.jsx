@@ -29,6 +29,16 @@ export default function Login({ setTitulo }) {
     const [erro, setErro] = useState('')
 
     useEffect(() => {
+        if (!user) return;
+
+        if (user.step > 2) {
+            navigate("/home", { replace: true });
+        } else {
+            navigate("/escolheridioma");
+        }
+    }, [user]);
+
+    useEffect(() => {
         setTitulo('Login')
     }, [])
 
@@ -106,7 +116,12 @@ export default function Login({ setTitulo }) {
                 console.log('dados ', data);
 
                 //await checkAuth();
-                setUser(data);
+                setUser({
+                    id: data.user_id,
+                    name: data.nome,
+                    email: data.email,
+                    step: data.step
+                });
 
                 setTimeout(() => {
                     checkAuth();
@@ -116,13 +131,13 @@ export default function Login({ setTitulo }) {
 
                 // }
 
-                if (data.step > 2) {
-                    navigate("/home", { replace: true })
-                    return
-                }
+                // if (data.step > 2) {
+                //     navigate("/home", { replace: true })
+                //     return
+                // }
 
 
-                navigate("/escolheridioma");
+                // navigate("/escolheridioma");
 
             } catch (error) {
                 setErro('Erro ao conectar com o servidor');
@@ -193,12 +208,12 @@ export default function Login({ setTitulo }) {
 
             console.log('dados ', data);
 
-            if (data.usuario.step > 2) {
-                navigate("/home", { replace: true })
-                return
-            }
+            // if (data.usuario.step > 2) {
+            //     navigate("/home", { replace: true })
+            //     return
+            // }
 
-            navigate("/escolheridioma")
+            // navigate("/escolheridioma")
 
         } catch (error) {
             setErro('Erro ao conectar com o servidor')

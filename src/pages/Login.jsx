@@ -21,7 +21,7 @@ export default function Login({ setTitulo }) {
     const [isIOS, setIsIOS] = useState(false);
     const [isStandalone, setIsStandalone] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
-
+    const { setUser } = useAuth();
     const [form, setForm] = useState({
         email: '',
         password: ''
@@ -104,7 +104,8 @@ export default function Login({ setTitulo }) {
 
                 console.log("ANTES DO CHECKAUTH");
 
-                await checkAuth();
+                //await checkAuth();
+                setUser(data.usuario || data.user);
 
                 console.log("DEPOIS DO CHECKAUTH");
 
@@ -175,8 +176,6 @@ export default function Login({ setTitulo }) {
 
             const data = await res.json();
 
-            console.log("DATA:", data)
-
             if (!data.sucesso) {
                 setErro(data.erro || "Erro ao fazer login")
                 return
@@ -184,12 +183,7 @@ export default function Login({ setTitulo }) {
 
             localStorage.setItem("token", data.token);
 
-
-            await checkAuth()
-
-            // if (data.usuario.step > 2) {
-            //     setFinishStep(true)
-            // }
+            setUser(data.usuario);
 
             if (data.usuario.step > 2) {
                 navigate("/home", { replace: true })

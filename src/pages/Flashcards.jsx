@@ -299,13 +299,13 @@ export default function Flashcards() {
           <div className={`card ${isFlipped ? "flip" : ""}`}>
 
             <div className="card-front shadow-[0_10px_40px_rgba(0,0,0,0.08)] text-center p-8 bg-default-gradient rounded-lg">
-              <span className="text-3xl">
+              <span className="text-2xl">
                 {frases[index].texto_nativo}
               </span>
             </div>
 
             <div className="card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] text-center p-8 rounded-lg">
-              <span className="text-3xl text-slate-700">
+              <span className="text-2xl text-slate-700">
                 {showBackContent && frases[index].texto_traduzido}
               </span>
             </div>

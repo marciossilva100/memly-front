@@ -19,7 +19,7 @@ export default function () {
     useEffect(() => {
 
         /*Teste*/
-        // setResponse(' when an unknown printer took a galley of  It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.');
+        // setQuestion(' when an unknown printer took a galley of  It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.');
         // return
 
         if (jaBuscou.current) return;
@@ -147,15 +147,15 @@ export default function () {
                                     playAudio(question, user);
                                 }} className="
                      
-                    px-4 flex
-                    py-2
-                    rounded-md
-                    bg-slate-400
-                    text-white
-                    text-sm
-                    hover:bg-blue-600
-                    transition
-                    " >
+                                px-4 flex
+                                py-2
+                                rounded-md
+                                bg-slate-400
+                                text-white
+                                text-sm
+                                hover:bg-blue-600
+                                transition
+                                " >
                                     <Volume className="text-sm   w-5 h-5 p-0" />
 
                                     Ouvir
@@ -171,20 +171,20 @@ export default function () {
                                 <textarea
 
                                     onChange={(e) => setAnswer(e.target.value)}
+                                    placeholder="Deixe sua resposta"
                                     className="
-                            w-full
-                                mb-6
-                                text-lg
-                                focus:outline-none focus:ring-0 
-                                toutline-none
-                                h-32
-                                pt-6
-                                text-center
-                                focus:outline-none
-                            
-                                rounded-lg border border-gray-300
-                                resize-none transition
-                            "
+                                    w-full
+                                    mb-6
+                                    text-lg
+                                    focus:outline-none focus:ring-0 
+                                    toutline-none
+                                    h-32
+                                    pt-6
+                                    text-center
+                                    focus:outline-none
+                                    rounded-lg border border-gray-300
+                                    resize-none transition
+                                "
                                 />
                             </div>
 

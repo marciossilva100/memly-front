@@ -34,6 +34,7 @@ export default function ModalTreino({
   // =========================
   useEffect(() => {
 
+
     if (!openTreino) return;
 
     fetch("https://zaldemy.com/controller/treino.php", {
@@ -314,7 +315,7 @@ export default function ModalTreino({
 
             <span className="text-lg flex items-center">
               Treino diário com IA
-              {user.plan === 2 &&(<Crown size={18} className="ms-2 text-yellow-500" />)}
+              {user.plano === 2 &&(<Crown size={18} className="ms-2 text-yellow-500" />)}
             </span>
 
           </div>

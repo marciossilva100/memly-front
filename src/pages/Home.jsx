@@ -125,8 +125,8 @@ export default function Home() {
                         " onClick={() => setOpen(true)}>
                     Adicionar categoria
                 </button>
-                <hr />
-                <div className=''>
+                <hr className='w-full'/>
+                <div className=" ">
                     <div className='flex  left-0   w-full justify-center py-1'>
                         {/*  <a href="/leituradigital"> <div className='bg-blue-400 rounded-full p-3 flex justify-center items-center'> */}
 

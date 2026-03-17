@@ -1,15 +1,15 @@
 import React from 'react';
 import imgZaldemy from "../assets/img/zaldemy.png"
 
-import { 
-  Sparkles, 
-  Infinity, 
-  FileText, 
-  MessageSquare, 
-  CheckCircle, 
-  BarChart3, 
-  Zap, 
-  Brain, 
+import {
+  Sparkles,
+  Infinity,
+  FileText,
+  MessageSquare,
+  CheckCircle,
+  BarChart3,
+  Zap,
+  Brain,
   ChevronRight,
   Star,
   Shield,
@@ -24,7 +24,7 @@ import {
   X
 } from 'lucide-react';
 
-const PremiumModal = ({ isOpen, onClose }) => {
+const PremiumModal = ({ isOpen, onClose, setOpenFrase }) => {
   const premiumFeatures = [
     {
       icon: <Infinity className="w-5 h-5" />,
@@ -63,19 +63,25 @@ const PremiumModal = ({ isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Overlay com blur */}
-      <div 
+      <div
         className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
-        onClick={onClose}
+        onClick={() => {
+          onClose();
+          setOpenFrase(true);
+        }}
       />
-      
+
       {/* Container do Modal */}
       <div className="flex min-h-full items-center justify-center p-3 mt-3">
         {/* Card do Modal */}
         <div className="relative bg-white rounded-3xl shadow-2xl max-w-4xl w-full h-[calc(100vh-30px)] overflow-y-auto scrollbar-hide ">
-          
+
           {/* Botão de fechar */}
           <button
-            onClick={onClose}
+            onClick={() => {
+              onClose();
+              setOpenFrase(true);
+            }}
             className="fixed top-3 right-3 z-10 bg-white/90 hover:bg-white text-gray-500 hover:text-gray-700 rounded-full p-2 shadow-lg transition-all hover:scale-110 border border-gray-200"
           >
             <X className="w-5 h-5" />
@@ -83,13 +89,13 @@ const PremiumModal = ({ isOpen, onClose }) => {
 
           {/* Conteúdo do Modal */}
           <div className="bg-gradient-to-br from-[#4cb8c4]/10 via-blue-50 to-[#085078]/10 rounded-3xl">
-            
+
 
             {/* Main Content */}
             <div className="px-2 py-8">
               {/* Cabeçalho da seção Premium */}
               <div className="text-center mb-8">
-              
+
                 <div className="inline-flex items-center bg-[#4cb8c4]/10 text-[#085078] px-4 py-2 rounded-full mb-4 border border-[#4cb8c4]/20 shadow-sm">
                   <Gem className="w-4 h-4 mr-2 text-[#4cb8c4]" />
                   <span className="text-sm font-semibold">PLANO PREMIUM ZALDEMY+</span>
@@ -103,9 +109,9 @@ const PremiumModal = ({ isOpen, onClose }) => {
                 <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                   Tenha acesso ilimitado a todos os recursos e transforme seu vocabulário em conhecimento fluente
                 </p>
-                   <button className="bg-gradient-to-r from-[#4cb8c4] to-[#085078] hover:from-[#3da5b0] hover:to-[#064060] text-white px-4 py-2 rounded-lg text-lg font-semibold transition-all shadow-md hover:shadow-lg mt-4">
-                    Começar grátis
-                  </button>
+                <button className="bg-gradient-to-r from-[#4cb8c4] to-[#085078] hover:from-[#3da5b0] hover:to-[#064060] text-white px-4 py-2 rounded-lg text-lg font-semibold transition-all shadow-md hover:shadow-lg mt-4">
+                  Começar grátis
+                </button>
               </div>
 
               {/* Card do Plano Premium */}
@@ -114,7 +120,7 @@ const PremiumModal = ({ isOpen, onClose }) => {
                 <div className="absolute -top-4 -left-4 w-24 h-24 bg-[#4cb8c4] rounded-full opacity-20 blur-2xl"></div>
                 <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-[#085078] rounded-full opacity-20 blur-2xl"></div>
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-[#60a5fa] rounded-full opacity-10 blur-3xl"></div>
-                
+
                 <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-2 border-[#4cb8c4]/20 relative">
                   {/* Badge de destaque */}
                   <div className="bg-gradient-to-r from-[#4cb8c4] to-[#085078] text-white text-center py-2 text-xs font-semibold relative overflow-hidden">
@@ -124,7 +130,7 @@ const PremiumModal = ({ isOpen, onClose }) => {
                       EXPERIÊNCIA COMPLETA • SEM ANÚNCIOS • CONTEÚDO PERSONALIZADO
                     </span>
                   </div>
-                  
+
                   <div className="p-6 lg:p-8">
                     {/* Preço e benefício principal */}
                     <div className="flex flex-col lg:flex-row items-center justify-between gap-4 mb-6">
@@ -138,7 +144,7 @@ const PremiumModal = ({ isOpen, onClose }) => {
                           <p className="text-sm text-gray-600">Economize até 80% comparado a outros apps</p>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center gap-3 bg-[#4cb8c4]/10 px-5 py-2 rounded-xl border border-[#4cb8c4]/20">
                         <Target className="w-5 h-5 text-[#085078]" />
                         <div>
@@ -156,7 +162,7 @@ const PremiumModal = ({ isOpen, onClose }) => {
                         </div>
                         <h3 className="font-semibold text-[#085078] text-sm">Áudio com qualidade superior</h3>
                       </div>
-                      
+
                       <div className="grid sm:grid-cols-2 gap-3">
                         {/* Plano Free */}
                         <div className="bg-white/60 rounded-lg p-3 border border-gray-200">
@@ -193,7 +199,7 @@ const PremiumModal = ({ isOpen, onClose }) => {
                           </div>
                         </div>
                       </div>
-                      
+
                       <p className="text-xs text-gray-500 mt-2 italic">
                         ✨ No plano free você já tem acesso a pronúncias claras. No Premium, suas palavras ganham vida com vozes ultra-realistas do ElevenLabs!
                       </p>
@@ -202,8 +208,8 @@ const PremiumModal = ({ isOpen, onClose }) => {
                     {/* Grid de funcionalidades Premium */}
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
                       {premiumFeatures.map((feature, index) => (
-                        <div 
-                          key={index} 
+                        <div
+                          key={index}
                           className="group p-3 bg-gradient-to-br from-gray-50 to-white rounded-xl border border-gray-200 hover:border-[#4cb8c4] hover:shadow-md transition-all"
                         >
                           <div className="flex items-start space-x-2">
@@ -246,7 +252,7 @@ const PremiumModal = ({ isOpen, onClose }) => {
                       <span>Ativar Zaldemy+ por apenas US$ 5/mês</span>
                       <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </button>
-                    
+
                     {/* Selos de garantia */}
                     <div className="flex flex-wrap justify-center gap-4">
                       <div className="flex items-center text-xs text-gray-500">
@@ -275,7 +281,7 @@ const PremiumModal = ({ isOpen, onClose }) => {
                   <span className="text-[#4cb8c4] font-bold text-sm">★★★★★</span>
                   <span className="text-gray-500 text-xs">(4.8)</span>
                 </div>
-                
+
                 <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl mx-auto">
                   <div className="bg-white/50 backdrop-blur-sm rounded-xl p-3 border border-[#4cb8c4]/20">
                     <p className="text-xl font-bold text-[#085078]">105</p>

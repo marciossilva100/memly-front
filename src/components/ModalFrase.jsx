@@ -108,6 +108,10 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
 
     }
 
+    useEffect(()=>{
+        console.log(user)
+    },[])
+
     if (error) {
         console.log(error)
     }

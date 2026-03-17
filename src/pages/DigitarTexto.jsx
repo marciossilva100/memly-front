@@ -305,7 +305,7 @@ export default function DigitarTexto() {
 
                             <div className="rounded-lg card-front bg-default-gradient shadow-[0_10px_40px_rgba(0,0,0,0.08)] p-4 text-center">
 
-                                <span className="text-3xl">
+                                <span className="text-2xl">
                                     {frases[index].texto_nativo}
                                 </span>
 
@@ -313,7 +313,7 @@ export default function DigitarTexto() {
 
                             <div className="rounded-lg card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] p-4 text-center">
 
-                                <span className="text-3xl text-avocado-700">
+                                <span className="text-2xl text-avocado-700">
                                     {showBackContent && frases[index].texto_traduzido}
                                 </span>
 

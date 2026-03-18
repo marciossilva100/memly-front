@@ -29,15 +29,15 @@ export default function Login({ setTitulo }) {
     })
     const [erro, setErro] = useState('')
 
-    useEffect(() => {
-        if (!user) return;
+    // useEffect(() => {
+    //     if (!user) return;
 
-        if (user.step > 2) {
-            navigate("/home", { replace: true });
-        } else {
-            navigate("/escolheridioma");
-        }
-    }, [user]);
+    //     if (user.step > 2) {
+    //         navigate("/home", { replace: true });
+    //     } else {
+    //         navigate("/escolheridioma");
+    //     }
+    // }, [user]);
 
     useEffect(() => {
         setTitulo('Login')
@@ -116,17 +116,19 @@ export default function Login({ setTitulo }) {
                 console.log("ANTES DO CHECKAUTH");
                 console.log('dados ', data);
 
-                //await checkAuth();
-                setUser({
-                    id: data.user_id,
-                    name: data.nome,
-                    email: data.email,
-                    step: data.step
-                });
+                await checkAuth();
 
-                setTimeout(() => {
-                    checkAuth();
-                }, 0);
+                //await checkAuth();
+                // setUser({
+                //     id: data.user_id,
+                //     name: data.nome,
+                //     email: data.email,
+                //     step: data.step
+                // });
+
+                // setTimeout(() => {
+                //     checkAuth();
+                // }, 0);
                 // if (data.step > 2) {
                 //     setFinishStep(true)
 
@@ -200,12 +202,13 @@ export default function Login({ setTitulo }) {
             }
 
             localStorage.setItem("token", data.token);
+            await checkAuth();
 
-            setUser(data.usuario);
+           // setUser(data.usuario);
 
-            setTimeout(() => {
-                checkAuth();
-            }, 0);
+            // setTimeout(() => {
+            //     checkAuth();
+            // }, 0);
 
             console.log('dados ', data);
 

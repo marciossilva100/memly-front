@@ -251,11 +251,11 @@ function App() {
   return (
     <GoogleOAuthProvider clientId="1055075063152-tkobce7c2j9eq1t4doi0419votjlemis.apps.googleusercontent.com">
       <AuthProvider>
-        <AuthGate>
-          <BrowserRouter>
+        <BrowserRouter>
+          <AuthGate>
             <Layout titulo={titulo} setTitulo={setTitulo} />
-          </BrowserRouter>
-        </AuthGate>
+          </AuthGate>
+        </BrowserRouter>
       </AuthProvider>
     </GoogleOAuthProvider>
   )

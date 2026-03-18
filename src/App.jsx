@@ -7,8 +7,10 @@ import { registerSW } from "virtual:pwa-register";
 import AuthGate from "./components/AuthGate";
 import Login from './pages/Login'
 import Cadastro from './pages/Cadastro'
+import FrasesGeral from './pages/FrasesGeral'
 import EsqueciSenha from './pages/EsqueciSenha'
 import EscolherIdiomaNativo from './pages/EscolherIdiomaNativo'
+import ListCategoria from './pages/listCategorias';
 import EscolherIdiomaAprender from './pages/EscolherIdiomaAprender'
 import Header from './includes/Header'
 import ReferenciaUsuario from './pages/ReferenciaUsuário'
@@ -216,6 +218,24 @@ function Layout({ titulo, setTitulo }) {
           element={
             <PrivateRoute>
               <BookDetails />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/listcategorias"
+          element={
+            <PrivateRoute>
+              <ListCategoria />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/frasesgeral/:id"
+          element={
+            <PrivateRoute>
+              <FrasesGeral />
             </PrivateRoute>
           }
         />

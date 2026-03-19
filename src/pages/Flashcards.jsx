@@ -1,6 +1,8 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { playAudio } from "../utils/audioPlayer";
+import { Volume } from "lucide-react";
+
 
 // import { gerarAudio } from "../services/elevenlabs";
 import { useAuth } from "../context/AuthContext";
@@ -292,9 +294,9 @@ export default function Flashcards() {
 
       </div>
 
-      <div className=" flex justify-center pt-8 h-[50%]">
+      <div className="h-dvh  justify-center pt-8 h-20">
 
-        <div className="perspective flashcard justify-center flex">
+        <div className="perspective flashcard justify-center flex h-[300px]">
 
           <div className={`card ${isFlipped ? "flip" : ""}`}>
 
@@ -313,6 +315,17 @@ export default function Flashcards() {
           </div>
 
         </div>
+        {isFlipped && (
+          <div className="text-center flex justify-center mt-5">
+            <button onClick={(e) => {
+              e.preventDefault();
+              playAudio(frases[index].texto_traduzido, user);
+            }} className="px-4 py-2 rounded-md bg-slate-400 text-white text-sm hover:bg-blue-500 transition flex">
+              <Volume className="w-5 h-5" />
+              Ouvir
+            </button>
+          </div>
+        )}
 
         {!isFlipped && (
 
@@ -358,30 +371,30 @@ export default function Flashcards() {
 
         )}
 
-        {isFlipped && (
 
-          <div className="flex fixed bottom-6 items-center justify-center gap-3 w-full px-6">
-
-            <button
-              onClick={() => nextCard(false)}
-              className="bg-red-400 text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full"
-            >
-              Não lembrei
-            </button>
-
-            <button
-              onClick={() => nextCard(true)}
-              className="bg-[#4cb8c4] text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full"
-            >
-              Lembrei
-            </button>
-
-          </div>
-
-        )}
 
       </div>
+      {isFlipped && (
 
+        <div className="flex sticky bottom-6 items-center justify-center gap-3 w-full ">
+
+          <button
+            onClick={() => nextCard(false)}
+            className="bg-red-400 text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full"
+          >
+            Não lembrei
+          </button>
+
+          <button
+            onClick={() => nextCard(true)}
+            className="bg-[#4cb8c4] text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full"
+          >
+            Lembrei
+          </button>
+
+        </div>
+
+      )}
     </div>
 
   );

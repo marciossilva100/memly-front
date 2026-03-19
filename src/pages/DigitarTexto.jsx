@@ -404,13 +404,19 @@ export default function DigitarTexto() {
 
                 !diff.isCorrect ? (
 
-                    <div className="sticky bottom-6 w-full flex justify-center gap-3 ">
+                    <div className=" flex sticky bottom-6 w-full flex justify-center gap-3 ">
 
                         <button
                             onClick={repeatCard}
                             className="w-full bg-red-400 text-white text-lg  py-3 rounded-full shadow-lg"
                         >
                             Tentar novamente
+                        </button>
+                        <button
+                            onClick={nextCard}
+                            className="bg-slate-500 text-white text-lg  py-3 rounded-full shadow-lg px-9 "
+                        >
+                            Pular
                         </button>
 
                     </div>

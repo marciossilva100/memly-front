@@ -141,7 +141,7 @@ export default function Home() {
                                 <img src={imgBook} alt="" width={40} />
                             </div>
                         </a>
-                        <a href="/leituradigital">
+                        <a href="/metricas">
                             <div className=' p-3 flex justify-center items-center'>
                                 {/*  <BookOpen className='text-white' /> */}
                                 <img src={imgEstatistica} alt="" width={40} />

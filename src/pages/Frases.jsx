@@ -102,14 +102,14 @@ export default function Frases() {
     return (
 
         <div className="px-5 h-dvh flex flex-col">
-                <div className="relative mb-4 mt-4">
-                    <div
-                        className="left-0  cursor-pointer"
-                        onClick={() => navigate(-1)}
-                    >
-                        <i className="bi bi-arrow-left text-2xl"></i>
-                    </div>
+            <div className="relative mb-4 mt-4">
+                <div
+                    className="left-0  cursor-pointer"
+                    onClick={() => navigate(-1)}
+                >
+                    <i className="bi bi-arrow-left text-2xl"></i>
                 </div>
+            </div>
             <div className="flex-1 flex flex-col">
 
                 <div className={`mt-4 `}>
@@ -165,7 +165,7 @@ export default function Frases() {
                     text-lg
                     hover:bg-blue-600
                     transition
-                    " 
+                    "
                     onClick={() => setOpenFrase(true)}>
                     Adicionar
                 </button>
@@ -175,7 +175,12 @@ export default function Frases() {
                     setIsPremiumModalOpen(true);
                     setOpenFrase(false);
                 }} />
-            <PremiumModal isOpen={isPremiumModalOpen} setIsPremiumModalOpen={setIsPremiumModalOpen} onClose={() => setIsPremiumModalOpen(false)} setOpenPhrase={setOpenFrase} />
+            <PremiumModal isOpen={isPremiumModalOpen} setIsPremiumModalOpen={setIsPremiumModalOpen}
+                onClose={() => {
+                    setIsPremiumModalOpen(false);
+                    setOpenFrase(true)
+                }
+                } setOpenPhrase={setOpenFrase} />
 
         </div>
     );

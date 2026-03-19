@@ -30,6 +30,7 @@ import EnglishVideos from './pages/EnglishVideos'
 import imgMemly from "./assets/img/mascote-memly.png"
 import imgChapeuFormatura from "./assets/img/chapeu_formatura.png"
 import PremiumPlan from './components/PremiumModal';
+import Metricas from './pages/Metricas';
 
 
 /* function setRealViewportHeight() {
@@ -218,6 +219,16 @@ function Layout({ titulo, setTitulo }) {
           element={
             <PrivateRoute>
               <FrasesGeral />
+            </PrivateRoute>
+          }
+        />
+
+        
+        <Route
+          path="/metricas"
+          element={
+            <PrivateRoute>
+              <Metricas />
             </PrivateRoute>
           }
         />

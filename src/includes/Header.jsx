@@ -231,9 +231,9 @@ export default function Header({ titulo }) {
                         <p class="text-md font-semibold text-gray-800">
                             Olá, {user?.name?.split(' ')[0]}
                         </p>
-                        <p class="text-sm text-gray-500">
+                        {/* <p class="text-sm text-gray-500">
                             {user.email}
-                        </p>
+                        </p> */}
                     </div>
                 </div>
 

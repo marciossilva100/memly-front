@@ -5,61 +5,63 @@ export default function BookDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [book, setBook] = useState(null);
+  const [readerUrl, setReaderUrl] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchBook() {
-      const res = await fetch(
-        `https://openlibrary.org/works/${id}.json`
-      );
-      const data = await res.json();
-      setBook(data);
-      setLoading(false);
+    async function fetchReader() {
+      try {
+        const res = await fetch(
+          `https://openlibrary.org/works/${id}/editions.json`
+        );
+        const data = await res.json();
+
+        // procura uma edição que tenha leitura disponível
+        const edition = data.entries.find(e => e.ia);
+
+        if (edition && edition.ia?.length > 0) {
+          setReaderUrl(`https://archive.org/embed/${edition.ia[0]}`);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
     }
 
-    fetchBook();
+    fetchReader();
   }, [id]);
 
   if (loading) {
     return (
-      <div className=" bg-gray-900 text-white flex items-center justify-center">
+      <div className="bg-gray-900 text-white flex items-center justify-center h-screen">
         Loading...
       </div>
     );
   }
 
-  const description =
-    typeof book.description === "string"
-      ? book.description
-      : book.description?.value;
-
   return (
-    <div className=" bg-gray-900 text-white px-6  overflow-y-auto scrollbar-hide">
-      <div className="relative text-left mb-3 w-full mt-3">
-        <div
-          className=" cursor-pointer"
-          onClick={() => navigate(-1)}
-        >
+    <div className="bg-gray-900 text-white h-screen flex flex-col">
+      
+      {/* Botão voltar */}
+      <div className="p-4">
+        <div onClick={() => navigate(-1)} className="cursor-pointer">
           <i className="bi bi-arrow-left text-xl"></i>
         </div>
       </div>
-      <div className="max-w-3xl mx-auto h-[calc(100vh-50px)] overflow-y-auto scrollbar-hide">
 
-        <h1 className="text-xl font-bold mb-4">
-          {book.title}
-        </h1>
-
-        {description && (
-          <p className="text-gray-300 leading-relaxed">
-            {description}
-          </p>
-        )}
-
-        {!description && (
-          <p className="text-gray-500">
-            No description available.
-          </p>
+      {/* Leitor */}
+      <div className="flex-1">
+        {readerUrl ? (
+          <iframe
+            src={readerUrl}
+            className="w-full h-full"
+            allowFullScreen
+          />
+        ) : (
+          <div className="flex items-center justify-center h-full text-gray-400">
+            Livro não disponível para leitura 😢
+          </div>
         )}
       </div>
     </div>

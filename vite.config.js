@@ -10,6 +10,8 @@ export default defineConfig({
       registerType: "autoUpdate",
 
       workbox: {
+        clientsClaim: true,
+        skipWaiting: true,
         maximumFileSizeToCacheInBytes: 5000000,
 
         globPatterns: [
@@ -18,9 +20,18 @@ export default defineConfig({
 
         runtimeCaching: [
 
+          // 🔥 API SEM CACHE (SEMPRE PRIMEIRO)
+          {
+            urlPattern: ({ url }) =>
+              url.hostname === "api.zaldemy.com",
+
+            handler: "NetworkOnly"
+          },
+
           // CACHE DE IMAGENS
           {
-            urlPattern: ({ request }) => request.destination === "image",
+            urlPattern: ({ request }) =>
+              request.destination === "image",
 
             handler: "CacheFirst",
 
@@ -37,7 +48,8 @@ export default defineConfig({
           // CACHE DO ÁUDIO TTS
           {
             urlPattern: ({ url }) =>
-              url.pathname.includes("/api/controller/treino.php") &&
+              url.hostname === "api.zaldemy.com" &&
+              url.pathname.includes("/controller/treino.php") &&
               url.searchParams.get("action") === "voice",
 
             handler: "CacheFirst",

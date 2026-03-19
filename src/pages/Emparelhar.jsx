@@ -3,7 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { playAudio } from "../utils/audioPlayer";
 
-
 export default function JogoFrases() {
   const { id, mode } = useParams();
 
@@ -21,7 +20,7 @@ export default function JogoFrases() {
 
   const [sucessoEsquerdaId, setSucessoEsquerdaId] = useState(null);
   const [sucessoDireitaId, setSucessoDireitaId] = useState(null);
-  const [idPhrases, setIdPhrases] = useState([])
+  const [idPhrases, setIdPhrases] = useState([]);
 
   const [bloqueado, setBloqueado] = useState(false);
 
@@ -30,57 +29,37 @@ export default function JogoFrases() {
   const [erros, setErros] = useState(0);
 
   const [finalizado, setFinalizado] = useState(false);
-  const { user, setUser } = useAuth();
+  const { user } = useAuth();
 
   const navigate = useNavigate();
 
   useEffect(() => {
-
     if (finalizado) {
       const timer = setTimeout(() => {
         // navigate("/home");
-      }, 3000); // 3000ms = 3 segundos
+      }, 3000);
 
-      return () => clearTimeout(timer); // limpa o timer se o componente desmontar
+      return () => clearTimeout(timer);
     }
-
-  }, [navigate, finalizado]);
+  }, [finalizado]);
 
   useEffect(() => {
     carregarFrases();
   }, [id, mode]);
 
-  useEffect(() => {
-
-    // if(totalPerguntas < 1)
-    //   navigate(`/home`)
-
-    // return
-  }, [idPhrases]);
-
   async function trainingUpdate(updatedList, actionToSend) {
     try {
-      const res = await fetch("https://zaldemy.com/controller/treino.php", {
+      await fetch("https://zaldemy.com/controller/treino.php", {
         method: "POST",
         headers: {
-          "Authorization": "Bearer " + localStorage.getItem("token")
+          Authorization: "Bearer " + localStorage.getItem("token"),
         },
         body: JSON.stringify({
           action: actionToSend,
           updatedList: updatedList,
-          category_id: id
-        })
+          category_id: id,
+        }),
       });
-
-      const data = await res.json();
-
-      if (!data.success) {
-        console.log(data.message);
-      }
-
-      return
-
-
     } catch (error) {
       console.log(error);
     }
@@ -93,7 +72,7 @@ export default function JogoFrases() {
     fetch(`https://zaldemy.com/${endpoint}`, {
       method: "POST",
       headers: {
-        "Authorization": "Bearer " + localStorage.getItem("token")
+        Authorization: "Bearer " + localStorage.getItem("token"),
       },
       body: JSON.stringify({
         action: mode,
@@ -102,17 +81,13 @@ export default function JogoFrases() {
     })
       .then((res) => res.json())
       .then((data) => {
-
         setTodasFrases(data);
         setIndiceAtual(0);
 
         const lote = data.slice(0, 4);
 
-        const ids = data.map(item => item.id);
-        setIdPhrases(ids);
-
+        setIdPhrases(data.map((item) => item.id));
         setTotalPerguntas(data.length);
-
 
         setAcertos(0);
         setErros(0);
@@ -122,19 +97,15 @@ export default function JogoFrases() {
         setTraduzidas(shuffleArray(lote));
 
         resetEstados();
-
-
-
       });
   }
 
   async function carregarProximoLote() {
-
     const proximoIndice = indiceAtual + 4;
     const lote = todasFrases.slice(proximoIndice, proximoIndice + 4);
 
     if (lote.length === 0) {
-      await trainingUpdate(idPhrases, 'trainee_finish');
+      await trainingUpdate(idPhrases, "trainee_finish");
       setFinalizado(true);
       return;
     }
@@ -156,53 +127,25 @@ export default function JogoFrases() {
     setSucessoDireitaId(null);
   }
 
-  function falarTexto(texto, callback) {
-
-    if (!texto) {
-      if (callback) callback();
-      return;
-    }
-
-    const url =
-      "/api/controller/treino.php?action=voice" +
-      "&text=" + encodeURIComponent(texto) +
-      "&lang=" + encodeURIComponent(user.learning_language);
-
-    const audio = new Audio(url);
-
-    audio.onended = () => {
-      if (callback) callback();
-    };
-
-    audio.onerror = () => {
-      if (callback) callback();
-    };
-
-    audio.play().catch(() => {
-      if (callback) callback();
-    });
-  }
-
   useEffect(() => {
     if (!selecionadaEsquerda || !selecionadaDireita || bloqueado) return;
 
     const acertou = selecionadaEsquerda.id === selecionadaDireita.id;
 
     if (acertou) {
-
       setSucessoEsquerdaId(selecionadaEsquerda.id);
       setSucessoDireitaId(selecionadaDireita.id);
       setBloqueado(true);
 
       setAcertos((prev) => prev + 1);
 
-      // falarTexto(selecionadaDireita.texto_traduzido, () => {
-      //   finalizarAcerto();
-      // });
-      playAudio(selecionadaDireita.texto_traduzido,user)
+      playAudio(selecionadaDireita.texto_traduzido, user);
 
+      // 🔥 AQUI ESTÁ A CORREÇÃO
+      setTimeout(() => {
+        finalizarAcerto();
+      }, 600);
     } else {
-
       setErroEsquerdaId(selecionadaEsquerda.id);
       setErroDireitaId(selecionadaDireita.id);
 
@@ -212,11 +155,9 @@ export default function JogoFrases() {
         resetEstados();
       }, 450);
     }
-
   }, [selecionadaEsquerda, selecionadaDireita]);
 
   function finalizarAcerto() {
-
     const novoNativas = nativas.filter(
       (item) => item.id !== selecionadaEsquerda.id
     );
@@ -243,20 +184,19 @@ export default function JogoFrases() {
   function mensagemFinal() {
     if (porcentagem === 100) return "🏆 Parabéns! Você é um mestre!";
     if (porcentagem >= 80) return "🔥 Excelente desempenho!";
-    if (porcentagem >= 60) return "👏 Muito bom! Continue assim!";
-    return "💪 Continue treinando, você vai evoluir!";
+    if (porcentagem >= 60) return "👏 Muito bom!";
+    return "💪 Continue treinando!";
   }
 
   if (totalPerguntas < 1) {
     navigate(`/home`);
-    return
+    return null;
   }
 
   if (finalizado) {
     return (
       <div className="h-dvh flex items-center justify-center bg-gradient-to-r from-[#4cb8c4] to-[#085078] px-10">
         <div className="bg-white p-10 rounded-2xl shadow-2xl text-center max-w-md">
-
           <p className="text-xl mb-4">{mensagemFinal()}</p>
 
           <div className="text-5xl font-extrabold text-indigo-600 mb-2">
@@ -273,14 +213,6 @@ export default function JogoFrases() {
           >
             Voltar ao início
           </button>
-
-          {/* <button
-            onClick={carregarFrases}
-            className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-          >
-            🔁 Jogar novamente
-          </button> */}
-
         </div>
       </div>
     );
@@ -288,72 +220,56 @@ export default function JogoFrases() {
 
   return (
     <div className="px-6 pt-4 h-screen grid grid-rows-[auto,1fr] overflow-hidden bg-gradient-to-r from-[#4cb8c4] to-[#085078]">
-
-      {/* HEADER */}
-      <div className="relative  mb-4 text-left">
-        <div
-          className=" cursor-pointer"
-          onClick={() => navigate(-1)}
-        >
-          <i className="bi bi-arrow-left text-2xl"></i>
+      <div className="mb-4">
+        <div onClick={() => navigate(-1)} className="cursor-pointer">
+          ← Voltar
         </div>
       </div>
 
-      {/* AREA DO JOGO */}
-      <div className="flex justify-center items-stretch">
-
-        <div className="w-full max-w-5xl h-full">
-
-          <div className="grid grid-cols-2 gap-8 h-full">
-
-            {/* NATIVO */}
-            <div className="grid grid-rows-4 gap-3 h-full">
-              {nativas.map((frase) => (
-                <button
-                  key={frase.id}
-                  disabled={bloqueado}
-                  onClick={() => setSelecionadaEsquerda(frase)}
-                  className={`
-                  h-full w-full flex items-center justify-center p-4 rounded-lg border transition shadow-xl
-                  ${sucessoEsquerdaId === frase.id
-                      ? "bg-green-100 border-green-300"
+      <div className="flex justify-center">
+        <div className="w-full max-w-5xl grid grid-cols-2 gap-8 h-full">
+          <div className="grid grid-rows-4 gap-3">
+            {nativas.map((frase) => (
+              <button
+                key={frase.id}
+                disabled={bloqueado}
+                onClick={() => setSelecionadaEsquerda(frase)}
+                className={`p-4 rounded-lg border
+                  ${
+                    sucessoEsquerdaId === frase.id
+                      ? "bg-green-100"
                       : erroEsquerdaId === frase.id
-                        ? "bg-red-100 border-red-300"
-                        : selecionadaEsquerda?.id === frase.id
-                          ? "bg-blue-100 border-blue-300"
-                          : "bg-white hover:bg-slate-100"
-                    }
-                `}
-                >
-                  {frase.texto_nativo}
-                </button>
-              ))}
-            </div>
+                      ? "bg-red-100"
+                      : selecionadaEsquerda?.id === frase.id
+                      ? "bg-blue-100"
+                      : "bg-white"
+                  }`}
+              >
+                {frase.texto_nativo}
+              </button>
+            ))}
+          </div>
 
-            {/* TRADUZIDO */}
-            <div className="grid grid-rows-4 gap-3 h-full">
-              {traduzidas.map((frase) => (
-                <button
-                  key={frase.id}
-                  disabled={bloqueado}
-                  onClick={() => setSelecionadaDireita(frase)}
-                  className={`
-                  h-full w-full flex items-center justify-center p-4 rounded-lg border transition
-                  ${sucessoDireitaId === frase.id
-                      ? "bg-green-100 border-green-300"
+          <div className="grid grid-rows-4 gap-3">
+            {traduzidas.map((frase) => (
+              <button
+                key={frase.id}
+                disabled={bloqueado}
+                onClick={() => setSelecionadaDireita(frase)}
+                className={`p-4 rounded-lg border
+                  ${
+                    sucessoDireitaId === frase.id
+                      ? "bg-green-100"
                       : erroDireitaId === frase.id
-                        ? "bg-red-100 border-red-300"
-                        : selecionadaDireita?.id === frase.id
-                          ? "bg-blue-100 border-blue-300"
-                          : "bg-white hover:bg-slate-100"
-                    }
-                `}
-                >
-                  {frase.texto_traduzido}
-                </button>
-              ))}
-            </div>
-
+                      ? "bg-red-100"
+                      : selecionadaDireita?.id === frase.id
+                      ? "bg-blue-100"
+                      : "bg-white"
+                  }`}
+              >
+                {frase.texto_traduzido}
+              </button>
+            ))}
           </div>
         </div>
       </div>

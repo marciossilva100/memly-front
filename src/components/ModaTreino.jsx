@@ -57,7 +57,7 @@ export default function ModalTreino({
         const newState = {
           learn: data.data?.[0]?.total ?? 0,
           repeat: repeat,
-          repeat_traine: data.data?.[2]?.total ?? 0,
+          repeat_traine: data.data?.[2]?.total ?? 0, // em_treino
           review: data.data?.[3]?.total ?? 0,
           traine: data.data?.[1]?.segundos_restantes ?? 0
         };
@@ -77,6 +77,12 @@ export default function ModalTreino({
   // TIMER DE TREINO
   // =========================
   useEffect(() => {
+
+    if (countPhrases.repeat_traine > 0) {
+      setMensagem(<span className="text-base">Repetir</span>);
+      setWaiting(false);
+      return;
+    }
 
     if (!countPhrases.traine || countPhrases.repeat < 1) {
       setMensagem(<span className="text-base">Repetir</span>);
@@ -315,7 +321,7 @@ export default function ModalTreino({
 
             <span className="text-lg flex items-center">
               Treino diário com IA
-              {user.plano === 2 &&(<Crown size={18} className="ms-2 text-yellow-500" />)}
+              {user.plano === 2 && (<Crown size={18} className="ms-2 text-yellow-500" />)}
             </span>
 
           </div>

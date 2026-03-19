@@ -34,6 +34,7 @@ export default function ListCategoria() {
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
+    const [contador, setContador] = useState(0);
     const navigate = useNavigate();
 
     const carregarCategorias = (pageAtual = 1) => {
@@ -94,6 +95,19 @@ export default function ListCategoria() {
             .then(data => {
                 if(data.message === 'Categoria já existe')
                     setOpenIncorporar(true)
+
+                setOpenModalSucesso(true)
+
+
+                if(data.inseridas === 0){
+                    setMsgModalSucesso("Categoria e frases já existem em sua lista.")
+                }
+
+                if(data.inseridas > 0){
+                    setMsgModalSucesso("Adicionado")
+                }
+
+                setContador(contador + 1);
 
             })
             .finally(() => {
@@ -184,7 +198,7 @@ export default function ListCategoria() {
 
             <ModalIA setOpenTreinoIA={setOpenTreinoIA} openTreinoIA={openTreinoIA} />
             <ModalSucesso msg={msgModalSucesso} openModalSucesso={openModalSucesso} setOpenModalSucesso={setOpenModalSucesso} />
-            <ModalIncorporarFrases  openIncorporar={openIncorporar} setOpenIncorporar={setOpenIncorporar}/>
+            <ModalIncorporarFrases  openIncorporar={openIncorporar} setOpenIncorporar={setOpenIncorporar} />
         </div>
     )
 }

@@ -1,11 +1,10 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import imgCoruja from "../assets/img/coruja.png"
 import imgGlobe from "../assets/img/globe.png"
 import imgMemly from "../assets/img/mascote-memly.png"
-import { idiomas } from "../data/idiomas"
-import { useAuth } from "../context/AuthContext";
 import imgZaldemy from "../assets/img/zaldemy.png"
+import { useAuth } from "../context/AuthContext";
 
 import {
     Plus,
@@ -15,10 +14,28 @@ import {
     HelpCircle,
     Mail,
     Crown,
+    LogOut,
     Search
 } from "lucide-react";
 
-
+// 🌍 Bandeiras
+const flags = {
+    pt: "https://flagcdn.com/w40/br.png",
+    en: "https://flagcdn.com/w40/us.png",
+    es: "https://flagcdn.com/w40/es.png",
+    fr: "https://flagcdn.com/w40/fr.png",
+    de: "https://flagcdn.com/w40/de.png",
+    it: "https://flagcdn.com/w40/it.png",
+    zh: "https://flagcdn.com/w40/cn.png",
+    ja: "https://flagcdn.com/w40/jp.png",
+    ru: "https://flagcdn.com/w40/ru.png",
+    ar: "https://flagcdn.com/w40/sa.png",
+    hi: "https://flagcdn.com/w40/in.png",
+    ko: "https://flagcdn.com/w40/kr.png",
+    nl: "https://flagcdn.com/w40/nl.png",
+    tr: "https://flagcdn.com/w40/tr.png",
+    pl: "https://flagcdn.com/w40/pl.png",
+};
 
 function BotaoLogout() {
     const { logout } = useAuth();
@@ -29,7 +46,7 @@ function BotaoLogout() {
         navigate("/login");
     }
 
-    return <button onClick={handleLogout}>Sair</button>;
+    return <button onClick={handleLogout} className='flex'><LogOut className='me-2' />Sair</button>;
 }
 
 export default function Header({ titulo }) {
@@ -37,122 +54,147 @@ export default function Header({ titulo }) {
     const navigate = useNavigate()
     const { pathname } = useLocation();
     const rotaBase = pathname.split('/')[1] || 'home';
+
     const [open, setOpen] = useState(false)
+    const [openSelect, setOpenSelect] = useState(false)
     const [idioma, setIdioma] = useState("")
-    const [textoBusca, setTextoBusca] = useState("")
     const [languageList, setLanguageList] = useState([])
+
     const { user, setUser } = useAuth();
 
-    useEffect(() => {
-        fetch('https://zaldemy.com/controller/language.php',
-            {
-                method: 'POST',
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                },
+    const idiomaNativo = languageList.find(
+        (l) => l.sigla === user?.native_language
+    );
 
-                body: JSON.stringify({
-                    action: 'list_languages',
-                })
-            }
-        ).then(res => res.json())
-            .then(data => {
-                setLanguageList(data)
-                // console.log(data)
-            }).catch(() => {
-                setErro('Erro ao conectar com o servidor');
-            });
+    const selectRef = useRef(null);
+
+    // 🔽 Buscar idiomas
+    useEffect(() => {
+        fetch('https://zaldemy.com/controller/language.php', {
+            method: 'POST',
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({
+                action: 'list_languages',
+            })
+        })
+            .then(res => res.json())
+            .then(data => setLanguageList(data))
+            .catch(() => { });
     }, [])
+
+    // 🔽 Sincronizar idioma do usuário
+    useEffect(() => {
+        if (user?.learning_language) {
+            setIdioma(user.learning_language);
+        }
+
+    }, [user]);
+
+    // 🔽 Fechar select ao clicar fora
+    useEffect(() => {
+        function handleClickOutside(e) {
+            if (selectRef.current && !selectRef.current.contains(e.target)) {
+                setOpenSelect(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const idiomaSelecionado = languageList.find(
+        (l) => l.sigla === idioma
+    );
 
     return (
         <div className={`w-full section-header ${rotaBase === '/home' ? 'shadow-md pb-1' : ''}`}>
 
-            {location.pathname === '/home' ? (
+            {pathname === '/home' ? (
                 <header className="bg-white">
-                    <div className="max-w-7xl mx-auto px-4">
-                        <div className="flex h-16  justify-start ">
+                    <div className="w-full mx-auto px-4">
+                        <div className="flex h-16 ">
 
-                            <button className="md:hidden text-gray-700 text-xl" onClick={() => setOpen(true)}>
+                            {/* MENU ☰ */}
+                            <button
+                                className="md:hidden text-gray-700 text-xl"
+                                onClick={() => setOpen(true)}
+                            >
                                 ☰
                             </button>
-                            {/* <div className="ms-3 text-md font-bold text-gray-700 flex items-center ">
-                                <img src={imgMemly} alt="" width={40} />
-                                Memly
-                            </div> */}
 
+                            {/* IDIOMA */}
+                            <div className="flex items-center w-full ms-3 py-2 justify-between">
 
-                            <div className="flex items-center justify-center gap-3  rounded-xl ms-3 py-2 ">
+                                <span className="text-md font-semibold text-slate-700 ">
+                                    {idiomaNativo ? idiomaNativo.idioma : "Carregando..."}
+                                </span>
 
-                                <span className="leading-none text-sm font-semibold text-slate-700">Português</span>
-
-                                {/* <ArrowRight className="w-5 h-5 text-gray-600" /> */}
                                 <img src={imgGlobe} alt="" className="w-9" />
-                                {/* Wrapper do select */}
-                                <div className="
-                                relative
-                                
-                                h-10
-                                flex
-                                items-center
-                                rounded-2xl
-                                border
-                                border-slate-500
-                                bg-white
-                                focus-within:ring-2
-                                focus-within:ring-blue-500
-                            ">
-                                    <select
-                                        value={idioma}
-                                        onChange={(e) => setIdioma(e.target.value)}
-                                        className="
-                                    text-sm
-                                    w-full
-                                    h-full
-                                    px-4
-                                    pr-10
-                                    bg-transparent
-                                    appearance-none
-                                    outline-none
-                                "
-                                    >
-                                        <option value="">Selecione um idioma</option>
-                                        {languageList.map((item) => (
-                                            <option key={item.id} value={item.id}>
-                                                {item.idioma}
-                                            </option>
-                                        ))}
-                                    </select>
 
-                                    {/* Setinha */}
-                                    <div className="pointer-events-none absolute right-4 flex items-center">
-                                        <svg
-                                            className="w-4 h-4 text-blue-500"
-                                            viewBox="0 0 20 20"
-                                            fill="currentColor"
-                                        >
-                                            <path
-                                                fillRule="evenodd"
-                                                d="M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                                                clipRule="evenodd"
-                                            />
-                                        </svg>
+                                {/* SELECT CUSTOM */}
+                                <div
+                                    ref={selectRef}
+                                    className="relative h-10 flex items-center rounded-2xl border border-slate-500 bg-white min-w-[180px]"
+                                >
+                                    {/* Botão */}
+                                    <div
+                                        onClick={() => setOpenSelect(!openSelect)}
+                                        className="flex items-center gap-2 px-4 w-full cursor-pointer"
+                                    >
+                                        {idiomaSelecionado ? (
+                                            <>
+                                                <img
+                                                    src={flags[idiomaSelecionado.sigla] || "https://flagcdn.com/w40/un.png"}
+                                                    className="w-5 h-5 rounded-full"
+                                                />
+                                                <span className="text-sm">
+                                                    {idiomaSelecionado.idioma}
+                                                </span>
+                                            </>
+                                        ) : (
+                                            <span className="text-sm text-gray-400">
+                                                Selecione um idioma
+                                            </span>
+                                        )}
                                     </div>
+
+                                    {/* Dropdown */}
+                                    {openSelect && (
+                                        <div className="absolute top-12 left-0 w-full bg-white border rounded-xl shadow-lg z-50 max-h-60 overflow-auto">
+                                            {languageList.map((item) => (
+                                                <div
+                                                    key={item.id}
+                                                    onClick={() => {
+                                                        setIdioma(item.sigla);
+                                                        setOpenSelect(false);
+
+                                                        setUser(prev => ({
+                                                            ...prev,
+                                                            learning_language: item.sigla
+                                                        }));
+                                                    }}
+                                                    className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                                >
+                                                    <img
+                                                        src={flags[item.sigla] || "https://flagcdn.com/w40/un.png"}
+                                                        className="w-5 h-5 rounded-full"
+                                                    />
+                                                    <span className="text-sm">{item.idioma}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
                         </div>
-
-
-
-
                     </div>
-                    {/* <hr /> */}
-
                 </header>
-
             ) : (
                 <div>
-                    <div className={`relative text-center py-5 ${rotaBase === 'flashcards' ? 'bg-slate-50' : ''}`}>
+                    <div className="relative text-center py-5">
                         <div
                             className="absolute left-0 top-1/2 -translate-y-1/2 cursor-pointer"
                             onClick={() => navigate(-1)}
@@ -160,90 +202,64 @@ export default function Header({ titulo }) {
                             <i className="bi bi-arrow-left text-xl ml-3"></i>
                         </div>
                     </div>
-
-
                 </div>
-
             )}
+
+            {/* OVERLAY */}
             {open && (
                 <div
                     onClick={() => setOpen(false)}
                     className="fixed inset-0 bg-black/50 z-40"
                 />
             )}
-            <aside
-                className={`fixed top-0 left-0 h-full w-64 bg-white z-50 transform transition-transform duration-300
-          ${open ? "translate-x-0" : "-translate-x-full"}`}
-            >
-                <div className="p-4 flex justify-between items-center border-b">
-                    <div className='text-md font-bold text-gray-700 flex items-center '>
-                        <img className="w-32" src={imgZaldemy} alt="Login" />
 
+            {/* SIDEBAR */}
+            <aside className={`fixed top-0 left-0 h-full w-64 bg-white z-50 transform transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full"}`}>
+                <div className="p-4 flex justify-between items-center border-b">
+                    <img className="w-32" src={imgZaldemy} alt="Logo" />
+                    <button onClick={() => setOpen(false)} className='text-lg text-slate-500 font-semibold'>✕</button>
+                </div>
+
+                <div class="flex items-center gap-4 p-4 border-b border-gray-200">
+               
+                    <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiB_hwnr2qi68_5lIrxK6fE74AlsQemoqOQw&s" alt="Avatar" class="w-full h-full object-cover"/>
                     </div>
-                    <button onClick={() => setOpen(false)}>✕</button>
+
+                  
+                    <div>
+                        <p class="text-md font-semibold text-gray-800">
+                            Olá, {user?.name?.split(' ')[0]}
+                        </p>
+                        <p class="text-sm text-gray-500">
+                            {user.email}
+                        </p>
+                    </div>
                 </div>
 
                 <nav className="flex flex-col text-sm font-medium">
 
-                    {/*  <a href="/" className="flex items-center gap-3 px-4 py-3 text-base rounded text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition" >
-                        <Plus size={18} />
-                        <span>Adicionar idioma</span>
-                    </a>
-
-                    <a href="/sobre" className="flex items-center gap-3 px-4 py-3 text-base rounded text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition">
-                        <Trash2 size={18} />
-                        <span>Excluir idioma</span>
-                    </a>
-
-                    <hr className="" />
-
-                    <a href="/contato" className="flex items-center gap-3 px-4 py-3 text-base rounded text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition">
-                        <BarChart3 size={18} />
-                        <span>Desempenho e estatísticas</span>
-                    </a> */}
-
-                    <hr className="" />
-                    {/* 
-                    <a href="/" className="flex items-center gap-3 px-4 py-3 text-base rounded text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition">
-                        <Settings size={18} />
-                        <span>Configurações</span>
-                    </a> */}
-
-                    <a href="/" className="flex items-center gap-3 px-4 py-3 text-base rounded text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition">
+                    <a href="/" className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-slate-800 text-lg">
                         <HelpCircle size={18} />
-                        <span>FAQ</span>
+                        FAQ
                     </a>
 
-                    <a href="/" className="flex items-center gap-3 px-4 py-3 text-base rounded text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition">
+                    <a href="/" className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-slate-800 text-lg">
                         <Mail size={18} />
-                        <span>Escreva pra gente</span>
+                        Contato
                     </a>
 
-                    <hr className="" />
-
-                    <a href="/" className="flex items-center gap-3 px-4 py-3 text-base rounded text-slate-700 font-semibold hover:bg-blue-50 transition">
-                        <Crown size={32} className=' text-yellow-500 bg-blue-700 rounded-full p-2' />
-                        <span>Seja Premium</span>
+                    <a href="/" className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 text-slate-800 text-lg">
+                        <Crown size={20} className='text-yellow-500' />
+                        Premium
                     </a>
-                    <hr className="" />
 
-                    <div className='px-4 py-3 text-base'>
-                        {BotaoLogout()}
+                    <div className='px-4 py-3 text-slate-800 text-lg'>
+                        <BotaoLogout />
                     </div>
-
-
                 </nav>
-
-
             </aside>
 
-            {/* <h4 className="text-primary-aux mb-0">
-                    {titulo}
-                </h4> */}
-
-
         </div>
-
-
     )
 }

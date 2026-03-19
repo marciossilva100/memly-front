@@ -24,7 +24,7 @@ export default function EmailVerificado() {
             return;
         }
 
-        fetch("https://zaldemy.com/controller/verify.php?token=" + token)
+        fetch("https://api.zaldemy.com/controller/verify.php?token=" + token)
             .then(res => {
                 if (!res.ok) {
                     throw new Error("Erro HTTP");

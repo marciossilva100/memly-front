@@ -31,7 +31,7 @@ export default function FrasesGeral() {
     async function listPhrase() {
         setLoading(true);
 
-        fetch('https://zaldemy.com/controller/frases.php', {
+        fetch('https://api.zaldemy.com/controller/frases.php', {
             method: 'POST',
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token")

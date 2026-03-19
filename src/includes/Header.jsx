@@ -70,7 +70,7 @@ export default function Header({ titulo }) {
 
     // 🔽 Buscar idiomas
     useEffect(() => {
-        fetch('https://zaldemy.com/controller/language.php', {
+        fetch('https://api.zaldemy.com/controller/language.php', {
             method: 'POST',
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token")

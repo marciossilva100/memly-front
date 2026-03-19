@@ -37,7 +37,7 @@ export default function ModalTreino({
 
     if (!openTreino) return;
 
-    fetch("https://zaldemy.com/controller/treino.php", {
+    fetch("https://api.zaldemy.com/controller/treino.php", {
       method: "POST",
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token")
@@ -183,7 +183,7 @@ export default function ModalTreino({
   // =========================
   function updateTraine() {
 
-    fetch("https://zaldemy.com/controller/treino.php", {
+    fetch("https://api.zaldemy.com/controller/treino.php", {
       method: "POST",
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token")

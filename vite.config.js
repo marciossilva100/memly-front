@@ -113,7 +113,7 @@ export default defineConfig({
 
     proxy: {
       "/api": {
-        target: "https://zaldemy.com",
+        target: "https://api.zaldemy.com",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, "")
       }

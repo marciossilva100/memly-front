@@ -31,7 +31,7 @@ export default function Frases() {
     async function listPhrase() {
         setLoading(true);
 
-        fetch('https://zaldemy.com/controller/frases.php', {
+        fetch('https://api.zaldemy.com/controller/frases.php', {
             method: 'POST',
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token")
@@ -71,7 +71,7 @@ export default function Frases() {
 
         try {
 
-            const res = await fetch('https://zaldemy.com/controller/frases.php', {
+            const res = await fetch('https://api.zaldemy.com/controller/frases.php', {
                 method: 'POST',
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token")

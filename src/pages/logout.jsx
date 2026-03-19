@@ -9,7 +9,7 @@ export default function Logout() {
     async function handleLogout() {
       try {
         const response = await fetch(
-          "https://zaldemy.com/controller/logout.php",
+          "https://api.zaldemy.com/controller/logout.php",
           {
             method: "POST",
             headers: {

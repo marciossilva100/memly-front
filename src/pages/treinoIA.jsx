@@ -26,7 +26,7 @@ export default function TreinoIA() {
         setLoading(true);
         setError(null);
 
-        fetch('https://zaldemy.com/controller/aiController.php', {
+        fetch('https://api.zaldemy.com/controller/aiController.php', {
             method: 'POST',
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token")

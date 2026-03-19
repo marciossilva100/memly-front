@@ -32,7 +32,7 @@ export default function ReferenciaUsuario({ setTitulo }) {
 
     function enviarCanal(rede) {
 
-        fetch('https://zaldemy.com/controller/canalaquisicao.php',
+        fetch('https://api.zaldemy.com/controller/canalaquisicao.php',
             {
                 method: 'POST',
                 headers: {

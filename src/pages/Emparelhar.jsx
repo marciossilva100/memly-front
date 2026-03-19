@@ -49,7 +49,7 @@ export default function JogoFrases() {
 
   async function trainingUpdate(updatedList, actionToSend) {
     try {
-      await fetch("https://zaldemy.com/controller/treino.php", {
+      await fetch("https://api.zaldemy.com/controller/treino.php", {
         method: "POST",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
@@ -69,7 +69,7 @@ export default function JogoFrases() {
     let endpoint =
       mode === "traine" ? "controller/treino.php" : "controller/frases.php";
 
-    fetch(`https://zaldemy.com/${endpoint}`, {
+    fetch(`https://api.zaldemy.com/${endpoint}`, {
       method: "POST",
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),

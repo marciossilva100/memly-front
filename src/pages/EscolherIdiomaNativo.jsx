@@ -26,7 +26,7 @@ export default function EscolherIdiomaNativo() {
   }
 
   useEffect(() => {
-    fetch('https://zaldemy.com/controller/language.php',
+    fetch('https://api.zaldemy.com/controller/language.php',
       {
         method: 'POST',
         headers: {
@@ -49,7 +49,7 @@ export default function EscolherIdiomaNativo() {
   function languageRegister() {
 
     //   setLoading(true)
-    fetch('https://zaldemy.com/controller/language.php', {
+    fetch('https://api.zaldemy.com/controller/language.php', {
       method: 'POST',
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token")

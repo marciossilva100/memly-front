@@ -67,7 +67,7 @@ export default function DigitarTexto() {
 
         setLoading(true);
 
-        fetch(`https://zaldemy.com/${endpoint}`, {
+        fetch(`https://api.zaldemy.com/${endpoint}`, {
             method: "POST",
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token")
@@ -114,7 +114,7 @@ export default function DigitarTexto() {
 
         try {
 
-            const res = await fetch("https://zaldemy.com/controller/treino.php", {
+            const res = await fetch("https://api.zaldemy.com/controller/treino.php", {
                 method: "POST",
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token")

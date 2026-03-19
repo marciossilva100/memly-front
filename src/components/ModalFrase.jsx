@@ -35,7 +35,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
         setLoading(true);
 
         try {
-            const res = await fetch('https://zaldemy.com/controller/frases.php', {
+            const res = await fetch('https://api.zaldemy.com/controller/frases.php', {
                 method: 'POST',
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token")
@@ -85,7 +85,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
 
         e.preventDefault();
 
-        const res = await fetch('https://zaldemy.com/controller/libreTranslate.php', {
+        const res = await fetch('https://api.zaldemy.com/controller/libreTranslate.php', {
             method: 'POST',
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token")

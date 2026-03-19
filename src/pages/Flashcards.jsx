@@ -36,7 +36,7 @@ export default function Flashcards() {
       ? 'controller/treino.php'
       : 'controller/frases.php';
 
-    fetch(`https://zaldemy.com/${endpoint}`, {
+    fetch(`https://api.zaldemy.com/${endpoint}`, {
       method: "POST",
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token")
@@ -122,7 +122,7 @@ export default function Flashcards() {
 
     try {
 
-      const res = await fetch("https://zaldemy.com/controller/treino.php", {
+      const res = await fetch("https://api.zaldemy.com/controller/treino.php", {
         method: "POST",
         headers: {
           "Authorization": "Bearer " + localStorage.getItem("token")

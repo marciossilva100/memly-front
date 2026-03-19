@@ -67,7 +67,7 @@ export default function Login({ setTitulo }) {
 
             try {
 
-                const res = await fetch('https://zaldemy.com/controller/auth.php', {
+                const res = await fetch('https://api.zaldemy.com/controller/auth.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -141,7 +141,7 @@ export default function Login({ setTitulo }) {
         setLoading(true)
 
         try {
-            const res = await fetch('https://zaldemy.com/controller/auth.php', {
+            const res = await fetch('https://api.zaldemy.com/controller/auth.php', {
                 method: 'POST',
                 // credentials: "include",
                 headers: {

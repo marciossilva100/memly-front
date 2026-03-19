@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://zaldemy.com/:path*"
+      "destination": "https://api.zaldemy.com/:path*"
     }
   ]
 }

@@ -42,7 +42,7 @@ export default function ListCategoria() {
 
         setLoading(true);
 
-        fetch('https://zaldemy.com/controller/categorias.php', {
+        fetch('https://api.zaldemy.com/controller/categorias.php', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -80,7 +80,7 @@ export default function ListCategoria() {
 
     function adicionar(id) {
 
-        fetch('https://zaldemy.com/controller/categorias.php', {
+        fetch('https://api.zaldemy.com/controller/categorias.php', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",

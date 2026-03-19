@@ -37,7 +37,7 @@ export default function Metricas() {
         setLoading(true);
 
         try {
-            const response = await fetch('https://zaldemy.com/controller/metricas.php', {
+            const response = await fetch('https://api.zaldemy.com/controller/metricas.php', {
                 method: 'POST',
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token"),

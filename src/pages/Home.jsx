@@ -33,7 +33,7 @@ export default function Home() {
     const navigate = useNavigate();
 
     const carregarCategorias = () => {
-        fetch('https://zaldemy.com/controller/categorias.php', {
+        fetch('https://api.zaldemy.com/controller/categorias.php', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",

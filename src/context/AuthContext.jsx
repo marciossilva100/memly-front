@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
         return;
       }
 
-      const res = await fetch("https://zaldemy.com/controller/me.php", {
+      const res = await fetch("https://api.zaldemy.com/controller/me.php", {
         method: "GET",
         headers: {
           "Authorization": "Bearer " + token
@@ -58,7 +58,7 @@ export function AuthProvider({ children }) {
       const token = localStorage.getItem("token");
 
       if (token) {
-        await fetch("https://zaldemy.com/controller/logout.php", {
+        await fetch("https://api.zaldemy.com/controller/logout.php", {
           method: "POST",
           headers: {
             "Authorization": "Bearer " + token

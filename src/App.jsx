@@ -45,33 +45,15 @@ window.addEventListener('resize', setRealViewportHeight); */
 
 
 function PrivateRoute({ children }) {
+  const { user, loading } = useAuth();
 
-  const { user, loading, checkAuth } = useAuth()
-
-  // useEffect(() => {
-  //   checkAuth()
-  // }, [checkAuth])
-
-  //console.log("PrivateRoute - user:", user, "loading:", loading)
-
-  // if (loading) {
-  //   return (
-  //     <div className="flex h-screen items-center justify-center bg-white-100">
-  //       <img
-  //         src={imgChapeuFormatura}
-  //         alt="Carregando"
-  //         className="w-28 animate-pulse"
-  //       />
-  //     </div>
-  //   )
-  // }
+  if (loading) return null; // 👈 ESSA LINHA resolve seu problema
 
   if (!user) {
-    console.log("Redirecionando para login - sem usuário")
-    return <Navigate to="/login" replace />
+    return <Navigate to="/login" replace />;
   }
 
-  return children
+  return children;
 }
 
 

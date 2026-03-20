@@ -1,39 +1,58 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import {
     AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer,
-    BarChart, Bar, PieChart, Pie, Cell, Legend
+    PieChart, Pie, Cell
 } from "recharts";
 import {
     TrendingUp,
-    Users,
     Target,
     Award,
     Clock,
-    Calendar,
-    Download,
-    RefreshCw
+    RefreshCw,
+    BookOpen,
+    CheckCircle,
+    XCircle,
+    ChevronDown,
+    ChevronUp,
+    AlertCircle,
+    PieChart as PieChartIcon,
+    BarChart3,
+    Layers
 } from 'lucide-react';
 
 export default function Metricas() {
     const [dadosGrafico, setDadosGrafico] = useState([]);
-    const [dadosComparativos, setDadosComparativos] = useState([]);
     const [dadosCategorias, setDadosCategorias] = useState([]);
+    const [frasesPorCategoria, setFrasesPorCategoria] = useState({});
     const [loading, setLoading] = useState(false);
+    const [loadingFrases, setLoadingFrases] = useState(false);
     const [periodo, setPeriodo] = useState('30d');
-    const navigate = useNavigate();
+
+    // Estados para controlar os dropdowns
+    const [dropdownsAbertos, setDropdownsAbertos] = useState({
+        resumo: true, // Começa aberto pra mostrar o básico
+        grafico: false,
+        categorias: false,
+        frases: false
+    });
+
+    // Estado para controlar qual categoria está expandida
+    const [categoriaExpandida, setCategoriaExpandida] = useState(null);
 
     const [metricasGerais, setMetricasGerais] = useState({
         totalAcertos: 0,
         totalQuestoes: 0,
-        tempoMedio: 0,
+        taxaAcerto: 0,
         streakAtual: 0
     });
 
-    const cores = ['#00ff88', '#ff6b6b', '#4ecdc4', '#ffe66d', '#c3447a'];
+    const navigate = useNavigate();
+    const cores = ['#00ff88', '#ff6b6b', '#4ecdc4', '#ffe66d', '#c3447a', '#a78bfa', '#f472b6'];
 
-    async function listMetricas() {
+    // Buscar métricas do dashboard
+    async function carregarDashboard() {
         setLoading(true);
 
         try {
@@ -44,355 +63,468 @@ export default function Metricas() {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    action: 'metricas_desempenho',
+                    action: 'dashboard',
                     periodo: periodo
                 })
             });
 
             const data = await response.json();
 
-            if (data) {
+            if (response.ok) {
                 setDadosGrafico(data.grafico || []);
-                setDadosComparativos(data.comparativos || gerarDadosMockComparativos());
-                setDadosCategorias(data.categorias || gerarDadosMockCategorias());
-
-                // Calcular métricas gerais
-                const total = data.grafico?.reduce((acc, item) => acc + (item.total_questoes || 0), 0) || 0;
-                const acertos = data.grafico?.reduce((acc, item) => acc + (item.acertos || 0), 0) || 0;
+                setDadosCategorias(data.categorias || []);
 
                 setMetricasGerais({
-                    totalAcertos: acertos,
-                    totalQuestoes: total,
-                    tempoMedio: data.tempo_medio || 45,
-                    streakAtual: data.streak || 7
+                    totalQuestoes: data.resumo?.total || 0,
+                    totalAcertos: data.resumo?.acertos || 0,
+                    taxaAcerto: data.resumo?.taxa_acerto || 0,
+                    streakAtual: data.streak || 0
                 });
             }
         } catch (error) {
-            console.error('Erro ao carregar métricas:', error);
-            // Carregar dados mock em caso de erro
-            setDadosGrafico(gerarDadosMockGrafico());
-            setDadosComparativos(gerarDadosMockComparativos());
-            setDadosCategorias(gerarDadosMockCategorias());
-            setMetricasGerais({
-                totalAcertos: 156,
-                totalQuestoes: 234,
-                tempoMedio: 45,
-                streakAtual: 7
-            });
+            console.error('Erro ao carregar dashboard:', error);
         } finally {
             setLoading(false);
         }
     }
 
-    // Funções para gerar dados mock
-    function gerarDadosMockGrafico() {
-        return [
-            { data: '01/03', taxa_acerto: 75, questoes: 12 },
-            { data: '02/03', taxa_acerto: 82, questoes: 15 },
-            { data: '03/03', taxa_acerto: 68, questoes: 10 },
-            { data: '04/03', taxa_acerto: 90, questoes: 18 },
-            { data: '05/03', taxa_acerto: 85, questoes: 14 },
-            { data: '06/03', taxa_acerto: 78, questoes: 16 },
-            { data: '07/03', taxa_acerto: 92, questoes: 20 },
-        ];
+    // Buscar frases organizadas por categoria
+    async function carregarFrasesPorCategoria() {
+        setLoadingFrases(true);
+
+        try {
+            const response = await fetch('https://api.zaldemy.com/controller/metricas.php?action=listar_frases_metricas', {
+                method: 'GET',
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token"),
+                    "Content-Type": "application/json"
+                }
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.frases) {
+                // Organizar frases por categoria
+                const agrupadas = {};
+                data.frases.forEach(frase => {
+                    const categoria = frase.categoria || 'Sem categoria';
+                    if (!agrupadas[categoria]) {
+                        agrupadas[categoria] = [];
+                    }
+                    agrupadas[categoria].push(frase);
+                });
+                setFrasesPorCategoria(agrupadas);
+            }
+        } catch (error) {
+            console.error('Erro ao carregar frases:', error);
+        } finally {
+            setLoadingFrases(false);
+        }
     }
 
-    function gerarDadosMockComparativos() {
-        return [
-            { nome: 'Segunda', atual: 75, anterior: 70 },
-            { nome: 'Terça', atual: 82, anterior: 68 },
-            { nome: 'Quarta', atual: 68, anterior: 72 },
-            { nome: 'Quinta', atual: 90, anterior: 65 },
-            { nome: 'Sexta', atual: 85, anterior: 80 },
-        ];
-    }
-
-    function gerarDadosMockCategorias() {
-        return [
-            { name: 'Matemática', value: 35 },
-            { name: 'Português', value: 28 },
-            { name: 'Ciências', value: 22 },
-            { name: 'História', value: 15 },
-        ];
-    }
+    // Alternar dropdown
+    const toggleDropdown = (key) => {
+        setDropdownsAbertos(prev => ({
+            ...prev,
+            [key]: !prev[key]
+        }));
+    };
 
     useEffect(() => {
-        listMetricas();
+        carregarDashboard();
+        carregarFrasesPorCategoria();
     }, [periodo]);
 
+    // Card de métrica
     const CardMetrica = ({ titulo, valor, icone: Icone, cor, subtexto }) => (
-        <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700 hover:border-gray-600 transition-all">
+        <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-gray-700">
             <div className="flex items-center justify-between">
                 <div>
-                    <p className="text-gray-400 text-sm font-medium">{titulo}</p>
-                    <p className="text-3xl font-bold text-white mt-2">{valor}</p>
-                    {subtexto && <p className="text-sm text-gray-500 mt-1">{subtexto}</p>}
+                    <p className="text-gray-400 text-xs md:text-sm font-medium">{titulo}</p>
+                    <p className="text-xl md:text-3xl font-bold text-white mt-1 md:mt-2">{valor}</p>
+                    {subtexto && <p className="text-xs md:text-sm text-gray-500 mt-1">{subtexto}</p>}
                 </div>
-                <div className={`p-3 rounded-lg bg-gradient-to-br ${cor}`}>
-                    <Icone className="w-6 h-6 text-white" />
+                <div className={`p-2 md:p-3 rounded-lg bg-gradient-to-br ${cor}`}>
+                    <Icone className="w-4 h-4 md:w-6 md:h-6 text-white" />
                 </div>
             </div>
         </div>
     );
 
-    return (
-        <div className="h-dvh  from-gray-900 to-gray-800">
-            
-            <div className="bg-gradient-to-br p-6">
-                 <div className="relative mb-4 ">
-                <div
-                    className="left-0  cursor-pointer"
-                    onClick={() => navigate(-1)}
+    // Componente de Dropdown
+    const DropdownSection = ({ titulo, icone: Icone, aberto, onToggle, children, cor = "text-green-400" }) => (
+        <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700 overflow-hidden">
+            <button
+                onClick={onToggle}
+                className="w-full px-4 md:px-6 py-3 md:py-4 flex items-center justify-between hover:bg-gray-700/50 transition-colors"
+            >
+                <div className="flex items-center gap-2">
+                    <Icone className={`w-5 h-5 ${cor}`} />
+                    <h3 className="text-base md:text-lg font-semibold text-white">{titulo}</h3>
+                </div>
+                {aberto ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
+            </button>
+
+            {aberto && (
+                <div className="p-4 md:p-6 border-t border-gray-700">
+                    {children}
+                </div>
+            )}
+        </div>
+    );
+
+    // Componente de Categoria (com suas frases)
+    const CategoriaSection = ({ categoria, frases, isExpandida, onToggle }) => {
+        // Calcular média da categoria
+        const totalFrases = frases.length;
+        const frasesComTentativas = frases.filter(f => f.total_tentativas > 0);
+        const mediaCategoria = frasesComTentativas.length > 0
+            ? Math.round(frasesComTentativas.reduce((acc, f) => acc + (f.taxa_acerto || 0), 0) / frasesComTentativas.length)
+            : 0;
+
+        return (
+            <div className="border border-gray-700 rounded-lg overflow-hidden">
+                <button
+                    onClick={onToggle}
+                    className="w-full px-4 py-3 bg-gray-700/30 flex items-center justify-between hover:bg-gray-700/50 transition-colors"
                 >
-                    <i className="bi bi-arrow-left text-2xl text-white"></i>
-                </div>
-            </div>
-
-                {/* Header */}
-                <div className="max-w-7xl mx-auto mb-8 ">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                        <div>
-                            <h1 className="text-3xl font-bold text-white flex items-center gap-2">
-                                <TrendingUp className="w-8 h-8 text-green-400" />
-                                Métricas de Desempenho
-                            </h1>
-                            <p className="text-gray-400 mt-1">Acompanhe sua evolução nos estudos</p>
-                        </div>
-
-                        <div className="flex gap-3">
-                            <select
-                                value={periodo}
-                                onChange={(e) => setPeriodo(e.target.value)}
-                                className="bg-gray-700 text-white border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
-                            >
-                                <option value="7d">Últimos 7 dias</option>
-                                <option value="30d">Últimos 30 dias</option>
-                                <option value="90d">Últimos 90 dias</option>
-                                <option value="12m">Últimos 12 meses</option>
-                            </select>
-
-                            <button
-                                onClick={() => listMetricas()}
-                                className="bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-lg transition-colors"
-                            >
-                                <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
-                            </button>
-
-                            <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
-                                <Download className="w-4 h-4" />
-                                Exportar
-                            </button>
-                        </div>
+                    <div className="flex items-center gap-3">
+                        <span className="font-medium text-white">{categoria}</span>
+                        <span className="text-xs text-gray-400">
+                            {totalFrases} {totalFrases === 1 ? 'frase' : 'frases'}
+                        </span>
+                        {frasesComTentativas.length > 0 && (
+                            <span className={`text-xs px-2 py-0.5 rounded-full ${mediaCategoria >= 70 ? 'bg-green-500/20 text-green-400' :
+                                    mediaCategoria >= 40 ? 'bg-yellow-500/20 text-yellow-400' :
+                                        'bg-red-500/20 text-red-400'
+                                }`}>
+                                {mediaCategoria}% média
+                            </span>
+                        )}
                     </div>
-                </div>
+                    {isExpandida ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
+                </button>
 
-                {/* Cards de Métricas */}
-                <div className="max-w-7xl mx-auto mb-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <CardMetrica
-                            titulo="Taxa de Acerto"
-                            valor={`${dadosGrafico.length ? Math.round(dadosGrafico.reduce((acc, item) => acc + item.taxa_acerto, 0) / dadosGrafico.length) : 82}%`}
-                            icone={Target}
-                            cor="from-green-500 to-green-600"
-                            subtexto={`${dadosGrafico.length} dias analisados`}
-                        />
-
-                        <CardMetrica
-                            titulo="Questões Respondidas"
-                            valor={metricasGerais.totalQuestoes}
-                            icone={Users}
-                            cor="from-blue-500 to-blue-600"
-                            subtexto={`${metricasGerais.totalAcertos} acertos`}
-                        />
-
-                        <CardMetrica
-                            titulo="Tempo Médio"
-                            valor={`${metricasGerais.tempoMedio}s`}
-                            icone={Clock}
-                            cor="from-purple-500 to-purple-600"
-                            subtexto="por questão"
-                        />
-
-                        <CardMetrica
-                            titulo="Streak Atual"
-                            valor={`${metricasGerais.streakAtual} dias`}
-                            icone={Award}
-                            cor="from-orange-500 to-orange-600"
-                            subtexto="🔥 Melhor: 15 dias"
-                        />
-                    </div>
-                </div>
-
-                {/* Gráficos */}
-                <div className="max-w-7xl mx-auto">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                        {/* Gráfico de Área - Desempenho */}
-                        <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700">
-                            <div className="flex justify-between items-center mb-4">
-                                <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                                    <TrendingUp className="w-5 h-5 text-green-400" />
-                                    Evolução da Taxa de Acerto
-                                </h3>
-                                <span className="text-sm text-gray-400">vs. média anterior</span>
-                            </div>
-
-                            <div className="h-80">
-                                {loading ? (
-                                    <div className="flex items-center justify-center h-full">
-                                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-400"></div>
+                {isExpandida && (
+                    <div className="p-3 space-y-2 bg-gray-800/30">
+                        {frases.map((frase, idx) => (
+                            <div key={frase.id || idx} className="bg-gray-700/30 rounded-lg p-3 text-sm">
+                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                                    <div className="flex-1">
+                                        <p className="text-white font-medium">{frase.frase}</p>
+                                        <p className="text-gray-400 text-xs mt-0.5">{frase.traducao}</p>
                                     </div>
-                                ) : (
+
+                                    <div className="flex items-center gap-3">
+                                        {frase.total_tentativas > 0 ? (
+                                            <>
+                                                <div className="text-center min-w-[40px]">
+                                                    <p className="text-gray-400 text-xs">Taxa</p>
+                                                    <span className={`text-xs font-semibold ${frase.taxa_acerto >= 70 ? 'text-green-500' :
+                                                            frase.taxa_acerto >= 40 ? 'text-yellow-500' :
+                                                                'text-red-500'
+                                                        }`}>
+                                                        {frase.taxa_acerto}%
+                                                    </span>
+                                                </div>
+                                                <div className="text-center min-w-[40px]">
+                                                    <p className="text-gray-400 text-xs">Tent.</p>
+                                                    <span className="text-white text-xs font-semibold">
+                                                        {frase.total_tentativas}
+                                                    </span>
+                                                </div>
+                                                {frase.ultima_resposta !== undefined && (
+                                                    <div>
+                                                        {frase.ultima_resposta ? (
+                                                            <CheckCircle className="w-4 h-4 text-green-500" />
+                                                        ) : (
+                                                            <XCircle className="w-4 h-4 text-red-500" />
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </>
+                                        ) : (
+                                            <span className="text-xs text-gray-500">Não iniciada</span>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+    return (
+        <div className="h-dvh  from-gray-900 to-gray-800 bg-gradient-to-br">
+            <div className="p-3 md:p-6 max-w-5xl mx-auto  bg-gradient-to-br px-6">
+                {/* Cabeçalho com voltar */}
+                <div className="mb-4">
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+                    >
+                        <i className="bi bi-arrow-left text-2xl text-white"></i>
+                     
+                    </button>
+                </div>
+
+                {/* Header com período */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-6">
+                    <div>
+                        <h1 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-2">
+                            <TrendingUp className="w-6 h-6 md:w-8 md:h-8 text-green-400" />
+                            Métricas
+                        </h1>
+                        <p className="text-sm text-gray-400 mt-1">
+                            {metricasGerais.totalQuestoes > 0
+                                ? `${metricasGerais.totalQuestoes} questões respondidas`
+                                : 'Comece a estudar para ver suas métricas'}
+                        </p>
+                    </div>
+
+                    <div className="flex gap-2">
+                        <select
+                            value={periodo}
+                            onChange={(e) => setPeriodo(e.target.value)}
+                            className="bg-gray-700 text-white text-sm border border-gray-600 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-400"
+                        >
+                            <option value="7d">7 dias</option>
+                            <option value="30d">30 dias</option>
+                            <option value="90d">90 dias</option>
+                        </select>
+
+                        <button
+                            onClick={() => {
+                                carregarDashboard();
+                                carregarFrasesPorCategoria();
+                            }}
+                            className="bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-lg transition-colors"
+                        >
+                            <RefreshCw className={`w-4 h-4 ${loading || loadingFrases ? 'animate-spin' : ''}`} />
+                        </button>
+                    </div>
+                </div>
+
+                {/* Cards de Resumo - Sempre visíveis */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-4">
+                    <CardMetrica
+                        titulo="Taxa de Acerto"
+                        valor={metricasGerais.taxaAcerto ? `${metricasGerais.taxaAcerto}%` : '0%'}
+                        icone={Target}
+                        cor="from-green-500 to-green-600"
+                        subtexto={`${metricasGerais.totalAcertos}/${metricasGerais.totalQuestoes}`}
+                    />
+                    <CardMetrica
+                        titulo="Streak"
+                        valor={metricasGerais.streakAtual > 0 ? `${metricasGerais.streakAtual}d` : '0d'}
+                        icone={Award}
+                        cor="from-orange-500 to-orange-600"
+                        subtexto="dias seguidos"
+                    />
+                </div>
+
+                {/* Dropdowns */}
+                <div className="space-y-3">
+                    {/* Gráfico de Desempenho */}
+                    <DropdownSection
+                        titulo="Evolução do Desempenho"
+                        icone={BarChart3}
+                        aberto={dropdownsAbertos.grafico}
+                        onToggle={() => toggleDropdown('grafico')}
+                        cor="text-blue-400"
+                    >
+                        <div className="h-64 md:h-80">
+                            {loading ? (
+                                <div className="flex items-center justify-center h-full">
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-400"></div>
+                                </div>
+                            ) : dadosGrafico.length > 0 ? (
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <AreaChart data={dadosGrafico}>
+                                        <defs>
+                                            <linearGradient id="colorAcerto" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#00ff88" stopOpacity={0.3} />
+                                                <stop offset="95%" stopColor="#00ff88" stopOpacity={0} />
+                                            </linearGradient>
+                                        </defs>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                                        <XAxis
+                                            dataKey="data"
+                                            stroke="#9CA3AF"
+                                            tick={{ fontSize: 12 }}
+                                        />
+                                        <YAxis
+                                            domain={[0, 100]}
+                                            stroke="#9CA3AF"
+                                            tick={{ fontSize: 12 }}
+                                            tickFormatter={(value) => `${value}%`}
+                                        />
+                                        <Tooltip
+                                            contentStyle={{
+                                                backgroundColor: '#1F2937',
+                                                border: 'none',
+                                                borderRadius: '8px',
+                                                fontSize: '12px'
+                                            }}
+                                        />
+                                        <Area
+                                            type="monotone"
+                                            dataKey="taxa_acerto"
+                                            stroke="#00ff88"
+                                            strokeWidth={2}
+                                            fill="url(#colorAcerto)"
+                                        />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                                    <AlertCircle className="w-12 h-12 mb-2 text-gray-600" />
+                                    <p className="text-sm">Nenhum dado no período</p>
+                                </div>
+                            )}
+                        </div>
+                    </DropdownSection>
+
+                    {/* Categorias */}
+                    {/* Categorias */}
+                    <DropdownSection
+                        titulo="Categorias"
+                        icone={PieChartIcon}
+                        aberto={dropdownsAbertos.categorias}
+                        onToggle={() => toggleDropdown('categorias')}
+                        cor="text-purple-400"
+                    >
+                        {dadosCategorias.length > 0 ? (
+                            <div className="space-y-4">
+                                {/* Gráfico de Pizza */}
+                                <div className="h-48 md:h-64">
                                     <ResponsiveContainer width="100%" height="100%">
-                                        <AreaChart data={dadosGrafico}>
-                                            <defs>
-                                                <linearGradient id="colorAcerto" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="5%" stopColor="#00ff88" stopOpacity={0.3} />
-                                                    <stop offset="95%" stopColor="#00ff88" stopOpacity={0} />
-                                                </linearGradient>
-                                            </defs>
-                                            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                                            <XAxis dataKey="data" stroke="#9CA3AF" />
-                                            <YAxis domain={[0, 100]} stroke="#9CA3AF" />
+                                        <PieChart>
+                                            <Pie
+                                                data={dadosCategorias}
+                                                cx="50%"
+                                                cy="50%"
+                                                innerRadius={40}
+                                                outerRadius={60}
+                                                paddingAngle={2}
+                                                dataKey="value"
+                                                label={({ name, percent }) =>
+                                                    `${(percent * 100).toFixed(0)}%`
+                                                }
+                                                labelLine={false}
+                                            >
+                                                {dadosCategorias.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={cores[index % cores.length]} />
+                                                ))}
+                                            </Pie>
                                             <Tooltip
+                                                formatter={(value, name, props) => [
+                                                    `${value} questões`,
+                                                    props.payload.name
+                                                ]}
                                                 contentStyle={{
                                                     backgroundColor: '#1F2937',
                                                     border: 'none',
                                                     borderRadius: '8px',
-                                                    color: '#fff'
+                                                    fontSize: '12px'
                                                 }}
                                             />
-                                            <Area
-                                                type="monotone"
-                                                dataKey="taxa_acerto"
-                                                stroke="#00ff88"
-                                                strokeWidth={2}
-                                                fill="url(#colorAcerto)"
-                                                name="Taxa de Acerto %"
-                                            />
-                                        </AreaChart>
+                                        </PieChart>
                                     </ResponsiveContainer>
-                                )}
+                                </div>
+
+                                {/* Lista de Categorias */}
+                                <div className="space-y-2">
+                                    <h4 className="text-sm font-medium text-gray-400 mb-2">Detalhamento por categoria:</h4>
+                                    {dadosCategorias.map((categoria, index) => {
+                                        // Calcular porcentagem do total
+                                        const totalQuestoes = dadosCategorias.reduce((acc, cat) => acc + cat.value, 0);
+                                        const porcentagem = ((categoria.value / totalQuestoes) * 100).toFixed(1);
+
+                                        return (
+                                            <div key={index} className="bg-gray-700/30 rounded-lg p-3">
+                                                <div className="flex items-center justify-between mb-2">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className={`w-3 h-3 rounded-full`} style={{ backgroundColor: cores[index % cores.length] }}></div>
+                                                        <span className="text-white font-medium">{categoria.name}</span>
+                                                    </div>
+                                                    <span className="text-sm text-gray-300">
+                                                        {categoria.value} {categoria.value === 1 ? 'questão' : 'questões'}
+                                                    </span>
+                                                </div>
+
+                                                {/* Barra de progresso */}
+                                                <div className="w-full bg-gray-600 rounded-full h-1.5">
+                                                    <div
+                                                        className="h-1.5 rounded-full"
+                                                        style={{
+                                                            width: `${porcentagem}%`,
+                                                            backgroundColor: cores[index % cores.length]
+                                                        }}
+                                                    ></div>
+                                                </div>
+
+                                                {/* Porcentagem */}
+                                                <div className="flex justify-end mt-1">
+                                                    <span className="text-xs text-gray-400">{porcentagem}% do total</span>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                {/* Total de questões */}
+                                <div className="mt-4 pt-3 border-t border-gray-700 text-center">
+                                    <p className="text-sm text-gray-400">
+                                        Total: <span className="text-white font-semibold">
+                                            {dadosCategorias.reduce((acc, cat) => acc + cat.value, 0)} questões
+                                        </span>
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-
-                        {/* Gráfico de Barras - Comparativo */}
-                        <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700">
-                            <div className="flex justify-between items-center mb-4">
-                                <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                                    <Calendar className="w-5 h-5 text-blue-400" />
-                                    Comparativo Semanal
-                                </h3>
-                                <span className="text-sm text-gray-400">Atual vs. Anterior</span>
+                        ) : (
+                            <div className="text-center py-8 text-gray-400 text-sm">
+                                <AlertCircle className="w-12 h-12 mx-auto mb-2 text-gray-600" />
+                                <p>Nenhuma categoria encontrada</p>
+                                <p className="text-xs mt-1">As categorias aparecerão aqui quando você responder questões</p>
                             </div>
+                        )}
+                    </DropdownSection>
 
-                            <div className="h-80">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart data={dadosComparativos}>
-                                        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                                        <XAxis dataKey="nome" stroke="#9CA3AF" />
-                                        <YAxis stroke="#9CA3AF" />
-                                        <Tooltip
-                                            contentStyle={{
-                                                backgroundColor: '#1F2937',
-                                                border: 'none',
-                                                borderRadius: '8px',
-                                                color: '#fff'
-                                            }}
-                                        />
-                                        <Legend />
-                                        <Bar dataKey="atual" fill="#00ff88" name="Semana Atual" />
-                                        <Bar dataKey="anterior" fill="#60A5FA" name="Semana Anterior" />
-                                    </BarChart>
-                                </ResponsiveContainer>
+                    {/* Frases por Categoria */}
+                    <DropdownSection
+                        titulo="Frases por Categoria"
+                        icone={Layers}
+                        aberto={dropdownsAbertos.frases}
+                        onToggle={() => toggleDropdown('frases')}
+                        cor="text-green-400"
+                    >
+                        {loadingFrases ? (
+                            <div className="flex justify-center py-8">
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-400"></div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* Gráfico de Pizza - Categorias */}
-                        <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700">
-                            <div className="flex justify-between items-center mb-4">
-                                <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                                    <Target className="w-5 h-5 text-purple-400" />
-                                    Distribuição por Categoria
-                                </h3>
-                                <span className="text-sm text-gray-400">Total de questões</span>
-                            </div>
-
-                            <div className="h-80">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <PieChart>
-                                        <Pie
-                                            data={dadosCategorias}
-                                            cx="50%"
-                                            cy="50%"
-                                            innerRadius={60}
-                                            outerRadius={100}
-                                            paddingAngle={5}
-                                            dataKey="value"
-                                        >
-                                            {dadosCategorias.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={cores[index % cores.length]} />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip
-                                            contentStyle={{
-                                                backgroundColor: '#1F2937',
-                                                border: 'none',
-                                                borderRadius: '8px',
-                                                color: '#fff'
-                                            }}
-                                        />
-                                        <Legend />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            </div>
-                        </div>
-
-                        {/* Estatísticas Rápidas */}
-                        <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700">
-                            <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                                <Award className="w-5 h-5 text-yellow-400" />
-                                Estatísticas Rápidas
-                            </h3>
-
-                            <div className="space-y-4">
-                                {[
-                                    { label: 'Melhor dia', value: '92% em 07/03', progress: 92 },
-                                    { label: 'Média geral', value: '81%', progress: 81 },
-                                    { label: 'Questões por dia', value: '15', progress: 65 },
-                                    { label: 'Consistência', value: '78%', progress: 78 },
-                                ].map((item, index) => (
-                                    <div key={index}>
-                                        <div className="flex justify-between text-sm mb-1">
-                                            <span className="text-gray-400">{item.label}</span>
-                                            <span className="text-white font-medium">{item.value}</span>
-                                        </div>
-                                        <div className="w-full bg-gray-700 rounded-full h-2">
-                                            <div
-                                                className="bg-gradient-to-r from-green-400 to-green-500 h-2 rounded-full transition-all duration-500"
-                                                style={{ width: `${item.progress}%` }}
-                                            />
-                                        </div>
-                                    </div>
+                        ) : Object.keys(frasesPorCategoria).length > 0 ? (
+                            <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
+                                {Object.entries(frasesPorCategoria).map(([categoria, frases]) => (
+                                    <CategoriaSection
+                                        key={categoria}
+                                        categoria={categoria}
+                                        frases={frases}
+                                        isExpandida={categoriaExpandida === categoria}
+                                        onToggle={() => setCategoriaExpandida(
+                                            categoriaExpandida === categoria ? null : categoria
+                                        )}
+                                    />
                                 ))}
                             </div>
-
-                            <div className="mt-6 pt-6 border-t border-gray-700">
-                                <div className="flex justify-between items-center">
-                                    <span className="text-gray-400">Meta diária</span>
-                                    <span className="text-white font-medium">20 questões</span>
-                                </div>
-                                <div className="w-full bg-gray-700 rounded-full h-2.5 mt-2">
-                                    <div
-                                        className="bg-gradient-to-r from-blue-400 to-blue-500 h-2.5 rounded-full"
-                                        style={{ width: '75%' }}
-                                    />
-                                </div>
-                                <p className="text-sm text-gray-500 mt-2">15/20 questões concluídas hoje</p>
+                        ) : (
+                            <div className="text-center py-8 text-gray-400 text-sm">
+                                Nenhuma frase encontrada
                             </div>
-                        </div>
-                    </div>
+                        )}
+                    </DropdownSection>
                 </div>
             </div>
         </div>

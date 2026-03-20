@@ -4,9 +4,10 @@ import imgSetting from '../assets/img/setting.png'
 import imgEstatistica from '../assets/img/estatistic.png'
 import imgPlay from '../assets/img/play.png'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from "react-router-dom";
 import ModalCategorias from '../components/ModalCategorias';
+import ModalCategoriasEditar from '../components/ModalCategoriasEditar'
 import ModalTreino from '../components/ModaTreino';
 import ModalTreinoAdvinhar from "../components/ModalTreinoAdvinhar";
 import ModalIA from '../components/ModalIA';
@@ -21,18 +22,41 @@ import { BookOpen } from "lucide-react";
 export default function Home() {
     const { user, setUser } = useAuth();
     const [open, setOpen] = useState(false);
+    const [openCategoriaEditar, setOpenCategoriaEditar] = useState(false);
     const [openTreino, setOpenTreino] = useState(false)
     const [categorias, setCategorias] = useState([]);
     const [openTreinoAdvinhar, setOpenTreinoAdvinhar] = useState(false)
     const [openTreinoIA, setOpenTreinoIA] = useState(false)
     const [openModalSucesso, setOpenModalSucesso] = useState(false)
     const [categoriaId, setCategoriaId] = useState(0)
+    const [categoriaClick, setCategoriaClick] = useState('')
     const [msgModalSucesso, setMsgModalSucesso] = useState('')
     const [frase, openFrase] = useState('')
+    const [error, setError] = useState('')
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+    const [menuOpenId, setMenuOpenId] = useState(null);
+    const [recarregar, setRecarregar] = useState(false)
     const navigate = useNavigate();
 
+    const menuRef = useRef(null);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setMenuOpenId(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
+
     const carregarCategorias = () => {
+        setRecarregar(false)
         fetch('https://api.zaldemy.com/controller/categorias.php', {
             method: 'POST',
             headers: {
@@ -56,6 +80,39 @@ export default function Home() {
 
             });
     };
+
+    const categoriaExcluir = async (e, categoria_id) => {
+        e.preventDefault()
+
+        try {
+            const res = await fetch('https://api.zaldemy.com/controller/categorias.php', {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({
+                    action: 'excluir_categoria',
+                    categoria_id: categoria_id,
+                })
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                console.log(data.message);
+                return;
+            }
+            setOpenModalSucesso(true)
+            setMsgModalSucesso('Excluído com sucesso')
+            carregarCategorias();
+
+
+        } catch (error) {
+            setError(error?.message || "Erro inesperado")
+        } finally {
+
+        }
+    }
 
     useEffect(() => {
         console.log('home ', user)
@@ -90,16 +147,59 @@ export default function Home() {
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-3">
-                                <button className="shadow-md px-4 py-1 text-lg font-medium rounded-full bg-blue-400 text-white hover:bg-slate-600 "
+                            <div className="flex items-center gap-3 relative">
+                                <button
+                                    className="shadow-md px-4 py-1 text-lg font-medium rounded-full bg-blue-400 text-white hover:bg-slate-600"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setCategoriaId(item.id);
                                         setOpenTreino(true);
-                                    }}>
+                                    }}
+                                >
                                     Treino
                                 </button>
-                                <button className="text-gray-600 hover:text-white">⋮</button>
+
+                                {/* Botão dos 3 pontinhos */}
+                                <button
+                                    className="text-slate-300 text-3xl"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setMenuOpenId(menuOpenId === item.id ? null : item.id);
+                                    }}
+                                >
+                                    ⋮
+                                </button>
+
+                                {/* Menu */}
+                                {menuOpenId === item.id && (
+                                    <div
+                                        ref={menuRef}
+                                        className="absolute right-0 top-10 bg-white shadow-lg rounded-lg p-2 w-32 z-50"
+                                    >
+                                        <button
+                                            className="block w-full text-left px-3 py-2 hover:bg-gray-100 rounded"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setCategoriaClick(item.categoria);
+                                                setOpenCategoriaEditar(true);
+                                                setCategoriaId(item.id);
+                                                setMenuOpenId(false);
+                                            }}
+                                        >
+                                            Editar
+                                        </button>
+
+                                        <button
+                                            className="block w-full text-left px-3 py-2 hover:bg-gray-100 rounded"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                categoriaExcluir(e, item.id);
+                                            }}
+                                        >
+                                            Excluir
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     ))}
@@ -125,7 +225,7 @@ export default function Home() {
                         " onClick={() => setOpen(true)}>
                     Adicionar categoria
                 </button>
-                <hr className='w-full'/>
+                <hr className='w-full' />
                 <div className=" ">
                     <div className='flex  left-0   w-full justify-center py-1'>
                         {/*  <a href="/leituradigital"> <div className='bg-blue-400 rounded-full p-3 flex justify-center items-center'> */}
@@ -167,6 +267,21 @@ export default function Home() {
                 }}
                 onSuccess={carregarCategorias}
             />
+            <ModalCategoriasEditar
+                open={openCategoriaEditar}
+                setOpenCategoriaEditar={setOpenCategoriaEditar}
+                categoriaEditar={categoriaClick}
+                categoriaIdEditar={categoriaId}
+                onSuccess={carregarCategorias}
+
+
+                onOpenModalSucesso={(msgSucesso) => {
+                    setOpenModalSucesso(true);
+                    setMsgModalSucesso(msgSucesso);
+                    setOpenCategoriaEditar(false);
+                    setRecarregar(true)
+                }}
+            />
             <ModalTreino
                 openTreino={openTreino}
                 onClose={() => setOpenTreino(false)}
@@ -194,7 +309,7 @@ export default function Home() {
             <ModalTreinoAdvinhar categoriaId={categoriaId} setOpenTreinoAdvinhar={setOpenTreinoAdvinhar} openTreinoAdvinhar={openTreinoAdvinhar} />
             <ModalIA setOpenTreinoIA={setOpenTreinoIA} openTreinoIA={openTreinoIA} />
             <ModalSucesso msg={msgModalSucesso} openModalSucesso={openModalSucesso} setOpenModalSucesso={setOpenModalSucesso} />
-            <PremiumModal isOpen={isPremiumModalOpen} setIsPremiumModalOpen={setIsPremiumModalOpen} onClose={() => setIsPremiumModalOpen(false)}  />
+            <PremiumModal isOpen={isPremiumModalOpen} setIsPremiumModalOpen={setIsPremiumModalOpen} onClose={() => setIsPremiumModalOpen(false)} />
         </div>
     )
 }

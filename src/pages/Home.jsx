@@ -129,7 +129,7 @@ export default function Home() {
     return (
         <div className="h-dvh flex flex-col max-w-7xl mx-auto  from-gray-900 to-gray-800 bg-gradient-to-br">
 
-            <div className="lista-categoria border-t-2 flex-1 overflow-y-auto py-4 scrollbar-hide " id="lista-categoria">
+            <div className="lista-categoria flex-1 overflow-y-auto py-4 scrollbar-hide " id="lista-categoria">
                 <div className=" items-center justify-center px-4 ">
 
                     {/* Item */}

@@ -452,7 +452,7 @@ export default function DigitarTexto() {
                     <button
                         type="submit"
                         form="respostaForm"
-                        className="flex justify-center shadow-md w-full  text-white font-medium py-3 rounded-full text-lg bg-gray-800/50 backdrop-blur-sm  border border-gray-700"
+                        className="flex justify-center shadow-md w-full  text-white font-medium py-3 rounded-full text-lg bg-gray-700/50 backdrop-blur-sm  border border-gray-700"
                     >
                         Responder
                     </button>

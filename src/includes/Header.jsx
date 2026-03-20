@@ -215,20 +215,20 @@ export default function Header({ titulo }) {
 
             {/* SIDEBAR */}
             <aside className={`fixed from-gray-900 to-gray-800 bg-gradient-to-br top-0 left-0 h-full w-64  z-50 transform transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full"}`}>
-                <div className="p-4 flex justify-between items-center border-b">
+                <div className="p-4 flex justify-between items-center  ">
                     <img className="w-32" src={imgZaldemy} alt="Logo" />
                     <button onClick={() => setOpen(false)} className='text-lg text-white font-semibold'>✕</button>
                 </div>
 
-                <div class="flex items-center gap-4 p-4 border-b border-gray-200">
+                <div className="flex items-center gap-4 p-4 ">
                
-                    <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiB_hwnr2qi68_5lIrxK6fE74AlsQemoqOQw&s" alt="Avatar" class="w-full h-full object-cover"/>
+                    <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiB_hwnr2qi68_5lIrxK6fE74AlsQemoqOQw&s" alt="Avatar" className="w-full h-full object-cover"/>
                     </div>
 
                   
                     <div>
-                        <p class="text-md font-semibold text-white">
+                        <p className="text-md font-semibold text-white">
                             Olá, {user?.name?.split(' ')[0]}
                         </p>
                         {/* <p class="text-sm text-gray-500">

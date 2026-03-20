@@ -6,7 +6,7 @@ import imgGoogle from '../assets/img/google.png'
 import imgFacebook from '../assets/img/logo-face.webp'
 import imgCoruja from '../assets/img/coruja.png'
 import imgMemly from "../assets/img/mascote-memly.png"
-import imgZaldemy from "../assets/img/zaldemy.png"
+import imgZaldemy from "../assets/img/zaldemy-color.png"
 import { useAuth } from "../context/AuthContext";
 import { GoogleLogin } from '@react-oauth/google';
 import { useGoogleLogin } from '@react-oauth/google';

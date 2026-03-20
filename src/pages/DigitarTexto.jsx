@@ -267,11 +267,11 @@ export default function DigitarTexto() {
 
     return (
 
-        <div className="h-dvh flex flex-col bg-slate-100 digitar-texto px-6 pb-5">
+        <div className="h-dvh flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br digitar-texto px-6 pb-5">
 
             <div className="flex-1 overflow-y-auto scrollbar-hide pt-3">
 
-                <div className="relative text-left mb-4">
+                <div className="relative text-left mb-4 text-white">
 
                     <div
                         className="cursor-pointer"
@@ -285,11 +285,11 @@ export default function DigitarTexto() {
                 {!isFlipped && (
                     <div className="justify-start mb-4 w-full">
 
-                        <h2 className="text-slate-700 text-lg">
+                        <h2 className="text-white text-lg">
                             O que você quer dizer em inglês?
                         </h2>
 
-                        <span className="text-slate-500 text-sm">
+                        <span className="text-white text-sm">
                             Digite como você falaria essa frase.
                         </span>
 
@@ -329,7 +329,7 @@ export default function DigitarTexto() {
 
                     <div className="mt-8 w-full">
 
-                        <span className="w-full flex justify-center mb-4 font-semibold text-slate-700">
+                        <span className="w-full flex justify-center mb-4 font-semibold text-white">
                             Você digitou:
                         </span>
 
@@ -373,7 +373,7 @@ export default function DigitarTexto() {
                                     ref={textareaRef}
                                     value={resposta}
                                     onChange={(e) => setResposta(e.target.value)}
-                                    className="text-xl toutline-none w-full h-[100%] pt-6 text-center rounded-lg border border-gray-300 resize-none"
+                                    className="text-xl text-white toutline-none w-full h-[100%] pt-6 text-center rounded-lg border border-gray-300 resize-none bg-gray-800/50 backdrop-blur-sm  border border-gray-700"
                                 />
 
 
@@ -408,13 +408,13 @@ export default function DigitarTexto() {
 
                         <button
                             onClick={repeatCard}
-                            className="w-full bg-red-400 text-white text-lg  py-3 rounded-full shadow-lg"
+                            className="w-full  text-white text-lg  py-3 rounded-full shadow-lg bg-gray-800/50 backdrop-blur-sm  border border-gray-700"
                         >
                             Tentar novamente
                         </button>
                         <button
                             onClick={nextCard}
-                            className="bg-slate-500 text-white text-lg  py-3 rounded-full shadow-lg px-9 "
+                            className=" text-white text-lg  py-3 rounded-full shadow-lg px-9 bg-gray-700/60 backdrop-blur-sm  border border-gray-700"
                         >
                             Pular
                         </button>
@@ -431,7 +431,7 @@ export default function DigitarTexto() {
 
                                 <button
                                     onClick={nextCard}
-                                    className="shadow-md w-full bg-avocado-500 text-white font-medium py-3 rounded-full transition text-lg"
+                                    className="shadow-md w-full bg-gray-800/50 backdrop-blur-sm  border border-gray-700 text-white font-medium py-3 rounded-full transition text-lg"
                                 >
                                     Próximo
                                 </button>
@@ -447,12 +447,12 @@ export default function DigitarTexto() {
 
             {!isFlipped && (
 
-                <div className="sticky bottom-6 w-full bg-slate-100 pt-4">
+                <div className="sticky bottom-6 w-full  pt-4">
 
                     <button
                         type="submit"
                         form="respostaForm"
-                        className="flex justify-center shadow-md w-full bg-[#4cb8c4] text-white font-medium py-3 rounded-full text-lg"
+                        className="flex justify-center shadow-md w-full  text-white font-medium py-3 rounded-full text-lg bg-gray-800/50 backdrop-blur-sm  border border-gray-700"
                     >
                         Responder
                     </button>

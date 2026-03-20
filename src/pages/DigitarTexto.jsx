@@ -311,9 +311,9 @@ export default function DigitarTexto() {
 
                             </div>
 
-                            <div className="rounded-lg card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] px-5 py-4 text-center">
+                            <div className="rounded-lg card-back bg-[linear-gradient(to_right,#0d1425,#233245)] shadow-[0_10px_40px_rgba(0,0,0,0.09)] px-5 py-4 text-center">
 
-                                <span className="text-2xl text-avocado-700">
+                                <span className="text-2xl text-white">
                                     {showBackContent && frases[index].texto_traduzido}
                                 </span>
 
@@ -333,7 +333,7 @@ export default function DigitarTexto() {
                             Você digitou:
                         </span>
 
-                        <div className="rounded-lg w-full p-5 shadow-lg bg-white">
+                        <div className="rounded-lg w-full p-5 shadow-lg bg-gray-700/60 backdrop-blur-sm">
 
                             <div className="text-xl text-center">
 
@@ -343,8 +343,8 @@ export default function DigitarTexto() {
                                         key={i}
                                         className={
                                             item.match
-                                                ? "text-slate-700"
-                                                : "text-red-700"
+                                                ? "text-white"
+                                                : "text-red-400"
                                         }
                                     >
                                         {item.char}

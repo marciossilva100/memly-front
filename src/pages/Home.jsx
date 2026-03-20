@@ -149,7 +149,7 @@ export default function Home() {
 
                             <div className="flex items-center gap-3 relative">
                                 <button
-                                    className="shadow-md px-4 py-1 text-lg font-medium rounded-full bg-blue-400 text-white hover:bg-slate-600"
+                                    className="shadow-md px-4 py-1 text-md  rounded-full bg-blue-400 text-white hover:bg-slate-400"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setCategoriaId(item.id);

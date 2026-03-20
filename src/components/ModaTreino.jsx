@@ -17,7 +17,7 @@ export default function ModalTreino({
 
   const navigate = useNavigate();
 
-  const [mensagem, setMensagem] = useState(<span className="text-base">Repetir</span>);
+  const [mensagem, setMensagem] = useState(<span className="text-base text-white">Repetir</span>);
   const { user, setUser } = useAuth();
   const [waiting, setWaiting] = useState(false);
 
@@ -79,13 +79,13 @@ export default function ModalTreino({
   useEffect(() => {
 
     if (countPhrases.repeat_traine > 0) {
-      setMensagem(<span className="text-base">Repetir</span>);
+      setMensagem(<span className="text-base text-white">Repetir</span>);
       setWaiting(false);
       return;
     }
 
     if (!countPhrases.traine || countPhrases.repeat < 1) {
-      setMensagem(<span className="text-base">Repetir</span>);
+      setMensagem(<span className="text-base text-white">Repetir</span>);
       setWaiting(false);
       return;
     }
@@ -95,7 +95,7 @@ export default function ModalTreino({
     function atualizar() {
 
       if (seconds <= 0) {
-        setMensagem(<span className="text-base">Repetir</span>);
+        setMensagem(<span className="text-base text-white">Repetir</span>);
         setWaiting(false);
         return;
       }
@@ -106,7 +106,7 @@ export default function ModalTreino({
 
       if (hours > 0) {
         setMensagem(
-          <span className="text-sm text-red-700">
+          <span className="text-sm text-red-700 text-white">
             Próximo treino em {hours}h {minutes}m
           </span>
         );
@@ -114,7 +114,7 @@ export default function ModalTreino({
       }
       else if (minutes > 0) {
         setMensagem(
-          <span className="text-sm text-red-700">
+          <span className="text-sm text-red-700 text-white">
             Próximo treino em {minutes}m {sec}s
           </span>
         );
@@ -122,7 +122,7 @@ export default function ModalTreino({
       }
       else {
         setMensagem(
-          <span className="text-sm text-red-700">
+          <span className="text-sm text-red-700 text-white">
             Faltam {sec}s
           </span>
         );
@@ -235,13 +235,13 @@ export default function ModalTreino({
       className="relative z-50"
     >
 
-      <div className="fixed inset-0 bg-black/40" />
+      <div className="fixed inset-0 backdrop-blur-[2px]" />
 
-      <div className="fixed inset-0 flex items-center justify-center p-2">
+      <div className="fixed inset-0 flex items-center justify-center p-2 ">
 
-        <Dialog.Panel className="w-70 max-w-xl rounded-2xl bg-white p-6 shadow-xl">
+        <Dialog.Panel className=" max-w-xl rounded-2xl p-6 shadow-xl from-gray-900 to-gray-800 bg-gradient-to-br border border-white/30">
 
-          <Dialog.Title className="text-lg font-semibold mb-3 text-slate-700">
+          <Dialog.Title className="text-lg font-semibold mb-3 text-white">
             Treino
           </Dialog.Title>
 
@@ -256,8 +256,8 @@ export default function ModalTreino({
             <Play size={32} className="text-blue-400 me-2" />
 
             <div className="flex flex-col">
-              <span className="text-lg">Aprender</span>
-              <span className="text-xs">{countPhrases.learn} palavras</span>
+              <span className="text-lg text-white">Aprender</span>
+              <span className="text-xs text-white">{countPhrases.learn} palavras</span>
             </div>
 
           </div>
@@ -276,11 +276,11 @@ export default function ModalTreino({
             }}
           >
 
-            <Repeat size={32} className="text-blue-400 me-2" />
+            <Repeat size={32} className="text-purple-400 me-2" />
 
             <div className="flex flex-col">
               {mensagem}
-              <span className="text-xs">{countPhrases.repeat} palavras</span>
+              <span className="text-xs text-white">{countPhrases.repeat} palavras</span>
             </div>
 
           </div>
@@ -297,13 +297,13 @@ export default function ModalTreino({
             <Check size={32} className="text-green-400 me-2" />
 
             <div className="flex flex-col">
-              <span className="text-lg leading-tight">
+              <span className="text-lg leading-tight text-white">
                 Revisar palavras
                 <br />
                 aprendidas
               </span>
 
-              <span className="text-xs">{countPhrases.review} palavras</span>
+              <span className="text-xs text-white">{countPhrases.review} palavras</span>
             </div>
 
           </div>
@@ -319,7 +319,7 @@ export default function ModalTreino({
 
             <Bot size={32} className="text-blue-600 me-2" />
 
-            <span className="text-lg flex items-center">
+            <span className="text-lg flex items-center text-white">
               Treino diário com IA
               {user.plano === 2 && (<Crown size={18} className="ms-2 text-yellow-500" />)}
             </span>

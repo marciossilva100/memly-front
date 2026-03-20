@@ -303,7 +303,7 @@ export default function DigitarTexto() {
                             className={`card card-digitar-texto ${isFlipped ? "flip" : ""} h-[280px]`}
                         >
 
-                            <div className="rounded-lg card-front bg-default-gradient shadow-[0_10px_40px_rgba(0,0,0,0.08)] px-5 py-4 text-center">
+                            <div className="rounded-lg card-front bg-[linear-gradient(to_right,#233245,#0d1425)] shadow-[0_10px_40px_rgba(0,0,0,0.08)] px-5 py-4 text-center">
 
                                 <span className="text-2xl">
                                     {frases[index].texto_nativo}

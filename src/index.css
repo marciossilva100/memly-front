@@ -52,7 +52,14 @@
   --bs-link-hover-color: #5B7CFA;
 }
 
+/* no seu CSS global */
+*:focus {
+  outline: none !important;
+}
 
+*:focus-visible {
+  outline: none !important;
+}
 .text-primary-aux{
   color: var(--blue-primary);
 }

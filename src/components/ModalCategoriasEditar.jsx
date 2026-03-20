@@ -72,7 +72,7 @@ export default function ModalCategoriasEditar({ setOpenCategoriaEditar,open,cate
 
             {/* Container */}
             <div className="fixed inset-0 flex items-center justify-center px-4 ">
-                <Dialog.Panel className="w-full max-w-md rounded-2xl bg-white px-6 py-8 shadow-xl">
+                <Dialog.Panel className="w-full max-w-md rounded-2xl bg-white px-6 py-8 shadow-xl ">
                     <Dialog.Title className="text-xl font-semibold mb-6 text-slate-700">
                         Editar categoria
                     </Dialog.Title>
@@ -83,7 +83,7 @@ export default function ModalCategoriasEditar({ setOpenCategoriaEditar,open,cate
                                     onChange={(e) => setCategoria(e.target.value)}
                                     type="text"
                                     placeholder="Nome da categoria"
-                                    className="w-full rounded-xl border border-slate-300 px-4 py-2 text-lg
+                                    className="bg-gray-800/50 backdrop-blur-sm w-full rounded-xl border border-slate-300 px-4 py-2 text-lg
                                     focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20
                                     outline-none"
                                     value={categoria}

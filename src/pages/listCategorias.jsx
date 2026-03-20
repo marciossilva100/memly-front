@@ -16,7 +16,7 @@ import { useAuth } from "../context/AuthContext";
 import ModalIncorporarFrases from '../components/ModalIncorporarFrases'
 
 
-import { BookOpen } from "lucide-react";
+import { BookOpen,Search,Filter } from "lucide-react";
 
 
 export default function ListCategoria() {
@@ -35,6 +35,8 @@ export default function ListCategoria() {
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [contador, setContador] = useState(0);
+    const [textoBusca, setTextoBusca] = useState("")
+
     const navigate = useNavigate();
 
     const carregarCategorias = (pageAtual = 1) => {
@@ -88,22 +90,22 @@ export default function ListCategoria() {
             },
             body: JSON.stringify({
                 action: 'adicionar_compartilhado',
-                category_id:id
+                category_id: id
             })
         })
             .then(res => res.json())
             .then(data => {
-                if(data.message === 'Categoria já existe')
+                if (data.message === 'Categoria já existe')
                     setOpenIncorporar(true)
 
                 setOpenModalSucesso(true)
 
 
-                if(data.inseridas === 0){
+                if (data.inseridas === 0) {
                     setMsgModalSucesso("Categoria e frases já existem em sua lista.")
                 }
 
-                if(data.inseridas > 0){
+                if (data.inseridas > 0) {
                     setMsgModalSucesso("Adicionado")
                 }
 
@@ -145,7 +147,7 @@ export default function ListCategoria() {
 
 
     return (
-        <div className="h-dvh flex flex-col max-w-7xl mx-auto  px-6">
+        <div className="h-dvh flex flex-col max-w-7xl mx-auto  px-6 from-gray-900 to-gray-800 bg-gradient-to-br">
 
             {/* HEADER */}
             <div className="relative  mb-4 text-left mt-4">
@@ -153,16 +155,47 @@ export default function ListCategoria() {
                     className=" cursor-pointer"
                     onClick={() => navigate(-1)}
                 >
-                    <i className="bi bi-arrow-left text-2xl"></i>
+                    <i className="bi bi-arrow-left text-2xl text-white"></i>
                 </div>
             </div>
 
-            <div className="lista-categoria  flex-1 overflow-y-auto py-4 scrollbar-hide" id="lista-categoria">
+            <div className="lista-categoria  flex-1 overflow-y-auto pb-4 scrollbar-hide" id="lista-categoria">
+                <div className="flex-1 flex flex-col">
+
+                    <div >
+                        <div className="flex items-center border rounded-md overflow-hidden ">
+                            <span className="px-3 text-gray-500">
+                                <Search width={20} className='text-white' />
+                            </span>
+
+                            <input
+                                type="email"
+                                className="w-full px-3 py-2 outline-none text-white text-lg bg-gray-800/50 backdrop-blur-sm"
+                                placeholder="Buscar"
+                                value={textoBusca}
+                                onChange={(e) => {
+                                    setTextoBusca(e.target.value)
+                                    setErro('')
+                                }}
+                            />
+                        </div>
+                    </div>
+                    
+                        <div className="cursor-pointer flex justify-end mb-4">
+                            <Filter className="text-white mt-2" width={15} />
+                        </div>
+                    
+                    {loading && <div className="h-screen flex items-center justify-center">
+                        Carregando...
+                    </div>}
+            
+                </div>
+
                 <div className=" items-center justify-center">
 
                     {/* Item */}
                     {categorias.map((item) => (
-                        <div key={item.id} onClick={() => validar(item.quantidade, item.id)} className="flex bg-gradient-to-r to-[#4cb8c4] from-[#085078] items-center justify-between py-3 px-4  rounded-xl border shadow-lg mb-4">
+                        <div key={item.id} onClick={() => validar(item.quantidade, item.id)} className="flex bg-gray-800/50 backdrop-blur-sm items-center justify-between py-3 px-4  rounded-xl border border-gray-700 shadow-lg mb-4">
                             <div>
 
                                 <p className="text-lg text-white mt-1 font-medium">
@@ -176,7 +209,7 @@ export default function ListCategoria() {
                             </div>
 
                             <div className="flex items-center gap-3">
-                                <button className="shadow-md px-4 py-1 text-lg font-medium rounded-full bg-blue-400 text-white hover:bg-slate-600 "
+                                <button className="shadow-md px-4 py-1 text-md font-medium rounded-full bg-blue-400 text-white hover:bg-slate-600 "
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         adicionar(item.id);
@@ -198,7 +231,7 @@ export default function ListCategoria() {
 
             <ModalIA setOpenTreinoIA={setOpenTreinoIA} openTreinoIA={openTreinoIA} />
             <ModalSucesso msg={msgModalSucesso} openModalSucesso={openModalSucesso} setOpenModalSucesso={setOpenModalSucesso} />
-            <ModalIncorporarFrases  openIncorporar={openIncorporar} setOpenIncorporar={setOpenIncorporar} />
+            <ModalIncorporarFrases openIncorporar={openIncorporar} setOpenIncorporar={setOpenIncorporar} />
         </div>
     )
 }

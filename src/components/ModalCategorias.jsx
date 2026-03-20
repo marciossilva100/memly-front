@@ -67,13 +67,13 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
         const [showTooltip, setShowTooltip] = useState(false);
 
         return (
-            <div className="flex items-center mt-4">
+            <div className="flex items-center mt-4 ">
                 <label className="relative inline-flex items-center cursor-pointer me-2 ">
-                    <input type="checkbox" className="sr-only peer" defaultChecked={defaultChecked} onChange={(e) => onChange(e.target.checked)} />
+                    <input type="checkbox" className="sr-only peer " defaultChecked={defaultChecked} onChange={(e) => onChange(e.target.checked)} />
                     <div className="w-10 h-5 bg-gray-200 rounded-full peer peer-checked:bg-[#4cb8c4] peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
                 </label>
-                <div className="flex items-center gap-2 flex-1">
-                    <span className="text-md font-medium text-gray-700">{label}</span>
+                <div className="flex items-center gap-2 flex-1 ">
+                    <span className="text-md font-medium text-white">{label}</span>
                     <div className="relative">
                         <button
                             type="button"
@@ -111,22 +111,22 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
             <div className="fixed inset-0 bg-black/40" />
 
             {/* Container */}
-            <div className="fixed inset-0 flex items-center justify-center px-4 ">
-                <Dialog.Panel className="w-full max-w-md rounded-2xl bg-white px-6 py-8 shadow-xl">
-                    <Dialog.Title className="text-xl font-semibold mb-3 text-slate-700  mb-8">
+            <div className="fixed inset-0 flex items-center justify-center px-4 backdrop-blur-[2px]">
+                <Dialog.Panel className="w-full max-w-md rounded-2xl bg-white px-6 py-8 shadow-xl from-gray-900 to-gray-800 bg-gradient-to-br">
+                    <Dialog.Title className="text-xl font-semibold mb-3 text-white  mb-8">
                         Adicionar categoria
                     </Dialog.Title>
                     {!yourCategory && (
                         <div className="flex flex-col gap-4 mt-5">
                             <div>
-                                <a href="/listcategorias" className="flex items-center  gap-2 text-lg py-2 bg-[#4cb8c4] px-8 rounded-full w-full text-white">
-                                    <FaList className="me-2" />
+                                <a href="/listcategorias" className="flex items-center  gap-2 text-lg py-2 bg-gray-700/50 backdrop-blur-sm  border border-gray-700 px-8 rounded-full w-full text-white">
+                                    <FaList className="me-2 " />
                                     Categorias existentes
                                 </a>
                             </div>
 
 
-                            <button className="flex items-center  gap-2 text-lg py-2 bg-[#4cb8c4] px-8 rounded-full w-full text-white" onClick={(e) => {
+                            <button className="flex items-center  gap-2 text-lg py-2 bg-gray-700/50 backdrop-blur-sm  border border-gray-700 px-8 rounded-full w-full text-white" onClick={(e) => {
                                 setYourCategory(true);
 
                             }}>
@@ -143,7 +143,7 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
                                     onChange={(e) => setCategoria(e.target.value)}
                                     type="text"
                                     placeholder="Nome da categoria"
-                                    className="w-full rounded-xl border border-slate-300 px-4 py-2 text-lg
+                                    className="text-white bg-gray-800/50 backdrop-blur-sm w-full rounded-xl border border-slate-300 px-4 py-2 text-lg
                                     focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20
                                     outline-none"
                                 />
@@ -162,7 +162,7 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
                             <div className="mt-6 flex justify-end gap-2">
                                 <button
                                     onClick={() => setOpen(false)}
-                                    className="text-lg text-slate-600 me-3"
+                                    className="text-lg text-white me-3"
                                 >
                                     Cancelar
                                 </button>

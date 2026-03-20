@@ -222,7 +222,6 @@ export default function Home() {
             <div className=" sticky  z-10 bottom-0 text-center w-full justify-items-center justify-center items-center pt-4 pb-16">
 
                 <button className="
-
                         px-6
                         mb-4
                         py-3
@@ -244,20 +243,20 @@ export default function Home() {
                         <a href="/leituradigital">
                             <div className=' p-3 flex justify-center items-center'>
                                 {/*  <BookOpen className='text-white' /> */}
-                                <Settings width={40} height={40} className='text-purple-400' />
+                                <Settings width={38} height={38} className='text-purple-400' />
                                 {/* <img src={imgSetting} alt="" width={40} /> */}
                             </div>
                         </a>
                         <a href="/leituradigital">
                             <div className=' p-3 flex justify-center items-center'>
                                 {/* <img src={imgBook} alt="" width={40} /> */}
-                                {<BookOpen width={40} height={40} className='text-green-600' />}
+                                {<BookOpen width={38} height={38} className='text-green-600' />}
 
                             </div>
                         </a>
                         <a href="/metricas">
                             <div className=' p-3 flex justify-center items-center'>
-                                <BarChart3 className='text-blue-400' width={40} height={40} />
+                                <BarChart3 className='text-blue-400' width={38} height={38} />
 
                                 {/*  <BookOpen className='text-white' /> */}
                                 {/* <img src={imgEstatistica} alt="" width={40} /> */}
@@ -265,13 +264,13 @@ export default function Home() {
                         </a>
                         <a href="/videos">
                             <div className=' p-3 flex justify-center items-center'>
-                                <Play className='text-red-500 ' width={40} height={40} />
+                                <Play className='text-red-500 ' width={38} height={38} />
                                 {/* <img src={imgPlay} alt="" width={40} /> */}
                             </div>
                         </a>
                         <button onClick={(e) => {verifyPlan()}}>
                             <div className=' p-3 flex justify-center items-center'>
-                                <Bot width={40} height={40} className="text-yellow-500" />
+                                <Bot width={38} height={38} className="text-yellow-500" />
                                 {/* <img src={imgPlay} alt="" width={40} /> */}
                             </div>
                         </button>

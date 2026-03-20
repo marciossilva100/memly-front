@@ -309,7 +309,7 @@ export default function ModalTreino({
           </div>
 
 
-
+{/* 
           <div
             className="flex gap-2 items-center cursor-pointer"
             onClick={(e) => {
@@ -324,7 +324,7 @@ export default function ModalTreino({
               {user.plano === 2 && (<Crown size={18} className="ms-2 text-yellow-500" />)}
             </span>
 
-          </div>
+          </div> */}
 
 
 

@@ -16,7 +16,7 @@ import PremiumModal from '../components/PremiumModal'
 import { useAuth } from "../context/AuthContext";
 
 
-import { BookOpen, BarChart3, Settings,Play } from "lucide-react";
+import { BookOpen, BarChart3, Settings, Play, Crown, Bot } from "lucide-react";
 
 
 export default function Home() {
@@ -125,6 +125,16 @@ export default function Home() {
         navigate(`/frases/${id}`)
     }
 
+    function verifyPlan(e) {
+        if (user.plano === 1) {
+            setOpenTreinoIA(true)
+            return
+        }
+        setIsPremiumModalOpen(true)
+        // navigate('/premiumplan');
+
+    }
+
 
     return (
         <div className="h-dvh flex flex-col max-w-7xl mx-auto  from-gray-900 to-gray-800 bg-gradient-to-br">
@@ -226,7 +236,7 @@ export default function Home() {
                         " onClick={() => setOpen(true)}>
                     Adicionar categoria
                 </button>
-         
+
                 <div className=" w-full ">
                     <div className='flex  left-0   w-full justify-center py-2 '>
                         {/*  <a href="/leituradigital"> <div className='bg-blue-400 rounded-full p-3 flex justify-center items-center'> */}
@@ -234,20 +244,20 @@ export default function Home() {
                         <a href="/leituradigital">
                             <div className=' p-3 flex justify-center items-center'>
                                 {/*  <BookOpen className='text-white' /> */}
-                                <Settings width={40} height={40} className='text-purple-400'/>
+                                <Settings width={40} height={40} className='text-purple-400' />
                                 {/* <img src={imgSetting} alt="" width={40} /> */}
                             </div>
                         </a>
                         <a href="/leituradigital">
                             <div className=' p-3 flex justify-center items-center'>
                                 {/* <img src={imgBook} alt="" width={40} /> */}
-                                {  <BookOpen width={40} height={40} className='text-green-600' /> }
+                                {<BookOpen width={40} height={40} className='text-green-600' />}
 
                             </div>
                         </a>
                         <a href="/metricas">
                             <div className=' p-3 flex justify-center items-center'>
-                            <BarChart3 className='text-blue-400' width={40} height={40} />
+                                <BarChart3 className='text-blue-400' width={40} height={40} />
 
                                 {/*  <BookOpen className='text-white' /> */}
                                 {/* <img src={imgEstatistica} alt="" width={40} /> */}
@@ -255,10 +265,16 @@ export default function Home() {
                         </a>
                         <a href="/videos">
                             <div className=' p-3 flex justify-center items-center'>
-                                <Play className='text-red-500 ' width={40} height={40}/> 
+                                <Play className='text-red-500 ' width={40} height={40} />
                                 {/* <img src={imgPlay} alt="" width={40} /> */}
                             </div>
                         </a>
+                        <button onClick={(e) => {verifyPlan()}}>
+                            <div className=' p-3 flex justify-center items-center'>
+                                <Bot width={40} height={40} className="text-yellow-500" />
+                                {/* <img src={imgPlay} alt="" width={40} /> */}
+                            </div>
+                        </button>
                     </div>
                 </div>
 

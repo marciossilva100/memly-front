@@ -26,7 +26,7 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA}) {
 
             {/* Container */}
             <div className="fixed inset-0 flex items-center justify-center p-2">
-                <Dialog.Panel className="w-50 max-w-xl rounded-2xl bg-white p-6 shadow-xl ">
+                <Dialog.Panel className="w-50 max-w-xl rounded-2xl from-gray-900 to-gray-800 bg-gradient-to-br border border-white/30 p-6 shadow-xl ">
 
                     <div className="flex  gap-2 items-center space-x-15 mb-4" onClick={() => {
                             setOpenTreinoIA(false);
@@ -36,7 +36,7 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA}) {
                             <Type size={25} className="text-blue-400" />
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-base ">Treino com texto</span>
+                            <span className="text-base text-white">Treino com texto</span>
                         </div>
                     </div>
                       
@@ -48,7 +48,7 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA}) {
                             <FileQuestion size={25} className="text-blue-400" />
                         </div>
                         <div className="flex flex-col ">
-                            <span className="text-base leading-tight  flex">Treino com perguntas</span>
+                            <span className="text-base leading-tight  flex text-white">Treino com perguntas</span>
                         </div>
                     </div>
 

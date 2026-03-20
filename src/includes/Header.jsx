@@ -112,13 +112,13 @@ export default function Header({ titulo }) {
         <div className={`w-full section-header ${rotaBase === '/home' ? 'shadow-md pb-1' : ''}`}>
 
             {pathname === '/home' ? (
-                <header className="bg-white">
+                <header className="from-gray-900 to-gray-800 bg-gradient-to-br">
                     <div className="w-full mx-auto px-4">
                         <div className="flex h-16 ">
 
                             {/* MENU ☰ */}
                             <button
-                                className="md:hidden text-gray-700 text-xl"
+                                className="md:hidden text-white text-xl"
                                 onClick={() => setOpen(true)}
                             >
                                 ☰
@@ -127,7 +127,7 @@ export default function Header({ titulo }) {
                             {/* IDIOMA */}
                             <div className="flex items-center w-full ms-3 py-2 justify-between">
 
-                                <span className="text-md font-semibold text-slate-700 ">
+                                <span className="text-md font-semibold text-white ">
                                     {idiomaNativo ? idiomaNativo.idioma : "Carregando..."}
                                 </span>
 
@@ -136,7 +136,7 @@ export default function Header({ titulo }) {
                                 {/* SELECT CUSTOM */}
                                 <div
                                     ref={selectRef}
-                                    className="relative h-10 flex items-center rounded-2xl border border-slate-500 bg-white min-w-[180px]"
+                                    className="relative h-10 flex items-center rounded-2xl border border-slate-500  min-w-[180px]"
                                 >
                                     {/* Botão */}
                                     <div
@@ -149,12 +149,12 @@ export default function Header({ titulo }) {
                                                     src={flags[idiomaSelecionado.sigla] || "https://flagcdn.com/w40/un.png"}
                                                     className="w-5 h-5 rounded-full"
                                                 />
-                                                <span className="text-sm">
+                                                <span className="text-sm text-white">
                                                     {idiomaSelecionado.idioma}
                                                 </span>
                                             </>
                                         ) : (
-                                            <span className="text-sm text-gray-400">
+                                            <span className="text-sm text-white">
                                                 Selecione um idioma
                                             </span>
                                         )}
@@ -162,7 +162,7 @@ export default function Header({ titulo }) {
 
                                     {/* Dropdown */}
                                     {openSelect && (
-                                        <div className="absolute top-12 left-0 w-full bg-white border rounded-xl shadow-lg z-50 max-h-60 overflow-auto">
+                                        <div className="absolute top-12 left-0 w-full from-gray-800 to-gray-800 bg-gradient-to-br border rounded-xl shadow-lg z-50 max-h-60 overflow-auto">
                                             {languageList.map((item) => (
                                                 <div
                                                     key={item.id}
@@ -175,7 +175,7 @@ export default function Header({ titulo }) {
                                                             learning_language: item.sigla
                                                         }));
                                                     }}
-                                                    className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                                    className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer text-white"
                                                 >
                                                     <img
                                                         src={flags[item.sigla] || "https://flagcdn.com/w40/un.png"}
@@ -214,10 +214,10 @@ export default function Header({ titulo }) {
             )}
 
             {/* SIDEBAR */}
-            <aside className={`fixed top-0 left-0 h-full w-64 bg-white z-50 transform transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full"}`}>
+            <aside className={`fixed from-gray-900 to-gray-800 bg-gradient-to-br top-0 left-0 h-full w-64  z-50 transform transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full"}`}>
                 <div className="p-4 flex justify-between items-center border-b">
                     <img className="w-32" src={imgZaldemy} alt="Logo" />
-                    <button onClick={() => setOpen(false)} className='text-lg text-slate-500 font-semibold'>✕</button>
+                    <button onClick={() => setOpen(false)} className='text-lg text-white font-semibold'>✕</button>
                 </div>
 
                 <div class="flex items-center gap-4 p-4 border-b border-gray-200">
@@ -228,7 +228,7 @@ export default function Header({ titulo }) {
 
                   
                     <div>
-                        <p class="text-md font-semibold text-gray-800">
+                        <p class="text-md font-semibold text-white">
                             Olá, {user?.name?.split(' ')[0]}
                         </p>
                         {/* <p class="text-sm text-gray-500">
@@ -239,22 +239,22 @@ export default function Header({ titulo }) {
 
                 <nav className="flex flex-col text-sm font-medium">
 
-                    <a href="/" className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-slate-800 text-lg">
+                    <a href="/" className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-white text-lg">
                         <HelpCircle size={18} />
                         FAQ
                     </a>
 
-                    <a href="/" className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-slate-800 text-lg">
+                    <a href="/" className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-white text-lg">
                         <Mail size={18} />
                         Contato
                     </a>
 
-                    <a href="/" className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 text-slate-800 text-lg">
+                    <a href="/" className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 text-white text-lg">
                         <Crown size={20} className='text-yellow-500' />
                         Premium
                     </a>
 
-                    <div className='px-4 py-3 text-slate-800 text-lg'>
+                    <div className='px-4 py-3 text-white text-lg'>
                         <BotaoLogout />
                     </div>
                 </nav>

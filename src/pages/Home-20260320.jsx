@@ -16,7 +16,7 @@ import PremiumModal from '../components/PremiumModal'
 import { useAuth } from "../context/AuthContext";
 
 
-import { BookOpen, BarChart3, Settings,Play } from "lucide-react";
+import { BookOpen,BarChart3 } from "lucide-react";
 
 
 export default function Home() {
@@ -134,7 +134,7 @@ export default function Home() {
 
                     {/* Item */}
                     {categorias.map((item) => (
-                        <div key={item.id} onClick={() => validar(item.quantidade, item.id)} className="flex bg-gray-800/50 backdrop-blur-sm  border border-gray-700 items-center justify-between py-3 px-4  rounded-xl  shadow-lg mb-4">
+                        <div key={item.id} onClick={() => validar(item.quantidade, item.id)} className="flex bg-gradient-to-r to-[#4cb8c4] from-[#085078] items-center justify-between py-3 px-4  rounded-xl border shadow-lg mb-4">
                             <div>
 
                                 <p className="text-lg text-white mt-1 font-medium">
@@ -209,16 +209,15 @@ export default function Home() {
                 </div>
 
             </div>
-            <div className=" sticky  z-10 bottom-0 text-center w-full justify-items-center justify-center items-center pt-4 pb-16">
+            <div className="bg-white sticky from-gray-900 to-gray-800 bg-gradient-to-br z-10 bottom-0 text-center w-full justify-items-center justify-center items-center pt-4 pb-16">
 
                 <button className="
-
                         px-6
                         mb-4
                         py-3
                         shadow-md
                         rounded-full
-                        bg-gray-800/50 backdrop-blur-sm  border border-gray-700
+                        bg-[#4cb8c4]
                         text-white
                         font-medium
                        text-lg
@@ -226,37 +225,34 @@ export default function Home() {
                         " onClick={() => setOpen(true)}>
                     Adicionar categoria
                 </button>
-         
-                <div className=" w-full ">
-                    <div className='flex  left-0   w-full justify-center py-2 '>
+                <hr className='w-full' />
+                <div className=" ">
+                    <div className='flex  left-0   w-full justify-center py-1'>
                         {/*  <a href="/leituradigital"> <div className='bg-blue-400 rounded-full p-3 flex justify-center items-center'> */}
 
                         <a href="/leituradigital">
                             <div className=' p-3 flex justify-center items-center'>
                                 {/*  <BookOpen className='text-white' /> */}
-                                <Settings width={40} height={40} className='text-purple-400'/>
-                                {/* <img src={imgSetting} alt="" width={40} /> */}
+                                <img src={imgSetting} alt="" width={40} />
                             </div>
                         </a>
                         <a href="/leituradigital">
                             <div className=' p-3 flex justify-center items-center'>
-                                {/* <img src={imgBook} alt="" width={40} /> */}
-                                {  <BookOpen width={40} height={40} className='text-green-600' /> }
-
+                                <img src={imgBook} alt="" width={40} />
                             </div>
                         </a>
+                        <BarChart3 className='text-blue-400' width={40} height={40}/>
                         <a href="/metricas">
+                        <BarChart3 className='text-blue-400' width={40} height={40}/>
                             <div className=' p-3 flex justify-center items-center'>
-                            <BarChart3 className='text-blue-400' width={40} height={40} />
-
                                 {/*  <BookOpen className='text-white' /> */}
-                                {/* <img src={imgEstatistica} alt="" width={40} /> */}
+                                <img src={imgEstatistica} alt="" width={40} />
                             </div>
                         </a>
                         <a href="/videos">
                             <div className=' p-3 flex justify-center items-center'>
-                                <Play className='text-red-500 ' width={40} height={40}/> 
-                                {/* <img src={imgPlay} alt="" width={40} /> */}
+                                {/*  <BookOpen className='text-white' /> */}
+                                <img src={imgPlay} alt="" width={40} />
                             </div>
                         </a>
                     </div>

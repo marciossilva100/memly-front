@@ -272,7 +272,7 @@ export default function Flashcards() {
 
   return (
 
-    <div className="px-6 bg-slate-50 h-dvh pt-4">
+    <div className="px-6  h-dvh pt-4 from-gray-900 to-gray-800 bg-gradient-to-br">
 
       <div className="relative text-center mb-4">
 
@@ -280,7 +280,7 @@ export default function Flashcards() {
           className="text-left cursor-pointer"
           onClick={() => navigate(-1)}
         >
-          <i className="bi bi-arrow-left text-2xl"></i>
+          <i className="bi bi-arrow-left text-2xl text-white"></i>
         </div>
 
       </div>
@@ -300,14 +300,14 @@ export default function Flashcards() {
 
           <div className={`card ${isFlipped ? "flip" : ""}`}>
 
-            <div className="card-front shadow-[0_10px_40px_rgba(0,0,0,0.08)] text-center p-8 bg-default-gradient rounded-lg">
+            <div className="card-front shadow-[0_10px_40px_rgba(0,0,0,0.08)] text-center p-8 bg-[linear-gradient(to_right,#233245,#0d1425)] rounded-lg">
               <span className="text-2xl">
                 {frases[index].texto_nativo}
               </span>
             </div>
 
-            <div className="card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] text-center p-8 rounded-lg">
-              <span className="text-2xl text-slate-700">
+            <div className="card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] text-center p-8 rounded-lg bg-[linear-gradient(to_right,#0d1425,#233245)]">
+              <span className="text-2xl text-white">
                 {showBackContent && frases[index].texto_traduzido}
               </span>
             </div>
@@ -380,14 +380,14 @@ export default function Flashcards() {
 
           <button
             onClick={() => nextCard(false)}
-            className="bg-red-400 text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full"
+            className="bg-red-400/70 backdrop-blur-sm text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full"
           >
             Não lembrei
           </button>
 
           <button
             onClick={() => nextCard(true)}
-            className="bg-[#4cb8c4] text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full"
+            className="bg-gray-700/50 backdrop-blur-sm text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full"
           >
             Lembrei
           </button>

@@ -114,7 +114,7 @@ export default function TreinoIA() {
                 </div>
                 <div className="w-full flex justify-center items-center">
                     <button
-                        onClick={()=>playAudio(textoTraduzido,user)}
+                        onClick={()=>playAudio(textoTraduzido,user,true)}
                         className="mt-2 px-4 py-2 bg-slate-400 text-white rounded hover:bg-indigo-700 flex items-center gap-2"
                     >
                         <Volume /> Ouvir

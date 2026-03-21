@@ -1,6 +1,6 @@
 let currentAudio = null;
 
-export const playAudio = async (text, user) => {
+export const playAudio = async (text, user,ia = false) => {
     if (!text) return;
 
     // cancela áudio anterior
@@ -9,7 +9,7 @@ export const playAudio = async (text, user) => {
         currentAudio = null;
     }
 
-    if (user.plano === 1 && user.id === 47) {
+    if (user.plano === 1 && user.id === 47 && !ia) {
         const url = await gerarAudio(text);
         if (!url) return;
 

@@ -234,7 +234,7 @@ export default function () {
                             <div className="text-center flex justify-center mt-5">
                                 <button onClick={(e) => {
                                     e.preventDefault();
-                                    playAudio(question, user);
+                                    playAudio(question, user,true);
                                 }} className="px-4 py-2 rounded-md bg-slate-400 text-white text-sm hover:bg-blue-600 transition flex">
                                     <Volume className="w-5 h-5" />
                                     Ouvir

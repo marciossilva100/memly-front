@@ -9,7 +9,7 @@ export const playAudio = async (text, user) => {
         currentAudio = null;
     }
 
-    if (user.plano === 1) {
+    if (user.plano === 1 && user.id === 47) {
         const url = await gerarAudio(text);
         if (!url) return;
 

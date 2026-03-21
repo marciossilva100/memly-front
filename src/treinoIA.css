@@ -54,8 +54,8 @@
 }
 
 .back {
-    color: rgb(29, 29, 29);
-  background: white;
+  /*   color: rgb(29, 29, 29);
+  background: white; */
   transform: rotateY(180deg);
 }
 

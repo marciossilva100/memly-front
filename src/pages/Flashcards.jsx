@@ -272,129 +272,133 @@ export default function Flashcards() {
 
   return (
 
-    <div className="px-6  h-dvh pt-4 from-gray-900 to-gray-800 bg-gradient-to-br">
+    <div className="flex px-6  h-dvh pt-4 from-gray-900 to-gray-800 bg-gradient-to-br">
+      <div className="overflow-y-auto flex-1 scrollbar-hide">
 
-      <div className="relative text-center mb-4">
 
-        <div
-          className="text-left cursor-pointer"
-          onClick={() => navigate(-1)}
-        >
-          <i className="bi bi-arrow-left text-2xl text-white"></i>
+        <div className="relative text-center mb-4">
+
+          <div
+            className="text-left cursor-pointer"
+            onClick={() => navigate(-1)}
+          >
+            <i className="bi bi-arrow-left text-2xl text-white"></i>
+          </div>
+
         </div>
 
-      </div>
+        <div className="top-0 left-0 w-full h-2 bg-slate-200 pt-2">
 
-      <div className="top-0 left-0 w-full h-2 bg-slate-200 pt-2">
+          <div
+            className="h-full bg-slate-400 transition-all duration-300"
+            style={{ width: `${progressBar}%` }}
+          />
 
-        <div
-          className="h-full bg-slate-400 transition-all duration-300"
-          style={{ width: `${progressBar}%` }}
-        />
+        </div>
 
-      </div>
+        <div className="h-dvh  justify-center pt-8 h-20">
 
-      <div className="h-dvh  justify-center pt-8 h-20">
+          <div className="perspective flashcard justify-center flex h-[300px]">
 
-        <div className="perspective flashcard justify-center flex h-[300px]">
+            <div className={`card ${isFlipped ? "flip" : ""}`}>
 
-          <div className={`card ${isFlipped ? "flip" : ""}`}>
+              <div className="card-front shadow-[0_10px_40px_rgba(0,0,0,0.08)] text-center p-8 bg-[linear-gradient(to_right,#233245,#0d1425)] rounded-lg">
+                <span className="text-2xl">
+                  {frases[index].texto_nativo}
+                </span>
+              </div>
 
-            <div className="card-front shadow-[0_10px_40px_rgba(0,0,0,0.08)] text-center p-8 bg-[linear-gradient(to_right,#233245,#0d1425)] rounded-lg">
-              <span className="text-2xl">
-                {frases[index].texto_nativo}
-              </span>
-            </div>
+              <div className="card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] text-center p-8 rounded-lg bg-[linear-gradient(to_right,#0d1425,#233245)]">
+                <span className="text-2xl text-white">
+                  {showBackContent && frases[index].texto_traduzido}
+                </span>
+              </div>
 
-            <div className="card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] text-center p-8 rounded-lg bg-[linear-gradient(to_right,#0d1425,#233245)]">
-              <span className="text-2xl text-white">
-                {showBackContent && frases[index].texto_traduzido}
-              </span>
             </div>
 
           </div>
+          {isFlipped && (
+            <div className="text-center flex justify-center mt-5">
+              <button onClick={(e) => {
+                e.preventDefault();
+                playAudio(frases[index].texto_traduzido, user);
+              }} className="px-4 py-2 rounded-md bg-slate-400 text-white text-sm hover:bg-blue-500 transition flex">
+                <Volume className="w-5 h-5" />
+                Ouvir
+              </button>
+            </div>
+          )}
+
+          {!isFlipped && (
+
+            <div className="fixed bottom-6 left-1/2 -translate-x-1/2 ">
+
+              <svg width="96" height="96">
+
+                <circle
+                  cx="48"
+                  cy="48"
+                  r={RADIUS}
+                  stroke="#e5e7eb"
+                  strokeWidth="8"
+                  fill="none"
+                />
+
+                <circle
+                  cx="48"
+                  cy="48"
+                  r={RADIUS}
+                  stroke="#3687bf"
+                  strokeWidth="8"
+                  fill="none"
+                  strokeDasharray={CIRCUMFERENCE}
+                  strokeDashoffset={CIRCUMFERENCE * (1 - progress / 100)}
+                  style={{
+                    transition: "stroke-dashoffset 0.1s linear",
+                    transform: "rotate(-90deg)",
+                    transformOrigin: "50% 50%"
+                  }}
+                />
+
+              </svg>
+
+              <button
+                onClick={flipCard}
+                className="absolute inset-0 m-auto bg-[#4cb8c4] text-white rounded-full w-20 h-20 shadow-lg transition active:scale-95"
+              >
+                Mostrar
+              </button>
+
+            </div>
+
+          )}
+
+
 
         </div>
         {isFlipped && (
-          <div className="text-center flex justify-center mt-5">
-            <button onClick={(e) => {
-              e.preventDefault();
-              playAudio(frases[index].texto_traduzido, user);
-            }} className="px-4 py-2 rounded-md bg-slate-400 text-white text-sm hover:bg-blue-500 transition flex">
-              <Volume className="w-5 h-5" />
-              Ouvir
-            </button>
-          </div>
-        )}
 
-        {!isFlipped && (
-
-          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 ">
-
-            <svg width="96" height="96">
-
-              <circle
-                cx="48"
-                cy="48"
-                r={RADIUS}
-                stroke="#e5e7eb"
-                strokeWidth="8"
-                fill="none"
-              />
-
-              <circle
-                cx="48"
-                cy="48"
-                r={RADIUS}
-                stroke="#3687bf"
-                strokeWidth="8"
-                fill="none"
-                strokeDasharray={CIRCUMFERENCE}
-                strokeDashoffset={CIRCUMFERENCE * (1 - progress / 100)}
-                style={{
-                  transition: "stroke-dashoffset 0.1s linear",
-                  transform: "rotate(-90deg)",
-                  transformOrigin: "50% 50%"
-                }}
-              />
-
-            </svg>
+          <div className="flex sticky bottom-6 items-center justify-center gap-3 w-full ">
 
             <button
-              onClick={flipCard}
-              className="absolute inset-0 m-auto bg-[#4cb8c4] text-white rounded-full w-20 h-20 shadow-lg transition active:scale-95"
+              onClick={() => nextCard(false)}
+              className="bg-red-400/70 backdrop-blur-sm text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full"
             >
-              Mostrar
+              Não lembrei
+            </button>
+
+            <button
+              onClick={() => nextCard(true)}
+              className="bg-gray-700/50 backdrop-blur-sm text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full"
+            >
+              Lembrei
             </button>
 
           </div>
 
         )}
-
-
-
       </div>
-      {isFlipped && (
-
-        <div className="flex sticky bottom-6 items-center justify-center gap-3 w-full ">
-
-          <button
-            onClick={() => nextCard(false)}
-            className="bg-red-400/70 backdrop-blur-sm text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full"
-          >
-            Não lembrei
-          </button>
-
-          <button
-            onClick={() => nextCard(true)}
-            className="bg-gray-700/50 backdrop-blur-sm text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full"
-          >
-            Lembrei
-          </button>
-
-        </div>
-
-      )}
+      
     </div>
 
   );

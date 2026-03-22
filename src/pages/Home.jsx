@@ -4,7 +4,7 @@ import imgSetting from '../assets/img/setting.png'
 import imgEstatistica from '../assets/img/estatistic.png'
 import imgPlay from '../assets/img/play.png'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, use } from 'react'
 import { useNavigate } from "react-router-dom";
 import ModalCategorias from '../components/ModalCategorias';
 import ModalCategoriasEditar from '../components/ModalCategoriasEditar'
@@ -13,6 +13,7 @@ import ModalTreinoAdvinhar from "../components/ModalTreinoAdvinhar";
 import ModalIA from '../components/ModalIA';
 import ModalSucesso from '../components/ModalSucesso';
 import PremiumModal from '../components/PremiumModal'
+import ModalConfirm from '../components/ModalConfirm';
 import { useAuth } from "../context/AuthContext";
 
 
@@ -36,6 +37,11 @@ export default function Home() {
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
     const [menuOpenId, setMenuOpenId] = useState(null);
     const [recarregar, setRecarregar] = useState(false)
+    const [modalConfirm, setOpenModalConfirm] = useState(false)
+    const [msgModalConfirm, setMsgModalConfirm] = useState('')
+    const [deleteId, setDeleteId] = useState(0)
+
+
     const navigate = useNavigate();
 
     const menuRef = useRef(null);
@@ -81,8 +87,13 @@ export default function Home() {
             });
     };
 
-    const categoriaExcluir = async (e, categoria_id) => {
-        e.preventDefault()
+
+    const confirmarExclusao = () => {
+        categoriaExcluir(deleteId);
+        setOpenModalConfirm(false);
+    };
+
+    const categoriaExcluir = async (categoria_id) => {
 
         try {
             const res = await fetch('https://api.zaldemy.com/controller/categorias.php', {
@@ -104,6 +115,9 @@ export default function Home() {
             }
             setOpenModalSucesso(true)
             setMsgModalSucesso('Excluído com sucesso')
+            setTimeout(() => {
+                setOpenModalSucesso(false);
+            }, 2500); // 3 segundos
             carregarCategorias();
 
 
@@ -184,10 +198,10 @@ export default function Home() {
                                 {menuOpenId === item.id && (
                                     <div
                                         ref={menuRef}
-                                        className="absolute right-0 top-10 bg-white shadow-lg rounded-lg p-2 w-32 z-50"
+                                        className="absolute right-0 top-10 bg-gray-800 backdrop-blur-sm  border border-gray-700 shadow-lg rounded-lg p-2 w-32 z-50"
                                     >
                                         <button
-                                            className="block w-full text-left px-3 py-2 hover:bg-gray-100 rounded"
+                                            className="block w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-white"
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 setCategoriaClick(item.categoria);
@@ -200,10 +214,14 @@ export default function Home() {
                                         </button>
 
                                         <button
-                                            className="block w-full text-left px-3 py-2 hover:bg-gray-100 rounded"
+                                            className="block w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-white"
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                categoriaExcluir(e, item.id);
+                                                setDeleteId(item.id);
+                                                setMsgModalConfirm('Deseja excluir esta categoria?');
+                                                setOpenModalConfirm(true);
+                                                setMenuOpenId(false);
+
                                             }}
                                         >
                                             Excluir
@@ -268,7 +286,7 @@ export default function Home() {
                                 {/* <img src={imgPlay} alt="" width={40} /> */}
                             </div>
                         </a>
-                        <button onClick={(e) => {verifyPlan()}}>
+                        <button onClick={(e) => { verifyPlan() }}>
                             <div className=' p-3 flex justify-center items-center'>
                                 <Bot width={38} height={38} className="text-yellow-500" />
                                 {/* <img src={imgPlay} alt="" width={40} /> */}
@@ -286,6 +304,7 @@ export default function Home() {
                     setOpenModalSucesso(true);
                     setMsgModalSucesso(msgSucesso);
                 }}
+                setOpenModalSucesso={setOpenModalSucesso}
                 onSuccess={carregarCategorias}
             />
             <ModalCategoriasEditar
@@ -331,6 +350,7 @@ export default function Home() {
             <ModalIA setOpenTreinoIA={setOpenTreinoIA} openTreinoIA={openTreinoIA} />
             <ModalSucesso msg={msgModalSucesso} openModalSucesso={openModalSucesso} setOpenModalSucesso={setOpenModalSucesso} />
             <PremiumModal isOpen={isPremiumModalOpen} setIsPremiumModalOpen={setIsPremiumModalOpen} onClose={() => setIsPremiumModalOpen(false)} />
+            <ModalConfirm setOpenModalConfirm={setOpenModalConfirm} openModalConfirm={modalConfirm} msg={msgModalConfirm} onConfirm={confirmarExclusao} />
         </div>
     )
 }

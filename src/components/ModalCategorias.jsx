@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { FaList, FaPlus } from "react-icons/fa";
 
 import { HelpCircle } from 'lucide-react';
-export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onSuccess }) {
+export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onSuccess,setOpenModalSucesso }) {
     const [categoria, setCategoria] = useState()
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
@@ -56,6 +56,9 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
             setError('')
             onSuccess?.();
             onOpenModalSucesso('Adicionado com sucesso')
+            setTimeout(() => {
+                setOpenModalSucesso(false);
+            }, 2500); // 3 segundos
 
         } catch (error) {
             setError(error?.message || "Erro inesperado")
@@ -112,14 +115,14 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
 
             {/* Container */}
             <div className="fixed inset-0 flex items-center justify-center px-4 backdrop-blur-[2px]">
-                <Dialog.Panel className="w-full max-w-md rounded-2xl bg-white px-6 py-8 shadow-xl from-gray-900 to-gray-800 bg-gradient-to-br">
+                <Dialog.Panel className="w-full max-w-md rounded-2xl px-6 py-8 shadow-xl from-gray-900 to-gray-800 bg-gradient-to-br">
                     <Dialog.Title className="text-xl font-semibold mb-3 text-white  mb-8">
                         Adicionar categoria
                     </Dialog.Title>
                     {!yourCategory && (
                         <div className="flex flex-col gap-4 mt-5">
                             <div>
-                                <a href="/listcategorias" className="flex items-center  gap-2 text-lg py-2 bg-gray-700/50 backdrop-blur-sm  border border-gray-700 px-8 rounded-full w-full text-white">
+                                <a href="/listcategorias" className="no-underline hover:text-white visited:text-white flex items-center  gap-2 text-lg py-2 bg-gray-700/50 backdrop-blur-sm  border border-gray-700 px-8 rounded-full w-full text-white">
                                     <FaList className="me-2 " />
                                     Categorias existentes
                                 </a>

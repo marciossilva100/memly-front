@@ -31,7 +31,10 @@
 .flashcard.flipped {
   transform: rotateY(180deg);
 }
-
+#root{
+    background: #1F2937;
+background: linear-gradient(90deg,rgba(31, 41, 55, 1) 0%, rgba(55, 65, 81, 1) 100%);
+}
 /* Faces do cartão */
 .front,
 .back {

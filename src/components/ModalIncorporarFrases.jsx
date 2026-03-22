@@ -64,8 +64,8 @@ export default function ModalIncorporarFrases({openIncorporar,setOpenIncorporar}
 
             {/* Container */}
             <div className="fixed inset-0 flex items-center justify-center px-4 ">
-                <Dialog.Panel className="w-full max-w-md rounded-2xl bg-white px-6 py-8 shadow-xl">
-                    <Dialog.Title className="text-xl font-semibold mb-3 text-slate-700 ">
+                <Dialog.Panel className="w-full max-w-md rounded-2xl  px-6 py-8 shadow-xl from-gray-900 to-gray-800 bg-gradient-to-br border border-white/30">
+                    <Dialog.Title className="text-xl font-semibold mb-3 text-white ">
                         Categoria já existe na sua lista. Deseja incorporar as frases para sua categoria existente?
                     </Dialog.Title>
       

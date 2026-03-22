@@ -195,7 +195,7 @@ export default function JogoFrases() {
 
   if (finalizado) {
     return (
-      <div className="h-dvh flex items-center justify-center bg-gradient-to-r from-[#4cb8c4] to-[#085078] px-10">
+      <div className="h-dvh flex items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br px-10">
         <div className="bg-white p-10 rounded-2xl shadow-2xl text-center max-w-md">
           <p className="text-xl mb-4">{mensagemFinal()}</p>
 
@@ -203,7 +203,7 @@ export default function JogoFrases() {
             {porcentagem}%
           </div>
 
-          <p className="text-gray-600 mb-6">
+          <p className="text-text mb-6">
             {acertos} acertos • {erros} erros
           </p>
 
@@ -219,10 +219,10 @@ export default function JogoFrases() {
   }
 
   return (
-    <div className="px-6 pt-4 h-screen grid grid-rows-[auto,1fr] overflow-hidden bg-gradient-to-r from-[#4cb8c4] to-[#085078]">
+    <div className="px-6 pt-4 h-screen grid grid-rows-[auto,1fr] overflow-hidden from-gray-900 to-gray-800 bg-gradient-to-br">
       <div className="mb-4">
-        <div onClick={() => navigate(-1)} className="cursor-pointer">
-          ← Voltar
+        <div onClick={() => navigate(-1)} className="cursor-pointer text-white text-2xl">
+          ← 
         </div>
       </div>
 

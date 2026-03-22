@@ -19,55 +19,55 @@ export default function ModalTreinoAdvinhar({ setOpenTreinoAdvinhar, openTreinoA
             className="relative z-50"
         >
             {/* Overlay */}
-            <div className="fixed inset-0 bg-black/40" />
+            <div className="fixed inset-0 backdrop-blur-[2px]" />
 
             {/* Container */}
             <div className="fixed inset-0 flex items-center justify-center p-2">
-                <Dialog.Panel className="w-60 max-w-xl rounded-2xl bg-white p-6 shadow-xl ">
+                <Dialog.Panel className="w-60 max-w-xl rounded-2xl from-gray-900 to-gray-800 bg-gradient-to-br p-6 shadow-xl ">
 
                     <div className="flex  gap-2 items-center space-x-15 mb-4">
                         <div className="flex justify-center items-center me-3">
-                            <Eye size={25} className="text-blue-400" />
+                            <Eye width={38} height={38} className="text-blue-400" />
 
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-base ">Advinhar</span>
+                            <span className="text-lg text-white ">Advinhar</span>
                         </div>
                     </div>
                     <div className="flex  gap-2 items-center space-x-15 mb-4">
                         <div className="flex justify-center items-center me-3">
-                            <Shuffle size={25} className="text-blue-400" />
+                            <Shuffle width={38} height={38} className="text-purple-400" />
                         </div>
                         <div className="flex flex-col cursor-pointer" onClick={() => {
                             if (!categoriaId) return;
                             setOpenTreinoAdvinhar(false);
                             navigate(`/emparelhar/${categoriaId}/traine`);
                         }}> 
-                            <span className="text-base ">Emparelhar</span>
+                            <span className="text-lg text-white">Emparelhar</span>
                         </div>
                     </div>
                     <div className="flex  gap-2 items-center space-x-15 mb-4">
                         <div className="flex justify-center items-center me-3">
-                            <History size={25} className="text-blue-400" />
+                            <History width={38} height={38} className="text-green-600" />
                         </div>
                         <div className="flex flex-col" onClick={() => {
                             if (!categoriaId) return;
                             setOpenTreinoAdvinhar(false);
                             navigate(`/flashcards/${categoriaId}/traine`);
                         }}>
-                            <span className="text-base leading-tight">Relembrar</span>
+                            <span className="text-lg text-white leading-tight">Relembrar</span>
                         </div>
                     </div>
                     <div className="flex  gap-2 items-center space-x-15">
                         <div className="flex justify-center items-center me-3">
-                            <Type size={25} className="text-blue-400" />
+                            <Type width={38} height={38} className="text-yellow-500" />
                         </div>
                         <div className="flex flex-col " onClick={() => {
                             if (!categoriaId) return;
                             setOpenTreinoAdvinhar(false);
                             navigate(`/digitartexto/${categoriaId}/traine`);
                         }}>
-                            <span className="text-base leading-tight  flex">Digitar</span>
+                            <span className="text-lg leading-tight  flex text-white">Digitar</span>
                         </div>
                     </div>
 

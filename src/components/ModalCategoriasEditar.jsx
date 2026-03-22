@@ -71,9 +71,9 @@ export default function ModalCategoriasEditar({ setOpenCategoriaEditar,open,cate
             <div className="fixed inset-0 bg-black/40" />
 
             {/* Container */}
-            <div className="fixed inset-0 flex items-center justify-center px-4 ">
-                <Dialog.Panel className="w-full max-w-md rounded-2xl bg-white px-6 py-8 shadow-xl ">
-                    <Dialog.Title className="text-xl font-semibold mb-6 text-slate-700">
+            <div className="fixed inset-0 flex items-center justify-center px-4 backdrop-blur-[2px]">
+                <Dialog.Panel className="w-full max-w-md rounded-2xl px-6 py-8 shadow-xl from-gray-900 to-gray-800 bg-gradient-to-br border border-white/30">
+                    <Dialog.Title className="text-xl font-semibold mb-6 text-white">
                         Editar categoria
                     </Dialog.Title>
                     
@@ -85,10 +85,10 @@ export default function ModalCategoriasEditar({ setOpenCategoriaEditar,open,cate
                                     placeholder="Nome da categoria"
                                     className="bg-gray-800/50 backdrop-blur-sm w-full rounded-xl border border-slate-300 px-4 py-2 text-lg
                                     focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20
-                                    outline-none"
+                                    outline-none text-white"
                                     value={categoria}
                                 />
-                                {error &&
+                                {error && 
                                     <span className="text-sm text-red-500">{error}</span>
                                 }
                             </div>
@@ -96,12 +96,12 @@ export default function ModalCategoriasEditar({ setOpenCategoriaEditar,open,cate
                             <div className="mt-6 flex justify-end gap-2">
                                 <button
                                     onClick={() => setOpenCategoriaEditar(false)}
-                                    className="text-lg text-slate-600 me-3"
+                                    className="text-lg text-white me-3 w-full bg-gray-800/50 backdrop-blur-sm  border border-gray-700 rounded-full"
                                 >
                                     Cancelar
                                 </button>
 
-                                <button type="submit" disabled={loading} className="bg-[#4cb8c4] text-white px-4 py-2 rounded-full text-lg ">
+                                <button type="submit" disabled={loading} className="bg-[#4cb8c4] text-white py-2 rounded-full text-lg w-full">
                                     Salvar
                                 </button>
                             </div>

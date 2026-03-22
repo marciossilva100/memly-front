@@ -33,10 +33,10 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA}) {
                             navigate(`/treinoia`);
                         }}> 
                         <div className="flex justify-center items-center me-3">
-                            <Type size={25} className="text-blue-400" />
+                            <Type size={32} className="text-blue-400" />
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-base text-white">Treino com texto</span>
+                            <span className="text-lg text-white">Treino com texto</span>
                         </div>
                     </div>
                       
@@ -45,10 +45,10 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA}) {
                             navigate(`/perguntasia`);
                         }}>
                         <div className="flex justify-center items-center me-3">
-                            <FileQuestion size={25} className="text-blue-400" />
+                            <FileQuestion size={32} className="text-green-400" />
                         </div>
                         <div className="flex flex-col ">
-                            <span className="text-base leading-tight  flex text-white">Treino com perguntas</span>
+                            <span className="text-lg leading-tight  flex text-white">Treino com perguntas</span>
                         </div>
                     </div>
 

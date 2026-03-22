@@ -198,7 +198,7 @@ export default function () {
     }
 
     return (
-        <div className="p-4 justify-center w-full px-6 h-dvh flex flex-col">
+        <div className="p-4 justify-center w-full px-6 h-dvh flex flex-col h-dvh">
             <div className="flex-1 overflow-y-auto scrollbar-hide">
                 <div className="relative mb-6">
                     <div

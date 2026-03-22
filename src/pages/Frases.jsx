@@ -101,13 +101,13 @@ export default function Frases() {
 
     return (
 
-        <div className="px-5 h-dvh flex flex-col">
+        <div className="px-5 h-dvh flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
             <div className="relative mb-4 mt-4">
                 <div
                     className="left-0  cursor-pointer"
                     onClick={() => navigate(-1)}
                 >
-                    <i className="bi bi-arrow-left text-2xl"></i>
+                    <i className="bi bi-arrow-left text-2xl text-white"></i>
                 </div>
             </div>
             <div className="flex-1 flex flex-col">
@@ -120,7 +120,7 @@ export default function Frases() {
 
                         <input
                             type="email"
-                            className="w-full px-3 py-2 outline-none text-lg"
+                            className="w-full px-3 py-2 outline-none text-lg text-white !bg-transparent"
                             placeholder="Buscar"
                             value={textoBusca}
                             onChange={(e) => {
@@ -132,21 +132,21 @@ export default function Frases() {
                 </div>
                 {frases.length > 0 && (
                     <div className="cursor-pointer flex justify-end mb-4">
-                        <Filter className="text-slate-500 mt-2" width={15} />
+                        <Filter className="text-white mt-2" width={15} />
                     </div>
                 )}
 
-                {loading && <div className="h-screen flex items-center justify-center">
+                {loading && <div className="h-screen flex items-center justify-center text-white">
                     Carregando...
                 </div>}
                 <div className="flex-1 overflow-y-auto scrollbar-hide">
 
                     {!loading && frases.map(item => (
-                        <div key={item.id} className="text-lg grid grid-cols-[1fr_1fr_auto] gap-4 items-center  py-3 border-b-2 overflow" >
+                        <div key={item.id} className="text-lg grid grid-cols-[1fr_1fr_auto] gap-4 items-center  py-3 border-b-2 overflow text-white" >
                             <div>{item.texto_nativo}</div>
                             <div>{item.texto_traduzido}</div>
                             <div className="flex justify-center">
-                                <Trash width={14} className="text-red-400" onClick={() => deletePhrase(item.id)} />
+                                <Trash size={18} className="text-red-400" onClick={() => deletePhrase(item.id)} />
                             </div>
                         </div>
                     ))}
@@ -154,13 +154,13 @@ export default function Frases() {
                 </div>
             </div>
 
-            <div className="sticky bottom-0 left-0 w-full justify-center items-center py-4 bg-white ">
+            <div className="sticky bottom-0 left-0 w-full justify-center items-center py-4  ">
                 <button className="
                     px-6
                     py-3
                     w-full
                     rounded-full
-                    bg-[#4cb8c4]
+                      bg-gray-800/50 backdrop-blur-sm  border border-gray-700
                     text-white
                     text-lg
                     hover:bg-blue-600

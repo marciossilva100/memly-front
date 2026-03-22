@@ -240,7 +240,7 @@ export default function Login({ setTitulo }) {
         const currentUrl = window.location.href;
         
         return (
-            <div className="w-full mx-auto px-8 section-login py-4 h-dvh flex items-center from-gray-900 to-gray-800 bg-gradient-to-br">
+            <div className="w-full mx-auto px-8 section-login py-4 h-dvh flex items-center from-gray-800 to-gray-700 bg-gradient-to-br">
                 <div className="flex-1 justify-center overflow-y-auto scrollbar-hide">
                     <div className="w-full max-w-md text-center mx-auto">
                         {/* Logo */}
@@ -537,7 +537,7 @@ export default function Login({ setTitulo }) {
                     <br />
 
                     {/* Facebook */}
-                    <button className="text-sm w-full bg-[#1877f2] hover:bg-[#0d65d9] text-white py-2 rounded-full flex items-center justify-center gap-3 transition-colors">
+                    <button className="text-sm w-full  hover:bg-[#0d65d9] text-white py-2 rounded-full border border-gray-300 flex items-center justify-center gap-3 transition-colors">
                         <img src={imgFacebook} alt="Facebook icone" width={30} className="rounded-full" />
                         <span className="ff-inter">Entrar com Facebook</span>
                     </button>

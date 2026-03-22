@@ -123,18 +123,18 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
             className="relative z-50"
         >
             {/* Overlay */}
-            <div className="fixed inset-0 bg-black/40" />
+            <div className="fixed inset-0 backdrop-blur-[2px]" />
 
             {/* Container */}
             <div className="fixed inset-0 flex items-center justify-center p-4">
-                <Dialog.Panel className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+                <Dialog.Panel className="w-full max-w-md rounded-2xl from-gray-900 to-gray-800 bg-gradient-to-br border border-white/30 p-6 shadow-xl">
                     {/* <Dialog.Title className="text-sm font-semibold mb-2 text-slate-700">
                         Palavra ou frase em inglês
                     </Dialog.Title> */}
                     <form action="" onSubmit={handleSubmit}>
                         <div>
                             <div className="">
-                                <label className="font-medium text-sm mb-3 text-slate-800">Palavra ou frase em português</label>
+                                <label className="font-medium text-sm mb-3 text-white">Palavra ou frase em português</label>
                             </div>
                             <textarea
                                 onChange={(e) => {
@@ -143,7 +143,8 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                                 }}
                                 value={phrase}
                                 placeholder="Eu adoro estudar"
-                                className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-2 text-lg
+                                className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-2 text-lg !bg-transparent
+                                    text-white
                                     focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20
                                     outline-none"
                             ></textarea>
@@ -154,7 +155,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                         <div className="mt-4">
 
                             <div className="flex justify-between">
-                                <label className="font-medium text-sm mb-3 text-slate-800">Tradução</label>
+                                <label className="font-medium text-sm mb-3 text-white">Tradução</label>
                                 {translatedPhrase && (
                                     <PlayCircle className="text-[#4cb8c4]" onClick={()=>playAudio(translatedPhrase,user)} />
                                 )}
@@ -170,7 +171,8 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                                 }}
                                 value={translatedPhrase}
                                 placeholder=""
-                                className="w-full rounded-xl border border-slate-300 px-4 py-2 text-lg
+                                className="w-full rounded-xl border border-slate-300 px-4 py-2 text-lg !bg-transparent
+                                    text-white
                                     focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20
                                     outline-none"
                             ></textarea>
@@ -199,12 +201,12 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                                     setTranslatedPhrase('');
                                     setPhrase('');
                                 }}
-                                className="text-sm text-slate-600"
+                                className="text-lg text-white me-3"
                             >
                                 Cancelar
                             </button>
 
-                            <button type="submit" disabled={loading} className="bg-avocado-500 text-white px-4 py-2 rounded-full text-sm ">
+                            <button type="submit" disabled={loading} className="bg-blue-400 text-white px-4 py-2 rounded-full text-lg ">
                                 Salvar
                             </button>
                         </div>

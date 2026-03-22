@@ -6,7 +6,7 @@ import imgGoogle from '../assets/img/google.png'
 import imgFacebook from '../assets/img/logo-face.webp'
 import imgCoruja from '../assets/img/coruja.png'
 import imgMemly from "../assets/img/mascote-memly.png"
-import imgZaldemy from "../assets/img/zaldemy-color.png"
+import imgZaldemy from "../assets/img/zaldemy.png"
 import { useAuth } from "../context/AuthContext";
 import { GoogleLogin } from '@react-oauth/google';
 import { useGoogleLogin } from '@react-oauth/google';
@@ -240,13 +240,13 @@ export default function Login({ setTitulo }) {
     // Se for mobile e não estiver instalado como app, mostrar apenas tela de instalação
     if (isMobile && !isStandalone) {
         return (
-            <div className="max-w-6xl mx-auto px-8 section-login py-4 h-dvh flex items-center">
+            <div className="max-w-6xl mx-auto px-8 section-login py-4 h-dvh flex items-center from-gray-900 to-gray-800 bg-gradient-to-br">
                 <div className="flex-1 justify-center overflow-y-auto scrollbar-hide ">
                     <div className="w-full max-w-md text-center">
 
                         {/* Logo */}
                         <div className="flex justify-center mb-6">
-                            <img width={250} src={imgZaldemy} alt="Zaldemy" />
+                            <img width={240} src={imgZaldemy} alt="Zaldemy" />
                         </div>
 
                         {/* Mascote */}
@@ -254,11 +254,11 @@ export default function Login({ setTitulo }) {
                             <img width={150} src={imgMemly} alt="Memly - Mascote Zaldemy" className="animate-bounce" />
                         </div> */}
 
-                        <h2 className="text-[#085078] text-2xl font-bold mb-4">
-                            📱 Instale nosso App
+                        <h2 className="text-[#41a9e3] text-2xl font-bold mb-4">
+                            Instale nosso App
                         </h2>
 
-                        <p className="text-gray-600 mb-8">
+                        <p className="text-white mb-8">
                             Para uma experiência completa, instale o Zaldemy em seu dispositivo
                         </p>
 
@@ -347,19 +347,19 @@ export default function Login({ setTitulo }) {
 
     // Tela de login normal (para desktop ou quando já está instalado)
     return (
-        <div className="max-w-6xl mx-auto px-8 section-login py-4 h-dvh flex items-center">
+        <div className="max-w-6xl mx-auto px-8 section-login py-4 h-dvh flex items-center from-gray-800 to-gray-700 bg-gradient-to-br">
             <div className="flex-1 justify-center overflow-y-auto scrollbar-hide ">
                 <div className="w-full max-w-md text-center">
 
                     <div className="flex justify-center mb-2">
-                        <img width={200} src={imgZaldemy} alt="Login" />
+                        <img width={260} src={imgZaldemy} alt="Login" />
                     </div>
 
-                    <h2 className="text-slate-500 text-2xl font-semibold">
+                    <h2 className="text-white text-2xl font-semibold ">
                         Bem-vindo!
                     </h2>
 
-                    <h5 className="text-sm text-gray-600">
+                    <h5 className="text-sm text-white">
                         Faça o login para continuar
                     </h5>
 
@@ -368,28 +368,28 @@ export default function Login({ setTitulo }) {
                         {/* Email */}
                         <div className="flex items-center border rounded-full overflow-hidden py-3">
                             <span className="px-3 text-gray-500 ">
-                                <i className="bi bi-envelope ps-2"></i>
+                                <i className="bi bi-envelope ps-2 text-white"></i>
                             </span>
                             <input
                                 type="email"
-                                className="outline-none bg-white flex-1"
+                                className="outline-none bg-white flex-1 bg-transparent text-white"
                                 name='email'
                                 placeholder="Email"
                                 value={form.email}
                                 onChange={(e) => handleChange(e)}
                             />
                         </div>
-
+ 
                         {/* Senha */}
                         <div>
                             <div className="flex items-center border overflow-hidden rounded-full py-3">
                                 <span className="px-3 text-gray-500">
-                                    <i className="bi bi-lock ps-2"></i>
+                                    <i className="bi bi-lock ps-2 text-white"></i>
                                 </span>
 
                                 <input
                                     type="password"
-                                    className="flex-1 outline-none"
+                                    className="flex-1 outline-none bg-transparent text-white"
                                     name='password'
                                     placeholder="Senha"
                                     value={form.password}
@@ -398,8 +398,8 @@ export default function Login({ setTitulo }) {
                             </div>
 
                             <div className="text-right mt-2">
-                                <Link to="/esquecisenha">
-                                    <small className="text-primary-aux">
+                                <Link to="/esquecisenha" className='text-white'>
+                                    <small className="text-white">
                                         Esqueceu a senha?
                                     </small>
                                 </Link>
@@ -417,7 +417,7 @@ export default function Login({ setTitulo }) {
                         <button
                             disabled={loading}
                             type="submit"
-                            className="w-full bg-[#4cb8c4] text-white py-3 rounded-full fw-800"
+                            className="w-full bg-[#4cb8c4] text-white py-3 rounded-full fw-800 text-lg"
                         >
                             {loading ? "Entrando..." : "Entrar"}
                         </button>
@@ -426,7 +426,7 @@ export default function Login({ setTitulo }) {
                     {/* Divisor */}
                     <div className="flex items-center my-6">
                         <div className="flex-grow border-t"></div>
-                        <span className="mx-3 text-gray-400 text-sm">
+                        <span className="mx-3 text-white text-sm">
                             Ou entre com
                         </span>
                         <div className="flex-grow border-t"></div>
@@ -438,7 +438,7 @@ export default function Login({ setTitulo }) {
                         className="text-sm w-full border border-gray-300 py-2 rounded-full flex items-center justify-center gap-3 hover:bg-gray-50 transition-colors"
                     >
                         <img src={imgGoogle} alt="Google icone" width={30} />
-                        <span className="ff-inter">Entrar com Google</span>
+                        <span className="ff-inter text-white">Entrar com Google</span>
                     </button>
 
                     <br />
@@ -451,7 +451,7 @@ export default function Login({ setTitulo }) {
 
                     <br />
 
-                    <p className="text-sm">
+                    <p className="text-sm text-white">
                         Não tem uma conta?{' '}
                         <Link
                             to="/cadastrar"

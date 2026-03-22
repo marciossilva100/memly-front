@@ -10,6 +10,7 @@ import imgZaldemy from "../assets/img/zaldemy.png"
 import { useAuth } from "../context/AuthContext";
 import { GoogleLogin } from '@react-oauth/google';
 import { useGoogleLogin } from '@react-oauth/google';
+import { QRCodeCanvas } from "qrcode.react";
 import axios from "axios";
 
 export default function Login({ setTitulo }) {
@@ -22,6 +23,7 @@ export default function Login({ setTitulo }) {
     const [isStandalone, setIsStandalone] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const { user,setUser } = useAuth(); 
+    const appUrl = "https://zaldem.com"; // troque pelo seu domínio
 
     const [form, setForm] = useState({
         email: '',
@@ -233,9 +235,100 @@ export default function Login({ setTitulo }) {
     //     return
     // }
 
+    // NOVA FUNCIONALIDADE: Se for acesso por desktop (não mobile), mostrar apenas QR Code
+    if (!isMobile) {
+        const currentUrl = window.location.href;
+        
+        return (
+            <div className="w-full mx-auto px-8 section-login py-4 h-dvh flex items-center from-gray-900 to-gray-800 bg-gradient-to-br">
+                <div className="flex-1 justify-center overflow-y-auto scrollbar-hide">
+                    <div className="w-full max-w-md text-center mx-auto">
+                        {/* Logo */}
+                        <div className="flex justify-center mb-6">
+                            <img width={240} src={imgZaldemy} alt="Zaldemy" />
+                        </div>
 
+                        <h2 className="text-[#41a9e3] text-2xl font-bold mb-4">
+                            Acesse pelo seu celular
+                        </h2>
 
+                        <p className="text-white mb-6">
+                            Escaneie o QR Code abaixo com a câmera do seu celular para instalar o app e fazer login
+                        </p>
 
+                        {/* QR Code */}
+                        <div className="bg-white p-4 rounded-2xl inline-block mb-6 shadow-xl">
+                            <QRCodeCanvas 
+                                value={currentUrl} 
+                                size={200}
+                                bgColor="#ffffff"
+                                fgColor="#085078"
+                                level="H"
+                                includeMargin={true}
+                            />
+                        </div>
+
+                        {/* Instruções */}
+                        <div className="bg-gradient-to-br from-[#4cb8c4]/10 to-[#085078]/10 rounded-2xl p-6 border border-[#4cb8c4]/20 text-left">
+                            <h3 className="text-lg font-semibold text-[#085078] mb-3 text-center">
+                                Como instalar no celular:
+                            </h3>
+
+                            <div className="space-y-4">
+                                <div className="flex items-start gap-3">
+                                    <div className="bg-[#4cb8c4]/20 rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <span className="text-[#085078] font-bold text-sm">1</span>
+                                    </div>
+                                    <p className="text-sm text-white">
+                                        Escaneie o QR Code com a câmera do seu celular
+                                    </p>
+                                </div>
+
+                                <div className="flex items-start gap-3">
+                                    <div className="bg-[#4cb8c4]/20 rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <span className="text-[#085078] font-bold text-sm">2</span>
+                                    </div>
+                                    <p className="text-sm text-white">
+                                        No iPhone: Toque em <span className="font-semibold">Compartilhar</span> e depois em <span className="font-semibold">"Adicionar à Tela de Início"</span>
+                                    </p>
+                                </div>
+
+                                <div className="flex items-start gap-3">
+                                    <div className="bg-[#4cb8c4]/20 rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <span className="text-[#085078] font-bold text-sm">3</span>
+                                    </div>
+                                    <p className="text-sm text-white">
+                                        No Android: Toque no menu do navegador e selecione <span className="font-semibold">"Instalar aplicativo"</span> ou <span className="font-semibold">"Adicionar à tela inicial"</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-6">
+                            <p className="text-xs text-gray-400">
+                                <Globe className="w-3 h-3 inline mr-1" />
+                                Após instalar, o app funcionará como nativo e você poderá fazer login diretamente pelo celular
+                            </p>
+                        </div>
+
+                        {/* Link para versão desktop (caso queira continuar mesmo assim) */}
+                        <div className="mt-8">
+                            <button
+                                onClick={() => {
+                                    // Força mostrar login no desktop (caso o usuário insista)
+                                    // Isso é apenas um fallback, mas a recomendação é usar o celular
+                                    window.location.reload();
+                                }}
+                                className="text-[#41a9e3] hover:text-[#085078] transition-colors text-sm underline"
+                            >
+                                Continuar no computador (não recomendado)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     // Se for mobile e não estiver instalado como app, mostrar apenas tela de instalação
     if (isMobile && !isStandalone) {

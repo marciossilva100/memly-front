@@ -63,7 +63,7 @@ export default function TreinoIA() {
         return (
             <div className="min-h-[calc(100vh-70px)] flex items-center justify-center">
                 <Loader2 className="animate-spin mr-2 w-8 h-8 text-indigo-600" />
-                <span className="text-slate-700 text-lg">Gerando treino...</span>
+                <span className="text-white text-lg">Gerando treino...</span>
             </div>
         );
     }

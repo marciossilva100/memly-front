@@ -143,7 +143,7 @@ export default function () {
         return (
             <div className="min-h-[calc(100vh-70px)] flex items-center justify-center">
                 <Loader2 className="animate-spin mr-2 w-8 h-8 text-indigo-600" />
-                <span className="text-slate-600 text-lg">{textLoading}</span>
+                <span className="text-white text-lg">{textLoading}</span>
             </div>
         );
     }
@@ -189,7 +189,7 @@ export default function () {
 
                 <button
                     onClick={() => navigate(-1)}
-                    className="mt-6 px-6 py-3 rounded-full bg-[#4cb8c4] text-white"
+                    className="mt-6 px-6 py-3 rounded-full  text-white"
                 >
                     Voltar
                 </button>
@@ -205,20 +205,20 @@ export default function () {
                         className="cursor-pointer"
                         onClick={() => navigate(-1)}
                     >
-                        <i className="bi bi-arrow-left text-2xl"></i>
+                        <i className="bi bi-arrow-left text-2xl text-white"></i>
                     </div>
                 </div>
 
                 {/* PROGRESSO */}
-                <p className="text-sm text-gray-500 text-center mb-2">
+                <p className="text-sm text-white text-center mb-2">
                     {totalToday}/4 perguntas hoje
                 </p>
 
                 {response && !isCorrect &&
                     <form onSubmit={handleSubmit} className="w-full" id="responderForm">
                         <div>
-                            <div className="flex border p-4 text-center shadow-md overflow-y-auto rounded-lg min-h-80 items-center">
-                                <p className="text-lg">{response}</p>
+                            <div className="flex border p-4 text-center shadow-md overflow-y-auto rounded-lg min-h-80 items-center bg-[linear-gradient(to_right,#0d1425,#233245)]">
+                                <p className="text-lg text-white">{response}</p>
                             </div>
                         </div>
                     </form>
@@ -227,7 +227,7 @@ export default function () {
                 {!response &&
                     <form onSubmit={handleSubmit} className="w-full" id="respostaForm">
                         <div>
-                            <div className="flex border p-6 text-center shadow-md bg-gradient-to-r from-[#4cb8c4] to-[#085078] text-white rounded-lg min-h-80 items-center justify-center">
+                            <div className="flex border border-gray-700 p-6 text-center shadow-md bg-[linear-gradient(to_right,#233245,#0d1425)] text-white rounded-lg min-h-80 items-center justify-center">
                                 <p className="text-2xl">{question}</p>
                             </div>
 
@@ -242,12 +242,12 @@ export default function () {
                             </div>
                         </div>
 
-                        <div className="bg-white py-4 text-center">
+                        <div className="py-4 text-center">
                             <textarea
                                 value={answer}
                                 onChange={(e) => setAnswer(e.target.value)}
                                 placeholder="Deixe sua resposta em inglês"
-                                className="w-full mb-6 text-lg h-32 pt-6 text-center rounded-lg border border-gray-300 resize-none"
+                                className="text-white w-full mb-6 text-lg h-32 pt-6 text-center rounded-lg bg-gray-800/50 backdrop-blur-sm  border border-gray-700 resize-none"
                             />
                         </div>
                     </form>
@@ -255,24 +255,24 @@ export default function () {
             </div>
 
             {!response &&
-                <div className="bg-white sticky bottom-0 py-4 text-center">
-                    <button form="respostaForm" className="px-6 py-3 rounded-full bg-[#4cb8c4] text-white w-full">
+                <div className="sticky bottom-0 py-4 text-center">
+                    <button form="respostaForm" className="px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm  border border-gray-700 text-white w-full">
                         Enviar
                     </button>
                 </div>
             }
 
             {response && !isCorrect &&
-                <div className="bg-white sticky bottom-0 py-4 text-center flex gap-3">
+                <div className="sticky bottom-0 py-4 text-center flex gap-3">
                     <button
                         onClick={tryAgain}
-                        className="px-6 py-3 w-full rounded-full bg-[#4cb8c4] text-white">
+                        className="px-6 py-3 w-full rounded-full bg-gray-700/50 backdrop-blur-sm  border border-gray-700 text-white">
                         Tentar novamente
                     </button>
 
                     <button
                         onClick={handleSkip}
-                        className="px-8 py-3 rounded-full bg-red-400 text-white">
+                        className="px-8 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm  border border-gray-700 text-white">
                         Pular
                     </button>
                 </div>

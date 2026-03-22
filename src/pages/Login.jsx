@@ -334,7 +334,7 @@ export default function Login({ setTitulo }) {
                         <div className="mt-8">
                             <button
                                 onClick={() => setIsStandalone(true)} // Força mostrar login
-                                className="text-[#4cb8c4] hover:text-[#085078] transition-colors text-sm underline"
+                                className="text-[#41a9e3] hover:text-[#085078] transition-colors text-sm underline"
                             >
                                 Continuar na versão web
                             </button>

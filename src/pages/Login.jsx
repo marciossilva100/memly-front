@@ -240,7 +240,7 @@ export default function Login({ setTitulo }) {
         const currentUrl = window.location.href;
         
         return (
-            <div className="w-full mx-auto px-8 section-login py-4 h-dvh flex items-center from-gray-800 to-gray-700 bg-gradient-to-br">
+            <div className="w-full mx-auto px-8 section-login py-4 h-dvh flex items-center from-gray-900 to-gray-800 bg-gradient-to-br">
                 <div className="flex-1 justify-center overflow-y-auto scrollbar-hide">
                     <div className="w-full max-w-md text-center mx-auto">
                         {/* Logo */}
@@ -440,7 +440,7 @@ export default function Login({ setTitulo }) {
 
     // Tela de login normal (para desktop ou quando já está instalado)
     return (
-        <div className="max-w-6xl mx-auto px-8 section-login py-4 h-dvh flex items-center from-gray-800 to-gray-700 bg-gradient-to-br">
+        <div className="max-w-6xl mx-auto px-8 section-login py-4 h-dvh flex items-center from-gray-900 to-gray-800 bg-gradient-to-br">
             <div className="flex-1 justify-center overflow-y-auto scrollbar-hide ">
                 <div className="w-full max-w-md text-center">
 
@@ -465,7 +465,7 @@ export default function Login({ setTitulo }) {
                             </span>
                             <input
                                 type="email"
-                                className="outline-none bg-white flex-1 bg-transparent text-white"
+                                className="outline-none bg-white flex-1 !bg-transparent text-white"
                                 name='email'
                                 placeholder="Email"
                                 value={form.email}
@@ -482,7 +482,7 @@ export default function Login({ setTitulo }) {
 
                                 <input
                                     type="password"
-                                    className="flex-1 outline-none bg-transparent text-white"
+                                    className="flex-1 outline-none !bg-transparent text-white"
                                     name='password'
                                     placeholder="Senha"
                                     value={form.password}

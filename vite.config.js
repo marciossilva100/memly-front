@@ -8,8 +8,6 @@ export default defineConfig(({ mode }) => {
       ? "https://api.zaldemy.com"
       : "https://hml-api.zaldemy.com";
 
-  const API_HOST = new URL(API_URL).hostname;
-
   return {
     plugins: [
       react(),
@@ -31,7 +29,8 @@ export default defineConfig(({ mode }) => {
             // 🔥 API SEM CACHE
             {
               urlPattern: ({ url }) =>
-                url.hostname === API_HOST,
+                url.hostname === "api.zaldemy.com" ||
+                url.hostname === "hml-api.zaldemy.com",
 
               handler: "NetworkOnly"
             },
@@ -55,7 +54,10 @@ export default defineConfig(({ mode }) => {
             // 🔊 CACHE DO TTS
             {
               urlPattern: ({ url }) =>
-                url.hostname === API_HOST &&
+                (
+                  url.hostname === "api.zaldemy.com" ||
+                  url.hostname === "hml-api.zaldemy.com"
+                ) &&
                 url.pathname.includes("/controller/treino.php") &&
                 url.searchParams.get("action") === "voice",
 

@@ -26,6 +26,10 @@ export default function Login({ setTitulo }) {
     const appUrl = "https://zaldem.com"; // troque pelo seu domínio
     const API_URL = import.meta.env.VITE_API_URL;
 
+    useEffect(() => {
+  console.log("API:", import.meta.env.VITE_API_URL);
+}, []);
+
     const [form, setForm] = useState({
         email: '',
         password: ''

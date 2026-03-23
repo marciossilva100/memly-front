@@ -16,8 +16,8 @@ export default defineConfig(({ mode }) => {
         registerType: "autoUpdate",
 
         workbox: {
-          clientsClaim: true,
-          skipWaiting: true,
+          // clientsClaim: true,
+          // skipWaiting: true,
           maximumFileSizeToCacheInBytes: 5000000,
 
           globPatterns: [

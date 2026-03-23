@@ -19,6 +19,7 @@ export default function () {
     const [limitReached, setLimitReached] = useState(false);
     const [totalToday, setTotalToday] = useState(0);
     const [isCorrect, setIsCorrect] = useState(false);
+const API_URL = import.meta.env.VITE_API_URL;
 
     // 🔁 FUNÇÃO PARA BUSCAR PERGUNTA
     const fetchQuestion = () => {
@@ -26,7 +27,7 @@ export default function () {
         setLoading(true);
         setError(null);
 
-        fetch('/api/controller/DailyQuestionController.php', {
+        fetch(`${API_URL}/controller/DailyQuestionController.php`, {
             method: 'GET',
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token")
@@ -69,7 +70,7 @@ export default function () {
 
     const handleSkip = async () => {
         try {
-            await fetch('/api/controller/DailyQuestionController.php', {
+            await fetch(`${API_URL}/controller/DailyQuestionController.php`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -100,7 +101,7 @@ export default function () {
         setLoading(true);
 
         try {
-            const res = await fetch('/api/controller/DailyQuestionController.php', {
+            const res = await fetch(`${API_URL}/controller/DailyQuestionController.php`, {
                 method: 'POST',
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token")

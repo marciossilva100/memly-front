@@ -158,7 +158,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
                     {/* Item */}
                     {categorias.map((item) => (
-                        <div key={item.id} onClick={() => validar(item.quantidade, item.id)} className="flex bg-gray-800/50 backdrop-blur-sm  border border-gray-700 items-center justify-between py-3 px-4  rounded-xl  shadow-lg mb-4">
+                        <div key={item.id} onClick={() => validar(item.quantidade, item.id)} className="flex bg-gray-800/50   border border-gray-700 items-center justify-between py-3 px-4  rounded-xl  shadow-lg mb-4 ">
                             <div>
 
                                 <p className="text-lg text-white mt-1 font-medium">
@@ -171,7 +171,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-3 relative">
+                            <div className="flex items-center gap-3 relative z-60">
                                 <button
                                     className="shadow-md px-4 py-1 text-md  rounded-full bg-blue-400 text-white hover:bg-slate-400"
                                     onClick={(e) => {
@@ -198,7 +198,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                                 {menuOpenId === item.id && (
                                     <div
                                         ref={menuRef}
-                                        className="absolute right-0 top-10 bg-gray-800 backdrop-blur-sm  border border-gray-700 shadow-lg rounded-lg p-2 w-32 z-50"
+                                        className="absolute right-0 top-10 bg-gray-800   border border-gray-700 shadow-lg rounded-lg p-2 w-32 z-40"
                                     >
                                         <button
                                             className="block w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-white"

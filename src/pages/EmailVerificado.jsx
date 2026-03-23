@@ -10,7 +10,7 @@ export default function EmailVerificado() {
 
     // 🔒 Proteção contra execução dupla (React 18 StrictMode)
     const hasRun = useRef(false);
-
+const API_URL = import.meta.env.VITE_API_URL;
     useEffect(() => {
 
         // Impede rodar duas vezes no modo desenvolvimento
@@ -24,7 +24,7 @@ export default function EmailVerificado() {
             return;
         }
 
-        fetch("https://api.zaldemy.com/controller/verify.php?token=" + token)
+        fetch(`${API_URL}/controller/verify.php?token=` + token)
             .then(res => {
                 if (!res.ok) {
                     throw new Error("Erro HTTP");

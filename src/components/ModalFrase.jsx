@@ -16,6 +16,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
     const [errorPhrase, setErrorPhrase] = useState('')
     const [errorTranslatedPhrase, setErrorTranslatedPhrase] = useState('')
     const [error, setError] = useState('')
+    const API_URL = import.meta.env.VITE_API_URL;
 
     async function handleSubmit(e) {
         e.preventDefault()
@@ -35,7 +36,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
         setLoading(true);
 
         try {
-            const res = await fetch('https://api.zaldemy.com/controller/frases.php', {
+            const res = await fetch(`${API_URL}/controller/frases.php`, {
                 method: 'POST',
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token")
@@ -85,7 +86,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
 
         e.preventDefault();
 
-        const res = await fetch('https://api.zaldemy.com/controller/libreTranslate.php', {
+        const res = await fetch(`${API_URL}/controller/libreTranslate.php`, {
             method: 'POST',
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token")

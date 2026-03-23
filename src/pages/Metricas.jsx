@@ -29,7 +29,7 @@ export default function Metricas() {
     const [loading, setLoading] = useState(false);
     const [loadingFrases, setLoadingFrases] = useState(false);
     const [periodo, setPeriodo] = useState('30d');
-
+const API_URL = import.meta.env.VITE_API_URL;
     // Estados para controlar os dropdowns
     const [dropdownsAbertos, setDropdownsAbertos] = useState({
         resumo: true, // Começa aberto pra mostrar o básico
@@ -56,7 +56,7 @@ export default function Metricas() {
         setLoading(true);
 
         try {
-            const response = await fetch('https://api.zaldemy.com/controller/metricas.php', {
+            const response = await fetch(`${API_URL}/controller/metricas.php`, {
                 method: 'POST',
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token"),
@@ -93,7 +93,7 @@ export default function Metricas() {
         setLoadingFrases(true);
 
         try {
-            const response = await fetch('https://api.zaldemy.com/controller/metricas.php?action=listar_frases_metricas', {
+            const response = await fetch(`${API_URL}/controller/metricas.php?action=listar_frases_metricas`, {
                 method: 'GET',
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token"),

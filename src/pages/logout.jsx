@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 
 export default function Logout() {
   const navigate = useNavigate();
-
+const API_URL = import.meta.env.VITE_API_URL;
   useEffect(() => {
     async function handleLogout() {
       try {
         const response = await fetch(
-          "https://api.zaldemy.com/controller/logout.php",
+          `${API_URL}/controller/logout.php`,
           {
             method: "POST",
             headers: {

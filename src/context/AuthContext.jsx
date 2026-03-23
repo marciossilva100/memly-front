@@ -6,7 +6,7 @@ export function AuthProvider({ children }) {
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
+const API_URL = import.meta.env.VITE_API_URL;
   const checkAuth = useCallback(async () => {
 
     try {
@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
         return;
       }
 
-      const res = await fetch("https://api.zaldemy.com/controller/me.php", {
+      const res = await fetch(`${API_URL}/controller/me.php`, {
         method: "GET",
         headers: {
           "Authorization": "Bearer " + token
@@ -58,7 +58,7 @@ export function AuthProvider({ children }) {
       const token = localStorage.getItem("token");
 
       if (token) {
-        await fetch("https://api.zaldemy.com/controller/logout.php", {
+        await fetch(`${API_URL}/controller/logout.php`, {
           method: "POST",
           headers: {
             "Authorization": "Bearer " + token

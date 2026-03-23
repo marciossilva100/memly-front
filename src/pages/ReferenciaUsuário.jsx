@@ -14,7 +14,7 @@ export default function ReferenciaUsuario({ setTitulo }) {
 
     const { user, setUser } = useAuth();
     const [finishStep, setFinishStep] = useState(false)
-
+const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
 
     if (user?.step > 2) {
@@ -32,7 +32,7 @@ export default function ReferenciaUsuario({ setTitulo }) {
 
     function enviarCanal(rede) {
 
-        fetch('https://api.zaldemy.com/controller/canalaquisicao.php',
+        fetch(`${API_URL}/controller/canalaquisicao.php`,
             {
                 method: 'POST',
                 headers: {

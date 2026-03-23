@@ -24,6 +24,7 @@ export default function Login({ setTitulo }) {
     const [isMobile, setIsMobile] = useState(false);
     const { user,setUser } = useAuth(); 
     const appUrl = "https://zaldem.com"; // troque pelo seu domínio
+    const API_URL = import.meta.env.VITE_API_URL;
 
     const [form, setForm] = useState({
         email: '',
@@ -93,7 +94,7 @@ export default function Login({ setTitulo }) {
 
             try {
 
-                const res = await fetch('https://api.zaldemy.com/controller/auth.php', {
+                const res = await fetch(`${API_URL}/controller/auth.php`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -184,7 +185,7 @@ export default function Login({ setTitulo }) {
         setLoading(true)
 
         try {
-            const res = await fetch('https://api.zaldemy.com/controller/auth.php', {
+            const res = await fetch(`${API_URL}/controller/auth.php`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

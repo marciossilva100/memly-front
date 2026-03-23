@@ -19,7 +19,7 @@ export default function DigitarTexto() {
     const [resposta, setResposta] = useState('')
     const [finished, setFinished] = useState(false);
     const [loading, setLoading] = useState(true);
-
+const API_URL = import.meta.env.VITE_API_URL;
     const [acertos, setAcertos] = useState(0);
     const [erros, setErros] = useState(0);
 
@@ -67,7 +67,7 @@ export default function DigitarTexto() {
 
         setLoading(true);
 
-        fetch(`https://api.zaldemy.com/${endpoint}`, {
+        fetch(`${API_URL}/${endpoint}`, {
             method: "POST",
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token")
@@ -114,7 +114,7 @@ export default function DigitarTexto() {
 
         try {
 
-            const res = await fetch("https://api.zaldemy.com/controller/treino.php", {
+            const res = await fetch(`${API_URL}/controller/treino.php`, {
                 method: "POST",
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token")

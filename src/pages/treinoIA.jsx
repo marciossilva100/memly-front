@@ -16,7 +16,7 @@ export default function TreinoIA() {
     const [flipped, setFlipped] = useState(false);
     const navigate = useNavigate();
   const { user, setUser } = useAuth();
-
+const API_URL = import.meta.env.VITE_API_URL;
     const jaBuscou = useRef(false);
 
     useEffect(() => {
@@ -26,7 +26,7 @@ export default function TreinoIA() {
         setLoading(true);
         setError(null);
 
-        fetch('https://api.zaldemy.com/controller/aiController.php', {
+        fetch(`${API_URL}/controller/aiController.php`, {
             method: 'POST',
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token")

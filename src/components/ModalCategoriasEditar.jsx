@@ -7,7 +7,7 @@ export default function ModalCategoriasEditar({ setOpenCategoriaEditar,open,cate
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [yourCategory, setYourCategory] = useState(false)
-
+const API_URL = import.meta.env.VITE_API_URL;
     useEffect(() => {
         setCategoria(categoriaEditar)
         setYourCategory(false)
@@ -29,7 +29,7 @@ export default function ModalCategoriasEditar({ setOpenCategoriaEditar,open,cate
         setLoading(true);
 
         try {
-            const res = await fetch('https://api.zaldemy.com/controller/categorias.php', {
+            const res = await fetch(`${API_URL}/controller/categorias.php`, {
                 method: 'POST',
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token")

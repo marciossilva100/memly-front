@@ -11,7 +11,7 @@ export default function Cadastro({ setTitulo }) {
 
     const [loading, setLoading] = useState(false);
     const [finish, setFinish] = useState(false)
-
+const API_URL = import.meta.env.VITE_API_URL;
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
@@ -66,7 +66,7 @@ export default function Cadastro({ setTitulo }) {
     function cadastrar() {
         setLoading(true)
 
-        fetch('https://api.zaldemy.com/controller/auth.php', {
+        fetch(`${API_URL}/controller/auth.php`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

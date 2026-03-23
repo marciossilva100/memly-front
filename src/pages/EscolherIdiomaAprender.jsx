@@ -15,7 +15,7 @@ export default function EscolherIdiomaAprender() {
   const [idioma, setIdioma] = useState("")
   const [languageList, setLanguageList] = useState([])
   const [finishStep, setFinishStep] = useState(false)
-
+const API_URL = import.meta.env.VITE_API_URL;
   const [form, setForm] = useState({
     learning_language: ''
   })
@@ -25,7 +25,7 @@ export default function EscolherIdiomaAprender() {
   }
 
   useEffect(() => {
-    fetch('https://api.zaldemy.com/controller/language.php',
+    fetch(`${API_URL}/controller/language.php`,
       {
         method: 'POST',
         headers: {
@@ -49,7 +49,7 @@ export default function EscolherIdiomaAprender() {
   function languageRegister() {
 
     //   setLoading(true)
-    fetch('https://api.zaldemy.com/controller/language.php', {
+    fetch(`${API_URL}/controller/language.php`, {
       method: 'POST',
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token")

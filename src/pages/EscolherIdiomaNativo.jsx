@@ -13,7 +13,7 @@ export default function EscolherIdiomaNativo() {
   const [erro, setErro] = useState('')
   const [languageList, setLanguageList] = useState([])
   const [finishStep, setFinishStep] = useState(false)
-
+const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -26,7 +26,7 @@ export default function EscolherIdiomaNativo() {
   }
 
   useEffect(() => {
-    fetch('https://api.zaldemy.com/controller/language.php',
+    fetch(`${API_URL}/controller/language.php`,
       {
         method: 'POST',
         headers: {
@@ -49,7 +49,7 @@ export default function EscolherIdiomaNativo() {
   function languageRegister() {
 
     //   setLoading(true)
-    fetch('https://api.zaldemy.com/controller/language.php', {
+    fetch(`${API_URL}/controller/language.php`, {
       method: 'POST',
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token")

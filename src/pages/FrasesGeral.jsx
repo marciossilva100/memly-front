@@ -20,7 +20,7 @@ export default function FrasesGeral() {
     const [textoBusca, setTextoBusca] = useState("")
     const [openFrase, setOpenFrase] = useState(false)
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
-
+const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -31,7 +31,7 @@ export default function FrasesGeral() {
     async function listPhrase() {
         setLoading(true);
 
-        fetch('https://api.zaldemy.com/controller/frases.php', {
+        fetch(`${API_URL}/controller/frases.php`, {
             method: 'POST',
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token")

@@ -36,6 +36,7 @@ export default function ListCategoria() {
     const [hasMore, setHasMore] = useState(true);
     const [contador, setContador] = useState(0);
     const [textoBusca, setTextoBusca] = useState("")
+    const API_URL = import.meta.env.VITE_API_URL;
 
     const navigate = useNavigate();
 
@@ -44,7 +45,7 @@ export default function ListCategoria() {
 
         setLoading(true);
 
-        fetch('https://api.zaldemy.com/controller/categorias.php', {
+        fetch(`${API_URL}/controller/categorias.php`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -82,7 +83,7 @@ export default function ListCategoria() {
 
     function adicionar(id) {
 
-        fetch('https://api.zaldemy.com/controller/categorias.php', {
+        fetch(`${API_URL}/controller/categorias.php`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",

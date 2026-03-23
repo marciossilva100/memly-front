@@ -40,7 +40,7 @@ export default function Home() {
     const [modalConfirm, setOpenModalConfirm] = useState(false)
     const [msgModalConfirm, setMsgModalConfirm] = useState('')
     const [deleteId, setDeleteId] = useState(0)
-
+const API_URL = import.meta.env.VITE_API_URL;
 
     const navigate = useNavigate();
 
@@ -63,7 +63,7 @@ export default function Home() {
 
     const carregarCategorias = () => {
         setRecarregar(false)
-        fetch('https://api.zaldemy.com/controller/categorias.php', {
+        fetch(`${API_URL}/controller/categorias.php`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -96,7 +96,7 @@ export default function Home() {
     const categoriaExcluir = async (categoria_id) => {
 
         try {
-            const res = await fetch('https://api.zaldemy.com/controller/categorias.php', {
+            const res = await fetch(`${API_URL}/controller/categorias.php`, {
                 method: 'POST',
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token")

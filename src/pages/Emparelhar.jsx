@@ -27,7 +27,7 @@ export default function JogoFrases() {
   const [totalPerguntas, setTotalPerguntas] = useState(0);
   const [acertos, setAcertos] = useState(0);
   const [erros, setErros] = useState(0);
-
+const API_URL = import.meta.env.VITE_API_URL;
   const [finalizado, setFinalizado] = useState(false);
   const { user } = useAuth();
 
@@ -49,7 +49,7 @@ export default function JogoFrases() {
 
   async function trainingUpdate(updatedList, actionToSend) {
     try {
-      await fetch("https://api.zaldemy.com/controller/treino.php", {
+      await fetch(`${API_URL}/controller/treino.php`, {
         method: "POST",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
@@ -69,7 +69,7 @@ export default function JogoFrases() {
     let endpoint =
       mode === "traine" ? "controller/treino.php" : "controller/frases.php";
 
-    fetch(`https://api.zaldemy.com/${endpoint}`, {
+    fetch(`${API_URL}/${endpoint}`, {
       method: "POST",
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),

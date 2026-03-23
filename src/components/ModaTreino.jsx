@@ -20,7 +20,7 @@ export default function ModalTreino({
   const [mensagem, setMensagem] = useState(<span className="text-base text-white">Repetir</span>);
   const { user, setUser } = useAuth();
   const [waiting, setWaiting] = useState(false);
-
+const API_URL = import.meta.env.VITE_API_URL;
   const [countPhrases, setCountPhrases] = useState({
     learn: 0,
     repeat: 0,
@@ -37,7 +37,7 @@ export default function ModalTreino({
 
     if (!openTreino) return;
 
-    fetch("https://api.zaldemy.com/controller/treino.php", {
+    fetch(`${API_URL}/controller/treino.php`, {
       method: "POST",
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token")
@@ -183,7 +183,7 @@ export default function ModalTreino({
   // =========================
   function updateTraine() {
 
-    fetch("https://api.zaldemy.com/controller/treino.php", {
+    fetch(`${API_URL}/controller/treino.php`, {
       method: "POST",
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token")

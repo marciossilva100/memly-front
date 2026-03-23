@@ -18,7 +18,7 @@ export default function Flashcards() {
   const [showBackContent, setShowBackContent] = useState(false);
   const [finished, setFinished] = useState(false);
   const [progress, setProgress] = useState(0);
-
+const API_URL = import.meta.env.VITE_API_URL;
   const [listIdCorrectPhrase, setListIdCorrectPhrase] = useState([]);
   const [listIdIncorrectPhrase, setListIdIncorrectPhrase] = useState([]);
   const { user, setUser } = useAuth();
@@ -36,7 +36,7 @@ export default function Flashcards() {
       ? 'controller/treino.php'
       : 'controller/frases.php';
 
-    fetch(`https://api.zaldemy.com/${endpoint}`, {
+    fetch(`${API_URL}/${endpoint}`, {
       method: "POST",
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token")
@@ -122,7 +122,7 @@ export default function Flashcards() {
 
     try {
 
-      const res = await fetch("https://api.zaldemy.com/controller/treino.php", {
+      const res = await fetch(`${API_URL}/controller/treino.php`, {
         method: "POST",
         headers: {
           "Authorization": "Bearer " + localStorage.getItem("token")

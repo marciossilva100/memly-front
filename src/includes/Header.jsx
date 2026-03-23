@@ -59,7 +59,7 @@ export default function Header({ titulo }) {
     const [openSelect, setOpenSelect] = useState(false)
     const [idioma, setIdioma] = useState("")
     const [languageList, setLanguageList] = useState([])
-
+const API_URL = import.meta.env.VITE_API_URL;
     const { user, setUser } = useAuth();
 
     const idiomaNativo = languageList.find(
@@ -70,7 +70,7 @@ export default function Header({ titulo }) {
 
     // 🔽 Buscar idiomas
     useEffect(() => {
-        fetch('https://api.zaldemy.com/controller/language.php', {
+        fetch(`${API_URL}/controller/language.php`, {
             method: 'POST',
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token")

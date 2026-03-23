@@ -142,8 +142,8 @@ const API_URL = import.meta.env.VITE_API_URL;
 
     if (loading) {
         return (
-            <div className="min-h-[calc(100vh-70px)] flex items-center justify-center">
-                <Loader2 className="animate-spin mr-2 w-8 h-8 text-indigo-600" />
+            <div className="h-dvh flex items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
+                <Loader2 className="animate-spin mr-2 w-8 h-8 text-indigo-400"/>
                 <span className="text-white text-lg">{textLoading}</span>
             </div>
         );
@@ -151,7 +151,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
     if (error) {
         return (
-            <div className="min-h-[calc(100vh-70px)] flex flex-col items-center justify-center text-center p-6">
+            <div className="min-h-[calc(100vh-70px)] flex flex-col items-center justify-center text-center p-6 ">
                 <h1 className="text-2xl font-semibold text-yellow-600 mb-4">
                     ⚠️ Conteúdo insuficiente
                 </h1>
@@ -199,7 +199,7 @@ const API_URL = import.meta.env.VITE_API_URL;
     }
 
     return (
-        <div className="p-4 justify-center w-full px-6 h-dvh flex flex-col h-dvh">
+        <div className="p-4 justify-center w-full px-6 h-dvh flex flex-col h-dvh from-gray-900 to-gray-800 bg-gradient-to-br">
             <div className="flex-1 overflow-y-auto scrollbar-hide">
                 <div className="relative mb-6">
                     <div
@@ -227,7 +227,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
                 {!response &&
                     <form onSubmit={handleSubmit} className="w-full" id="respostaForm">
-                        <div>
+                        <div className="">
                             <div className="flex border border-gray-700 p-6 text-center shadow-md bg-[linear-gradient(to_right,#233245,#0d1425)] text-white rounded-lg min-h-80 items-center justify-center">
                                 <p className="text-2xl">{question}</p>
                             </div>
@@ -267,7 +267,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                 <div className="sticky bottom-0 py-4 text-center flex gap-3">
                     <button
                         onClick={tryAgain}
-                        className="px-6 py-3 w-full rounded-full bg-gray-700/50 backdrop-blur-sm  border border-gray-700 text-white">
+                        className="px-6 py-3 w-full rounded-full bg-red-400/70 backdrop-blur-sm  border border-gray-700 text-white">
                         Tentar novamente
                     </button>
 

@@ -234,14 +234,14 @@ export default function Flashcards() {
    
 
 
-      if (mode === 'learn') {
-        await learningUpdate(
-          updatedCorrect,
-          updatedIncorrect,
-          'learn',
-          { acertos, erros, totalPerguntas, porcentagem }
-        );
-      }
+      // if (mode === 'learn') {
+      //   await learningUpdate(
+      //     updatedCorrect,
+      //     updatedIncorrect,
+      //     'learn',
+      //     { acertos, erros, totalPerguntas, porcentagem }
+      //   );
+      // }
 
       setFinished(true);
 
@@ -279,13 +279,13 @@ export default function Flashcards() {
   if (finished) {
 
     return (
-      <div className="h-screen flex items-center justify-center bg-gradient-to-r from-[#4cb8c4] to-[#085078] px-10">
+      <div className="h-screen flex items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br px-10">
 
         <div className="bg-white p-10 rounded-2xl shadow-2xl text-center max-w-md">
 
           <p className="text-xl mb-4">{mensagemFinal()}</p>
 
-          <div className="text-5xl font-extrabold text-indigo-600 mb-2">
+          <div className="text-5xl font-extrabold text-indigo-500 mb-2">
             {porcentagem}%
           </div>
 
@@ -295,7 +295,7 @@ export default function Flashcards() {
 
           <button
             onClick={() => navigate("/home")}
-            className="px-6 py-3 bg-indigo-600 text-white  hover:bg-indigo-700 transition rounded-full"
+            className="px-6 py-3 bg-[#4cb8c4] text-white  hover:bg-indigo-700 transition rounded-full"
           >
             Voltar ao início
           </button>

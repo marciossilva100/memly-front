@@ -18,7 +18,7 @@ export default function Flashcards() {
   const [showBackContent, setShowBackContent] = useState(false);
   const [finished, setFinished] = useState(false);
   const [progress, setProgress] = useState(0);
-const API_URL = import.meta.env.VITE_API_URL;
+  const API_URL = import.meta.env.VITE_API_URL;
   const [listIdCorrectPhrase, setListIdCorrectPhrase] = useState([]);
   const [listIdIncorrectPhrase, setListIdIncorrectPhrase] = useState([]);
   const { user, setUser } = useAuth();
@@ -118,7 +118,7 @@ const API_URL = import.meta.env.VITE_API_URL;
   };
 
 
-  async function trainingUpdate(updatedList, updatedIncorrectList, actionToSend, metrics) {
+  async function learningUpdate(updatedList, updatedIncorrectList, actionToSend, metrics) {
 
     try {
 
@@ -153,6 +153,37 @@ const API_URL = import.meta.env.VITE_API_URL;
 
   }
 
+    async function trainingUpdate(actionToSend,frase_id,statusCorrectPhrase) {
+
+      try {
+
+        const res = await fetch(`${API_URL}/controller/treino.php`, {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
+          },
+          body: JSON.stringify({
+            action: actionToSend,
+            frase_id: [frase_id],
+            category_id: id,
+            statusCorrectPhrase:statusCorrectPhrase
+          })
+        });
+
+        const data = await res.json();
+
+        if (!data.success) {
+          console.log(data.message);
+        }
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+
+    }
+
   const nextCard = async (correct = false) => {
 
     let updatedList = listIdCorrectPhrase;
@@ -176,6 +207,13 @@ const API_URL = import.meta.env.VITE_API_URL;
     setShowBackContent(false);
     setProgress(0);
 
+    const statusCorrectPhrase = correct ? 1 : 0
+
+    const actionToSend =
+    mode === 'traine' ? 'trainee_finish' : mode;
+
+    await trainingUpdate(actionToSend,frases[index].id,statusCorrectPhrase)
+
     if (index + 1 < frases.length) {
 
       setIndex(prev => prev + 1);
@@ -193,17 +231,20 @@ const API_URL = import.meta.env.VITE_API_URL;
         ? Math.round((acertos / totalPerguntas) * 100)
         : 0;
 
-      const actionToSend =
-        mode === 'traine' ? 'trainee_finish' : mode;
+   
 
-      await trainingUpdate(
-        updatedCorrect,
-        updatedIncorrect,
-        actionToSend,
-        { acertos, erros, totalPerguntas, porcentagem }
-      );
+
+      if (mode === 'learn') {
+        await learningUpdate(
+          updatedCorrect,
+          updatedIncorrect,
+          'learn',
+          { acertos, erros, totalPerguntas, porcentagem }
+        );
+      }
 
       setFinished(true);
+
     }
 
   };
@@ -398,7 +439,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
         )}
       </div>
-      
+
     </div>
 
   );

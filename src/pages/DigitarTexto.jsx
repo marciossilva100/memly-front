@@ -19,7 +19,7 @@ export default function DigitarTexto() {
     const [resposta, setResposta] = useState('')
     const [finished, setFinished] = useState(false);
     const [loading, setLoading] = useState(true);
-const API_URL = import.meta.env.VITE_API_URL;
+    const API_URL = import.meta.env.VITE_API_URL;
     const [acertos, setAcertos] = useState(0);
     const [erros, setErros] = useState(0);
 
@@ -110,31 +110,34 @@ const API_URL = import.meta.env.VITE_API_URL;
 
     }
 
-    async function trainingUpdate(updatedList, actionToSend) {
+     async function trainingUpdate(actionToSend,frase_id,statusCorrectPhrase) {
 
-        try {
+      try {
 
-            const res = await fetch(`${API_URL}/controller/treino.php`, {
-                method: "POST",
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                },
-                body: JSON.stringify({
-                    action: actionToSend,
-                    updatedList: updatedList,
-                    category_id: id
-                })
-            });
+        const res = await fetch(`${API_URL}/controller/treino.php`, {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
+          },
+          body: JSON.stringify({
+            action: actionToSend,
+            frase_id: [frase_id],
+            category_id: id,
+            statusCorrectPhrase:statusCorrectPhrase
+          })
+        });
 
-            const data = await res.json();
+        const data = await res.json();
 
-            if (!data.success) {
-                console.log(data.message);
-            }
-
-        } catch (error) {
-            console.log(error);
+        if (!data.success) {
+          console.log(data.message);
         }
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
 
     }
 
@@ -154,7 +157,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
             if (mode === "traine") {
 
-                await trainingUpdate(idPhrases, "trainee_finish");
+               // await trainingUpdate(idPhrases, "trainee_finish");
                 setFinished(true);
                 return;
 
@@ -180,7 +183,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
     };
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
 
         e.preventDefault();
 
@@ -192,6 +195,13 @@ const API_URL = import.meta.env.VITE_API_URL;
         );
 
         setDiff(result);
+
+        const statusCorrectPhrase = result.isCorrect ? 1 : 0
+
+        if(mode === "traine")
+            await trainingUpdate('trainee_finish',frases[index].id,statusCorrectPhrase)
+        
+        //console.log(result.isCorrect)
 
         if (result.isCorrect) {
             setAcertos(prev => prev + 1);
@@ -359,7 +369,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                     </div>
 
                 )}
-                {!isFlipped && (
+                {!isFlipped && !diff && (
                     <div className="w-full mt-8">
 
                         <form onSubmit={handleSubmit} id="respostaForm" className="h-40">

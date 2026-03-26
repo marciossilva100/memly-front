@@ -22,13 +22,13 @@ export default function Login({ setTitulo }) {
     const [isIOS, setIsIOS] = useState(false);
     const [isStandalone, setIsStandalone] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
-    const { user,setUser } = useAuth(); 
+    const { user, setUser } = useAuth();
     const appUrl = "https://zaldem.com"; // troque pelo seu domínio
     const API_URL = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
-  console.log("API:", import.meta.env.VITE_API_URL);
-}, []);
+        console.log("API:", import.meta.env.VITE_API_URL);
+    }, []);
 
     const [form, setForm] = useState({
         email: '',
@@ -95,14 +95,10 @@ export default function Login({ setTitulo }) {
 
     const login = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
-
             try {
-
                 const res = await fetch(`${API_URL}/controller/auth.php`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         action: 'login_google',
                         token: tokenResponse.access_token
@@ -111,8 +107,6 @@ export default function Login({ setTitulo }) {
 
                 const data = await res.json();
 
-                console.log("DATA:", data);
-
                 if (!data.sucesso) {
                     setErro(data.erro || "Erro ao fazer login com Google");
                     return;
@@ -120,41 +114,23 @@ export default function Login({ setTitulo }) {
 
                 localStorage.setItem("token", data.token);
 
-                console.log("ANTES DO CHECKAUTH");
-                console.log('dados ', data);
-
+                // Aguarda o checkAuth atualizar o contexto
                 await checkAuth();
 
-                //await checkAuth();
-                // setUser({
-                //     id: data.user_id,
-                //     name: data.nome,
-                //     email: data.email,
-                //     step: data.step
-                // });
-
-                // setTimeout(() => {
-                //     checkAuth();
-                // }, 0);
-                // if (data.step > 2) {
-                //     setFinishStep(true)
-
-                // }
-
-                // if (data.step > 2) {
-                //     navigate("/home", { replace: true })
-                //     return
-                // }
-
-
-                // navigate("/escolheridioma");
+                // AGUARDA UM PEQUENO DELAY PARA O CONTEXTO ATUALIZAR
+                setTimeout(() => {
+                    if (data.step > 2) {
+                        navigate("/home", { replace: true });
+                    } else {
+                        navigate("/escolheridioma", { replace: true });
+                    }
+                }, 100);
 
             } catch (error) {
+                console.error(error);
                 setErro('Erro ao conectar com o servidor');
             }
-
         },
-
         onError: () => {
             setErro("Erro ao autenticar com Google");
         }
@@ -185,15 +161,11 @@ export default function Login({ setTitulo }) {
     }
 
     async function validate() {
-
         setLoading(true)
-
         try {
             const res = await fetch(`${API_URL}/controller/auth.php`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     action: 'login',
                     email: form.email,
@@ -205,26 +177,19 @@ export default function Login({ setTitulo }) {
 
             if (!data.sucesso) {
                 setErro(data.erro || "Erro ao fazer login")
-                return
+                return;
             }
 
             localStorage.setItem("token", data.token);
             await checkAuth();
 
-           // setUser(data.usuario);
-
-            // setTimeout(() => {
-            //     checkAuth();
-            // }, 0);
-
-            console.log('dados ', data);
-
-            // if (data.usuario.step > 2) {
-            //     navigate("/home", { replace: true })
-            //     return
-            // }
-
-            // navigate("/escolheridioma")
+            setTimeout(() => {
+                if (data.usuario.step > 2) {
+                    navigate("/home", { replace: true });
+                } else {
+                    navigate("/escolheridioma", { replace: true });
+                }
+            }, 100);
 
         } catch (error) {
             setErro('Erro ao conectar com o servidor')
@@ -243,7 +208,7 @@ export default function Login({ setTitulo }) {
     // NOVA FUNCIONALIDADE: Se for acesso por desktop (não mobile), mostrar apenas QR Code
     if (!isMobile) {
         const currentUrl = window.location.href;
-        
+
         return (
             <div className="w-full mx-auto px-8 section-login py-4 h-dvh flex items-center from-gray-900 to-gray-800 bg-gradient-to-br">
                 <div className="flex-1 justify-center overflow-y-auto scrollbar-hide">
@@ -263,8 +228,8 @@ export default function Login({ setTitulo }) {
 
                         {/* QR Code */}
                         <div className="bg-white p-4 rounded-2xl inline-block mb-6 shadow-xl">
-                            <QRCodeCanvas 
-                                value={currentUrl} 
+                            <QRCodeCanvas
+                                value={currentUrl}
                                 size={200}
                                 bgColor="#ffffff"
                                 fgColor="#085078"
@@ -477,7 +442,7 @@ export default function Login({ setTitulo }) {
                                 onChange={(e) => handleChange(e)}
                             />
                         </div>
- 
+
                         {/* Senha */}
                         <div>
                             <div className="flex items-center border overflow-hidden rounded-full py-3">

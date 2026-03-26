@@ -17,7 +17,7 @@ export default function Login({ setTitulo }) {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [finish, setFinish] = useState(false)
-    const { checkAuth } = useAuth();
+    const { checkAuth, syncAuth } = useAuth();
     const [installPrompt, setInstallPrompt] = useState(null);
     const [isIOS, setIsIOS] = useState(false);
     const [isStandalone, setIsStandalone] = useState(false);
@@ -93,6 +93,7 @@ export default function Login({ setTitulo }) {
         setInstallPrompt(null)
     }
 
+    // No seu componente Login, modifique:
     const login = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
             try {
@@ -112,28 +113,21 @@ export default function Login({ setTitulo }) {
                     return;
                 }
 
-                localStorage.setItem("token", data.token);
+                // Usa syncAuth em vez de checkAuth
+                await syncAuth(data.token);
 
-                // Aguarda o checkAuth atualizar o contexto
-                await checkAuth();
-
-                // AGUARDA UM PEQUENO DELAY PARA O CONTEXTO ATUALIZAR
-                setTimeout(() => {
-                    if (data.step > 2) {
-                        navigate("/home", { replace: true });
-                    } else {
-                        navigate("/escolheridioma", { replace: true });
-                    }
-                }, 100);
+                // Navegação
+                if (data.step > 2) {
+                    navigate("/home", { replace: true });
+                } else {
+                    navigate("/escolheridioma", { replace: true });
+                }
 
             } catch (error) {
                 console.error(error);
                 setErro('Erro ao conectar com o servidor');
             }
         },
-        onError: () => {
-            setErro("Erro ao autenticar com Google");
-        }
     });
 
     function handleChange(e) {

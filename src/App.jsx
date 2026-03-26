@@ -48,7 +48,17 @@ window.addEventListener('resize', setRealViewportHeight); */
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
 
-  if (loading) return null; // 👈 ESSA LINHA resolve seu problema
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-white-100">
+        <img
+          src={imgChapeuFormatura}
+          alt="Carregando"
+          className="w-28 animate-pulse"
+        />
+      </div>
+    );
+  }
 
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -56,7 +66,6 @@ function PrivateRoute({ children }) {
 
   return children;
 }
-
 
 
 function Layout({ titulo, setTitulo }) {

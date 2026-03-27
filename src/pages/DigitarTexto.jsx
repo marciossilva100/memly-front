@@ -110,34 +110,34 @@ export default function DigitarTexto() {
 
     }
 
-     async function trainingUpdate(actionToSend,frase_id,statusCorrectPhrase) {
+    async function trainingUpdate(actionToSend, frase_id, statusCorrectPhrase) {
 
-      try {
+        try {
 
-        const res = await fetch(`${API_URL}/controller/treino.php`, {
-          method: "POST",
-          headers: {
-            "Authorization": "Bearer " + localStorage.getItem("token")
-          },
-          body: JSON.stringify({
-            action: actionToSend,
-            frase_id: [frase_id],
-            category_id: id,
-            statusCorrectPhrase:statusCorrectPhrase
-          })
-        });
+            const res = await fetch(`${API_URL}/controller/treino.php`, {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({
+                    action: actionToSend,
+                    frase_id: [frase_id],
+                    category_id: id,
+                    statusCorrectPhrase: statusCorrectPhrase
+                })
+            });
 
-        const data = await res.json();
+            const data = await res.json();
 
-        if (!data.success) {
-          console.log(data.message);
+            if (!data.success) {
+                console.log(data.message);
+            }
+
+        } catch (error) {
+
+            console.log(error);
+
         }
-
-      } catch (error) {
-
-        console.log(error);
-
-      }
 
     }
 
@@ -157,7 +157,7 @@ export default function DigitarTexto() {
 
             if (mode === "traine") {
 
-               // await trainingUpdate(idPhrases, "trainee_finish");
+                // await trainingUpdate(idPhrases, "trainee_finish");
                 setFinished(true);
                 return;
 
@@ -198,9 +198,9 @@ export default function DigitarTexto() {
 
         const statusCorrectPhrase = result.isCorrect ? 1 : 0
 
-        if(mode === "traine")
-            await trainingUpdate('trainee_finish',frases[index].id,statusCorrectPhrase)
-        
+        if (mode === "traine")
+            await trainingUpdate('trainee_finish', frases[index].id, statusCorrectPhrase)
+
         //console.log(result.isCorrect)
 
         if (result.isCorrect) {

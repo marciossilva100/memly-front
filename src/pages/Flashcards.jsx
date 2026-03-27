@@ -21,6 +21,7 @@ export default function Flashcards() {
   const API_URL = import.meta.env.VITE_API_URL;
   const [listIdCorrectPhrase, setListIdCorrectPhrase] = useState([]);
   const [listIdIncorrectPhrase, setListIdIncorrectPhrase] = useState([]);
+  const [answeredCount, setAnsweredCount] = useState(0);
   const { user, setUser } = useAuth();
 
   const FLIP_TIME = 5000;
@@ -186,6 +187,9 @@ export default function Flashcards() {
 
   const nextCard = async (correct = false) => {
 
+    setAnsweredCount(prev => prev + 1); // 🔥 ESSENCIAL
+
+
     let updatedList = listIdCorrectPhrase;
     let updatedIncorrectList = listIdIncorrectPhrase;
 
@@ -307,9 +311,16 @@ export default function Flashcards() {
 
   }
 
-  const progressBar = frases.length
-    ? ((index + (isFlipped ? 1 : 0)) / frases.length) * 100
-    : 0;
+ const progressBar = frases.length
+  ? (answeredCount / frases.length) * 100
+  : 0;
+
+const progressBarVisible = answeredCount > 0
+  ? Math.max(2, progressBar)
+  : 0;
+
+  console.log("answeredCount:", answeredCount, "progressBar:", progressBar);
+  console.log("Total de frases:", frases.length);
 
   return (
 
@@ -328,11 +339,11 @@ export default function Flashcards() {
 
         </div>
 
-        <div className="top-0 left-0 w-full h-2 bg-slate-200 pt-2">
+        <div className="top-0 left-0 w-full h-2 bg-slate-200 overflow-hidden">
 
           <div
-            className="h-full bg-slate-400 transition-all duration-300"
-            style={{ width: `${progressBar}%` }}
+            className="h-full bg-[#4cb8c4] transition-all duration-300"
+            style={{ width: `${progressBarVisible}%` }}
           />
 
         </div>

@@ -40,7 +40,7 @@ export default function Home() {
     const [modalConfirm, setOpenModalConfirm] = useState(false)
     const [msgModalConfirm, setMsgModalConfirm] = useState('')
     const [deleteId, setDeleteId] = useState(0)
-const API_URL = import.meta.env.VITE_API_URL;
+    const API_URL = import.meta.env.VITE_API_URL;
 
     const navigate = useNavigate();
 
@@ -58,6 +58,42 @@ const API_URL = import.meta.env.VITE_API_URL;
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
+    }, []);
+
+
+    useEffect(() => {
+
+        const fetchData = () => {
+            fetch(`${API_URL}/controller/treino.php`, {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token"),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    action: 'retornarTreino',
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.success) {
+                        console.log(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        };
+
+        // chama uma vez imediatamente (opcional, mas recomendado)
+        fetchData();
+
+        // chama a cada 1 minuto (60000 ms)
+        const interval = setInterval(fetchData, 60000);
+
+        // limpa o intervalo quando o componente desmontar
+        return () => clearInterval(interval);
+
     }, []);
 
 

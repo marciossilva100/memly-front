@@ -1,11 +1,30 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState,useRef } from "react"
 import imgCoruja from "../assets/img/coruja.png"
 import { idiomas } from "../data/idiomas"
 import { useAuth } from "../context/AuthContext";
-import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
+import imgChapeuFormatura from "../assets/img/chapeu_formatura-v2.png"
 
 import imgMemly from "../assets/img/mascote-memly.png"
-import {Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+
+// 🌍 Bandeiras
+const flags = {
+  pt: "https://flagcdn.com/w40/br.png",
+  en: "https://flagcdn.com/w40/us.png",
+  es: "https://flagcdn.com/w40/es.png",
+  fr: "https://flagcdn.com/w40/fr.png",
+  de: "https://flagcdn.com/w40/de.png",
+  it: "https://flagcdn.com/w40/it.png",
+  zh: "https://flagcdn.com/w40/cn.png",
+  ja: "https://flagcdn.com/w40/jp.png",
+  ru: "https://flagcdn.com/w40/ru.png",
+  ar: "https://flagcdn.com/w40/sa.png",
+  hi: "https://flagcdn.com/w40/in.png",
+  ko: "https://flagcdn.com/w40/kr.png",
+  nl: "https://flagcdn.com/w40/nl.png",
+  tr: "https://flagcdn.com/w40/tr.png",
+  pl: "https://flagcdn.com/w40/pl.png",
+};
 
 
 export default function EscolherIdiomaNativo() {
@@ -13,17 +32,34 @@ export default function EscolherIdiomaNativo() {
   const [erro, setErro] = useState('')
   const [languageList, setLanguageList] = useState([])
   const [finishStep, setFinishStep] = useState(false)
-const API_URL = import.meta.env.VITE_API_URL;
+  const [openSelect, setOpenSelect] = useState(false)
+  const selectRef = useRef(null)
+  const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
+
 
   const [form, setForm] = useState({
     native_language: ''
   })
 
+  const idiomaSelecionado = languageList.find(
+    (l) => l.id == form.native_language
+  );
 
   if (user?.step > 0) {
     return <Navigate to="/escolheridiomaaprender" replace />
   }
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (selectRef.current && !selectRef.current.contains(e.target)) {
+        setOpenSelect(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     fetch(`${API_URL}/controller/language.php`,
@@ -76,8 +112,10 @@ const API_URL = import.meta.env.VITE_API_URL;
         setUser(prev => ({
           ...prev,
           step: 1,
-          native_language: form.acronym
+          native_language: idiomaSelecionado?.sigla
         }));
+
+        console.log(user)
 
         navigate("/escolheridiomaaprender", {
           state: { email: form.email }
@@ -90,22 +128,22 @@ const API_URL = import.meta.env.VITE_API_URL;
 
   }
 
-  function handleChange(e) {
-    setErro('');
+  // function handleChange(e) {
+  //   setErro('');
 
-    const { name, value } = e.target;
+  //   const { name, value } = e.target;
 
-    const selectedLanguage = languageList.find(
-      (lang) => lang.id == value
-    );
+  //   const selectedLanguage = languageList.find(
+  //     (lang) => lang.id == value
+  //   );
 
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-      language: selectedLanguage?.idioma,
-      acronym: selectedLanguage?.sigla
-    }));
-  }
+  //   setForm((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //     language: selectedLanguage?.idioma,
+  //     acronym: selectedLanguage?.sigla
+  //   }));
+  // }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -129,7 +167,7 @@ const API_URL = import.meta.env.VITE_API_URL;
         flex-col
         px-10
         pt-6
-        pb-[env(safe-area-inset-bottom)]
+        pb-[env(safe-area-inset-bottom)] from-gray-900 to-gray-800 bg-gradient-to-br
       "
     >
       <form action="" onSubmit={(e) => handleSubmit(e)}>
@@ -143,7 +181,7 @@ const API_URL = import.meta.env.VITE_API_URL;
               className="w-28 "
             />
           </div>}
-          <h4 className="text-lg font-medium text-slate-700">
+          <h4 className="text-lg font-medium text-white">
             Escolha seu idioma nativo
           </h4>
         </div>
@@ -151,32 +189,62 @@ const API_URL = import.meta.env.VITE_API_URL;
         {/* SELECT */}
         <div className="w-full max-w-md mx-auto">
           <div className="relative">
-            <select
-              name="native_language"
-              value={form.native_language}
-              onChange={(e) => handleChange(e)}
-              className="
-              w-full
-              h-10
-              px-4
-              pr-12
-              rounded-2xl
-              border
-              border-blue-500
-              bg-white
-              focus:outline-none
-              focus:ring-2
-              focus:ring-blue-500
-              appearance-none
-            "
+            <div
+              ref={selectRef}
+              className="relative h-12 flex items-center rounded-2xl border border-blue-500 w-full"
             >
-              <option value="">Selecione um idioma</option>
-              {languageList.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.idioma}
-                </option>
-              ))}
-            </select>
+              {/* BOTÃO */}
+              <div
+                onClick={() => setOpenSelect(!openSelect)}
+                className="flex items-center gap-2 px-4 w-full cursor-pointer"
+              >
+                {idiomaSelecionado ? (
+                  <>
+                    <img
+                      src={flags[idiomaSelecionado.sigla] || "https://flagcdn.com/w40/un.png"}
+                      className="w-5 h-5 rounded-full"
+                    />
+                    <span className="text-sm text-white">
+                      {idiomaSelecionado.idioma}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-sm text-white">
+                    Selecione um idioma
+                  </span>
+                )}
+
+                
+              </div>
+
+              {/* DROPDOWN */}
+              {openSelect && (
+                <div className="absolute top-14 left-0 w-full bg-gray-900 border border-blue-500 rounded-xl shadow-lg z-50 max-h-60 overflow-auto">
+                  {languageList.map((item) => (
+                    <div
+                      key={item.id}
+                      onClick={() => {
+                        setForm((prev) => ({
+                          ...prev,
+                          native_language: item.id,
+                          language: item.idioma,
+                          acronym: item.sigla
+                        }));
+
+                        setOpenSelect(false);
+                      }}
+                      className="flex items-center gap-2 px-4 py-3 hover:bg-gray-700 cursor-pointer text-white"
+                    >
+                      <img
+                        src={flags[item.sigla] || "https://flagcdn.com/w40/un.png"}
+                        className="w-5 h-5 rounded-full"
+                      />
+                      <span className="text-sm">{item.idioma}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
             <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
               <svg
@@ -208,8 +276,9 @@ const API_URL = import.meta.env.VITE_API_URL;
             className="
           block
           w-full
-          bg-[#4cb8c4]
+          bg-gray-800/50 backdrop-blur-sm  border border-gray-700
           bottom-0
+          text-lg
           text-white
           font-medium
           py-3

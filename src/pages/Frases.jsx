@@ -20,7 +20,7 @@ export default function Frases() {
     const [textoBusca, setTextoBusca] = useState("")
     const [openFrase, setOpenFrase] = useState(false)
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
-const API_URL = import.meta.env.VITE_API_URL;
+    const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -101,7 +101,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
     return (
 
-        <div className="px-5 h-dvh flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
+        <div className="px-5 h-dvh flex flex-col bg-gray-900 ">
             <div className="relative mb-4 mt-4">
                 <div
                     className="left-0  cursor-pointer"
@@ -110,66 +110,71 @@ const API_URL = import.meta.env.VITE_API_URL;
                     <i className="bi bi-arrow-left text-2xl text-white"></i>
                 </div>
             </div>
-            <div className="flex-1 flex flex-col">
+            <div className={`mt-4 `}>
+                <div className="flex items-center border rounded-md overflow-hidden ">
+                    <span className="px-3 text-gray-500">
+                        <Search width={20} />
+                    </span>
 
-                <div className={`mt-4 `}>
-                    <div className="flex items-center border rounded-md overflow-hidden ">
-                        <span className="px-3 text-gray-500">
-                            <Search width={20} />
-                        </span>
-
-                        <input
-                            type="email"
-                            className="w-full px-3 py-2 outline-none text-lg text-white !bg-transparent"
-                            placeholder="Buscar"
-                            value={textoBusca}
-                            onChange={(e) => {
-                                setTextoBusca(e.target.value)
-                                setErro('')
-                            }}
-                        />
-                    </div>
-                </div>
-                {frases.length > 0 && (
-                    <div className="cursor-pointer flex justify-end mb-4">
-                        <Filter className="text-white mt-2" width={15} />
-                    </div>
-                )}
-
-                {loading && <div className="h-screen flex items-center justify-center text-white">
-                    Carregando...
-                </div>}
-                <div className="flex-1 overflow-y-auto scrollbar-hide">
-
-                    {!loading && frases.map(item => (
-                        <div key={item.id} className="text-lg grid grid-cols-[1fr_1fr_auto] gap-4 items-center  py-3 border-b-2 overflow text-white" >
-                            <div>{item.texto_nativo}</div>
-                            <div>{item.texto_traduzido}</div>
-                            <div className="flex justify-center">
-                                <Trash size={18} className="text-red-400" onClick={() => deletePhrase(item.id)} />
-                            </div>
-                        </div>
-                    ))}
-
+                    <input
+                        type="email"
+                        className="w-full px-3 py-2 outline-none text-lg text-white !bg-transparent"
+                        placeholder="Buscar"
+                        value={textoBusca}
+                        onChange={(e) => {
+                            setTextoBusca(e.target.value)
+                            setErro('')
+                        }}
+                    />
                 </div>
             </div>
+            {frases.length > 0 && (
+                <div className="cursor-pointer flex justify-end mb-4">
+                    <Filter className="text-white mt-2" size={18} />
+                </div>
+            )}
+            <div className="overflow-auto scrollbar-hide">
 
-            <div className="sticky bottom-0 left-0 w-full justify-center items-center py-4  ">
-                <button className="
+                <div className="flex-1 flex flex-col">
+
+
+
+                    {loading && <div className="h-screen flex items-center justify-center text-white">
+                        Carregando...
+                    </div>}
+                    <div className="flex-1 overflow-y-auto scrollbar-hide">
+
+                        {!loading && frases.map(item => (
+                            <div key={item.id} className="text-lg grid grid-cols-[1fr_1fr_auto] gap-4 items-center  py-3 border-b-2 overflow text-white" >
+                                <div>{item.texto_nativo}</div>
+                                <div>{item.texto_traduzido}</div>
+                                <div className="flex justify-center">
+                                    <Trash size={18} className="text-red-400" onClick={() => deletePhrase(item.id)} />
+                                </div>
+                            </div>
+                        ))}
+
+                    </div>
+                </div>
+
+                <div className="fixed bottom-0 left-0 w-full justify-center items-center py-4  w-full px-6 bg-gray-900">
+                    <button className="
                     px-6
                     py-3
                     w-full
                     rounded-full
-                      bg-gray-800/50 backdrop-blur-sm  border border-gray-700
+                      bg-gray-800/50   border border-gray-700
                     text-white
                     text-lg
                     hover:bg-blue-600
                     transition
                     "
-                    onClick={() => setOpenFrase(true)}>
-                    Adicionar
-                </button>
+                        onClick={() => setOpenFrase(true)}>
+                        Adicionar
+                    </button>
+                </div>
             </div>
+
             <ModalFrase openPhrase={openFrase} setOpenPhrase={setOpenFrase} category={id} listPhrase={listPhrase}
                 onOpenPremium={() => {
                     setIsPremiumModalOpen(true);

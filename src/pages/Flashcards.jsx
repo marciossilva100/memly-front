@@ -1,8 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { playAudio } from "../utils/audioPlayer";
-import { Volume } from "lucide-react";
-
+import { Volume, RefreshCw } from "lucide-react";
 
 // import { gerarAudio } from "../services/elevenlabs";
 import { useAuth } from "../context/AuthContext";
@@ -15,9 +14,10 @@ export default function Flashcards() {
   const [frases, setFrases] = useState([]);
   const [index, setIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [showBackContent, setShowBackContent] = useState(false);
+  const [showButton, setShowButton] = useState(true);
   const [finished, setFinished] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [hasBeenFlipped, setHasBeenFlipped] = useState(false); // NOVO: controla se o card já foi virado alguma vez
   const API_URL = import.meta.env.VITE_API_URL;
   const [listIdCorrectPhrase, setListIdCorrectPhrase] = useState([]);
   const [listIdIncorrectPhrase, setListIdIncorrectPhrase] = useState([]);
@@ -29,7 +29,6 @@ export default function Flashcards() {
 
   const RADIUS = 42;
   const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-
 
   useEffect(() => {
 
@@ -53,7 +52,8 @@ export default function Flashcards() {
         setFrases(data);
         setIndex(0);
         setIsFlipped(false);
-        setShowBackContent(false);
+        setShowButton(true);
+        setHasBeenFlipped(false); // Reset quando carregar novo deck
         setFinished(false);
         setProgress(0);
 
@@ -67,57 +67,58 @@ export default function Flashcards() {
   // progresso e flip automático
   useEffect(() => {
 
-    if (!frases.length || finished || isFlipped) {
+    if (!frases.length || finished) {
       setProgress(0);
       return;
     }
 
-    const start = Date.now();
+    // Só inicia o timer se o card NÃO estiver virado E o botão ainda estiver visível (primeira vez)
+    if (!isFlipped && showButton) {
+      const start = Date.now();
 
-    const interval = setInterval(() => {
+      const interval = setInterval(() => {
 
-      const elapsed = Date.now() - start;
-      const percent = Math.min((elapsed / FLIP_TIME) * 100, 100);
+        const elapsed = Date.now() - start;
+        const percent = Math.min((elapsed / FLIP_TIME) * 100, 100);
 
-      setProgress(percent);
+        setProgress(percent);
 
-      if (percent === 100) {
-        clearInterval(interval);
-        flipCard();
-      }
+        if (percent === 100) {
+          clearInterval(interval);
+          flipCard(); // Vira automaticamente
+        }
 
-    }, 100);
+      }, 100);
 
-    return () => clearInterval(interval);
+      return () => clearInterval(interval);
+    } else {
+      setProgress(0);
+    }
 
-  }, [index, frases, finished, isFlipped]);
-
-  // async function playEleven() {
-
-  //   const url = await gerarAudio(frases[index].texto_traduzido);
-
-  //   if (!url) return;
-
-  //   const audio = new Audio(url);
-  //   audio.playbackRate = 0.9;
-  //   audio.play();
-
-  // }
+  }, [index, frases, finished, isFlipped, showButton]);
 
   const flipCard = () => {
+    // Alterna entre virado e não virado
+    setIsFlipped(!isFlipped);
 
-    setIsFlipped(true);
-    setShowBackContent(false);
+    // Marca que o card já foi virado pelo menos uma vez
+    if (!hasBeenFlipped) {
+      setHasBeenFlipped(true);
+    }
 
-    setTimeout(() => {
+    // Quando virar para o verso (isFlipped se tornando true)
+    if (!isFlipped) {
+      // Esconde o botão "Mostrar" quando o card é virado pela primeira vez
+      if (showButton) {
+        setShowButton(false);
+      }
 
-      setShowBackContent(true);
-      playAudio(frases[index].texto_traduzido, user);
-
-    }, FLIP_DURATION / 2);
-
+      // Tocar áudio quando mostrar o verso
+      setTimeout(() => {
+        playAudio(frases[index].texto_traduzido, user);
+      }, FLIP_DURATION / 2);
+    }
   };
-
 
   async function learningUpdate(updatedList, updatedIncorrectList, actionToSend, metrics) {
 
@@ -154,41 +155,40 @@ export default function Flashcards() {
 
   }
 
-    async function trainingUpdate(actionToSend,frase_id,statusCorrectPhrase) {
+  async function trainingUpdate(actionToSend, frase_id, statusCorrectPhrase) {
 
-      try {
+    try {
 
-        const res = await fetch(`${API_URL}/controller/treino.php`, {
-          method: "POST",
-          headers: {
-            "Authorization": "Bearer " + localStorage.getItem("token")
-          },
-          body: JSON.stringify({
-            action: actionToSend,
-            frase_id: [frase_id],
-            category_id: id,
-            statusCorrectPhrase:statusCorrectPhrase
-          })
-        });
+      const res = await fetch(`${API_URL}/controller/treino.php`, {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem("token")
+        },
+        body: JSON.stringify({
+          action: actionToSend,
+          frase_id: [frase_id],
+          category_id: id,
+          statusCorrectPhrase: statusCorrectPhrase
+        })
+      });
 
-        const data = await res.json();
+      const data = await res.json();
 
-        if (!data.success) {
-          console.log(data.message);
-        }
-
-      } catch (error) {
-
-        console.log(error);
-
+      if (!data.success) {
+        console.log(data.message);
       }
+
+    } catch (error) {
+
+      console.log(error);
 
     }
 
+  }
+
   const nextCard = async (correct = false) => {
 
-    setAnsweredCount(prev => prev + 1); // 🔥 ESSENCIAL
-
+    setAnsweredCount(prev => prev + 1);
 
     let updatedList = listIdCorrectPhrase;
     let updatedIncorrectList = listIdIncorrectPhrase;
@@ -208,15 +208,16 @@ export default function Flashcards() {
     window.speechSynthesis.cancel();
 
     setIsFlipped(false);
-    setShowBackContent(false);
+    setShowButton(true); // Mostra o botão novamente para o próximo card
+    setHasBeenFlipped(false); // Reset para o próximo card
     setProgress(0);
 
     const statusCorrectPhrase = correct ? 1 : 0
 
     const actionToSend =
-    mode === 'traine' ? 'trainee_finish' : mode;
+      mode === 'traine' ? 'trainee_finish' : mode;
 
-    await trainingUpdate(actionToSend,frases[index].id,statusCorrectPhrase)
+    await trainingUpdate(actionToSend, frases[index].id, statusCorrectPhrase)
 
     if (index + 1 < frases.length) {
 
@@ -234,18 +235,6 @@ export default function Flashcards() {
       const porcentagem = totalPerguntas
         ? Math.round((acertos / totalPerguntas) * 100)
         : 0;
-
-   
-
-
-      // if (mode === 'learn') {
-      //   await learningUpdate(
-      //     updatedCorrect,
-      //     updatedIncorrect,
-      //     'learn',
-      //     { acertos, erros, totalPerguntas, porcentagem }
-      //   );
-      // }
 
       setFinished(true);
 
@@ -311,22 +300,18 @@ export default function Flashcards() {
 
   }
 
- const progressBar = frases.length
-  ? (answeredCount / frases.length) * 100
-  : 0;
+  const progressBar = frases.length
+    ? (answeredCount / frases.length) * 100
+    : 0;
 
-const progressBarVisible = answeredCount > 0
-  ? Math.max(2, progressBar)
-  : 0;
-
-  console.log("answeredCount:", answeredCount, "progressBar:", progressBar);
-  console.log("Total de frases:", frases.length);
+  const progressBarVisible = answeredCount > 0
+    ? Math.max(2, progressBar)
+    : 0;
 
   return (
 
-    <div className="flex px-6  h-dvh pt-4 from-gray-900 to-gray-800 bg-gradient-to-br">
+    <div className="flex px-6 h-dvh pt-4 from-gray-900 to-gray-800 bg-gradient-to-br">
       <div className="overflow-y-auto flex-1 scrollbar-hide">
-
 
         <div className="relative text-center mb-4">
 
@@ -348,28 +333,38 @@ const progressBarVisible = answeredCount > 0
 
         </div>
 
-        <div className="h-dvh  justify-center pt-8 h-20">
+        <div className="h-dvh justify-center pt-8 h-20">
 
-          <div className="perspective flashcard justify-center flex h-[300px]">
+          <div className="perspective flex justify-center h-[300px]">
+            <div className="flashcard w-full h-full">
+              <div
+                className={`card w-full h-full ${isFlipped ? "flip" : ""}`}
+                onClick={flipCard}
+                style={{ cursor: "pointer" }}
+              >
+                <div className="card-front shadow-[0_10px_40px_rgba(0,0,0,0.08)] text-center p-8 bg-[linear-gradient(to_right,#233245,#0d1425)] rounded-lg">
+                  <span className="text-2xl">
+                    {frases[index].texto_nativo}
+                  </span>
+                  <div className="absolute right-0 top-0 mt-3 me-3">
+                    <RefreshCw className="text-white" />
+                  </div>
+                </div>
 
-            <div className={`card ${isFlipped ? "flip" : ""}`}>
-
-              <div className="card-front shadow-[0_10px_40px_rgba(0,0,0,0.08)] text-center p-8 bg-[linear-gradient(to_right,#233245,#0d1425)] rounded-lg">
-                <span className="text-2xl">
-                  {frases[index].texto_nativo}
-                </span>
+                <div className="card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] text-center p-8 rounded-lg bg-[linear-gradient(to_right,#0d1425,#233245)]">
+                  <span className="text-2xl text-white">
+                    {frases[index].texto_traduzido}
+                  </span>
+                  <div className="absolute right-0 top-0 mt-3 me-3">
+                    <RefreshCw className="text-white" />
+                  </div>
+                </div>
               </div>
-
-              <div className="card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] text-center p-8 rounded-lg bg-[linear-gradient(to_right,#0d1425,#233245)]">
-                <span className="text-2xl text-white">
-                  {showBackContent && frases[index].texto_traduzido}
-                </span>
-              </div>
-
             </div>
-
           </div>
-          {isFlipped && (
+
+          {/* Botão Ouvir - aparece quando o card JÁ FOI VIRADO pelo menos uma vez */}
+          {hasBeenFlipped && (
             <div className="text-center flex justify-center mt-5">
               <button onClick={(e) => {
                 e.preventDefault();
@@ -381,9 +376,10 @@ const progressBarVisible = answeredCount > 0
             </div>
           )}
 
-          {!isFlipped && (
+          {/* Botão "Mostrar" - aparece apenas na PRIMEIRA VEZ que o card é carregado */}
+          {!isFlipped && showButton && (
 
-            <div className="fixed bottom-6 left-1/2 -translate-x-1/2 ">
+            <div className="fixed bottom-6 left-1/2 -translate-x-1/2">
 
               <svg width="96" height="96">
 
@@ -425,12 +421,12 @@ const progressBarVisible = answeredCount > 0
 
           )}
 
-
-
         </div>
-        {isFlipped && (
 
-          <div className="flex sticky bottom-6 items-center justify-center gap-3 w-full ">
+        {/* Botões de avaliação - aparecem quando o card JÁ FOI VIRADO pelo menos uma vez */}
+        {hasBeenFlipped && (
+
+          <div className="flex sticky bottom-6 items-center justify-center gap-3 w-full">
 
             <button
               onClick={() => nextCard(false)}

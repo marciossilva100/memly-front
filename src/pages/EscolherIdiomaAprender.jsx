@@ -26,7 +26,7 @@ const flags = {
 };
 
 export default function EscolherIdiomaAprender() {
-  const { user, setUser } = useAuth();
+  const { user, setUser, checkAuth } = useAuth();
 
   const navigate = useNavigate();
   const [erro, setErro] = useState('')
@@ -43,9 +43,15 @@ export default function EscolherIdiomaAprender() {
     (l) => l.id == form.learning_language
   );
 
-  if (user?.step > 1) {
-    return <Navigate to="/referenciausuario" replace />
-  }
+  useEffect(() => {
+    if (user?.step > 1) {
+      navigate("/referenciausuario", { replace: true });
+    }
+  }, [user]);
+
+    useEffect(() => {
+        console.log("USER ATUALIZADO:", user);
+    }, [user]);
 
   useEffect(() => {
     fetch(`${API_URL}/controller/language.php`,
@@ -69,50 +75,48 @@ export default function EscolherIdiomaAprender() {
   }, [])
 
 
-  function languageRegister() {
-
-    //   setLoading(true)
-    fetch(`${API_URL}/controller/language.php`, {
-      method: 'POST',
-      headers: {
-        "Authorization": "Bearer " + localStorage.getItem("token")
-      },
-      body: JSON.stringify({
-        action: 'set_learning_language',
-        learning_language: form.learning_language,
-      })
-    })
-      .then(res => res.json())
-      .then(data => {
-
-        console.log(data);
-
-        if (data.erro) {
-          //   setLoading(false)
-          setErro(data.erro);
-          return
-        }
-        //  setFinish(true)
-        // setLoading(false)
-
-        setUser(prev => ({
-          ...prev,
-          step: 2,
-          learning_language: idiomaSelecionado?.sigla
-        }));
-
-        console.log('passou aqui 2')
-
-        navigate("/referenciausuario", {
-          state: { email: form.email }
+  async function languageRegister() {
+    try {
+      const res = await fetch(`${API_URL}/controller/language.php`, {
+        method: 'POST',
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem("token")
+        },
+        body: JSON.stringify({
+          action: 'set_learning_language',
+          learning_language: form.learning_language,
         })
-
-      })
-      .catch((error) => {
-        console.log(error);
-        setErro(error.message);
       });
 
+      const data = await res.json();
+
+      if (data.erro) {
+        setErro(data.erro);
+        return;
+      }
+
+      // 🔥 garante idioma válido
+      const idiomaSelecionado = languageList.find(
+        (l) => l.id == form.learning_language
+      );
+
+      // 🔥 atualiza local sem quebrar
+      setUser(prev => ({
+        ...(prev || {}),
+        step: 2,
+        learning_language: idiomaSelecionado?.sigla || null
+      }));
+
+      // 🔥 SINCRONIZA COM BACKEND (ESSENCIAL)
+      await checkAuth(true);
+
+      // 🔥 navega só depois de sincronizar
+      navigate("/referenciausuario");
+
+    } catch (error) {
+      console.log(error);
+      setErro('Erro ao conectar com o servidor');
+    }
   }
 
   useEffect(() => {

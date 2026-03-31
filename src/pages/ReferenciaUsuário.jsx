@@ -7,21 +7,25 @@ import googleIcone from '../assets/img/google.png'
 import linkedinIcone from '../assets/img/linkedin.png'
 import imgChapeuFormatura from "../assets/img/chapeu_formatura-v2.png"
 import { useAuth } from "../context/AuthContext";
-import { Navigate,useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 
 export default function ReferenciaUsuario({ setTitulo }) {
 
     const { user, setUser } = useAuth();
     const [finishStep, setFinishStep] = useState(false)
-const API_URL = import.meta.env.VITE_API_URL;
+    const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
 
-    if (user?.step > 2) {
-        return <Navigate to="/home" replace />
-    }
+    useEffect(() => {
+        if (user?.step > 2) {
+            navigate("/home", { replace: true });
+        }
+    }, [user]);
 
-
+    useEffect(() => {
+        console.log("USER ATUALIZADO:", user);
+    }, [user]);
 
     // useEffect(() => {
     //     setUser(prev => ({

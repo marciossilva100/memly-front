@@ -24,7 +24,7 @@ export default function Flashcards() {
   const [answeredCount, setAnsweredCount] = useState(0);
   const { user, setUser } = useAuth();
 
-  const FLIP_TIME = 5000;
+  const FLIP_TIME = 8000;
   const FLIP_DURATION = 400;
 
   const RADIUS = 42;

@@ -1,4 +1,4 @@
-import { useEffect, useState,useRef } from "react"
+import { useEffect, useState, useRef } from "react"
 import imgCoruja from "../assets/img/coruja.png"
 import { idiomas } from "../data/idiomas"
 import { useAuth } from "../context/AuthContext";
@@ -28,7 +28,7 @@ const flags = {
 
 
 export default function EscolherIdiomaNativo() {
-  const { user, setUser } = useAuth();
+  const { user, setUser, checkAuth } = useAuth();
   const [erro, setErro] = useState('')
   const [languageList, setLanguageList] = useState([])
   const [finishStep, setFinishStep] = useState(false)
@@ -46,11 +46,14 @@ export default function EscolherIdiomaNativo() {
     (l) => l.id == form.native_language
   );
 
-  if (user?.step > 0) {
-    return <Navigate to="/escolheridiomaaprender" replace />
-  }
+  useEffect(() => {
+    if (user?.step > 0) {
+      navigate("/escolheridiomaaprender", { replace: true });
+    }
+  }, [user]);
 
   useEffect(() => {
+
     function handleClickOutside(e) {
       if (selectRef.current && !selectRef.current.contains(e.target)) {
         setOpenSelect(false);
@@ -82,51 +85,52 @@ export default function EscolherIdiomaNativo() {
       });
   }, [])
 
-  function languageRegister() {
-
-    //   setLoading(true)
-    fetch(`${API_URL}/controller/language.php`, {
-      method: 'POST',
-      headers: {
-        "Authorization": "Bearer " + localStorage.getItem("token")
-      },
-
-      body: JSON.stringify({
-        action: 'set_native_language',
-        native_language: form.native_language,
-      })
-    })
-      .then(res => res.json())
-      .then(data => {
-
-        console.log(data);
-
-        if (data.erro) {
-          //   setLoading(false)
-          setErro(data.erro);
-          return
-        }
-        //  setFinish(true)
-        // setLoading(false)
-
-        setUser(prev => ({
-          ...prev,
-          step: 1,
-          native_language: idiomaSelecionado?.sigla
-        }));
-
-        console.log(user)
-
-        navigate("/escolheridiomaaprender", {
-          state: { email: form.email }
+  async function languageRegister() {
+    try {
+      const res = await fetch(`${API_URL}/controller/language.php`, {
+        method: 'POST',
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem("token")
+        },
+        body: JSON.stringify({
+          action: 'set_native_language',
+          native_language: form.native_language,
         })
-
-      })
-      .catch(() => {
-        setErro('Erro ao conectar com o servidor');
       });
 
+      const data = await res.json();
+
+      if (data.erro) {
+        setErro(data.erro);
+        return;
+      }
+
+      // 🔥 Garante que o idioma existe
+      const idiomaSelecionado = languageList.find(
+        (l) => l.id == form.native_language
+      );
+
+      // 🔥 Atualiza local imediatamente (sem quebrar se user for null)
+      setUser(prev => ({
+        ...(prev || {}),
+        step: 1,
+        native_language: idiomaSelecionado?.sigla || null
+      }));
+
+      // 🔥 SINCRONIZA COM BACKEND (ESSENCIAL)
+      await checkAuth(true);
+
+      // 🔥 Agora sim navega com dados corretos
+      navigate("/escolheridiomaaprender");
+
+    } catch (error) {
+      setErro('Erro ao conectar com o servidor');
+    }
   }
+
+  useEffect(() => {
+    console.log("USER ATUALIZADO:", user);
+  }, [user]);
 
   // function handleChange(e) {
   //   setErro('');
@@ -214,7 +218,7 @@ export default function EscolherIdiomaNativo() {
                   </span>
                 )}
 
-                
+
               </div>
 
               {/* DROPDOWN */}

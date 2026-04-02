@@ -19,7 +19,7 @@ export default function () {
     const [limitReached, setLimitReached] = useState(false);
     const [totalToday, setTotalToday] = useState(0);
     const [isCorrect, setIsCorrect] = useState(false);
-const API_URL = import.meta.env.VITE_API_URL;
+    const API_URL = import.meta.env.VITE_API_URL;
 
     // 🔁 FUNÇÃO PARA BUSCAR PERGUNTA
     const fetchQuestion = () => {
@@ -70,40 +70,45 @@ const API_URL = import.meta.env.VITE_API_URL;
 
     const handleSkip = async () => {
         try {
-            await fetch(`${API_URL}/controller/DailyQuestionController.php`, {
+            const res = await fetch(`${API_URL}/controller/DailyQuestionController.php`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 },
                 body: JSON.stringify({
-                    question: question, // ✅ corrigido
+                    question: question,
                     action: 'skip'
                 }),
             });
 
-            // limpa estado
+            const data = await res.json();
+
+            // ✅ ATUALIZA NA HORA
+            if (typeof data.total_today !== "undefined") {
+                setTotalToday(data.total_today);
+            }
+
             setAnswer('');
-            setResponse(''); // ✅ corrigido
+            setResponse('');
             setIsCorrect(false);
 
-            // carrega próxima pergunta
             fetchQuestion();
 
         } catch (err) {
             console.error(err);
         }
     };
-
     const handleSubmit = async (e) => {
-        setTextLoading('Processando resposta...')
         e.preventDefault();
+        setTextLoading('Processando resposta...');
         setLoading(true);
 
         try {
             const res = await fetch(`${API_URL}/controller/DailyQuestionController.php`, {
                 method: 'POST',
                 headers: {
+                    "Content-Type": "application/json",
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 },
                 body: JSON.stringify({ question, answer })
@@ -118,7 +123,12 @@ const API_URL = import.meta.env.VITE_API_URL;
             setResponse(data.feedback);
             setIsCorrect(data.is_correct);
 
-            // ✅ SE ACERTOU → PRÓXIMA PERGUNTA
+            // ✅ ESSA LINHA É A CORREÇÃO
+            if (typeof data.total_today !== "undefined") {
+                setTotalToday(data.total_today);
+            }
+
+            // próxima pergunta se acertou
             if (data.is_correct) {
                 setTimeout(() => {
                     setResponse('');
@@ -143,7 +153,7 @@ const API_URL = import.meta.env.VITE_API_URL;
     if (loading) {
         return (
             <div className="h-dvh flex items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
-                <Loader2 className="animate-spin mr-2 w-8 h-8 text-indigo-400"/>
+                <Loader2 className="animate-spin mr-2 w-8 h-8 text-indigo-400" />
                 <span className="text-white text-lg">{textLoading}</span>
             </div>
         );
@@ -235,7 +245,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                             <div className="text-center flex justify-center mt-5">
                                 <button onClick={(e) => {
                                     e.preventDefault();
-                                    playAudio(question, user,true);
+                                    playAudio(question, user, true);
                                 }} className="px-4 py-2 rounded-md bg-slate-400 text-white text-sm hover:bg-blue-600 transition flex">
                                     <Volume className="w-5 h-5" />
                                     Ouvir

@@ -106,7 +106,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
       if (hours > 0) {
         setMensagem(
-          <span className="text-sm text-red-700 text-white">
+          <span className="text-sm text-yellow-400">
             Próximo treino em {hours}h {minutes}m
           </span>
         );
@@ -114,7 +114,7 @@ const API_URL = import.meta.env.VITE_API_URL;
       }
       else if (minutes > 0) {
         setMensagem(
-          <span className="text-sm text-red-700 text-white">
+          <span className="text-sm text-yellow-400">
             Próximo treino em {minutes}m {sec}s
           </span>
         );

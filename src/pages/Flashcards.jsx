@@ -335,6 +335,7 @@ export default function Flashcards() {
 
         <div className="h-dvh justify-center pt-8 h-20">
 
+          {/* Card com efeito 3D corrigido */}
           <div className="perspective flex justify-center h-[300px]">
             <div className="flashcard w-full h-full">
               <div
@@ -369,7 +370,7 @@ export default function Flashcards() {
               <button onClick={(e) => {
                 e.preventDefault();
                 playAudio(frases[index].texto_traduzido, user);
-              }} className="px-4 py-2 rounded-md bg-slate-400 text-white text-sm hover:bg-blue-500 transition flex">
+              }} className="px-4 py-2 rounded-md bg-[#4cb8c4] text-white text-sm  transition flex">
                 <Volume className="w-5 h-5" />
                 Ouvir
               </button>

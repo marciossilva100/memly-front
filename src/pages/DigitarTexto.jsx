@@ -5,6 +5,7 @@ import { playAudio } from "../utils/audioPlayer";
 import '../digitartexto.css'
 import { Play, Check } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { Volume, RefreshCw } from "lucide-react";
 
 
 export default function DigitarTexto() {
@@ -337,9 +338,18 @@ export default function DigitarTexto() {
 
                 {diff && !diff.isCorrect && (
 
-                    <div className="mt-8 w-full">
+                    <div className="mt-6 w-full ">
+                        <div className="text-center flex justify-center">
+                            <button onClick={(e) => {
+                                e.preventDefault();
+                                playAudio(frases[index].texto_traduzido, user);
+                            }} className="px-4 py-2 rounded-md bg-[#4cb8c4] text-white text-sm transition flex">
+                                <Volume className="w-5 h-5" />
+                                Ouvir
+                            </button>
+                        </div>
 
-                        <span className="w-full flex justify-center mb-4 font-semibold text-white">
+                        <span className="w-full flex justify-center mb-4 font-semibold text-white mt-8">
                             Você digitou:
                         </span>
 
@@ -395,17 +405,29 @@ export default function DigitarTexto() {
                 )}
 
                 {diff && diff.isCorrect && (
-                    <div className="items-center justify-center mb-20 text-center mt-10">
-                        <div className="mb-4 flex justify-center">
-                            <div className="rounded-full bg-green-600 w-16 h-16 flex items-center justify-center">
-                                <Check className="text-white" height={38} width={38} />
-                            </div>
+                    <div>
+                        <div className="text-center flex justify-center mt-4">
+                            <button onClick={(e) => {
+                                e.preventDefault();
+                                playAudio(frases[index].texto_traduzido, user);
+                            }} className="px-4 py-2 rounded-md bg-[#4cb8c4] text-white text-sm transition flex">
+                                <Volume className="w-5 h-5" />
+                                Ouvir
+                            </button>
                         </div>
+                        <div className="items-center justify-center mb-20 text-center mt-10">
+                            <div className="mb-4 flex justify-center">
+                                <div className="rounded-full bg-green-600 w-16 h-16 flex items-center justify-center">
+                                    <Check className="text-white" height={38} width={38} />
+                                </div>
+                            </div>
 
-                        <span className="text-2xl font-semibold text-green-700">
-                            Correto
-                        </span>
+                            <span className="text-2xl font-semibold text-green-500">
+                                Correto
+                            </span>
+                        </div>
                     </div>
+
                 )}
 
             </div>
@@ -413,23 +435,30 @@ export default function DigitarTexto() {
             {diff && (
 
                 !diff.isCorrect ? (
+                    <div>
 
-                    <div className=" flex sticky bottom-6 w-full flex justify-center gap-3 ">
 
-                        <button
-                            onClick={repeatCard}
-                            className="w-full  text-white text-lg  py-3 rounded-full shadow-lg bg-gray-800/50 backdrop-blur-sm  border border-gray-700"
-                        >
-                            Tentar novamente
-                        </button>
-                        <button
-                            onClick={nextCard}
-                            className=" text-white text-lg  py-3 rounded-full shadow-lg px-9 bg-gray-700/60 backdrop-blur-sm  border border-gray-700"
-                        >
-                            Pular
-                        </button>
+                        <div className=" flex sticky bottom-6 w-full flex justify-center gap-3 ">
 
+
+
+                            <button
+                                onClick={repeatCard}
+                                className="w-full  text-white text-lg  py-3 rounded-full shadow-lg bg-gray-800/50 backdrop-blur-sm  border border-gray-700"
+                            >
+                                Tentar novamente
+                            </button>
+                            <button
+                                onClick={nextCard}
+                                className=" text-white text-lg  py-3 rounded-full shadow-lg px-9 bg-gray-700/60 backdrop-blur-sm  border border-gray-700"
+                            >
+                                Pular
+                            </button>
+
+                        </div>
                     </div>
+
+
 
                 ) : (
                     <div>
@@ -457,14 +486,20 @@ export default function DigitarTexto() {
 
             {!isFlipped && (
 
-                <div className="sticky bottom-6 w-full  pt-4">
+                <div className="sticky bottom-6 w-full  pt-4 flex gap-3">
 
                     <button
                         type="submit"
                         form="respostaForm"
-                        className="flex justify-center shadow-md w-full  text-white font-medium py-3 rounded-full text-lg bg-gray-700/50 backdrop-blur-sm  border border-gray-700"
+                        className="flex justify-center shadow-md w-full  text-white font-medium py-3 rounded-full text-lg bg-green-500/50 backdrop-blur-sm  border border-gray-700"
                     >
                         Responder
+                    </button>
+                    <button
+                        onClick={nextCard}
+                        className=" text-white text-lg  py-3 rounded-full shadow-lg px-9 bg-gray-700/60 backdrop-blur-sm  border border-gray-700"
+                    >
+                        Pular
                     </button>
 
                 </div>

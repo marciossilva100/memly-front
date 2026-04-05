@@ -441,7 +441,6 @@ export default function DigitarTexto() {
                         <div className=" flex sticky bottom-6 w-full flex justify-center gap-3 ">
 
 
-
                             <button
                                 onClick={repeatCard}
                                 className="w-full  text-white text-lg  py-3 rounded-full shadow-lg bg-gray-800/50 backdrop-blur-sm  border border-gray-700"

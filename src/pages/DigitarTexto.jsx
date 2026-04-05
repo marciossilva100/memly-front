@@ -3,9 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import { makePerfectDiff } from "../utils/makePerfectDiff";
 import { playAudio } from "../utils/audioPlayer";
 import '../digitartexto.css'
-import { Play, Check } from "lucide-react";
+import { Volume, Play, Check, RefreshCw } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import { Volume, RefreshCw } from "lucide-react";
 
 
 export default function DigitarTexto() {
@@ -184,6 +183,25 @@ export default function DigitarTexto() {
 
     };
 
+    function toggleCard() {
+
+        // só permite virar se acertou
+        if (!diff || !diff.isCorrect) return;
+
+        const newFlipState = !isFlipped;
+
+        setIsFlipped(newFlipState);
+
+        if (newFlipState) {
+            setTimeout(() => {
+                setShowBackContent(true);
+                playAudio(frases[index].texto_traduzido, user);
+            }, 200);
+        } else {
+            setShowBackContent(false);
+        }
+    }
+
     async function handleSubmit(e) {
 
         e.preventDefault();
@@ -293,7 +311,7 @@ export default function DigitarTexto() {
 
                 </div>
 
-                {!isFlipped && (
+                {!isFlipped && (!diff || !diff.isCorrect) && (
                     <div className="justify-start mb-4 w-full">
 
                         <h2 className="text-white text-lg">
@@ -311,6 +329,7 @@ export default function DigitarTexto() {
                     <div className="perspective flashcard justify-center flex">
 
                         <div
+                            onClick={toggleCard}
                             className={`card card-digitar-texto ${isFlipped ? "flip" : ""} h-[280px]`}
                         >
 
@@ -319,7 +338,11 @@ export default function DigitarTexto() {
                                 <span className="text-2xl">
                                     {frases[index].texto_nativo}
                                 </span>
-
+                                {!diff || diff.isCorrect && (
+                                    <div className="absolute right-0 top-0 mt-3 me-3">
+                                        <RefreshCw className="text-white" />
+                                    </div>
+                                )}
                             </div>
 
                             <div className="rounded-lg card-back bg-[linear-gradient(to_right,#0d1425,#233245)] shadow-[0_10px_40px_rgba(0,0,0,0.09)] px-5 py-4 text-center">
@@ -327,7 +350,9 @@ export default function DigitarTexto() {
                                 <span className="text-2xl text-white">
                                     {showBackContent && frases[index].texto_traduzido}
                                 </span>
-
+                                <div className="absolute right-0 top-0 mt-3 me-3">
+                                    <RefreshCw className="text-white" />
+                                </div>
                             </div>
 
                         </div>
@@ -343,7 +368,7 @@ export default function DigitarTexto() {
                             <button onClick={(e) => {
                                 e.preventDefault();
                                 playAudio(frases[index].texto_traduzido, user);
-                            }} className="px-4 py-2 rounded-md bg-[#4cb8c4] text-white text-sm transition flex">
+                            }} className="px-4 py-2 rounded-md bg-slate-600 text-white text-sm transition flex">
                                 <Volume className="w-5 h-5" />
                                 Ouvir
                             </button>
@@ -410,7 +435,7 @@ export default function DigitarTexto() {
                             <button onClick={(e) => {
                                 e.preventDefault();
                                 playAudio(frases[index].texto_traduzido, user);
-                            }} className="px-4 py-2 rounded-md bg-[#4cb8c4] text-white text-sm transition flex">
+                            }} className="px-4 py-2 rounded-md bg-slate-600 text-white text-sm transition flex">
                                 <Volume className="w-5 h-5" />
                                 Ouvir
                             </button>
@@ -483,7 +508,7 @@ export default function DigitarTexto() {
 
             )}
 
-            {!isFlipped && (
+            {!isFlipped && (!diff || !diff.isCorrect) && (
 
                 <div className="sticky bottom-6 w-full  pt-4 flex gap-3">
 

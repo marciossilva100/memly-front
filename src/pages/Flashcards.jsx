@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate,useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { playAudio } from "../utils/audioPlayer";
 import { Volume, RefreshCw } from "lucide-react";
@@ -23,6 +23,8 @@ export default function Flashcards() {
   const [listIdIncorrectPhrase, setListIdIncorrectPhrase] = useState([]);
   const [answeredCount, setAnsweredCount] = useState(0);
   const { user, setUser } = useAuth();
+  const location = useLocation();
+  const correctIds = location.state?.correctIds || [];
 
   const FLIP_TIME = 8000;
   const FLIP_DURATION = 400;
@@ -43,7 +45,8 @@ export default function Flashcards() {
       },
       body: JSON.stringify({
         action: mode,
-        category_id: id
+        category_id: id,
+        correctIds:(correctIds ? correctIds : '')
       })
     })
       .then(res => res.json())
@@ -62,7 +65,7 @@ export default function Flashcards() {
 
       });
 
-  }, [id, mode]);
+  }, [id, mode,correctIds]);
 
   // progresso e flip automático
   useEffect(() => {
@@ -317,7 +320,7 @@ export default function Flashcards() {
 
           <div
             className="text-left cursor-pointer"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/home")}
           >
             <i className="bi bi-arrow-left text-2xl text-white"></i>
           </div>
@@ -370,7 +373,7 @@ export default function Flashcards() {
               <button onClick={(e) => {
                 e.preventDefault();
                 playAudio(frases[index].texto_traduzido, user);
-              }} className="px-4 py-2 rounded-md bg-[#4cb8c4] text-white text-sm  transition flex">
+              }} className="px-4 py-2 rounded-md bg-slate-500 text-white text-sm  transition flex">
                 <Volume className="w-5 h-5" />
                 Ouvir
               </button>

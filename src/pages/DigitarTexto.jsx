@@ -22,7 +22,7 @@ export default function DigitarTexto() {
     const API_URL = import.meta.env.VITE_API_URL;
     const [acertos, setAcertos] = useState(0);
     const [erros, setErros] = useState(0);
-
+    const [correctIds, setCorrectIds] = useState([]);
     const [idPhrases, setIdPhrases] = useState([])
 
     const navigate = useNavigate();
@@ -70,7 +70,8 @@ export default function DigitarTexto() {
         fetch(`${API_URL}/${endpoint}`, {
             method: "POST",
             headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
+                "Authorization": "Bearer " + localStorage.getItem("token"),
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 action: mode,
@@ -148,28 +149,27 @@ export default function DigitarTexto() {
 
         const isLast = index === frases.length - 1;
 
+        // 👉 só conta se ainda não respondeu
+
+
         setDiff(null);
         setIsFlipped(false);
         setShowBackContent(false);
         setResposta("");
 
         if (isLast) {
-
             if (mode === "traine") {
-
-                // await trainingUpdate(idPhrases, "trainee_finish");
                 setFinished(true);
                 return;
-
             }
 
-            navigate(`/flashcards/${id}/learn`);
+            navigate(`/flashcards/${id}/learn`, {
+                state: { correctIds }
+            });
             return;
-
         }
 
         setIndex(prev => prev + 1);
-
     };
 
     const repeatCard = () => {
@@ -224,6 +224,8 @@ export default function DigitarTexto() {
 
         if (result.isCorrect) {
             setAcertos(prev => prev + 1);
+            setCorrectIds(prev => [...prev, frases[index].id]); // 👈 aqui
+
         } else {
             setErros(prev => prev + 1);
         }
@@ -294,6 +296,16 @@ export default function DigitarTexto() {
 
     }
 
+    const answeredCount = index;
+
+    const progressBar = frases.length
+        ? (index / frases.length) * 100
+        : 0;
+
+    const progressBarVisible = progressBar;
+
+
+
     return (
 
         <div className="h-dvh flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br digitar-texto px-6 pb-5">
@@ -308,6 +320,15 @@ export default function DigitarTexto() {
                     >
                         <i className="bi bi-arrow-left text-2xl"></i>
                     </div>
+
+                </div>
+
+                <div className="top-0 left-0 w-full h-2 bg-slate-200 overflow-hidden mb-4">
+
+                    <div
+                        className="h-full bg-[#4cb8c4] transition-all duration-300"
+                        style={{ width: `${progressBarVisible}%` }}
+                    />
 
                 </div>
 
@@ -350,9 +371,11 @@ export default function DigitarTexto() {
                                 <span className="text-2xl text-white">
                                     {showBackContent && frases[index].texto_traduzido}
                                 </span>
-                                <div className="absolute right-0 top-0 mt-3 me-3">
-                                    <RefreshCw className="text-white" />
-                                </div>
+                                {!diff || diff.isCorrect && (
+                                    <div className="absolute right-0 top-0 mt-3 me-3">
+                                        <RefreshCw className="text-white" />
+                                    </div>
+                                )}
                             </div>
 
                         </div>
@@ -465,19 +488,19 @@ export default function DigitarTexto() {
 
                         <div className=" flex sticky bottom-6 w-full flex justify-center gap-3 ">
 
-
-                            <button
-                                onClick={repeatCard}
-                                className="w-full  text-white text-lg  py-3 rounded-full shadow-lg bg-gray-800/50 backdrop-blur-sm  border border-gray-700"
-                            >
-                                Tentar novamente
-                            </button>
                             <button
                                 onClick={nextCard}
                                 className=" text-white text-lg  py-3 rounded-full shadow-lg px-9 bg-gray-700/60 backdrop-blur-sm  border border-gray-700"
                             >
                                 Pular
                             </button>
+                            <button
+                                onClick={repeatCard}
+                                className="w-full  text-white text-lg  py-3 rounded-full shadow-lg bg-gray-800/50 backdrop-blur-sm  border border-gray-700"
+                            >
+                                Tentar novamente
+                            </button>
+
 
                         </div>
                     </div>
@@ -512,18 +535,19 @@ export default function DigitarTexto() {
 
                 <div className="sticky bottom-6 w-full  pt-4 flex gap-3">
 
+
+                    <button
+                        onClick={nextCard}
+                        className=" text-white text-lg  py-3 rounded-full shadow-lg px-9 bg-gray-700/60 backdrop-blur-sm  border border-gray-700"
+                    >
+                        Pular
+                    </button>
                     <button
                         type="submit"
                         form="respostaForm"
                         className="flex justify-center shadow-md w-full  text-white font-medium py-3 rounded-full text-lg bg-green-500/50 backdrop-blur-sm  border border-gray-700"
                     >
                         Responder
-                    </button>
-                    <button
-                        onClick={nextCard}
-                        className=" text-white text-lg  py-3 rounded-full shadow-lg px-9 bg-gray-700/60 backdrop-blur-sm  border border-gray-700"
-                    >
-                        Pular
                     </button>
 
                 </div>

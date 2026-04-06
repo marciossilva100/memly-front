@@ -226,7 +226,7 @@ const API_URL = import.meta.env.VITE_API_URL;
         </div>
       </div>
 
-      <div className="flex justify-center">
+      <div className="flex justify-center pb-6">
         <div className="w-full max-w-5xl grid grid-cols-2 gap-8 h-full">
           <div className="grid grid-rows-4 gap-3">
             {nativas.map((frase) => (
@@ -234,15 +234,15 @@ const API_URL = import.meta.env.VITE_API_URL;
                 key={frase.id}
                 disabled={bloqueado}
                 onClick={() => setSelecionadaEsquerda(frase)}
-                className={`p-4 rounded-lg border
+                className={`p-4 rounded-lg border text-white border-slate-400
                   ${
                     sucessoEsquerdaId === frase.id
-                      ? "bg-green-100"
+                      ? "bg-[#469118]"
                       : erroEsquerdaId === frase.id
-                      ? "bg-red-100"
+                      ? "bg-[#861616]"
                       : selecionadaEsquerda?.id === frase.id
-                      ? "bg-blue-100"
-                      : "bg-white"
+                      ? "bg-slate-600"
+                      : "bg-[linear-gradient(to_right,#233245,#0d1425)]"
                   }`}
               >
                 {frase.texto_nativo}
@@ -256,15 +256,15 @@ const API_URL = import.meta.env.VITE_API_URL;
                 key={frase.id}
                 disabled={bloqueado}
                 onClick={() => setSelecionadaDireita(frase)}
-                className={`p-4 rounded-lg border
+                className={`p-4 rounded-lg border text-white border-slate-400
                   ${
                     sucessoDireitaId === frase.id
-                      ? "bg-green-100"
+                      ? "bg-[#469118]"
                       : erroDireitaId === frase.id
-                      ? "bg-red-100"
+                      ? "bg-[#861616]"
                       : selecionadaDireita?.id === frase.id
-                      ? "bg-blue-100"
-                      : "bg-white"
+                      ? "bg-slate-600"
+                      : "bg-[linear-gradient(to_right,#233245,#0d1425)]"
                   }`}
               >
                 {frase.texto_traduzido}

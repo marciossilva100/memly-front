@@ -65,7 +65,7 @@ export default function Flashcards() {
 
       });
 
-  }, [id, mode,correctIds]);
+  }, [id, mode]);
 
   // progresso e flip automático
   useEffect(() => {

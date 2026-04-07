@@ -457,7 +457,7 @@ export default function DigitarTexto() {
                                     ref={textareaRef}
                                     value={resposta}
                                     onChange={(e) => setResposta(e.target.value)}
-                                    className="text-xl text-white toutline-none w-full h-[100%] pt-6 text-center rounded-lg  resize-none bg-gray-800/50 backdrop-blur-sm  border border-gray-700"
+                                    className="text-xl text-white toutline-none w-full h-[100%] pt-6 text-center rounded-lg  resize-none bg-gray-800/50 backdrop-blur-sm  border border-gray-700 px-3"
                                 />
 
 

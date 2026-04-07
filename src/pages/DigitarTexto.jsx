@@ -24,7 +24,7 @@ export default function DigitarTexto() {
     const [erros, setErros] = useState(0);
     const [correctIds, setCorrectIds] = useState([]);
     const [idPhrases, setIdPhrases] = useState([])
-
+    const [vh, setVh] = useState(window.innerHeight);
     const navigate = useNavigate();
     const textareaRef = useRef(null);
     const { user, setUser } = useAuth();
@@ -43,6 +43,17 @@ export default function DigitarTexto() {
 
     }, [isFlipped]);
 
+    useEffect(() => {
+        const handleResize = () => {
+            setVh(window.visualViewport?.height || window.innerHeight);
+        };
+
+        window.visualViewport?.addEventListener("resize", handleResize);
+
+        return () => {
+            window.visualViewport?.removeEventListener("resize", handleResize);
+        };
+    }, []);
     // preload voices
     useEffect(() => {
 
@@ -313,7 +324,7 @@ export default function DigitarTexto() {
 
     return (
 
-        <div className="h-dvh flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br digitar-texto px-6 pb-5">
+        <div style={{ height: vh }} className=" flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br digitar-texto px-6 pb-5">
 
             <div className="flex-1 overflow-y-auto scrollbar-hide pt-3">
 

@@ -357,7 +357,7 @@ export default function Flashcards() {
 
                 <div className="card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] text-center p-8 rounded-lg bg-[linear-gradient(to_right,#0d1425,#233245)]">
                   <span className="text-2xl text-white">
-                    {frases[index].texto_traduzido}
+                    {hasBeenFlipped ? frases[index].texto_traduzido : ""}
                   </span>
                   <div className="absolute right-0 top-0 mt-3 me-3">
                     <RefreshCw className="text-white" />

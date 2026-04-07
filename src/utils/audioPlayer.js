@@ -1,9 +1,8 @@
 let currentAudio = null;
 
-export const playAudio = async (text, user,ia = false) => {
+export const playAudio = async (text, user, ia = false) => {
     if (!text) return;
 
-    // cancela áudio anterior
     if (currentAudio) {
         currentAudio.pause();
         currentAudio = null;
@@ -15,30 +14,42 @@ export const playAudio = async (text, user,ia = false) => {
 
         const audio = new Audio(url);
         currentAudio = audio;
-
         audio.playbackRate = 0.9;
-        audio.play().catch(() => { });
+        
+        // 🔥 SOLUÇÃO: Aguardar o áudio carregar antes de tocar
+        audio.addEventListener('canplaythrough', () => {
+            audio.play().catch(e => console.log(e));
+        }, { once: true });
+        
+        // Fallback caso demore
+        setTimeout(() => {
+            if (audio.readyState >= 2) audio.play().catch(() => {});
+        }, 100);
 
         audio.onended = () => {
             URL.revokeObjectURL(url);
             currentAudio = null;
         };
-
         return;
     }
 
-    const url =
-        "/api/controller/treino.php?action=voice" +
+    const url = "/api/controller/treino.php?action=voice" +
         "&text=" + encodeURIComponent(text) +
         "&lang=" + encodeURIComponent(user.learning_language);
 
     const audio = new Audio();
     audio.src = url;
     audio.playbackRate = 1;
-
     currentAudio = audio;
 
-    audio.play().catch(() => { });
+    // 🔥 SOLUÇÃO: Mesma coisa aqui
+    audio.addEventListener('canplaythrough', () => {
+        audio.play().catch(e => console.log(e));
+    }, { once: true });
+    
+    setTimeout(() => {
+        if (audio.readyState >= 2) audio.play().catch(() => {});
+    }, 100);
 };
 
 const gerarAudio = async (texto) => {

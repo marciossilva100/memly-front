@@ -351,12 +351,12 @@ export default function DigitarTexto() {
                     </div>
                 )}
 
-                <div className="flex h-[40%]">
+                <div className="flex">
                     <div className="perspective flashcard justify-center flex">
 
                         <div
                             onClick={toggleCard}
-                            className={`card card-digitar-texto ${isFlipped ? "flip" : ""} `}
+                            className={`card card-digitar-texto ${isFlipped ? "flip" : ""} h-[280px]`}
                         >
 
                             <div className="rounded-lg card-front bg-[linear-gradient(to_right,#233245,#0d1425)] shadow-[0_10px_40px_rgba(0,0,0,0.08)] px-5 py-4 text-center">

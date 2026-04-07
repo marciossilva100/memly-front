@@ -1,56 +1,45 @@
 let currentAudio = null;
 
-export const playAudio = async (text, user, ia = false) => {
-    console.log('1. playAudio chamado', { text, user: user?.plano, ia });
-    
-    if (!text) {
-        console.log('2. texto vazio');
-        return;
-    }
+export const playAudio = async (text, user,ia = false) => {
+    const API_URL = import.meta.env.VITE_API_URL;
+    if (!text) return;
 
+    // cancela áudio anterior
     if (currentAudio) {
-        console.log('3. cancelando audio anterior');
         currentAudio.pause();
         currentAudio = null;
     }
 
     if (user.plano === 1 && user.id === 47 && !ia) {
-        console.log('4. usando elevenlabs');
         const url = await gerarAudio(text);
-        console.log('5. url gerada:', url);
         if (!url) return;
 
         const audio = new Audio(url);
         currentAudio = audio;
+
         audio.playbackRate = 0.9;
-        
-        audio.play()
-            .then(() => console.log('6. ✅ audio tocando'))
-            .catch(err => console.log('6. ❌ erro no play:', err));
-        
+        audio.play().catch(() => { });
+
         audio.onended = () => {
             URL.revokeObjectURL(url);
             currentAudio = null;
-            console.log('7. audio finalizado');
         };
+
         return;
     }
 
-    console.log('8. usando endpoint padrao');
-    const url = "/api/controller/treino.php?action=voice" +
-        "&text=" + encodeURIComponent(text) +
-        "&lang=" + encodeURIComponent(user.learning_language);
-    
-    console.log('9. url:', url);
-    
+    const url =
+    `${API_URL}/controller/treino.php?action=voice` +
+    "&text=" + encodeURIComponent(text) +
+    "&lang=" + encodeURIComponent(user.learning_language);
+
     const audio = new Audio();
     audio.src = url;
     audio.playbackRate = 1;
+
     currentAudio = audio;
 
-    audio.play()
-        .then(() => console.log('10. ✅ audio tocando'))
-        .catch(err => console.log('10. ❌ erro no play:', err));
+    audio.play().catch(() => { });
 };
 
 const gerarAudio = async (texto) => {

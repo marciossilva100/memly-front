@@ -35,7 +35,7 @@ export const playAudio = async (text, user,ia = false) => {
 
     const audio = new Audio();
     audio.src = url;
-    audio.playbackRate = 1;
+    audio.playbackRate = 1.2;
 
     currentAudio = audio;
 

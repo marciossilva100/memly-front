@@ -163,7 +163,12 @@ export default function DigitarTexto() {
                 return;
             }
 
-            navigate(`/flashcards/${id}/learn`, {
+            // navigate(`/flashcards/${id}/learn`, {
+            //     state: { correctIds }
+            // });
+            // return;
+
+            navigate(`/emparelhar/${id}/learn`, {
                 state: { correctIds }
             });
             return;

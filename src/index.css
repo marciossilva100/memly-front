@@ -178,10 +178,14 @@ input{
   /* font-size: 1.4rem; */
   font-weight: 600;
   color: white;
+   -webkit-backface-visibility: hidden; /* 🔥 importante */
+  transform-style: preserve-3d; /* 🔥 ajuda no render */
+  will-change: transform; /* 🔥 melhora GPU */
   /* box-shadow: 0 20px 40px rgba(0,0,0,0.15); */
 }
 .card-back {
   /* background: white; */
+  
 
 }
 .card-front{
@@ -190,11 +194,11 @@ input{
 }
 
 .card-front {
-  transform: rotateY(0deg);
+   transform: rotateY(0deg) translateZ(1px);
 }
 
 .card-back {
-  transform: rotateY(180deg);
+    transform: rotateY(180deg) translateZ(1px);
 }
 
 

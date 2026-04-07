@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { playAudio } from "../utils/audioPlayer";
 
@@ -21,13 +21,14 @@ export default function JogoFrases() {
   const [sucessoEsquerdaId, setSucessoEsquerdaId] = useState(null);
   const [sucessoDireitaId, setSucessoDireitaId] = useState(null);
   const [idPhrases, setIdPhrases] = useState([]);
-
+  const location = useLocation();
+  const correctIds = location.state?.correctIds || [];
   const [bloqueado, setBloqueado] = useState(false);
 
   const [totalPerguntas, setTotalPerguntas] = useState(0);
   const [acertos, setAcertos] = useState(0);
   const [erros, setErros] = useState(0);
-const API_URL = import.meta.env.VITE_API_URL;
+  const API_URL = import.meta.env.VITE_API_URL;
   const [finalizado, setFinalizado] = useState(false);
   const { user } = useAuth();
 
@@ -58,6 +59,7 @@ const API_URL = import.meta.env.VITE_API_URL;
           action: actionToSend,
           updatedList: updatedList,
           category_id: id,
+
         }),
       });
     } catch (error) {
@@ -77,6 +79,8 @@ const API_URL = import.meta.env.VITE_API_URL;
       body: JSON.stringify({
         action: mode,
         category_id: id,
+        correctIds: (correctIds ? correctIds : '')
+
       }),
     })
       .then((res) => res.json())
@@ -105,7 +109,10 @@ const API_URL = import.meta.env.VITE_API_URL;
     const lote = todasFrases.slice(proximoIndice, proximoIndice + 4);
 
     if (lote.length === 0) {
-      await trainingUpdate(idPhrases, "trainee_finish");
+
+      if (mode !== 'learn')
+        await trainingUpdate(idPhrases, "trainee_finish");
+
       setFinalizado(true);
       return;
     }
@@ -194,6 +201,15 @@ const API_URL = import.meta.env.VITE_API_URL;
   }
 
   if (finalizado) {
+
+    if (mode === 'learn') {
+      navigate(`/flashcards/${id}/learn`, {
+        state: { correctIds }
+      });
+      return
+    }
+
+
     return (
       <div className="h-dvh flex items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br px-10">
         <div className="bg-white p-10 rounded-2xl shadow-2xl text-center max-w-md">
@@ -222,7 +238,7 @@ const API_URL = import.meta.env.VITE_API_URL;
     <div className="px-6 pt-4 h-screen grid grid-rows-[auto,1fr] overflow-hidden from-gray-900 to-gray-800 bg-gradient-to-br">
       <div className="mb-4">
         <div onClick={() => navigate(-1)} className="cursor-pointer text-white text-2xl">
-          ← 
+          ←
         </div>
       </div>
 
@@ -235,14 +251,13 @@ const API_URL = import.meta.env.VITE_API_URL;
                 disabled={bloqueado}
                 onClick={() => setSelecionadaEsquerda(frase)}
                 className={`p-4 rounded-lg border text-white border-slate-400
-                  ${
-                    sucessoEsquerdaId === frase.id
-                      ? "bg-[#469118]"
-                      : erroEsquerdaId === frase.id
+                  ${sucessoEsquerdaId === frase.id
+                    ? "bg-[#469118]"
+                    : erroEsquerdaId === frase.id
                       ? "bg-[#861616]"
                       : selecionadaEsquerda?.id === frase.id
-                      ? "bg-slate-600"
-                      : "bg-[linear-gradient(to_right,#233245,#0d1425)]"
+                        ? "bg-slate-600"
+                        : "bg-[linear-gradient(to_right,#233245,#0d1425)]"
                   }`}
               >
                 {frase.texto_nativo}
@@ -257,14 +272,13 @@ const API_URL = import.meta.env.VITE_API_URL;
                 disabled={bloqueado}
                 onClick={() => setSelecionadaDireita(frase)}
                 className={`p-4 rounded-lg border text-white border-slate-400
-                  ${
-                    sucessoDireitaId === frase.id
-                      ? "bg-[#469118]"
-                      : erroDireitaId === frase.id
+                  ${sucessoDireitaId === frase.id
+                    ? "bg-[#469118]"
+                    : erroDireitaId === frase.id
                       ? "bg-[#861616]"
                       : selecionadaDireita?.id === frase.id
-                      ? "bg-slate-600"
-                      : "bg-[linear-gradient(to_right,#233245,#0d1425)]"
+                        ? "bg-slate-600"
+                        : "bg-[linear-gradient(to_right,#233245,#0d1425)]"
                   }`}
               >
                 {frase.texto_traduzido}

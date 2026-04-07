@@ -1,55 +1,56 @@
 let currentAudio = null;
 
 export const playAudio = async (text, user, ia = false) => {
-    if (!text) return;
+    console.log('1. playAudio chamado', { text, user: user?.plano, ia });
+    
+    if (!text) {
+        console.log('2. texto vazio');
+        return;
+    }
 
     if (currentAudio) {
+        console.log('3. cancelando audio anterior');
         currentAudio.pause();
         currentAudio = null;
     }
 
     if (user.plano === 1 && user.id === 47 && !ia) {
+        console.log('4. usando elevenlabs');
         const url = await gerarAudio(text);
+        console.log('5. url gerada:', url);
         if (!url) return;
 
         const audio = new Audio(url);
         currentAudio = audio;
         audio.playbackRate = 0.9;
         
-        // 🔥 SOLUÇÃO: Aguardar o áudio carregar antes de tocar
-        audio.addEventListener('canplaythrough', () => {
-            audio.play().catch(e => console.log(e));
-        }, { once: true });
+        audio.play()
+            .then(() => console.log('6. ✅ audio tocando'))
+            .catch(err => console.log('6. ❌ erro no play:', err));
         
-        // Fallback caso demore
-        setTimeout(() => {
-            if (audio.readyState >= 2) audio.play().catch(() => {});
-        }, 100);
-
         audio.onended = () => {
             URL.revokeObjectURL(url);
             currentAudio = null;
+            console.log('7. audio finalizado');
         };
         return;
     }
 
+    console.log('8. usando endpoint padrao');
     const url = "/api/controller/treino.php?action=voice" +
         "&text=" + encodeURIComponent(text) +
         "&lang=" + encodeURIComponent(user.learning_language);
-
+    
+    console.log('9. url:', url);
+    
     const audio = new Audio();
     audio.src = url;
     audio.playbackRate = 1;
     currentAudio = audio;
 
-    // 🔥 SOLUÇÃO: Mesma coisa aqui
-    audio.addEventListener('canplaythrough', () => {
-        audio.play().catch(e => console.log(e));
-    }, { once: true });
-    
-    setTimeout(() => {
-        if (audio.readyState >= 2) audio.play().catch(() => {});
-    }, 100);
+    audio.play()
+        .then(() => console.log('10. ✅ audio tocando'))
+        .catch(err => console.log('10. ❌ erro no play:', err));
 };
 
 const gerarAudio = async (texto) => {

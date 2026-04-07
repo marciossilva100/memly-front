@@ -209,8 +209,8 @@ export default function () {
     }
 
     return (
-        <div className="p-4 justify-center w-full px-6 h-dvh flex flex-col h-dvh from-gray-900 to-gray-800 bg-gradient-to-br">
-            <div className="flex-1 overflow-y-auto scrollbar-hide">
+        <div className="p-4 justify-center w-full px-6 h-screen flex flex-col h-dvh from-gray-900 to-gray-800 bg-gradient-to-br">
+            <div className="flex-1 overflow-y-auto scrollbar-hide ">
                 <div className="relative mb-6">
                     <div
                         className="cursor-pointer"
@@ -238,7 +238,7 @@ export default function () {
                 {!response &&
                     <form onSubmit={handleSubmit} className="w-full" id="respostaForm">
                         <div className="">
-                            <div className="flex border border-gray-700 p-6 text-center shadow-md bg-[linear-gradient(to_right,#233245,#0d1425)] text-white rounded-lg min-h-80 items-center justify-center">
+                            <div className="flex border border-gray-700 p-6 text-center shadow-md bg-[linear-gradient(to_right,#233245,#0d1425)] text-white rounded-lg  items-center justify-center">
                                 <p className="text-2xl">{question}</p>
                             </div>
 

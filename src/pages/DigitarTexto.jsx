@@ -27,6 +27,7 @@ export default function DigitarTexto() {
     const [vh, setVh] = useState(window.innerHeight);
     const navigate = useNavigate();
     const textareaRef = useRef(null);
+    const [pular, setPular] = useState(false)
     const { user, setUser } = useAuth();
 
     useEffect(() => {
@@ -156,6 +157,8 @@ export default function DigitarTexto() {
 
     const nextCard = async () => {
 
+        setPular(false)
+
         window.speechSynthesis.cancel();
 
         const isLast = index === frases.length - 1;
@@ -218,9 +221,37 @@ export default function DigitarTexto() {
         }
     }
 
-    async function handleSubmit(e) {
+    function respostaShow() {
 
-        e.preventDefault();
+
+        const newFlipState = !isFlipped;
+
+        setIsFlipped(newFlipState);
+
+        if (newFlipState) {
+            setTimeout(() => {
+                setShowBackContent(true);
+                playAudio(frases[index].texto_traduzido, user);
+            }, 200);
+        } else {
+            setShowBackContent(false);
+        }
+    }
+
+
+    async function handleSubmit(e, pular = false) {
+        e?.preventDefault();
+
+        // 👉 fluxo "não lembro"
+        if (pular) {
+            setErros(prev => prev + 1);
+
+            // 👇 aqui é o segredo
+            setDiff({ isCorrect: true });
+
+            virarFlashcard();
+            return;
+        }
 
         if (!resposta) return;
 
@@ -231,25 +262,20 @@ export default function DigitarTexto() {
 
         setDiff(result);
 
-        const statusCorrectPhrase = result.isCorrect ? 1 : 0
+        const statusCorrectPhrase = result.isCorrect ? 1 : 0;
 
         if (mode === "traine")
-            await trainingUpdate('trainee_finish', frases[index].id, statusCorrectPhrase)
-
-        //console.log(result.isCorrect)
+            await trainingUpdate('trainee_finish', frases[index].id, statusCorrectPhrase);
 
         if (result.isCorrect) {
             setAcertos(prev => prev + 1);
-            setCorrectIds(prev => [...prev, frases[index].id]); // 👈 aqui
-
+            setCorrectIds(prev => [...prev, frases[index].id]);
         } else {
             setErros(prev => prev + 1);
         }
 
         virarFlashcard();
-
     }
-
     if (loading) {
         return (
             <div className="h-screen flex items-center justify-center">
@@ -479,17 +505,19 @@ export default function DigitarTexto() {
                                 Ouvir
                             </button>
                         </div>
-                        <div className="items-center justify-center mb-20 text-center mt-10">
-                            <div className="mb-4 flex justify-center">
-                                <div className="rounded-full bg-green-600 w-16 h-16 flex items-center justify-center">
-                                    <Check className="text-white" height={38} width={38} />
+                        {pular && (
+                            <div className="items-center justify-center mb-20 text-center mt-10">
+                                <div className="mb-4 flex justify-center">
+                                    <div className="rounded-full bg-green-600 w-16 h-16 flex items-center justify-center">
+                                        <Check className="text-white" height={38} width={38} />
+                                    </div>
                                 </div>
-                            </div>
 
-                            <span className="text-2xl font-semibold text-green-500">
-                                Correto
-                            </span>
-                        </div>
+                                <span className="text-2xl font-semibold text-green-500">
+                                    Correto
+                                </span>
+                            </div>
+                        )}
                     </div>
 
                 )}
@@ -506,9 +534,9 @@ export default function DigitarTexto() {
 
                             <button
                                 onClick={nextCard}
-                                className=" text-white text-lg  py-3 rounded-full shadow-lg px-9 bg-gray-700/60 backdrop-blur-sm  border border-gray-700"
+                                className="w-full  text-white text-lg  py-3 rounded-full shadow-lg  bg-gray-700/60 backdrop-blur-sm  border border-gray-700"
                             >
-                                Pular
+                                Não lembro
                             </button>
                             <button
                                 onClick={repeatCard}
@@ -553,10 +581,13 @@ export default function DigitarTexto() {
 
 
                     <button
-                        onClick={nextCard}
-                        className=" text-white text-lg  py-3 rounded-full shadow-lg px-9 bg-gray-700/60 backdrop-blur-sm  border border-gray-700"
+                        onClick={(e) => {
+                            handleSubmit(e, true);
+                        }}
+
+                        className="w-full  text-white text-lg  py-3 rounded-full shadow-lg  bg-gray-700/60 backdrop-blur-sm  border border-gray-700"
                     >
-                        Pular
+                        Não lembro
                     </button>
                     <button
                         type="submit"

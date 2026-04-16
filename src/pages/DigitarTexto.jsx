@@ -157,7 +157,6 @@ export default function DigitarTexto() {
 
     const nextCard = async () => {
 
-        setPular(false)
 
         window.speechSynthesis.cancel();
 
@@ -242,13 +241,15 @@ export default function DigitarTexto() {
     async function handleSubmit(e, pular = false) {
         e?.preventDefault();
 
+        setPular(pular)
+
         // 👉 fluxo "não lembro"
         if (pular) {
             setErros(prev => prev + 1);
 
             // 👇 aqui é o segredo
             setDiff({ isCorrect: true });
-
+            
             virarFlashcard();
             return;
         }
@@ -505,7 +506,7 @@ export default function DigitarTexto() {
                                 Ouvir
                             </button>
                         </div>
-                        {pular && (
+                        {!pular && (
                             <div className="items-center justify-center mb-20 text-center mt-10">
                                 <div className="mb-4 flex justify-center">
                                     <div className="rounded-full bg-green-600 w-16 h-16 flex items-center justify-center">
@@ -533,10 +534,12 @@ export default function DigitarTexto() {
                         <div className=" flex sticky bottom-6 w-full flex justify-center gap-3 ">
 
                             <button
-                                onClick={nextCard}
+                                 onClick={(e) => {
+                            handleSubmit(e, true);
+                        }}
                                 className="w-full  text-white text-lg  py-3 rounded-full shadow-lg  bg-gray-700/60 backdrop-blur-sm  border border-gray-700"
                             >
-                                Não lembro
+                               Não lembro
                             </button>
                             <button
                                 onClick={repeatCard}

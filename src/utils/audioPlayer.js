@@ -1,16 +1,16 @@
 let currentAudio = null;
 
-export const playAudio = async (text, user,ia = false) => {
+export const playAudio = async (text, user, ia = false) => {
     const API_URL = import.meta.env.VITE_API_URL;
     if (!text) return;
 
     // cancela áudio anterior
-    if (currentAudio) {
+    if (currentAudio && currentAudio.pause) {
         currentAudio.pause();
         currentAudio = null;
     }
 
-    // if (user.plano === 1 && user.id === 47 && !ia) {
+    // fluxo ElevenLabs (mantido)
     if (user.plano === 1 && user.id === 47 && !ia) {
         const url = await gerarAudio(text);
         if (!url) return;
@@ -19,7 +19,7 @@ export const playAudio = async (text, user,ia = false) => {
         currentAudio = audio;
 
         audio.playbackRate = 0.9;
-        audio.play().catch(() => { });
+        audio.play().catch(() => {});
 
         audio.onended = () => {
             URL.revokeObjectURL(url);
@@ -29,22 +29,69 @@ export const playAudio = async (text, user,ia = false) => {
         return;
     }
 
-    const url =
-    `${API_URL}/controller/treino.php?action=voice` +
-    "&text=" + encodeURIComponent(text) +
-    "&lang=" + encodeURIComponent(user.learning_language);
+    try {
+        const cleanText = text.trim().replace(/^"|"$/g, '');
 
-    const audio = new Audio();
-    audio.src = url;
-    audio.playbackRate = 1.2;
+        const url =
+            `${API_URL}/controller/treino.php?action=voice` +
+            "&text=" + encodeURIComponent(cleanText) +
+            "&lang=" + encodeURIComponent(user.learning_language);
 
-    currentAudio = audio;
+        const res = await fetch(url);
 
-    audio.play().catch(() => { });
+        if (!res.ok) {
+            throw new Error("Erro HTTP: " + res.status);
+        }
+
+        const audios = await res.json();
+
+        console.log("AUDIOS:", audios);
+
+        if (!Array.isArray(audios) || audios.length === 0) {
+            console.error("Áudios inválidos:", audios);
+            return;
+        }
+
+        // controle de execução
+        currentAudio = { playing: true };
+
+        for (const base64 of audios) {
+
+            // se cancelado
+            if (!currentAudio || currentAudio.playing !== true) break;
+
+            const byteArray = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+            const blob = new Blob([byteArray], { type: "audio/mpeg" });
+            const urlAudio = URL.createObjectURL(blob);
+
+            const audio = new Audio(urlAudio);
+            currentAudio = audio;
+
+            audio.playbackRate = 1.2;
+
+            await audio.play().catch(err => {
+                console.error("ERRO PLAY:", err);
+            });
+
+            await new Promise(resolve => {
+                audio.onended = resolve;
+                audio.onerror = resolve;
+            });
+
+            URL.revokeObjectURL(urlAudio);
+        }
+
+        currentAudio = null;
+
+    } catch (err) {
+        console.error("Erro ao tocar áudio:", err);
+        currentAudio = null;
+    }
 };
 
 const gerarAudio = async (texto) => {
     const API_URL = import.meta.env.VITE_API_URL;
+
     try {
         const res = await fetch(`${API_URL}/controller/elevenlabs.php`, {
             method: "POST",

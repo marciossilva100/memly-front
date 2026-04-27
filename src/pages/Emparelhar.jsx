@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { playAudio } from "../utils/audioPlayer";
 
 export default function JogoFrases() {
+  
   const { id, mode } = useParams();
 
   const [todasFrases, setTodasFrases] = useState([]);

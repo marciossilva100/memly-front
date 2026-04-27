@@ -247,9 +247,10 @@ export default function DigitarTexto() {
         if (pular) {
             setErros(prev => prev + 1);
 
-            // 👇 aqui é o segredo
+            // ✅ Adiciona o ID mesmo quando pula
+            setCorrectIds(prev => [...prev, frases[index].id]);
+
             setDiff({ isCorrect: true });
-            
             virarFlashcard();
             return;
         }
@@ -268,15 +269,18 @@ export default function DigitarTexto() {
         if (mode === "traine")
             await trainingUpdate('trainee_finish', frases[index].id, statusCorrectPhrase);
 
+        // ✅ Adiciona o ID sempre, independente do resultado
+        setCorrectIds(prev => [...prev, frases[index].id]);
+
         if (result.isCorrect) {
             setAcertos(prev => prev + 1);
-            setCorrectIds(prev => [...prev, frases[index].id]);
         } else {
             setErros(prev => prev + 1);
         }
 
         virarFlashcard();
     }
+
     if (loading) {
         return (
             <div className="h-screen flex items-center justify-center">
@@ -534,12 +538,12 @@ export default function DigitarTexto() {
                         <div className=" flex sticky bottom-6 w-full flex justify-center gap-3 ">
 
                             <button
-                                 onClick={(e) => {
-                            handleSubmit(e, true);
-                        }}
+                                onClick={(e) => {
+                                    handleSubmit(e, true);
+                                }}
                                 className="w-full  text-white text-lg  py-3 rounded-full shadow-lg  bg-gray-700/60 backdrop-blur-sm  border border-gray-700"
                             >
-                               Não lembro
+                                Não lembro
                             </button>
                             <button
                                 onClick={repeatCard}

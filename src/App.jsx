@@ -26,6 +26,7 @@ import BookDetails from "./pages/BookDetails";
 import VerificarEmail from './pages/VerificarEmail'
 import EmailVerificado from './pages/EmailVerificado'
 import EnglishVideos from './pages/EnglishVideos'
+import MusicFlashcardFinder from './pages/MusicFlashcardFInder';
 
 import imgMemly from "./assets/img/mascote-memly.png"
 import imgChapeuFormatura from "./assets/img/chapeu_formatura.png"
@@ -232,7 +233,7 @@ function Layout({ titulo, setTitulo }) {
           }
         />
 
-        
+
         <Route
           path="/metricas"
           element={
@@ -242,10 +243,19 @@ function Layout({ titulo, setTitulo }) {
           }
         />
 
-        <Route path="/verificaremail" element={<VerificarEmail />} />
-        <Route path="/premiumplan" element={<PremiumPlan />} />
-        <Route path="/emailverificado" element={<EmailVerificado />} />
-        <Route path="/videos" element={<EnglishVideos query="english listening practice" />} />
+        <Route
+          path="/musicflashcardfInder"
+          element={
+            <PrivateRoute>
+              <MusicFlashcardFinder />
+            </PrivateRoute>
+          }
+        />
+
+          <Route path="/verificaremail" element={<VerificarEmail />} />
+          <Route path="/premiumplan" element={<PremiumPlan />} />
+          <Route path="/emailverificado" element={<EmailVerificado />} />
+          <Route path="/videos" element={<EnglishVideos query="english listening practice" />} />
       </Routes>
     </>
   )

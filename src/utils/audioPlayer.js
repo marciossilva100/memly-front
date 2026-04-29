@@ -67,7 +67,7 @@ export const playAudio = async (text, user, ia = false) => {
             const audio = new Audio(urlAudio);
             currentAudio = audio;
 
-            audio.playbackRate = 1.2;
+            audio.playbackRate = 1.0;
 
             await audio.play().catch(err => {
                 console.error("ERRO PLAY:", err);

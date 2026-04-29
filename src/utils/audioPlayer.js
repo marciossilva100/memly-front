@@ -11,7 +11,8 @@ export const playAudio = async (text, user, ia = false) => {
     }
 
     // fluxo ElevenLabs (mantido)
-    if (user.plano === 1 && user.id === 47 && !ia) {
+    // if (user.plano === 1 && user.id === 47 && !ia) {
+    if (user.plano === 1 && user.id === 47) {
         const url = await gerarAudio(text);
         if (!url) return;
 

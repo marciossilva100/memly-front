@@ -27,19 +27,27 @@ import VerificarEmail from './pages/VerificarEmail'
 import EmailVerificado from './pages/EmailVerificado'
 import EnglishVideos from './pages/EnglishVideos'
 import MusicFlashcardFinder from './pages/MusicFlashcardFInder';
-import ConnectionStatus from './components/ConnectionStatus'; // Novo componente
 
 import imgMemly from "./assets/img/mascote-memly.png"
 import imgChapeuFormatura from "./assets/img/chapeu_formatura.png"
 import PremiumPlan from './components/PremiumModal';
 import Metricas from './pages/Metricas';
 
-// Contexto de conexão
-import { ConnectionProvider, useConnection } from './context/ConnectionContext';
+
+/* function setRealViewportHeight() {
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+setRealViewportHeight();
+
+window.addEventListener('resize', setRealViewportHeight); */
+
+
+
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
-  const { isOnline } = useConnection();
 
   if (loading) {
     return (
@@ -57,34 +65,42 @@ function PrivateRoute({ children }) {
     return <Navigate to="/login" replace />;
   }
 
-  // Verifica conexão para rotas que precisam de internet
-  const offlineRoutes = ['/home', '/flashcards', '/emparelhar']; // Rotas que funcionam offline
-  if (!isOnline && !offlineRoutes.some(route => window.location.pathname.startsWith(route))) {
-    return <ConnectionStatus />;
-  }
-
   return children;
 }
 
+
 function Layout({ titulo, setTitulo }) {
+
   const location = useLocation()
   const { user, loading } = useAuth()
-  const { isOnline } = useConnection()
 
   const rotasSemHeader = new Set([
+    //'/login',
+    //'/escolheridioma',
+    //'/emparelhar',
     '/home'
   ])
 
   const esconderHeader = rotasSemHeader.has(location.pathname)
 
+  // if (loading) {
+  //   return (
+  //     <div className="flex h-screen items-center justify-center bg-white-100">
+  //       <img
+  //         src={imgChapeuFormatura}
+  //         alt="Carregando"
+  //         className="w-28 animate-pulse"
+  //       />
+  //     </div>
+  //   )
+  // }
+
   return (
     <>
-      {/* Indicador de status de conexão */}
-      <ConnectionStatus />
-      
       {esconderHeader && <Header titulo={titulo} />}
 
       <Routes>
+
         <Route path="/" element={<Login setTitulo={setTitulo} />} />
         <Route path="/login" element={<Login setTitulo={setTitulo} />} />
 
@@ -217,6 +233,7 @@ function Layout({ titulo, setTitulo }) {
           }
         />
 
+
         <Route
           path="/metricas"
           element={
@@ -235,46 +252,43 @@ function Layout({ titulo, setTitulo }) {
           }
         />
 
-        <Route path="/verificaremail" element={<VerificarEmail />} />
-        <Route path="/premiumplan" element={<PremiumPlan />} />
-        <Route path="/emailverificado" element={<EmailVerificado />} />
-        <Route path="/videos" element={<EnglishVideos query="english listening practice" />} />
+          <Route path="/verificaremail" element={<VerificarEmail />} />
+          <Route path="/premiumplan" element={<PremiumPlan />} />
+          <Route path="/emailverificado" element={<EmailVerificado />} />
+          <Route path="/videos" element={<EnglishVideos query="english listening practice" />} />
       </Routes>
     </>
   )
 }
 
+
+
 function App() {
+
   const containerRef = useRef(null);
   const [hasOverflow, setHasOverflow] = useState(false);
+
   const [titulo, setTitulo] = useState('')
 
   registerSW({
     onNeedRefresh() {
       console.log("Nova versão disponível");
-      // Adiciona confirmação antes de recarregar
-      if (window.confirm("Nova versão disponível! Deseja atualizar?")) {
-        window.location.reload();
-      }
+      window.location.reload();
     },
     onOfflineReady() {
       console.log("App pronto para offline");
-      // Notifica o usuário que o app está disponível offline
-      alert("App pronto para uso offline!");
     }
   });
 
   return (
     <GoogleOAuthProvider clientId="1055075063152-tkobce7c2j9eq1t4doi0419votjlemis.apps.googleusercontent.com">
-      <ConnectionProvider>
-        <AuthProvider>
-          <BrowserRouter>
-            <AuthGate>
-              <Layout titulo={titulo} setTitulo={setTitulo} />
-            </AuthGate>
-          </BrowserRouter>
-        </AuthProvider>
-      </ConnectionProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <AuthGate>
+            <Layout titulo={titulo} setTitulo={setTitulo} />
+          </AuthGate>
+        </BrowserRouter>
+      </AuthProvider>
     </GoogleOAuthProvider>
   )
 }

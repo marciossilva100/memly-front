@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { playAudio } from "../utils/audioPlayer";
 import { useAuth } from "../context/AuthContext";
 
-export default function () {
+export default function Perguntas() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null)
     const [question, setQuestion] = useState('')
@@ -187,14 +187,14 @@ export default function () {
     // 🚫 LIMITE ATINGIDO
     if (limitReached) {
         return (
-            <div className="min-h-[calc(100vh-70px)] flex flex-col items-center justify-center text-center p-6">
-                <h1 className="text-2xl font-semibold text-red-500 mb-4">
+            <div className="h-screen flex flex-col items-center justify-center text-center p-6 from-gray-900 to-gray-800 bg-gradient-to-br">
+                <h1 className="text-2xl font-semibold text-red-400 mb-4">
                     Limite diário atingido 🚫
                 </h1>
-                <p className="text-slate-600">
+                <p className="text-white">
                     Você já fez {totalToday} perguntas hoje.
                 </p>
-                <p className="text-slate-500 mt-2">
+                <p className="text-white mt-2">
                     Volte amanhã para continuar praticando 💪
                 </p>
 
@@ -284,7 +284,7 @@ export default function () {
                     <button
                         onClick={handleSkip}
                         className="px-8 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm  border border-gray-700 text-white">
-                        Pular
+                        Próxima
                     </button>
                 </div>
             }

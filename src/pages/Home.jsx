@@ -98,6 +98,14 @@ export default function Home() {
 
 
     const carregarCategorias = () => {
+        const nativeLanguage = user?.native_language ?? user?.nativeLanguage ?? user?.idioma_nativo ?? user?.idiomaNativo ?? null;
+        const learningLanguage = user?.learning_language ?? user?.learningLanguage ?? user?.idioma_aprendendo ?? user?.idiomaAprendendo ?? null;
+
+        if (!nativeLanguage || !learningLanguage) {
+            setCategorias([]);
+            return;
+        }
+
         setRecarregar(false)
         fetch(`${API_URL}/controller/categorias.php`, {
             method: 'POST',
@@ -111,15 +119,35 @@ export default function Home() {
         })
             .then(res => res.json())
             .then(data => {
+                const respostaCategorias = Array.isArray(data)
+                    ? data
+                    : Array.isArray(data?.categorias)
+                        ? data.categorias
+                        : [];
 
-                const categoriasFormatadas = data.map(cat => ({
-                    id: cat.id,
-                    categoria: cat.categoria,
-                    quantidade: cat.total_frases
+                const normalizarValor = (valor) => typeof valor === 'string' ? valor.trim().toLowerCase() : valor;
+
+                const categoriasFiltradas = respostaCategorias.filter((cat) => {
+                    const idiomaNativoCategoria = cat.idioma_nativo ?? cat.idiomaNativo ?? cat.idioma_nativo_data ?? null;
+                    const idiomaAprendendoCategoria = cat.idioma_aprendendo ?? cat.idiomaAprendendo ?? cat.idioma_aprendendo_data ?? null;
+
+                    return normalizarValor(idiomaNativoCategoria) === normalizarValor(nativeLanguage)
+                        && normalizarValor(idiomaAprendendoCategoria) === normalizarValor(learningLanguage);
+                });
+
+                const categoriasFormatadas = categoriasFiltradas.map((cat) => ({
+                    id: cat.id ?? cat.categoria_id ?? cat.categoriaId,
+                    categoria: cat.categoria ?? cat.nome,
+                    quantidade: cat.total_frases ?? cat.quantidade ?? 0,
+                    idiomaNativo: cat.idioma_nativo ?? cat.idiomaNativo ?? cat.idioma_nativo_data ?? null,
+                    idiomaAprendendo: cat.idioma_aprendendo ?? cat.idiomaAprendendo ?? cat.idioma_aprendendo_data ?? null,
+                    categoriaDados: cat.categoria_dados ?? cat.categoriaDados ?? null,
                 }));
 
                 setCategorias(categoriasFormatadas);
-
+            })
+            .catch((error) => {
+                console.error('Erro ao carregar categorias:', error);
             });
     };
 
@@ -166,8 +194,12 @@ export default function Home() {
 
     useEffect(() => {
         console.log('home ', user)
-        carregarCategorias();
-    }, []);
+        if (user) {
+            carregarCategorias();
+        } else {
+            setCategorias([]);
+        }
+    }, [user?.native_language, user?.learning_language, user?.id]);
 
     function validar(length, id) {
 
@@ -316,18 +348,18 @@ export default function Home() {
                                 {/* <img src={imgEstatistica} alt="" width={40} /> */}
                             </div>
                         </a>
-                        <a href="/videos">
+                        {/*<a href="/videos">
                             <div className=' p-3 flex justify-center items-center'>
                                 <Play className='text-red-500 ' width={38} height={38} />
-                                {/* <img src={imgPlay} alt="" width={40} /> */}
+                                
                             </div>
-                        </a>
-                        <button onClick={(e) => { verifyPlan() }}>
+                        </a>*/}
+                        {/*<button onClick={(e) => { verifyPlan() }}>
                             <div className=' p-3 flex justify-center items-center'>
                                 <Bot width={38} height={38} className="text-yellow-500" />
-                                {/* <img src={imgPlay} alt="" width={40} /> */}
+                               
                             </div>
-                        </button>
+                        </button>*/}
                     </div>
                 </div>
 

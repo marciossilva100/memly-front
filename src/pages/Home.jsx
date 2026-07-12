@@ -42,6 +42,7 @@ export default function Home() {
     const [deleteId, setDeleteId] = useState(0)
     const API_URL = import.meta.env.VITE_API_URL;
 
+    const [translations, setTranslations] = useState({});
     const navigate = useNavigate();
 
     const menuRef = useRef(null);
@@ -178,7 +179,7 @@ export default function Home() {
                 return;
             }
             setOpenModalSucesso(true)
-            setMsgModalSucesso('Excluído com sucesso')
+            setMsgModalSucesso(translations.deletedSuccess ?? 'Excluído com sucesso')
             setTimeout(() => {
                 setOpenModalSucesso(false);
             }, 2500); // 3 segundos
@@ -217,6 +218,56 @@ export default function Home() {
 
     }
 
+    async function translateString(phrase) {
+        try {
+            const res = await fetch(`${API_URL}/controller/libreTranslate.php`, {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({
+                    phrase: phrase,
+                    sourceLang: 'pt',
+                    targetLang: user?.native_language
+                })
+            });
+
+            const data = await res.json();
+
+            if (!data.success) return phrase;
+
+            return data.message;
+        } catch (err) {
+            return phrase;
+        }
+    }
+
+    async function translateUIStrings() {
+        if (!user) return;
+        const map = {
+            words: 'palavras',
+            train: 'Treino',
+            edit: 'Editar',
+            delete: 'Excluir',
+            addCategory: 'Adicionar categoria',
+            confirmDelete: 'Deseja excluir esta categoria?',
+            deletedSuccess: 'Excluído com sucesso'
+        };
+
+        const entries = Object.entries(map);
+        const results = await Promise.all(entries.map(async ([key, val]) => {
+            const translated = await translateString(val);
+            return [key, translated];
+        }));
+
+        const obj = Object.fromEntries(results);
+        setTranslations(obj);
+    }
+
+    useEffect(()=>{
+        if (user) translateUIStrings();
+    }, [user?.native_language, user?.learning_language, user?.id]);
+
 
     return (
         <div className="h-dvh flex flex-col max-w-7xl mx-auto  from-gray-900 to-gray-800 bg-gradient-to-br">
@@ -233,8 +284,8 @@ export default function Home() {
                                     {item.categoria}
                                 </p>
                                 <div className="flex items-center gap-3">
-                                    <span className="text-xs py-0.5  rounded-full  text-gray-400 ">
-                                        {item.quantidade} palavras
+                                        <span className="text-xs py-0.5  rounded-full  text-gray-400 ">
+                                        {item.quantidade} {translations.words ?? 'palavras'}
                                     </span>
                                 </div>
                             </div>
@@ -248,7 +299,7 @@ export default function Home() {
                                         setOpenTreino(true);
                                     }}
                                 >
-                                    Treino
+                                    {translations.train ?? 'Treino'}
                                 </button>
 
                                 {/* Botão dos 3 pontinhos */}
@@ -278,7 +329,7 @@ export default function Home() {
                                                 setMenuOpenId(false);
                                             }}
                                         >
-                                            Editar
+                                            {translations.edit ?? 'Editar'}
                                         </button>
 
                                         <button
@@ -286,13 +337,13 @@ export default function Home() {
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 setDeleteId(item.id);
-                                                setMsgModalConfirm('Deseja excluir esta categoria?');
+                                                setMsgModalConfirm(translations.confirmDelete ?? 'Deseja excluir esta categoria?');
                                                 setOpenModalConfirm(true);
                                                 setMenuOpenId(false);
 
                                             }}
                                         >
-                                            Excluir
+                                            {translations.delete ?? 'Excluir'}
                                         </button>
                                     </div>
                                 )}
@@ -319,7 +370,7 @@ export default function Home() {
                        text-lg
                         transition
                         " onClick={() => setOpen(true)}>
-                    Adicionar categoria
+                    {translations.addCategory ?? 'Adicionar categoria'}
                 </button>
 
                 <div className=" w-full ">

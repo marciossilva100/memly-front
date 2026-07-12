@@ -1,20 +1,30 @@
 let currentAudio = null;
+let currentToken = 0;
 
-export const playAudio = async (text, user, ia = false) => {
+export const playAudio = async (text, user, ia = false, lang = null) => {
     const API_URL = import.meta.env.VITE_API_URL;
     if (!text) return;
 
-    // cancela áudio anterior
+    const voiceLang = lang || user?.learning_language;
+
+    // cancela áudio anterior e invalida qualquer chamada anterior ainda em andamento
+    const myToken = ++currentToken;
     if (currentAudio && currentAudio.pause) {
         currentAudio.pause();
-        currentAudio = null;
     }
+    currentAudio = null;
 
     // fluxo ElevenLabs (mantido)
     // if (user.plano === 1 && user.id === 47 && !ia) {
     if (user.plano === 1 && user.id === 47) {
         const url = await gerarAudio(text);
         if (!url) return;
+
+        // uma chamada mais recente já assumiu o controle enquanto aguardávamos o áudio
+        if (myToken !== currentToken) {
+            URL.revokeObjectURL(url);
+            return;
+        }
 
         const audio = new Audio(url);
         currentAudio = audio;
@@ -36,7 +46,7 @@ export const playAudio = async (text, user, ia = false) => {
         const url =
             `${API_URL}/controller/treino.php?action=voice` +
             "&text=" + encodeURIComponent(cleanText) +
-            "&lang=" + encodeURIComponent(user.learning_language);
+            "&lang=" + encodeURIComponent(voiceLang);
 
         const res = await fetch(url);
 
@@ -53,13 +63,16 @@ export const playAudio = async (text, user, ia = false) => {
             return;
         }
 
+        // uma chamada mais recente já assumiu o controle enquanto buscávamos o áudio
+        if (myToken !== currentToken) return;
+
         // controle de execução
         currentAudio = { playing: true };
 
         for (const base64 of audios) {
 
-            // se cancelado
-            if (!currentAudio || currentAudio.playing !== true) break;
+            // se cancelado por uma chamada mais recente
+            if (myToken !== currentToken || !currentAudio || currentAudio.playing !== true) break;
 
             const byteArray = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
             const blob = new Blob([byteArray], { type: "audio/mpeg" });
@@ -82,11 +95,15 @@ export const playAudio = async (text, user, ia = false) => {
             URL.revokeObjectURL(urlAudio);
         }
 
-        currentAudio = null;
+        if (myToken === currentToken) {
+            currentAudio = null;
+        }
 
     } catch (err) {
         console.error("Erro ao tocar áudio:", err);
-        currentAudio = null;
+        if (myToken === currentToken) {
+            currentAudio = null;
+        }
     }
 };
 

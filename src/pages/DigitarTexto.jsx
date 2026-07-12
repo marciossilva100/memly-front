@@ -28,7 +28,9 @@ export default function DigitarTexto() {
     const navigate = useNavigate();
     const textareaRef = useRef(null);
     const [pular, setPular] = useState(false)
+    const [nativeAudioPlayed, setNativeAudioPlayed] = useState(false);
     const { user, setUser } = useAuth();
+    const flipTimeoutRef = useRef(null);
 
     useEffect(() => {
 
@@ -94,6 +96,7 @@ export default function DigitarTexto() {
             .then(data => {
 
                 setFrases(data || []);
+                setNativeAudioPlayed(false);
 
                 const ids = data.map(item => item.id);
                 setIdPhrases(ids);
@@ -108,16 +111,32 @@ export default function DigitarTexto() {
 
     }, [id, mode]);
 
+    // toca o áudio do texto nativo automaticamente quando a frente do card é exibida
+    useEffect(() => {
+
+        if (!frases.length || isFlipped || nativeAudioPlayed) return;
+
+        playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language);
+        setNativeAudioPlayed(true);
+
+    }, [index, frases, isFlipped, nativeAudioPlayed, user]);
+
 
     function virarFlashcard() {
 
         setIsFlipped(true);
         setShowBackContent(false);
 
-        setTimeout(() => {
+        if (flipTimeoutRef.current) {
+            clearTimeout(flipTimeoutRef.current);
+        }
+
+        const currentIndex = index;
+        flipTimeoutRef.current = setTimeout(() => {
 
             setShowBackContent(true);
-            playAudio(frases[index].texto_traduzido, user);
+            playAudio(frases[currentIndex].texto_traduzido, user);
+            flipTimeoutRef.current = null;
 
         }, 200);
 
@@ -160,6 +179,11 @@ export default function DigitarTexto() {
 
         window.speechSynthesis.cancel();
 
+        if (flipTimeoutRef.current) {
+            clearTimeout(flipTimeoutRef.current);
+            flipTimeoutRef.current = null;
+        }
+
         const isLast = index === frases.length - 1;
 
         // 👉 só conta se ainda não respondeu
@@ -169,6 +193,7 @@ export default function DigitarTexto() {
         setIsFlipped(false);
         setShowBackContent(false);
         setResposta("");
+        setNativeAudioPlayed(false);
 
         if (isLast) {
             if (mode === "traine") {
@@ -194,10 +219,16 @@ export default function DigitarTexto() {
 
         window.speechSynthesis.cancel();
 
+        if (flipTimeoutRef.current) {
+            clearTimeout(flipTimeoutRef.current);
+            flipTimeoutRef.current = null;
+        }
+
         setDiff(null);
         setIsFlipped(false);
         setShowBackContent(false);
         setResposta("");
+        setNativeAudioPlayed(false);
 
     };
 
@@ -210,10 +241,17 @@ export default function DigitarTexto() {
 
         setIsFlipped(newFlipState);
 
+        if (flipTimeoutRef.current) {
+            clearTimeout(flipTimeoutRef.current);
+            flipTimeoutRef.current = null;
+        }
+
         if (newFlipState) {
-            setTimeout(() => {
+            const currentIndex = index;
+            flipTimeoutRef.current = setTimeout(() => {
                 setShowBackContent(true);
-                playAudio(frases[index].texto_traduzido, user);
+                playAudio(frases[currentIndex].texto_traduzido, user);
+                flipTimeoutRef.current = null;
             }, 200);
         } else {
             setShowBackContent(false);
@@ -227,10 +265,17 @@ export default function DigitarTexto() {
 
         setIsFlipped(newFlipState);
 
+        if (flipTimeoutRef.current) {
+            clearTimeout(flipTimeoutRef.current);
+            flipTimeoutRef.current = null;
+        }
+
         if (newFlipState) {
-            setTimeout(() => {
+            const currentIndex = index;
+            flipTimeoutRef.current = setTimeout(() => {
                 setShowBackContent(true);
-                playAudio(frases[index].texto_traduzido, user);
+                playAudio(frases[currentIndex].texto_traduzido, user);
+                flipTimeoutRef.current = null;
             }, 200);
         } else {
             setShowBackContent(false);
@@ -430,6 +475,17 @@ export default function DigitarTexto() {
                     </div>
                 </div>
 
+                {!isFlipped && (
+                    <div className="text-center flex justify-center mt-5">
+                        <button onClick={(e) => {
+                            e.preventDefault();
+                            playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language);
+                        }} className="px-4 py-2 rounded-md bg-slate-500 text-white text-sm transition flex">
+                            <Volume className="w-5 h-5" />
+                            Ouvir
+                        </button>
+                    </div>
+                )}
 
                 {diff && !diff.isCorrect && (
 

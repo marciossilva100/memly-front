@@ -25,6 +25,7 @@ export default function DigitarTexto() {
     const [correctIds, setCorrectIds] = useState([]);
     const [idPhrases, setIdPhrases] = useState([])
     const [vh, setVh] = useState(window.innerHeight);
+    const [viewportTop, setViewportTop] = useState(0);
     const navigate = useNavigate();
     const textareaRef = useRef(null);
     const contentRef = useRef(null);
@@ -63,20 +64,25 @@ export default function DigitarTexto() {
     }
 
     useEffect(() => {
+        const vv = window.visualViewport;
+
         const handleResize = () => {
-            setVh(window.visualViewport?.height || window.innerHeight);
-           // setVh('100vh');
-            window.scrollTo(0, 0);
+            setVh(vv?.height || window.innerHeight);
+            setViewportTop(vv?.offsetTop || 0);
 
             if (document.activeElement === textareaRef.current) {
                 textareaRef.current.scrollIntoView({ block: "end", behavior: "smooth" });
             }
         };
 
-        window.visualViewport?.addEventListener("resize", handleResize);
+        handleResize();
 
-        // impede que o navegador role a página para "revelar" o teclado,
-        // o que deixava uma área em branco abaixo do conteúdo já redimensionado
+        vv?.addEventListener("resize", handleResize);
+        vv?.addEventListener("scroll", handleResize);
+
+        // trava a página no lugar: o div raiz é fixed e segue vv.offsetTop/height
+        // por conta própria, então nada pode sobrar em branco quando o teclado
+        // abre/fecha, mesmo que o navegador tente rolar o body
         const originalOverflow = document.body.style.overflow;
         const originalPosition = document.body.style.position;
         const originalTop = document.body.style.top;
@@ -87,7 +93,8 @@ export default function DigitarTexto() {
         document.body.style.width = "100%";
 
         return () => {
-            window.visualViewport?.removeEventListener("resize", handleResize);
+            vv?.removeEventListener("resize", handleResize);
+            vv?.removeEventListener("scroll", handleResize);
             document.body.style.overflow = originalOverflow;
             document.body.style.position = originalPosition;
             document.body.style.top = originalTop;
@@ -437,7 +444,7 @@ export default function DigitarTexto() {
 
     return (
 
-        <div style={{ height: vh }} className=" flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br digitar-texto px-6 pb-5 overscroll-none">
+        <div style={{ height: vh, top: viewportTop }} className="fixed inset-x-0 flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br digitar-texto px-6 pb-5 overscroll-none">
 
             <div ref={contentRef} className="flex-1 overflow-y-auto overscroll-contain scrollbar-hide pt-3">
 

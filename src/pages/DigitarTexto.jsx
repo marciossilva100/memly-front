@@ -49,7 +49,7 @@ export default function DigitarTexto() {
     useEffect(() => {
         const handleResize = () => {
             // setVh(window.visualViewport?.height || window.innerHeight);
-            setVh(100);
+            setVh('100vh');
         };
 
         window.visualViewport?.addEventListener("resize", handleResize);

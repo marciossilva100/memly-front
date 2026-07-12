@@ -48,7 +48,8 @@ export default function DigitarTexto() {
 
     useEffect(() => {
         const handleResize = () => {
-            setVh(window.visualViewport?.height || window.innerHeight);
+            // setVh(window.visualViewport?.height || window.innerHeight);
+            setVh(100);
         };
 
         window.visualViewport?.addEventListener("resize", handleResize);

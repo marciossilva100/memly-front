@@ -47,6 +47,20 @@ export default function DigitarTexto() {
     }, [isFlipped]);
 
     useEffect(() => {
+
+        const el = textareaRef.current;
+        if (!el) return;
+
+        el.style.height = "auto";
+        el.style.height = `${el.scrollHeight}px`;
+
+    }, [resposta]);
+
+    function handleRespostaChange(e) {
+        setResposta(e.target.value);
+    }
+
+    useEffect(() => {
         const handleResize = () => {
             setVh(window.visualViewport?.height || window.innerHeight);
            // setVh('100vh');
@@ -550,9 +564,9 @@ export default function DigitarTexto() {
                 {!isFlipped && !diff && (
                     <div className="w-full mt-8">
 
-                        <form onSubmit={handleSubmit} id="respostaForm" className="h-40">
+                        <form onSubmit={handleSubmit} id="respostaForm">
 
-                            <div className="h-[100%] justify-center mb-8">
+                            <div className="justify-center mb-8">
 
 
 
@@ -560,8 +574,9 @@ export default function DigitarTexto() {
                                     placeholder="Digite sua resposta aqui..."
                                     ref={textareaRef}
                                     value={resposta}
-                                    onChange={(e) => setResposta(e.target.value)}
-                                    className="text-xl text-white toutline-none w-full h-[100%] pt-6 text-center rounded-lg  resize-none bg-gray-800/50 backdrop-blur-sm  border border-gray-700 px-3"
+                                    onChange={handleRespostaChange}
+                                    rows={1}
+                                    className="text-xl text-white toutline-none w-full min-h-[56px] max-h-[35vh] py-3 text-center rounded-lg  resize-none overflow-y-auto bg-gray-800/50 backdrop-blur-sm  border border-gray-700 px-3"
                                 />
 
 

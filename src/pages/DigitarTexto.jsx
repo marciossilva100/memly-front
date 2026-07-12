@@ -48,14 +48,30 @@ export default function DigitarTexto() {
 
     useEffect(() => {
         const handleResize = () => {
-            // setVh(window.visualViewport?.height || window.innerHeight);
-            setVh('100vh');
+            setVh(window.visualViewport?.height || window.innerHeight);
+           // setVh('100vh');
+            window.scrollTo(0, 0);
         };
 
         window.visualViewport?.addEventListener("resize", handleResize);
 
+        // impede que o navegador role a página para "revelar" o teclado,
+        // o que deixava uma área em branco abaixo do conteúdo já redimensionado
+        const originalOverflow = document.body.style.overflow;
+        const originalPosition = document.body.style.position;
+        const originalTop = document.body.style.top;
+        const originalWidth = document.body.style.width;
+        document.body.style.overflow = "hidden";
+        document.body.style.position = "fixed";
+        document.body.style.top = "0";
+        document.body.style.width = "100%";
+
         return () => {
             window.visualViewport?.removeEventListener("resize", handleResize);
+            document.body.style.overflow = originalOverflow;
+            document.body.style.position = originalPosition;
+            document.body.style.top = originalTop;
+            document.body.style.width = originalWidth;
         };
     }, []);
     // preload voices

@@ -94,8 +94,13 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  overscroll-behavior: none;
 /*   background: #1F2937;
 background: linear-gradient(90deg,rgba(31, 41, 55, 1) 0%, rgba(55, 65, 81, 1) 100%); */
+}
+
+html {
+  overscroll-behavior: none;
 }
 .center-vertical {
   min-height: 100vh;

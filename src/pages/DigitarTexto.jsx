@@ -27,6 +27,7 @@ export default function DigitarTexto() {
     const [vh, setVh] = useState(window.innerHeight);
     const navigate = useNavigate();
     const textareaRef = useRef(null);
+    const contentRef = useRef(null);
     const [pular, setPular] = useState(false)
     const [nativeAudioPlayed, setNativeAudioPlayed] = useState(false);
     const { user, setUser } = useAuth();
@@ -38,6 +39,7 @@ export default function DigitarTexto() {
 
             const timer = setTimeout(() => {
                 textareaRef.current?.focus();
+                textareaRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
             }, 400);
 
             return () => clearTimeout(timer);
@@ -65,6 +67,10 @@ export default function DigitarTexto() {
             setVh(window.visualViewport?.height || window.innerHeight);
            // setVh('100vh');
             window.scrollTo(0, 0);
+
+            if (document.activeElement === textareaRef.current) {
+                textareaRef.current.scrollIntoView({ block: "end", behavior: "smooth" });
+            }
         };
 
         window.visualViewport?.addEventListener("resize", handleResize);
@@ -431,9 +437,9 @@ export default function DigitarTexto() {
 
     return (
 
-        <div style={{ height: vh }} className=" flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br digitar-texto px-6 pb-5">
+        <div style={{ height: vh }} className=" flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br digitar-texto px-6 pb-5 overscroll-none">
 
-            <div className="flex-1 overflow-y-auto scrollbar-hide pt-3">
+            <div ref={contentRef} className="flex-1 overflow-y-auto overscroll-contain scrollbar-hide pt-3">
 
                 <div className="relative text-left mb-4 text-white">
 
@@ -575,8 +581,13 @@ export default function DigitarTexto() {
                                     ref={textareaRef}
                                     value={resposta}
                                     onChange={handleRespostaChange}
+                                    onFocus={() => {
+                                        setTimeout(() => {
+                                            textareaRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
+                                        }, 300);
+                                    }}
                                     rows={1}
-                                    className="text-xl text-white toutline-none w-full min-h-[56px] max-h-[35vh] py-3 text-center rounded-lg  resize-none overflow-y-auto bg-gray-800/50 backdrop-blur-sm  border border-gray-700 px-3"
+                                    className="text-xl text-white toutline-none w-full min-h-[56px] max-h-[35vh] py-3 text-center rounded-lg  resize-none overflow-y-auto overscroll-contain bg-gray-800/50 backdrop-blur-sm  border border-gray-700 px-3"
                                 />
 
 

@@ -519,7 +519,7 @@ export default function DigitarTexto() {
                     </div>
                 </div>
 
-                {!isFlipped && (
+                {!isFlipped && !diff && (
                     <div className="text-center flex justify-center mt-5">
                         <button onClick={(e) => {
                             e.preventDefault();

@@ -5,7 +5,7 @@ import imgGlobe from "../assets/img/globe.png"
 import imgMemly from "../assets/img/mascote-memly.png"
 import imgZaldemy from "../assets/img/zaldemy.png"
 import { useAuth } from "../context/AuthContext";
-
+import { useTranslation } from "react-i18next";
 
 
 import {
@@ -40,6 +40,8 @@ const flags = {
 };
 
 function BotaoLogout() {
+    const { t } = useTranslation();
+
     const { logout } = useAuth();
     const navigate = useNavigate();
 
@@ -48,10 +50,13 @@ function BotaoLogout() {
         navigate("/login");
     }
 
-    return <button onClick={handleLogout} className='flex'><LogOut className='me-2' />Sair</button>;
+    return <button onClick={handleLogout} className='flex'><LogOut className='me-2' />{t("log_out")}</button>;
 }
 
 export default function Header({ titulo }) {
+
+
+    const { t } = useTranslation();
 
     const navigate = useNavigate()
     const { pathname } = useLocation();
@@ -61,7 +66,8 @@ export default function Header({ titulo }) {
     const [openSelect, setOpenSelect] = useState(false)
     const [idioma, setIdioma] = useState("")
     const [languageList, setLanguageList] = useState([])
-const API_URL = import.meta.env.VITE_API_URL;
+    const API_URL = import.meta.env.VITE_API_URL;
+
     const { user, setUser } = useAuth();
 
     const idiomaNativo = languageList.find(
@@ -110,6 +116,32 @@ const API_URL = import.meta.env.VITE_API_URL;
         (l) => l.sigla === idioma
     );
 
+    const handleSelectLanguage = async (item) => {
+        setIdioma(item.sigla);
+        setOpenSelect(false);
+
+        try {
+            await fetch(`${API_URL}/controller/language.php`, {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({
+                    action: 'update_learning_reference',
+                    learning_language: item.id,
+                    learning_native: idiomaNativo?.id,
+                })
+            });
+
+            setUser(prev => ({
+                ...prev,
+                learning_language: item.sigla
+            }));
+        } catch (error) {
+            console.error('Erro ao salvar idioma:', error);
+        }
+    };
+
     return (
         <div className={`w-full section-header ${rotaBase === '/home' ? 'shadow-md pb-1' : ''}`}>
 
@@ -129,8 +161,8 @@ const API_URL = import.meta.env.VITE_API_URL;
                             {/* IDIOMA */}
                             <div className="flex items-center w-full ms-3 py-2 justify-between">
 
-                                <span className="text-md font-semibold text-white ">
-                                    {idiomaNativo ? idiomaNativo.idioma : "Carregando..."}
+                                <span className="text-md font-semibold text-white">
+                                    {idiomaNativo ? t(idiomaNativo.sigla) : "Carregando..."}
                                 </span>
 
                                 <img src={imgGlobe} alt="" className="w-9" />
@@ -152,7 +184,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                                                     className="w-5 h-5 rounded-full"
                                                 />
                                                 <span className="text-sm text-white">
-                                                    {idiomaSelecionado.idioma}
+                                                    {t(idiomaSelecionado.sigla)}
                                                 </span>
                                             </>
                                         ) : (
@@ -168,22 +200,16 @@ const API_URL = import.meta.env.VITE_API_URL;
                                             {languageList.map((item) => (
                                                 <div
                                                     key={item.id}
-                                                    onClick={() => {
-                                                        setIdioma(item.sigla);
-                                                        setOpenSelect(false);
-
-                                                        setUser(prev => ({
-                                                            ...prev,
-                                                            learning_language: item.sigla
-                                                        }));
-                                                    }}
+                                                    onClick={() => handleSelectLanguage(item)}
                                                     className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer text-white"
                                                 >
                                                     <img
                                                         src={flags[item.sigla] || "https://flagcdn.com/w40/un.png"}
                                                         className="w-5 h-5 rounded-full"
                                                     />
-                                                    <span className="text-sm">{item.idioma}</span>
+                                                    <span className="text-sm">
+                                                        {t(item.sigla)}
+                                                    </span>
                                                 </div>
                                             ))}
                                         </div>
@@ -223,15 +249,15 @@ const API_URL = import.meta.env.VITE_API_URL;
                 </div>
 
                 <div className="flex items-center gap-4 p-4 ">
-               
+
                     <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiB_hwnr2qi68_5lIrxK6fE74AlsQemoqOQw&s" alt="Avatar" className="w-full h-full object-cover"/>
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiB_hwnr2qi68_5lIrxK6fE74AlsQemoqOQw&s" alt="Avatar" className="w-full h-full object-cover" />
                     </div>
 
-                  
+
                     <div>
                         <p className="text-md font-semibold text-white">
-                            Olá, {user?.name?.split(' ')[0]}
+                            {t("hello")}, {user?.name?.split(' ')[0]}
                         </p>
                         {/* <p class="text-sm text-gray-500">
                             {user.email}
@@ -243,17 +269,18 @@ const API_URL = import.meta.env.VITE_API_URL;
 
                     <a href="/" className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-white text-lg">
                         <HelpCircle size={18} />
-                        FAQ
+                        {t("faq")}
                     </a>
 
                     <a href="/" className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-white text-lg">
                         <Mail size={18} />
-                        Contato
+                        {t("contact")}
+
                     </a>
 
                     <a href="/" className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 text-white text-lg">
                         <Crown size={20} className='text-yellow-500' />
-                        Premium
+                        {t("premium_plan")}
                     </a>
 
                     <div className='px-4 py-3 text-white text-lg'>

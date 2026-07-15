@@ -15,6 +15,7 @@ import ModalSucesso from '../components/ModalSucesso';
 import PremiumModal from '../components/PremiumModal'
 import ModalConfirm from '../components/ModalConfirm';
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 
 import { BookOpen, BarChart3, Settings, Play, Crown, Bot } from "lucide-react";
@@ -40,6 +41,7 @@ export default function Home() {
     const [modalConfirm, setOpenModalConfirm] = useState(false)
     const [msgModalConfirm, setMsgModalConfirm] = useState('')
     const [deleteId, setDeleteId] = useState(0)
+    const { t } = useTranslation();
     const API_URL = import.meta.env.VITE_API_URL;
 
     const [translations, setTranslations] = useState({});
@@ -264,7 +266,7 @@ export default function Home() {
         setTranslations(obj);
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         if (user) translateUIStrings();
     }, [user?.native_language, user?.learning_language, user?.id]);
 
@@ -284,8 +286,8 @@ export default function Home() {
                                     {item.categoria}
                                 </p>
                                 <div className="flex items-center gap-3">
-                                        <span className="text-xs py-0.5  rounded-full  text-gray-400 ">
-                                        {item.quantidade} {translations.words ?? 'palavras'}
+                                    <span className="text-xs py-0.5  rounded-full  text-gray-400 ">
+                                        {item.quantidade} {t("words")}
                                     </span>
                                 </div>
                             </div>
@@ -299,7 +301,7 @@ export default function Home() {
                                         setOpenTreino(true);
                                     }}
                                 >
-                                    {translations.train ?? 'Treino'}
+                                    {t("training")}
                                 </button>
 
                                 {/* Botão dos 3 pontinhos */}
@@ -329,7 +331,7 @@ export default function Home() {
                                                 setMenuOpenId(false);
                                             }}
                                         >
-                                            {translations.edit ?? 'Editar'}
+                                            {t("edit")}
                                         </button>
 
                                         <button
@@ -343,7 +345,7 @@ export default function Home() {
 
                                             }}
                                         >
-                                            {translations.delete ?? 'Excluir'}
+                                            {t("delete")}
                                         </button>
                                     </div>
                                 )}
@@ -370,7 +372,7 @@ export default function Home() {
                        text-lg
                         transition
                         " onClick={() => setOpen(true)}>
-                    {translations.addCategory ?? 'Adicionar categoria'}
+                    {t("add_category")}
                 </button>
 
                 <div className=" w-full ">

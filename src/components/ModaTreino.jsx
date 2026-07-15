@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { playAudio } from "../utils/audioPlayer";
-
-
+import { useTranslation } from "react-i18next";
+import { Trans } from "react-i18next";
 export default function ModalTreino({
   openTreino,
   onClose,
@@ -14,13 +14,14 @@ export default function ModalTreino({
   onOpenIA,
   categoriaId
 }) {
+  const { t } = useTranslation();
 
   const navigate = useNavigate();
 
-  const [mensagem, setMensagem] = useState(<span className="text-base text-white">Repetir</span>);
+  const [mensagem, setMensagem] = useState(<span className="text-base text-white">{t("repeat")}</span>);
   const { user, setUser } = useAuth();
   const [waiting, setWaiting] = useState(false);
-const API_URL = import.meta.env.VITE_API_URL;
+  const API_URL = import.meta.env.VITE_API_URL;
   const [countPhrases, setCountPhrases] = useState({
     learn: 0,
     repeat: 0,
@@ -79,13 +80,13 @@ const API_URL = import.meta.env.VITE_API_URL;
   useEffect(() => {
 
     if (countPhrases.repeat_traine > 0) {
-      setMensagem(<span className="text-base text-white">Repetir</span>);
+      setMensagem(<span className="text-base text-white">{t("repeat")}</span>);
       setWaiting(false);
       return;
     }
 
     if (!countPhrases.traine || countPhrases.repeat < 1) {
-      setMensagem(<span className="text-base text-white">Repetir</span>);
+      setMensagem(<span className="text-base text-white">{t("repeat")}</span>);
       setWaiting(false);
       return;
     }
@@ -95,7 +96,7 @@ const API_URL = import.meta.env.VITE_API_URL;
     function atualizar() {
 
       if (seconds <= 0) {
-        setMensagem(<span className="text-base text-white">Repetir</span>);
+        setMensagem(<span className="text-base text-white">{t("repeat")}</span>);
         setWaiting(false);
         return;
       }
@@ -242,7 +243,7 @@ const API_URL = import.meta.env.VITE_API_URL;
         <Dialog.Panel className=" max-w-xl rounded-2xl p-6 shadow-xl from-gray-900 to-gray-800 bg-gradient-to-br border border-white/30">
 
           <Dialog.Title className="text-lg font-semibold mb-3 text-white">
-            Treino
+            {t("training")}
           </Dialog.Title>
 
 
@@ -256,8 +257,8 @@ const API_URL = import.meta.env.VITE_API_URL;
             <Play size={32} className="text-blue-400 me-2" />
 
             <div className="flex flex-col">
-              <span className="text-lg text-white">Aprender</span>
-              <span className="text-xs text-white">{countPhrases.learn} palavras</span>
+              <span className="text-lg text-white">{t("learn")}</span>
+              <span className="text-xs text-white">{countPhrases.learn} {t("words")}</span>
             </div>
 
           </div>
@@ -280,7 +281,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
             <div className="flex flex-col">
               {mensagem}
-              <span className="text-xs text-white">{countPhrases.repeat} palavras</span>
+              <span className="text-xs text-white">{countPhrases.repeat} {t("words")}</span>
             </div>
 
           </div>
@@ -298,18 +299,19 @@ const API_URL = import.meta.env.VITE_API_URL;
 
             <div className="flex flex-col">
               <span className="text-lg leading-tight text-white">
-                Revisar palavras
-                <br />
-                aprendidas
+                <Trans
+                  i18nKey="review_learned_words"
+                  components={{ br: <br /> }}
+                />
               </span>
 
-              <span className="text-xs text-white">{countPhrases.review} palavras</span>
+              <span className="text-xs text-white">{countPhrases.review} {t("words")}</span>
             </div>
 
           </div>
 
 
-{/* 
+          {/* 
           <div
             className="flex gap-2 items-center cursor-pointer"
             onClick={(e) => {

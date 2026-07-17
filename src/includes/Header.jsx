@@ -162,7 +162,7 @@ export default function Header({ titulo }) {
                             <div className="flex items-center w-full ms-3 py-2 justify-between">
 
                                 <span className="text-md font-semibold text-white">
-                                    {idiomaNativo ? t(idiomaNativo.sigla) : "Carregando..."}
+                                    {idiomaNativo ? t(idiomaNativo.sigla) : t("loading_dots")}
                                 </span>
 
                                 <img src={imgGlobe} alt="" className="w-9" />
@@ -189,7 +189,7 @@ export default function Header({ titulo }) {
                                             </>
                                         ) : (
                                             <span className="text-sm text-white">
-                                                Selecione um idioma
+                                                {t("select_a_language")}
                                             </span>
                                         )}
                                     </div>

@@ -1,8 +1,10 @@
 // src/components/ConnectionStatus.jsx
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useConnection } from '../context/ConnectionContext';
 
 export default function ConnectionStatus() {
+  const { t } = useTranslation();
   const { isOnline, connectionType } = useConnection();
   const [showSlowConnection, setShowSlowConnection] = useState(false);
   const [lastPing, setLastPing] = useState(Date.now());
@@ -42,18 +44,18 @@ export default function ConnectionStatus() {
       {!isOnline ? (
         <div className="flex items-center justify-center gap-2">
           <span>📡</span>
-          <span>Você está offline. Algumas funcionalidades podem não estar disponíveis.</span>
-          <button 
-            onClick={() => window.location.reload()} 
+          <span>{t("offline_message")}</span>
+          <button
+            onClick={() => window.location.reload()}
             className="ml-2 px-2 py-1 bg-white text-red-500 rounded text-xs hover:bg-red-100"
           >
-            Tentar novamente
+            {t("try_again")}
           </button>
         </div>
       ) : (
         <div className="flex items-center justify-center gap-2">
           <span>🐌</span>
-          <span>Conexão lenta detectada. Carregando com qualidade reduzida...</span>
+          <span>{t("slow_connection_message")}</span>
         </div>
       )}
     </div>

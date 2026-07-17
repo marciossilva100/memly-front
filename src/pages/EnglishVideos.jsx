@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Loader2} from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function EnglishVideos({ query = "english conversation", max = 6 }) {
+    const { t } = useTranslation();
     const [videos, setVideos] = useState([]);
     const [selectedVideo, setSelectedVideo] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -36,7 +38,7 @@ export default function EnglishVideos({ query = "english conversation", max = 6 
         return (
             <div className="min-h-[calc(100vh-70px)] flex items-center justify-center">
                 <Loader2 className="animate-spin mr-2 w-8 h-8 text-indigo-600" />
-                <span className="text-slate-700 text-lg">Carregando vídeos...</span>
+                <span className="text-slate-700 text-lg">{t("loading_videos")}</span>
             </div>
         );
     }

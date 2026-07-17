@@ -8,9 +8,11 @@ import linkedinIcone from '../assets/img/linkedin.png'
 import imgChapeuFormatura from "../assets/img/chapeu_formatura-v2.png"
 import { useAuth } from "../context/AuthContext";
 import { Navigate, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 
 export default function ReferenciaUsuario({ setTitulo }) {
+    const { t } = useTranslation();
 
     const { user, setUser } = useAuth();
     const [finishStep, setFinishStep] = useState(false)
@@ -74,7 +76,7 @@ export default function ReferenciaUsuario({ setTitulo }) {
                     <img src={imgChapeuFormatura} alt="Chapeu formatura" className="w-28" />
                 </div>
                 <h4 className="text-lg font-medium text-white">
-                    Como ficou conhecendo a gente?
+                    {t("how_did_you_hear_about_us")}
                 </h4>
             </div>
 

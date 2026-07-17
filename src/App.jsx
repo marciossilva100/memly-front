@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-route
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { registerSW } from "virtual:pwa-register";
+import { useTranslation } from "react-i18next";
 
 import AuthGate from "./components/AuthGate";
 import Login from './pages/Login'
@@ -38,6 +39,7 @@ import Metricas from './pages/Metricas';
 import { ConnectionProvider, useConnection } from './context/ConnectionContext';
 
 function PrivateRoute({ children }) {
+  const { t } = useTranslation();
   const { user, loading } = useAuth();
   const { isOnline } = useConnection();
 
@@ -46,7 +48,7 @@ function PrivateRoute({ children }) {
       <div className="flex h-screen items-center justify-center bg-white-100">
         <img
           src={imgChapeuFormatura}
-          alt="Carregando"
+          alt={t("loading")}
           className="w-28 animate-pulse"
         />
       </div>
@@ -245,24 +247,27 @@ function Layout({ titulo, setTitulo }) {
 }
 
 function App() {
+  const { t } = useTranslation();
   const containerRef = useRef(null);
   const [hasOverflow, setHasOverflow] = useState(false);
   const [titulo, setTitulo] = useState('')
 
-  registerSW({
-    onNeedRefresh() {
-      console.log("Nova versão disponível");
-      // Adiciona confirmação antes de recarregar
-      if (window.confirm("Nova versão disponível! Deseja atualizar?")) {
-        window.location.reload();
+  useEffect(() => {
+    registerSW({
+      onNeedRefresh() {
+        console.log("Nova versão disponível");
+        // Adiciona confirmação antes de recarregar
+        if (window.confirm(t("new_version_available_confirm"))) {
+          window.location.reload();
+        }
+      },
+      onOfflineReady() {
+        console.log("App pronto para offline");
+        // Notifica o usuário que o app está disponível offline
+        alert(t("app_ready_offline"));
       }
-    },
-    onOfflineReady() {
-      console.log("App pronto para offline");
-      // Notifica o usuário que o app está disponível offline
-      alert("App pronto para uso offline!");
-    }
-  });
+    });
+  }, []);
 
   return (
     <GoogleOAuthProvider clientId="1055075063152-tkobce7c2j9eq1t4doi0419votjlemis.apps.googleusercontent.com">

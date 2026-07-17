@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { playAudio } from "../utils/audioPlayer";
+import { useTranslation } from "react-i18next";
 
 export default function JogoFrases() {
-  
+  const { t } = useTranslation();
+
   const { id, mode } = useParams();
 
   const [todasFrases, setTodasFrases] = useState([]);
@@ -190,10 +192,10 @@ export default function JogoFrases() {
     : 0;
 
   function mensagemFinal() {
-    if (porcentagem === 100) return "🏆 Parabéns! Você é um mestre!";
-    if (porcentagem >= 80) return "🔥 Excelente desempenho!";
-    if (porcentagem >= 60) return "👏 Muito bom!";
-    return "💪 Continue treinando!";
+    if (porcentagem === 100) return t("congrats_master");
+    if (porcentagem >= 80) return t("excellent_performance");
+    if (porcentagem >= 60) return t("match_very_good");
+    return t("keep_training");
   }
 
   if (totalPerguntas < 1) {
@@ -221,14 +223,14 @@ export default function JogoFrases() {
           </div>
 
           <p className="text-text mb-6">
-            {acertos} acertos • {erros} erros
+            {t("results_summary", { acertos, erros })}
           </p>
 
           <button
             onClick={() => navigate("/home")}
             className="px-6 py-3 bg-indigo-600 text-white hover:bg-indigo-700 transition rounded-full"
           >
-            Voltar ao início
+            {t("back_to_home")}
           </button>
         </div>
       </div>

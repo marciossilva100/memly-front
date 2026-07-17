@@ -14,12 +14,14 @@ import ModalSucesso from '../components/ModalSucesso';
 import PremiumModal from '../components/PremiumModal'
 import { useAuth } from "../context/AuthContext";
 import ModalIncorporarFrases from '../components/ModalIncorporarFrases'
+import { useTranslation } from "react-i18next";
 
 
 import { BookOpen,Search,Filter } from "lucide-react";
 
 
 export default function ListCategoria() {
+    const { t } = useTranslation();
     const { user, setUser } = useAuth();
     const [open, setOpen] = useState(false);
     const [openIncorporar, setOpenIncorporar] = useState(false)
@@ -103,11 +105,11 @@ export default function ListCategoria() {
 
 
                 if (data.inseridas === 0) {
-                    setMsgModalSucesso("Categoria e frases já existem em sua lista.")
+                    setMsgModalSucesso(t("category_phrases_already_exist"))
                 }
 
                 if (data.inseridas > 0) {
-                    setMsgModalSucesso("Adicionado")
+                    setMsgModalSucesso(t("added"))
                 }
 
                 setContador(contador + 1);
@@ -172,7 +174,7 @@ export default function ListCategoria() {
                             <input
                                 type="email"
                                 className="w-full px-3 py-2 outline-none text-white text-lg bg-gray-800/50 backdrop-blur-sm"
-                                placeholder="Buscar"
+                                placeholder={t("search")}
                                 value={textoBusca}
                                 onChange={(e) => {
                                     setTextoBusca(e.target.value)
@@ -181,13 +183,13 @@ export default function ListCategoria() {
                             />
                         </div>
                     </div>
-                    
+
                         <div className="cursor-pointer flex justify-end mb-4">
                             <Filter className="text-white mt-2" width={15} />
                         </div>
-                    
+
                     {loading && <div className="h-screen flex items-center justify-center">
-                        Carregando...
+                        {t("loading_dots")}
                     </div>}
             
                 </div>
@@ -204,7 +206,7 @@ export default function ListCategoria() {
                                 </p>
                                 <div className="flex items-center gap-3">
                                     <span className="text-xs py-0.5  rounded-full  text-gray-300 ">
-                                        {item.quantidade} palavras
+                                        {item.quantidade} {t("words")}
                                     </span>
                                 </div>
                             </div>
@@ -216,7 +218,7 @@ export default function ListCategoria() {
                                         adicionar(item.id);
 
                                     }}>
-                                    Adicionar
+                                    {t("add")}
                                 </button>
                             </div>
                         </div>

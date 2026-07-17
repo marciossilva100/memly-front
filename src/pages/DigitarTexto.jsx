@@ -5,9 +5,11 @@ import { playAudio } from "../utils/audioPlayer";
 import '../digitartexto.css'
 import { Volume, Play, Check, RefreshCw } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 
 export default function DigitarTexto() {
+    const { t } = useTranslation();
 
     const { id, mode } = useParams();
 
@@ -373,7 +375,7 @@ export default function DigitarTexto() {
     if (loading) {
         return (
             <div className="h-screen flex items-center justify-center">
-                Carregando...
+                {t("loading_dots")}
             </div>
         );
     }
@@ -384,7 +386,7 @@ export default function DigitarTexto() {
 
         return (
             <div className="h-screen flex items-center justify-center">
-                Nenhuma frase encontrada
+                {t("no_phrase_found")}
                 { }
             </div>
         );
@@ -407,7 +409,7 @@ export default function DigitarTexto() {
                 <div className="bg-white p-10 rounded-2xl shadow-2xl text-center max-w-md">
 
                     <p className="text-xl mb-4">
-                        🎉 Treino finalizado
+                        {t("training_finished")}
                     </p>
 
                     <div className="text-5xl font-extrabold text-indigo-600 mb-2">
@@ -415,14 +417,14 @@ export default function DigitarTexto() {
                     </div>
 
                     <p className="text-gray-600 mb-6">
-                        {acertos} acertos • {erros} erros
+                        {t("results_summary", { acertos, erros })}
                     </p>
 
                     <button
                         onClick={() => navigate("/home")}
                         className="px-6 py-3 bg-blue-600 text-white hover:bg-blue-700 transition rounded-full"
                     >
-                        Voltar ao início
+                        {t("back_to_home")}
                     </button>
 
                 </div>
@@ -472,11 +474,11 @@ export default function DigitarTexto() {
                     <div className="justify-start mb-4 w-full">
 
                         <h2 className="text-white text-lg">
-                            O que você quer dizer em inglês?
+                            {t("what_do_you_want_to_say")}
                         </h2>
 
                         <span className="text-white text-sm">
-                            Digite como você falaria essa frase.
+                            {t("type_how_you_would_say")}
                         </span>
 
                     </div>
@@ -526,7 +528,7 @@ export default function DigitarTexto() {
                             playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language);
                         }} className="px-4 py-2 rounded-md bg-slate-500 text-white text-sm transition flex">
                             <Volume className="w-5 h-5" />
-                            Ouvir
+                            {t("listen")}
                         </button>
                     </div>
                 )}
@@ -540,12 +542,12 @@ export default function DigitarTexto() {
                                 playAudio(frases[index].texto_traduzido, user);
                             }} className="px-4 py-2 rounded-md bg-slate-600 text-white text-sm transition flex">
                                 <Volume className="w-5 h-5" />
-                                Ouvir
+                                {t("listen")}
                             </button>
                         </div>
 
                         <span className="w-full flex justify-center mb-4 font-semibold text-white mt-8">
-                            Você digitou:
+                            {t("you_typed")}
                         </span>
 
                         <div className="rounded-lg w-full p-5 shadow-lg bg-gray-700/60 backdrop-blur-sm">
@@ -584,7 +586,7 @@ export default function DigitarTexto() {
 
 
                                 <textarea
-                                    placeholder="Digite sua resposta aqui..."
+                                    placeholder={t("type_your_answer_placeholder")}
                                     ref={textareaRef}
                                     value={resposta}
                                     onChange={handleRespostaChange}
@@ -613,7 +615,7 @@ export default function DigitarTexto() {
                                 playAudio(frases[index].texto_traduzido, user);
                             }} className="px-4 py-2 rounded-md bg-slate-600 text-white text-sm transition flex">
                                 <Volume className="w-5 h-5" />
-                                Ouvir
+                                {t("listen")}
                             </button>
                         </div>
                         {!pular && (
@@ -625,7 +627,7 @@ export default function DigitarTexto() {
                                 </div>
 
                                 <span className="text-2xl font-semibold text-green-500">
-                                    Correto
+                                    {t("correct_label")}
                                 </span>
                             </div>
                         )}
@@ -649,13 +651,13 @@ export default function DigitarTexto() {
                                 }}
                                 className="w-full  text-white text-lg  py-3 rounded-full shadow-lg  bg-gray-700/60 backdrop-blur-sm  border border-gray-700"
                             >
-                                Não lembro
+                                {t("dont_remember")}
                             </button>
                             <button
                                 onClick={repeatCard}
                                 className="w-full  text-white text-lg  py-3 rounded-full shadow-lg bg-gray-800/50 backdrop-blur-sm  border border-gray-700"
                             >
-                                Tentar novamente
+                                {t("try_again")}
                             </button>
 
 
@@ -676,7 +678,7 @@ export default function DigitarTexto() {
                                     onClick={nextCard}
                                     className="shadow-md w-full bg-gray-800/50 backdrop-blur-sm  border border-gray-700 text-white font-medium py-3 rounded-full transition text-lg"
                                 >
-                                    Próximo
+                                    {t("next")}
                                 </button>
 
                             </div>
@@ -700,14 +702,14 @@ export default function DigitarTexto() {
 
                         className="w-full  text-white text-lg  py-3 rounded-full shadow-lg  bg-gray-700/60 backdrop-blur-sm  border border-gray-700"
                     >
-                        Não lembro
+                        {t("dont_remember")}
                     </button>
                     <button
                         type="submit"
                         form="respostaForm"
                         className="flex justify-center shadow-md w-full  text-white font-medium py-3 rounded-full text-lg bg-green-500/50 backdrop-blur-sm  border border-gray-700"
                     >
-                        Responder
+                        {t("answer_button")}
                     </button>
 
                 </div>

@@ -5,8 +5,10 @@ import { Volume, RefreshCw } from "lucide-react";
 
 // import { gerarAudio } from "../services/elevenlabs";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 export default function Flashcards() {
+  const { t } = useTranslation();
 
   const { id, mode } = useParams();
   const navigate = useNavigate();
@@ -275,7 +277,7 @@ export default function Flashcards() {
 
     return (
       <div className="h-screen flex items-center justify-center">
-        Carregando...
+        {t("loading_dots")}
       </div>
     );
 
@@ -291,10 +293,10 @@ export default function Flashcards() {
 
   function mensagemFinal() {
 
-    if (porcentagem === 100) return "🏆 Parabéns! Você acertou tudo!";
-    if (porcentagem >= 80) return "🔥 Excelente desempenho!";
-    if (porcentagem >= 60) return "👏 Muito bom! Continue assim!";
-    return "💪 Continue treinando, você vai evoluir!";
+    if (porcentagem === 100) return t("congrats_all_correct");
+    if (porcentagem >= 80) return t("excellent_performance");
+    if (porcentagem >= 60) return t("very_good_continue");
+    return t("keep_training_evolve");
 
   }
 
@@ -312,14 +314,14 @@ export default function Flashcards() {
           </div>
 
           <p className="text-gray-600 mb-6">
-            {acertos} acertos • {erros} erros
+            {t("results_summary", { acertos, erros })}
           </p>
 
           <button
             onClick={() => navigate("/home")}
             className="px-6 py-3 bg-[#4cb8c4] text-white  hover:bg-indigo-700 transition rounded-full"
           >
-            Voltar ao início
+            {t("back_to_home")}
           </button>
 
         </div>
@@ -401,7 +403,7 @@ export default function Flashcards() {
                 playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language);
               }} className="px-4 py-2 rounded-md bg-slate-500 text-white text-sm transition flex">
                 <Volume className="w-5 h-5" />
-                Ouvir nativo
+                {t("listen_native")}
               </button>
             </div>
           )}
@@ -414,7 +416,7 @@ export default function Flashcards() {
                 playAudio(frases[index].texto_traduzido, user);
               }} className="px-4 py-2 rounded-md bg-slate-500 text-white text-sm  transition flex">
                 <Volume className="w-5 h-5" />
-                Ouvir
+                {t("listen")}
               </button>
             </div>
           )}
@@ -457,7 +459,7 @@ export default function Flashcards() {
                 onClick={flipCard}
                 className="absolute inset-0 m-auto bg-[#4cb8c4] text-white rounded-full w-20 h-20 shadow-lg transition active:scale-95"
               >
-                Mostrar
+                {t("show")}
               </button>
 
             </div>
@@ -475,14 +477,14 @@ export default function Flashcards() {
               onClick={() => nextCard(false)}
               className="bg-red-400/70 backdrop-blur-sm text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full"
             >
-              Não lembrei
+              {t("didnt_remember")}
             </button>
 
             <button
               onClick={() => nextCard(true)}
               className="bg-gray-700/50 backdrop-blur-sm text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full"
             >
-              Lembrei
+              {t("remembered")}
             </button>
 
           </div>

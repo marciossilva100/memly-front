@@ -4,6 +4,7 @@ import { idiomas } from "../data/idiomas"
 import imgMemly from "../assets/img/mascote-memly.png"
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura-v2.png"
 
 // 🌍 Bandeiras
@@ -26,6 +27,7 @@ const flags = {
 };
 
 export default function EscolherIdiomaAprender() {
+  const { t } = useTranslation();
   const { user, setUser, checkAuth } = useAuth();
 
   const navigate = useNavigate();
@@ -70,7 +72,7 @@ export default function EscolherIdiomaAprender() {
         setLanguageList(data)
         // console.log(data)
       }).catch(() => {
-        setErro('Erro ao conectar com o servidor');
+        setErro(t("server_connection_error"));
       });
   }, [])
 
@@ -115,7 +117,7 @@ export default function EscolherIdiomaAprender() {
 
     } catch (error) {
       console.log(error);
-      setErro('Erro ao conectar com o servidor');
+      setErro(t("server_connection_error"));
     }
   }
 
@@ -152,7 +154,7 @@ export default function EscolherIdiomaAprender() {
     e.preventDefault();
 
     if (!form.learning_language) {
-      setErro('Escolha um idioma')
+      setErro(t("choose_a_language"))
       return
     }
     languageRegister();
@@ -183,7 +185,7 @@ export default function EscolherIdiomaAprender() {
             />
           </div>}
           <h4 className="text-lg font-medium text-white">
-            Escolha o idioma que você quer aprender.
+            {t("choose_learning_language_prompt")}
           </h4>
         </div>
 
@@ -211,7 +213,7 @@ export default function EscolherIdiomaAprender() {
                   </>
                 ) : (
                   <span className="text-sm text-white">
-                    Selecione um idioma
+                    {t("select_a_language")}
                   </span>
                 )}
 
@@ -287,7 +289,7 @@ export default function EscolherIdiomaAprender() {
           text-center
         "
           >
-            Confirmar
+            {t("confirm")}
           </button>
 
         </div>

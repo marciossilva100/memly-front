@@ -15,22 +15,29 @@ export function AuthProvider({ children }) {
       setIsAuthenticating(true);
     }
 
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setUser(null);
+      setLoading(false);
+      setIsAuthenticating(false);
+      return null;
+    }
+
     try {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        setUser(null);
-        setLoading(false);
-        setIsAuthenticating(false);
-        return;
-      }
-
       const res = await fetch(`${API_URL}/controller/me.php`, {
         method: "GET",
         headers: {
           "Authorization": "Bearer " + token
         }
       });
+
+      // Servidor confirmou explicitamente que o token não é válido
+      if (res.status === 401 || res.status === 403) {
+        setUser(null);
+        localStorage.removeItem("token");
+        return null;
+      }
 
       if (!res.ok) {
         throw new Error("Erro na requisição");
@@ -40,19 +47,19 @@ export function AuthProvider({ children }) {
 
       if (data.authenticated) {
         setUser(data.user);
-      } else {
-        setUser(null);
-        // Token inválido, remove do localStorage
-        localStorage.removeItem("token");
+        return data.user;
       }
 
-    } catch (error) {
-      console.log("Erro auth:", error);
+      // Token inválido, remove do localStorage
       setUser(null);
-      // Em caso de erro, remove token inválido
-      if (error.message !== "Erro na requisição") {
-        localStorage.removeItem("token");
-      }
+      localStorage.removeItem("token");
+      return null;
+
+    } catch (error) {
+      // Falha de rede/servidor: mantém o token e o usuário atuais,
+      // não desloga o usuário por causa de uma instabilidade de conexão
+      console.log("Erro auth:", error);
+      return null;
     } finally {
       setLoading(false);
       setIsAuthenticating(false);
@@ -64,10 +71,10 @@ export function AuthProvider({ children }) {
     if (newToken) {
       localStorage.setItem("token", newToken);
     }
-    
+
     setLoading(true);
     setIsAuthenticating(true);
-    await checkAuth(true);
+    return await checkAuth(true);
   }, [checkAuth]);
 
   useEffect(() => {

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import ModalFrase from "../components/ModalFrase";
 import { useAuth } from "../context/AuthContext";
 import PremiumModal from '../components/PremiumModal';
+import { useTranslation } from "react-i18next";
 
 import {
     Trash,
@@ -12,6 +13,7 @@ import {
 
 
 export default function FrasesGeral() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const { user } = useAuth();
 
@@ -91,7 +93,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                         <input
                             type="email"
                             className="w-full px-3 py-2 outline-none text-lg"
-                            placeholder="Buscar"
+                            placeholder={t("search")}
                             value={textoBusca}
                             onChange={(e) => {
                                 setTextoBusca(e.target.value)
@@ -107,7 +109,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                 )}
 
                 {loading && <div className="h-screen flex items-center justify-center">
-                    Carregando...
+                    {t("loading_dots")}
                 </div>}
                 <div className="flex-1 overflow-y-auto scrollbar-hide">
 

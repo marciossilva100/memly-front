@@ -1,8 +1,10 @@
 import { Dialog } from "@headlessui/react";
 import { useState, useEffect } from "react";
 import { FaList, FaPlus } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 export default function ModalCategoriasEditar({ setOpenCategoriaEditar,open,categoriaEditar,categoriaIdEditar,onOpenModalSucesso,onSuccess}) {
+    const { t } = useTranslation();
     const [categoria, setCategoria] = useState()
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
@@ -22,7 +24,7 @@ const API_URL = import.meta.env.VITE_API_URL;
         if (loading) return;
 
         if (!categoria) {
-            setError('Digite a categoria')
+            setError(t("enter_category"))
             return
         }
 
@@ -51,11 +53,11 @@ const API_URL = import.meta.env.VITE_API_URL;
 
             setError('')
             //onSuccess?.();
-            onOpenModalSucesso('Editado com sucesso')
+            onOpenModalSucesso(t("edited_successfully"))
             onSuccess();
 
         } catch (error) {
-            setError(error?.message || "Erro inesperado")
+            setError(error?.message || t("unexpected_error"))
         } finally {
             setLoading(false)
         }
@@ -74,15 +76,15 @@ const API_URL = import.meta.env.VITE_API_URL;
             <div className="fixed inset-0 flex items-center justify-center px-4 backdrop-blur-[2px]">
                 <Dialog.Panel className="w-full max-w-md rounded-2xl px-6 py-8 shadow-xl from-gray-900 to-gray-800 bg-gradient-to-br border border-white/30">
                     <Dialog.Title className="text-xl font-semibold mb-6 text-white">
-                        Editar categoria
+                        {t("edit_category")}
                     </Dialog.Title>
-                    
+
                         <form action="" onSubmit={handleSubmit}>
                             <div>
                                 <input
                                     onChange={(e) => setCategoria(e.target.value)}
                                     type="text"
-                                    placeholder="Nome da categoria"
+                                    placeholder={t("category_name_placeholder")}
                                     className="bg-gray-800/50 backdrop-blur-sm w-full rounded-xl border border-slate-300 px-4 py-2 text-lg
                                     focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20
                                     outline-none text-white"
@@ -98,11 +100,11 @@ const API_URL = import.meta.env.VITE_API_URL;
                                     onClick={() => setOpenCategoriaEditar(false)}
                                     className="text-lg text-white me-3 w-full bg-gray-800/50 backdrop-blur-sm  border border-gray-700 rounded-full"
                                 >
-                                    Cancelar
+                                    {t("cancel")}
                                 </button>
 
                                 <button type="submit" disabled={loading} className="bg-[#4cb8c4] text-white py-2 rounded-full text-lg w-full">
-                                    Salvar
+                                    {t("save")}
                                 </button>
                             </div>
                         </form>

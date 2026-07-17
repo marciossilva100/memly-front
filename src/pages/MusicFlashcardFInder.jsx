@@ -7,9 +7,11 @@ import {
   ArrowLeft, Sparkles, AlertCircle, BookOpen, Save, ExternalLink
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from "react-i18next";
 import imgMemly from "../assets/img/mascote-memly.png";
 
 const MusicFlashcardFinder = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [query, setQuery] = useState('');
   const [videos, setVideos] = useState([]);
@@ -64,11 +66,11 @@ const MusicFlashcardFinder = () => {
         setAvailableCaptions([]);
       } else {
         setVideos([]);
-        setError('Nenhum vídeo encontrado');
+        setError(t("no_video_found"));
       }
     } catch (error) {
       console.error('Erro na busca:', error);
-      setError('Erro ao buscar vídeos. Verifique sua chave da API.');
+      setError(t("error_fetching_videos"));
       setVideos([]);
     } finally {
       setLoading(false);
@@ -277,14 +279,14 @@ const MusicFlashcardFinder = () => {
 
   const handleYouTubeError = (event) => {
     console.error('❌ Erro no YouTube:', event);
-    setToastMessage('Erro ao carregar o vídeo. Tente outro.');
+    setToastMessage(t("error_loading_video"));
     setShowToast(true);
     setTimeout(() => setShowToast(false), 3000);
   };
 
   const togglePlay = () => {
     if (!youtubePlayerRef.current) {
-      setToastMessage('Player ainda não está pronto');
+      setToastMessage(t("player_not_ready"));
       setShowToast(true);
       setTimeout(() => setShowToast(false), 2000);
       return;
@@ -325,7 +327,7 @@ const MusicFlashcardFinder = () => {
       localStorage.setItem('musicFlashcards', JSON.stringify([...savedCards, newCard]));
       setSavedFlashcards(prev => [newCard, ...prev]);
 
-      setToastMessage(`✨ Frase salva nos flashcards!`);
+      setToastMessage(t("phrase_saved_flashcards"));
       setShowToast(true);
       setTimeout(() => {
         setShowToast(false);
@@ -347,10 +349,10 @@ const MusicFlashcardFinder = () => {
   };
 
   const handleManualLyrics = () => {
-    const text = prompt('Cole a letra da música aqui:');
+    const text = prompt(t("paste_lyrics_prompt"));
     if (text && text.trim()) {
       setLyrics(text);
-      setToastMessage('Letra adicionada com sucesso!');
+      setToastMessage(t("lyrics_added_success"));
       setShowToast(true);
       setTimeout(() => setShowToast(false), 2000);
     }
@@ -392,10 +394,10 @@ const MusicFlashcardFinder = () => {
           <div className="flex items-center gap-4 mb-6">
             <div>
               <h1 className="text-2xl md:text-4xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                Aprenda com músicas do YouTube!
+                {t("learn_with_youtube_music")}
               </h1>
               <p className="text-sm text-gray-600 mt-1">
-                Clique nas frases da letra para salvar como flashcards
+                {t("click_phrases_hint")}
               </p>
             </div>
             {savedFlashcards.length > 0 && (
@@ -404,7 +406,7 @@ const MusicFlashcardFinder = () => {
                 className="ml-auto px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full font-medium hover:bg-indigo-200 flex items-center gap-2"
               >
                 <BookOpen className="w-4 h-4" />
-                <span className="hidden sm:inline">{savedFlashcards.length} salvos</span>
+                <span className="hidden sm:inline">{t("saved_count", { count: savedFlashcards.length })}</span>
               </button>
             )}
           </div>
@@ -421,7 +423,7 @@ const MusicFlashcardFinder = () => {
           <div className="flex flex-col md:flex-row gap-3 mb-6">
             <input
               type="text"
-              placeholder="Buscar música no YouTube... (ex: Imagine Dragons)"
+              placeholder={t("search_music_placeholder")}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && searchMusic()}
@@ -433,7 +435,7 @@ const MusicFlashcardFinder = () => {
               className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full font-semibold hover:shadow-lg flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Search className="w-5 h-5" />}
-              Buscar
+              {t("search")}
             </button>
           </div>
 
@@ -442,7 +444,7 @@ const MusicFlashcardFinder = () => {
             <div className="mb-6 p-4 bg-gray-50 rounded-2xl">
               <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
                 <Save className="w-4 h-4" />
-                Flashcards Salvos Recentemente
+                {t("recently_saved_flashcards")}
               </h3>
               <div className="space-y-2 max-h-48 overflow-y-auto">
                 {savedFlashcards.slice(0, 5).map((card) => (
@@ -464,7 +466,7 @@ const MusicFlashcardFinder = () => {
           {videos.length > 0 && !selectedVideo && (
             <div className='flex flex-col flex-1 min-h-0'>
               <h3 className="text-lg font-bold text-gray-800 mb-4">
-                Resultados ({videos.length}):
+                {t("results_count", { count: videos.length })}
               </h3>
               <div className='flex-1 min-h-0'>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 overflow-y-auto h-full">
@@ -526,7 +528,7 @@ const MusicFlashcardFinder = () => {
               {/* Seletor de Idioma (se disponível) */}
               {availableCaptions.length > 1 && (
                 <div className="mb-4 flex gap-2">
-                  <span className="text-sm text-gray-600">Idioma da legenda:</span>
+                  <span className="text-sm text-gray-600">{t("caption_language_label")}</span>
                   <select
                     value={selectedLanguage}
                     onChange={(e) => handleChangeLanguage(e.target.value)}
@@ -546,7 +548,7 @@ const MusicFlashcardFinder = () => {
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="flex items-center gap-2 text-lg font-semibold">
                     <Music4 className="w-5 h-5 text-indigo-600" />
-                    Letra - Clique nas frases para salvar
+                    {t("lyrics_click_to_save")}
                   </h3>
 
                   <div className="flex gap-2">
@@ -557,13 +559,13 @@ const MusicFlashcardFinder = () => {
                           className="text-sm text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
                         >
                           <ExternalLink className="w-4 h-4" />
-                          Buscar online
+                          {t("search_online")}
                         </button>
                         <button
                           onClick={handleManualLyrics}
                           className="text-sm text-indigo-600 hover:text-indigo-700 underline"
                         >
-                          Adicionar manualmente
+                          {t("add_manually")}
                         </button>
                       </>
                     )}
@@ -573,8 +575,8 @@ const MusicFlashcardFinder = () => {
                 {isLoadingLyrics ? (
                   <div className="text-center py-12">
                     <Loader2 className="w-8 h-8 animate-spin text-indigo-600 mx-auto mb-3" />
-                    <p className="text-gray-500">Buscando legenda...</p>
-                    <p className="text-xs text-gray-400 mt-2">Isso pode levar alguns segundos</p>
+                    <p className="text-gray-500">{t("searching_captions")}</p>
+                    <p className="text-xs text-gray-400 mt-2">{t("may_take_seconds")}</p>
                   </div>
                 ) : lyrics ? (
                   <div className="space-y-1 max-h-96 overflow-y-auto">
@@ -590,7 +592,7 @@ const MusicFlashcardFinder = () => {
                           <div className={`flex items-center gap-2 ${copiedLine === line ? 'text-green-600' : 'text-gray-400 group-hover:text-indigo-600'}`}>
                             {copiedLine === line ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}
                             <span className="text-sm hidden sm:inline">
-                              {copiedLine === line ? 'Salvo!' : 'Salvar'}
+                              {copiedLine === line ? t("saved_label") : t("save_label")}
                             </span>
                           </div>
                         </div>
@@ -600,9 +602,9 @@ const MusicFlashcardFinder = () => {
                 ) : (
                   <div className="text-center py-12">
                     <Music4 className="w-20 h-20 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-600 font-medium mb-2">Legenda não disponível para este vídeo</p>
+                    <p className="text-gray-600 font-medium mb-2">{t("caption_not_available")}</p>
                     <p className="text-sm text-gray-500 mb-4">
-                      Nem todos os vídeos do YouTube possuem legendas ativadas
+                      {t("not_all_videos_have_captions")}
                     </p>
                     <div className="flex gap-3 justify-center">
                       <button
@@ -610,13 +612,13 @@ const MusicFlashcardFinder = () => {
                         className="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 flex items-center gap-2"
                       >
                         <ExternalLink className="w-4 h-4" />
-                        Buscar letra no Google
+                        {t("search_lyrics_google")}
                       </button>
                       <button
                         onClick={handleManualLyrics}
                         className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
                       >
-                        Adicionar manualmente
+                        {t("add_manually")}
                       </button>
                     </div>
                   </div>
@@ -629,11 +631,10 @@ const MusicFlashcardFinder = () => {
           {videos.length === 0 && !loading && !error && (
             <div className="text-center py-16">
               <Music4 className="w-20 h-20 text-gray-300 mx-auto mb-4" />
-              <p className="text-xl text-gray-500">Busque músicas no YouTube!</p>
+              <p className="text-xl text-gray-500">{t("search_music_prompt")}</p>
               <p className="text-sm text-gray-400 mt-2">Ex: "Imagine Dragons", "Coldplay", "Ed Sheeran"</p>
               <p className="text-xs text-gray-400 mt-4 max-w-md mx-auto">
-                💡 Dica: Para ter acesso às legendas, busque por músicas oficiais que tenham 
-                a opção de legendas/CC ativada no YouTube
+                {t("captions_tip")}
               </p>
             </div>
           )}

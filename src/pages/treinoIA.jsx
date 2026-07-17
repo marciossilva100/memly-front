@@ -4,10 +4,12 @@ import { playAudio } from "../utils/audioPlayer";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { RefreshCw } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import "../treinoIA.css";
 
 export default function TreinoIA() {
+    const { t } = useTranslation();
 
     const [textoTraduzido, setTextoTraduzido] = useState('');
     const [textoNativo, setTextoNativo] = useState('');
@@ -47,7 +49,7 @@ export default function TreinoIA() {
             })
             .catch(err => {
                 console.error(err);
-                setError('Não foi possível gerar o treino.');
+                setError(t("could_not_generate_training"));
             })
             .finally(() => setLoading(false));
     }, []);
@@ -67,7 +69,7 @@ export default function TreinoIA() {
         return (
             <div className="h-dvh flex items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
                 <Loader2 className="animate-spin mr-2 w-8 h-8 text-indigo-400" />
-                <span className="text-white text-lg">Gerando treino...</span>
+                <span className="text-white text-lg">{t("generating_training")}</span>
             </div>
         );
     }
@@ -114,7 +116,7 @@ export default function TreinoIA() {
                             onClick={() => playAudio(textoTraduzido, user, true)}
                             className="mt-2 px-4 py-2 bg-slate-500 text-white rounded  flex items-center"
                         >
-                            <Volume /> Ouvir
+                            <Volume /> {t("listen")}
                         </button>
                     </div>
                 </div>

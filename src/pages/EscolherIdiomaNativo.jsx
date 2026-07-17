@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react"
 import imgCoruja from "../assets/img/coruja.png"
 import { idiomas } from "../data/idiomas"
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura-v2.png"
 
 import imgMemly from "../assets/img/mascote-memly.png"
@@ -28,6 +29,7 @@ const flags = {
 
 
 export default function EscolherIdiomaNativo() {
+  const { t } = useTranslation();
   const { user, setUser, checkAuth } = useAuth();
   const [erro, setErro] = useState('')
   const [languageList, setLanguageList] = useState([])
@@ -81,7 +83,7 @@ export default function EscolherIdiomaNativo() {
         setLanguageList(data)
         // console.log(data)
       }).catch(() => {
-        setErro('Erro ao conectar com o servidor');
+        setErro(t("server_connection_error"));
       });
   }, [])
 
@@ -124,7 +126,7 @@ export default function EscolherIdiomaNativo() {
       navigate("/escolheridiomaaprender");
 
     } catch (error) {
-      setErro('Erro ao conectar com o servidor');
+      setErro(t("server_connection_error"));
     }
   }
 
@@ -153,7 +155,7 @@ export default function EscolherIdiomaNativo() {
     e.preventDefault();
 
     if (!form.native_language) {
-      setErro('Escolha um idioma')
+      setErro(t("choose_a_language"))
       return
     }
     languageRegister();
@@ -186,7 +188,7 @@ export default function EscolherIdiomaNativo() {
             />
           </div>}
           <h4 className="text-lg font-medium text-white">
-            Escolha seu idioma nativo
+            {t("choose_native_language_prompt")}
           </h4>
         </div>
 
@@ -214,7 +216,7 @@ export default function EscolherIdiomaNativo() {
                   </>
                 ) : (
                   <span className="text-sm text-white">
-                    Selecione um idioma
+                    {t("select_a_language")}
                   </span>
                 )}
 
@@ -291,7 +293,7 @@ export default function EscolherIdiomaNativo() {
           text-center
         "
           >
-            Confirmar
+            {t("confirm")}
           </button>
 
         </div>

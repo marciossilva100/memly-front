@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import {
     AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer,
@@ -23,6 +24,7 @@ import {
 } from 'lucide-react';
 
 export default function Metricas() {
+    const { t } = useTranslation();
     const [dadosGrafico, setDadosGrafico] = useState([]);
     const [dadosCategorias, setDadosCategorias] = useState([]);
     const [frasesPorCategoria, setFrasesPorCategoria] = useState({});
@@ -107,7 +109,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                 // Organizar frases por categoria
                 const agrupadas = {};
                 data.frases.forEach(frase => {
-                    const categoria = frase.categoria || 'Sem categoria';
+                    const categoria = frase.categoria || t("no_category");
                     if (!agrupadas[categoria]) {
                         agrupadas[categoria] = [];
                     }
@@ -191,14 +193,14 @@ const API_URL = import.meta.env.VITE_API_URL;
                     <div className="flex items-center gap-3">
                         <span className="font-medium text-white">{categoria}</span>
                         <span className="text-xs text-gray-400">
-                            {totalFrases} {totalFrases === 1 ? 'frase' : 'frases'}
+                            {totalFrases} {totalFrases === 1 ? t("phrase_singular") : t("phrase_plural")}
                         </span>
                         {frasesComTentativas.length > 0 && (
                             <span className={`text-xs px-2 py-0.5 rounded-full ${mediaCategoria >= 70 ? 'bg-green-500/20 text-green-400' :
                                     mediaCategoria >= 40 ? 'bg-yellow-500/20 text-yellow-400' :
                                         'bg-red-500/20 text-red-400'
                                 }`}>
-                                {mediaCategoria}% média
+                                {t("average_percent", { percent: mediaCategoria })}
                             </span>
                         )}
                     </div>
@@ -219,7 +221,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                                         {frase.total_tentativas > 0 ? (
                                             <>
                                                 <div className="text-center min-w-[40px]">
-                                                    <p className="text-gray-400 text-xs">Taxa</p>
+                                                    <p className="text-gray-400 text-xs">{t("rate_label")}</p>
                                                     <span className={`text-xs font-semibold ${frase.taxa_acerto >= 70 ? 'text-green-500' :
                                                             frase.taxa_acerto >= 40 ? 'text-yellow-500' :
                                                                 'text-red-500'
@@ -228,7 +230,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                                                     </span>
                                                 </div>
                                                 <div className="text-center min-w-[40px]">
-                                                    <p className="text-gray-400 text-xs">Tent.</p>
+                                                    <p className="text-gray-400 text-xs">{t("attempts_abbr")}</p>
                                                     <span className="text-white text-xs font-semibold">
                                                         {frase.total_tentativas}
                                                     </span>
@@ -244,7 +246,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                                                 )}
                                             </>
                                         ) : (
-                                            <span className="text-xs text-gray-500">Não iniciada</span>
+                                            <span className="text-xs text-gray-500">{t("not_started")}</span>
                                         )}
                                     </div>
                                 </div>
@@ -275,12 +277,12 @@ const API_URL = import.meta.env.VITE_API_URL;
                     <div>
                         <h1 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-2">
                             <TrendingUp className="w-6 h-6 md:w-8 md:h-8 text-green-400" />
-                            Métricas
+                            {t("metrics")}
                         </h1>
                         <p className="text-sm text-gray-400 mt-1">
                             {metricasGerais.totalQuestoes > 0
-                                ? `${metricasGerais.totalQuestoes} questões respondidas`
-                                : 'Comece a estudar para ver suas métricas'}
+                                ? t("questions_answered_count", { count: metricasGerais.totalQuestoes })
+                                : t("start_studying_hint")}
                         </p>
                     </div>
 
@@ -290,9 +292,9 @@ const API_URL = import.meta.env.VITE_API_URL;
                             onChange={(e) => setPeriodo(e.target.value)}
                             className="bg-gray-700 text-white text-sm border border-gray-600 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-400"
                         >
-                            <option value="7d">7 dias</option>
-                            <option value="30d">30 dias</option>
-                            <option value="90d">90 dias</option>
+                            <option value="7d">{t("days_count", { count: 7 })}</option>
+                            <option value="30d">{t("days_count", { count: 30 })}</option>
+                            <option value="90d">{t("days_count", { count: 90 })}</option>
                         </select>
 
                         <button
@@ -310,7 +312,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                 {/* Cards de Resumo - Sempre visíveis */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-4">
                     <CardMetrica
-                        titulo="Taxa de Acerto"
+                        titulo={t("accuracy_rate")}
                         valor={metricasGerais.taxaAcerto ? `${metricasGerais.taxaAcerto}%` : '0%'}
                         icone={Target}
                         cor="from-green-500 to-green-600"
@@ -321,7 +323,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                         valor={metricasGerais.streakAtual > 0 ? `${metricasGerais.streakAtual}d` : '0d'}
                         icone={Award}
                         cor="from-orange-500 to-orange-600"
-                        subtexto="dias seguidos"
+                        subtexto={t("consecutive_days")}
                     />
                 </div>
 
@@ -329,7 +331,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                 <div className="space-y-3">
                     {/* Gráfico de Desempenho */}
                     <DropdownSection
-                        titulo="Evolução do Desempenho"
+                        titulo={t("performance_evolution")}
                         icone={BarChart3}
                         aberto={dropdownsAbertos.grafico}
                         onToggle={() => toggleDropdown('grafico')}
@@ -381,7 +383,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                             ) : (
                                 <div className="flex flex-col items-center justify-center h-full text-gray-400">
                                     <AlertCircle className="w-12 h-12 mb-2 text-gray-600" />
-                                    <p className="text-sm">Nenhum dado no período</p>
+                                    <p className="text-sm">{t("no_data_period")}</p>
                                 </div>
                             )}
                         </div>
@@ -390,7 +392,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                     {/* Categorias */}
                     {/* Categorias */}
                     <DropdownSection
-                        titulo="Categorias"
+                        titulo={t("categories")}
                         icone={PieChartIcon}
                         aberto={dropdownsAbertos.categorias}
                         onToggle={() => toggleDropdown('categorias')}
@@ -421,7 +423,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                                             </Pie>
                                             <Tooltip
                                                 formatter={(value, name, props) => [
-                                                    `${value} questões`,
+                                                    `${value} ${t("question_plural")}`,
                                                     props.payload.name
                                                 ]}
                                                 contentStyle={{
@@ -437,7 +439,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
                                 {/* Lista de Categorias */}
                                 <div className="space-y-2">
-                                    <h4 className="text-sm font-medium text-gray-400 mb-2">Detalhamento por categoria:</h4>
+                                    <h4 className="text-sm font-medium text-gray-400 mb-2">{t("category_breakdown")}</h4>
                                     {dadosCategorias.map((categoria, index) => {
                                         // Calcular porcentagem do total
                                         const totalQuestoes = dadosCategorias.reduce((acc, cat) => acc + cat.value, 0);
@@ -451,7 +453,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                                                         <span className="text-white font-medium">{categoria.name}</span>
                                                     </div>
                                                     <span className="text-sm text-gray-300">
-                                                        {categoria.value} {categoria.value === 1 ? 'questão' : 'questões'}
+                                                        {categoria.value} {categoria.value === 1 ? t("question_singular") : t("question_plural")}
                                                     </span>
                                                 </div>
 
@@ -468,7 +470,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
                                                 {/* Porcentagem */}
                                                 <div className="flex justify-end mt-1">
-                                                    <span className="text-xs text-gray-400">{porcentagem}% do total</span>
+                                                    <span className="text-xs text-gray-400">{t("percent_of_total", { percent: porcentagem })}</span>
                                                 </div>
                                             </div>
                                         );
@@ -478,8 +480,8 @@ const API_URL = import.meta.env.VITE_API_URL;
                                 {/* Total de questões */}
                                 <div className="mt-4 pt-3 border-t border-gray-700 text-center">
                                     <p className="text-sm text-gray-400">
-                                        Total: <span className="text-white font-semibold">
-                                            {dadosCategorias.reduce((acc, cat) => acc + cat.value, 0)} questões
+                                        {t("total_label")} <span className="text-white font-semibold">
+                                            {dadosCategorias.reduce((acc, cat) => acc + cat.value, 0)} {t("question_plural")}
                                         </span>
                                     </p>
                                 </div>
@@ -487,15 +489,15 @@ const API_URL = import.meta.env.VITE_API_URL;
                         ) : (
                             <div className="text-center py-8 text-gray-400 text-sm">
                                 <AlertCircle className="w-12 h-12 mx-auto mb-2 text-gray-600" />
-                                <p>Nenhuma categoria encontrada</p>
-                                <p className="text-xs mt-1">As categorias aparecerão aqui quando você responder questões</p>
+                                <p>{t("no_category_found")}</p>
+                                <p className="text-xs mt-1">{t("categories_will_appear_hint")}</p>
                             </div>
                         )}
                     </DropdownSection>
 
                     {/* Frases por Categoria */}
                     <DropdownSection
-                        titulo="Frases por Categoria"
+                        titulo={t("phrases_by_category")}
                         icone={Layers}
                         aberto={dropdownsAbertos.frases}
                         onToggle={() => toggleDropdown('frases')}
@@ -521,7 +523,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                             </div>
                         ) : (
                             <div className="text-center py-8 text-gray-400 text-sm">
-                                Nenhuma frase encontrada
+                                {t("no_phrase_found")}
                             </div>
                         )}
                     </DropdownSection>

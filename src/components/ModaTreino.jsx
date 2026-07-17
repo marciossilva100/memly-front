@@ -108,7 +108,7 @@ export default function ModalTreino({
       if (hours > 0) {
         setMensagem(
           <span className="text-sm text-yellow-400">
-            Próximo treino em {hours}h {minutes}m
+            {t("next_training_hours", { hours, minutes })}
           </span>
         );
         setWaiting(true);
@@ -116,7 +116,7 @@ export default function ModalTreino({
       else if (minutes > 0) {
         setMensagem(
           <span className="text-sm text-yellow-400">
-            Próximo treino em {minutes}m {sec}s
+            {t("next_training_minutes", { minutes, sec })}
           </span>
         );
         setWaiting(true);
@@ -124,7 +124,7 @@ export default function ModalTreino({
       else {
         setMensagem(
           <span className="text-sm text-red-700 text-white">
-            Faltam {sec}s
+            {t("remaining_seconds", { sec })}
           </span>
         );
         setWaiting(true);

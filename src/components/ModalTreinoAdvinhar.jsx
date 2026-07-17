@@ -1,5 +1,6 @@
 import { Dialog } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import {
     Shuffle,
@@ -10,6 +11,7 @@ import {
 } from "lucide-react";
 
 export default function ModalTreinoAdvinhar({ setOpenTreinoAdvinhar, openTreinoAdvinhar, categoriaId }) {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     return (
@@ -43,7 +45,7 @@ export default function ModalTreinoAdvinhar({ setOpenTreinoAdvinhar, openTreinoA
                             setOpenTreinoAdvinhar(false);
                             navigate(`/emparelhar/${categoriaId}/traine`);
                         }}> 
-                            <span className="text-lg text-white">Emparelhar</span>
+                            <span className="text-lg text-white">{t("match")}</span>
                         </div>
                     </div>
                     <div className="flex  gap-2 items-center space-x-15 mb-4">
@@ -55,7 +57,7 @@ export default function ModalTreinoAdvinhar({ setOpenTreinoAdvinhar, openTreinoA
                             setOpenTreinoAdvinhar(false);
                             navigate(`/flashcards/${categoriaId}/traine`);
                         }}>
-                            <span className="text-lg text-white leading-tight">Relembrar</span>
+                            <span className="text-lg text-white leading-tight">{t("remember")}</span>
                         </div>
                     </div>
                     <div className="flex  gap-2 items-center space-x-15">
@@ -67,7 +69,7 @@ export default function ModalTreinoAdvinhar({ setOpenTreinoAdvinhar, openTreinoA
                             setOpenTreinoAdvinhar(false);
                             navigate(`/digitartexto/${categoriaId}/traine`);
                         }}>
-                            <span className="text-lg leading-tight  flex text-white">Digitar</span>
+                            <span className="text-lg leading-tight  flex text-white">{t("type")}</span>
                         </div>
                     </div>
 

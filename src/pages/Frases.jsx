@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import ModalFrase from "../components/ModalFrase";
 import { useAuth } from "../context/AuthContext";
 import PremiumModal from '../components/PremiumModal';
+import ModalConfirm from '../components/ModalConfirm';
+import { useTranslation } from "react-i18next";
 
 import {
     Trash,
@@ -12,6 +14,7 @@ import {
 
 
 export default function Frases() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const { user } = useAuth();
 
@@ -20,6 +23,8 @@ export default function Frases() {
     const [textoBusca, setTextoBusca] = useState("")
     const [openFrase, setOpenFrase] = useState(false)
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+    const [openModalConfirm, setOpenModalConfirm] = useState(false);
+    const [deleteId, setDeleteId] = useState(0);
     const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
 
@@ -98,6 +103,10 @@ export default function Frases() {
 
     }
 
+    function confirmarExclusaoFrase() {
+        deletePhrase(deleteId);
+        setOpenModalConfirm(false);
+    }
 
     return (
 
@@ -119,7 +128,7 @@ export default function Frases() {
                     <input
                         type="email"
                         className="w-full px-3 py-2 outline-none text-lg text-white !bg-transparent"
-                        placeholder="Buscar"
+                        placeholder={t("search")}
                         value={textoBusca}
                         onChange={(e) => {
                             setTextoBusca(e.target.value)
@@ -140,7 +149,7 @@ export default function Frases() {
 
 
                     {loading && <div className="h-screen flex items-center justify-center text-white">
-                        Carregando...
+                        {t("loading_dots")}
                     </div>}
                     <div className="flex-1 overflow-y-auto scrollbar-hide">
 
@@ -149,7 +158,10 @@ export default function Frases() {
                                 <div>{item.texto_nativo}</div>
                                 <div>{item.texto_traduzido}</div>
                                 <div className="flex justify-center">
-                                    <Trash size={18} className="text-red-400" onClick={() => deletePhrase(item.id)} />
+                                    <Trash size={18} className="text-red-400" onClick={() => {
+                                        setDeleteId(item.id);
+                                        setOpenModalConfirm(true);
+                                    }} />
                                 </div>
                             </div>
                         ))}
@@ -170,7 +182,7 @@ export default function Frases() {
                     transition
                     "
                         onClick={() => setOpenFrase(true)}>
-                        Adicionar
+                        {t("add")}
                     </button>
                 </div>
             </div>
@@ -186,6 +198,12 @@ export default function Frases() {
                     setOpenFrase(true)
                 }
                 } setOpenPhrase={setOpenFrase} />
+            <ModalConfirm
+                openModalConfirm={openModalConfirm}
+                setOpenModalConfirm={setOpenModalConfirm}
+                msg={t("confirm_delete_phrase")}
+                onConfirm={confirmarExclusaoFrase}
+            />
 
         </div>
     );

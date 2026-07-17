@@ -3,8 +3,10 @@ import { Volume, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { playAudio } from "../utils/audioPlayer";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 export default function Perguntas() {
+    const { t } = useTranslation();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null)
     const [question, setQuestion] = useState('')
@@ -23,7 +25,7 @@ export default function Perguntas() {
 
     // 🔁 FUNÇÃO PARA BUSCAR PERGUNTA
     const fetchQuestion = () => {
-        setTextLoading('Gerando treino...')
+        setTextLoading(t("generating_training"))
         setLoading(true);
         setError(null);
 
@@ -56,7 +58,7 @@ export default function Perguntas() {
             })
             .catch(err => {
                 console.error(err);
-                setError('Não foi possível gerar o treino.');
+                setError(t("could_not_generate_training"));
             })
             .finally(() => setLoading(false));
     };
@@ -101,7 +103,7 @@ export default function Perguntas() {
     };
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setTextLoading('Processando resposta...');
+        setTextLoading(t("processing_answer"));
         setLoading(true);
 
         try {
@@ -163,7 +165,7 @@ export default function Perguntas() {
         return (
             <div className="min-h-[calc(100vh-70px)] flex flex-col items-center justify-center text-center p-6 ">
                 <h1 className="text-2xl font-semibold text-yellow-600 mb-4">
-                    ⚠️ Conteúdo insuficiente
+                    {t("insufficient_content")}
                 </h1>
 
                 <p className="text-slate-600 mb-2">
@@ -171,14 +173,14 @@ export default function Perguntas() {
                 </p>
 
                 <p className="text-slate-500">
-                    Adicione mais frases com mais detalhes para liberar o treino.
+                    {t("add_more_phrases_hint")}
                 </p>
 
                 <button
                     onClick={() => navigate(-1)}
                     className="mt-6 px-6 py-3 rounded-full bg-[#4cb8c4] text-white"
                 >
-                    Voltar
+                    {t("back")}
                 </button>
             </div>
         );
@@ -189,20 +191,20 @@ export default function Perguntas() {
         return (
             <div className="h-screen flex flex-col items-center justify-center text-center p-6 from-gray-900 to-gray-800 bg-gradient-to-br">
                 <h1 className="text-2xl font-semibold text-red-400 mb-4">
-                    Limite diário atingido 🚫
+                    {t("daily_limit_reached")}
                 </h1>
                 <p className="text-white">
-                    Você já fez {totalToday} perguntas hoje.
+                    {t("already_did_questions_today", { count: totalToday })}
                 </p>
                 <p className="text-white mt-2">
-                    Volte amanhã para continuar praticando 💪
+                    {t("come_back_tomorrow")}
                 </p>
 
                 <button
                     onClick={() => navigate(-1)}
                     className="mt-6 px-6 py-3 rounded-full  text-white"
                 >
-                    Voltar
+                    {t("back")}
                 </button>
             </div>
         );
@@ -222,7 +224,7 @@ export default function Perguntas() {
 
                 {/* PROGRESSO */}
                 <p className="text-sm text-white text-center mb-2">
-                    {totalToday}/4 perguntas hoje
+                    {t("questions_today_progress", { count: totalToday })}
                 </p>
 
                 {response && !isCorrect &&
@@ -248,7 +250,7 @@ export default function Perguntas() {
                                     playAudio(question, user, true);
                                 }} className="px-4 py-2 rounded-md bg-slate-400 text-white text-sm hover:bg-blue-600 transition flex">
                                     <Volume className="w-5 h-5" />
-                                    Ouvir
+                                    {t("listen")}
                                 </button>
                             </div>
                         </div>
@@ -257,7 +259,7 @@ export default function Perguntas() {
                             <textarea
                                 value={answer}
                                 onChange={(e) => setAnswer(e.target.value)}
-                                placeholder="Deixe sua resposta em inglês"
+                                placeholder={t("leave_answer_in_english")}
                                 className="text-white w-full mb-6 text-lg h-32 pt-6 text-center rounded-lg bg-gray-800/50 backdrop-blur-sm  border border-gray-700 resize-none"
                             />
                         </div>
@@ -268,7 +270,7 @@ export default function Perguntas() {
             {!response &&
                 <div className="sticky bottom-0 py-4 text-center">
                     <button form="respostaForm" className="px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm  border border-gray-700 text-white w-full">
-                        Enviar
+                        {t("send")}
                     </button>
                 </div>
             }
@@ -278,13 +280,13 @@ export default function Perguntas() {
                     <button
                         onClick={tryAgain}
                         className="px-6 py-3 w-full rounded-full bg-red-400/70 backdrop-blur-sm  border border-gray-700 text-white">
-                        Tentar novamente
+                        {t("try_again")}
                     </button>
 
                     <button
                         onClick={handleSkip}
                         className="px-8 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm  border border-gray-700 text-white">
-                        Próxima
+                        {t("next_question")}
                     </button>
                 </div>
             }

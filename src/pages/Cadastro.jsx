@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import imgZaldemy from "../assets/img/zaldemy.png"
 import imgGoogle from '../assets/img/google.png'
@@ -8,6 +9,7 @@ import imgFacebook from '../assets/img/logo-face.webp'
 import imgMemly from "../assets/img/mascote-memly.png"
 
 export default function Cadastro({ setTitulo }) {
+    const { t } = useTranslation();
 
     const [loading, setLoading] = useState(false);
     const [finish, setFinish] = useState(false)
@@ -26,7 +28,7 @@ const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
 
     useEffect(() => {
-        setTitulo('Cadastro')
+        setTitulo(t("sign_up"))
     }, [])
 
     const handleChange = (e) => {
@@ -40,22 +42,22 @@ const API_URL = import.meta.env.VITE_API_URL;
         e.preventDefault()
 
         if (!form.name) {
-            setErro('O nome deve ser preenchido')
+            setErro(t("name_required"))
             return
         }
 
         if (!form.email) {
-            setErro('O email deve ser preenchido')
+            setErro(t("email_required"))
             return
         }
 
         if (!form.password) {
-            setErro('Digite a senha')
+            setErro(t("enter_password"))
             return
         }
 
         if (!form.confirm_password) {
-            setErro('Digite a senha para confirmar')
+            setErro(t("enter_password_confirm"))
             return
         }
 
@@ -97,14 +99,14 @@ const API_URL = import.meta.env.VITE_API_URL;
 
             })
             .catch(() => {
-                setErro('Erro ao conectar com o servidor')
+                setErro(t("server_connection_error"))
             })
     }
 
     if (loading) {
         return (
             <div className="flex h-[calc(100vh-110px)] items-center justify-center bg-white-100">
-                <img src={imgMemly} alt="Carregando" className="w-28 animate-pulse"/>
+                <img src={imgMemly} alt={t("loading")} className="w-28 animate-pulse"/>
             </div>
         );
     }
@@ -121,7 +123,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                     </div>
 
                     <h5 className="text-sm text-gray-600">
-                        Faça seu cadastro
+                        {t("do_your_signup")}
                     </h5>
 
                     <form onSubmit={handleSubmit} className="mt-4 space-y-4">
@@ -131,7 +133,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                             <input
                                 type="text"
                                 className="w-full px-4 outline-none"
-                                placeholder="Nome"
+                                placeholder={t("name")}
                                 name="name"
                                 value={form.name}
                                 onChange={(e) => {
@@ -146,7 +148,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                             <input
                                 type="email"
                                 className="w-full px-4 outline-none"
-                                placeholder="Email"
+                                placeholder={t("email")}
                                 name="email"
                                 value={form.email}
                                 onChange={(e) => {
@@ -162,7 +164,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                             <input
                                 type={showPassword ? "text" : "password"}
                                 className="w-full px-2 outline-none"
-                                placeholder="Senha"
+                                placeholder={t("password")}
                                 name="password"
                                 value={form.password}
                                 onChange={(e) => {
@@ -187,7 +189,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                             <input
                                 type={showConfirmPassword ? "text" : "password"}
                                 className="w-full px-2 outline-none"
-                                placeholder="Confirmar senha"
+                                placeholder={t("confirm_password_placeholder")}
                                 name="confirm_password"
                                 value={form.confirm_password}
                                 onChange={(e) => {
@@ -216,7 +218,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                             type="submit"
                             className="w-full bg-avocado-500 text-white py-2 rounded-full fw-700"
                         >
-                            Cadastrar
+                            {t("sign_up_button")}
                         </button>
 
                     </form>
@@ -224,29 +226,29 @@ const API_URL = import.meta.env.VITE_API_URL;
                     <div className="flex items-center my-6">
                         <div className="flex-grow border-t"></div>
                         <span className="mx-3 text-gray-400 text-sm">
-                            Ou cadastre-se com
+                            {t("or_signup_with")}
                         </span>
                         <div className="flex-grow border-t"></div>
                     </div>
 
                     <button className="text-sm w-full border border-gray-300 py-3 rounded-full flex items-center justify-center gap-3">
                         <img src={imgGoogle} alt="Google icone" width={20}/>
-                        Entrar com Google
+                        {t("continue_with_google")}
                     </button>
 
                     <br />
 
                     <button className="text-sm w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-full flex items-center justify-center gap-3">
                         <img src={imgFacebook} alt="Facebook icone" width={20}/>
-                        Entrar com Facebook
+                        {t("continue_with_facebook")}
                     </button>
 
                     <br />
 
                     <p className="text-sm">
-                        Já tem uma conta?{' '}
+                        {t("already_have_account")}{' '}
                         <Link to="/login" className="underline text-primary">
-                            Entrar
+                            {t("sign_in")}
                         </Link>
                     </p>
 

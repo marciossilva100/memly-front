@@ -21,8 +21,8 @@ function AuthGate({ children }) {
         );
     }
 
-    // 🔐 Se estiver logado e tentar acessar login
-    if (user && (location.pathname === "/login" || location.pathname === "/")) {
+    // 🔐 Se estiver logado e tentar acessar login/cadastro
+    if (user && (location.pathname === "/login" || location.pathname === "/" || location.pathname === "/cadastrar")) {
 
         if (user.step > 2) {
             return <Navigate to="/home" replace />;

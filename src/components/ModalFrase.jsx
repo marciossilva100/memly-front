@@ -7,7 +7,7 @@ import { playAudio } from "../utils/audioPlayer";
 import { useTranslation } from "react-i18next";
 
 
-export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listPhrase, onOpenPremium }) {
+export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listPhrase, onOpenPremium, phraseToEdit }) {
     const { t } = useTranslation();
     const { user, setUser } = useAuth();
 
@@ -19,6 +19,16 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
     const [errorTranslatedPhrase, setErrorTranslatedPhrase] = useState('')
     const [error, setError] = useState('')
     const API_URL = import.meta.env.VITE_API_URL;
+    const isEditing = Boolean(phraseToEdit?.id);
+
+    useEffect(() => {
+        if (openPhrase) {
+            setPhrase(phraseToEdit?.texto_nativo || '');
+            setTranslatedPhrase(phraseToEdit?.texto_traduzido || '');
+            setErrorPhrase('');
+            setErrorTranslatedPhrase('');
+        }
+    }, [openPhrase, phraseToEdit]);
 
     async function handleSubmit(e) {
         e.preventDefault()
@@ -44,7 +54,8 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 },
                 body: JSON.stringify({
-                    action: 'add_phrase',
+                    action: isEditing ? 'edit_phrase' : 'add_phrase',
+                    ...(isEditing && { id_phrase: phraseToEdit.id }),
                     phrase: phrase,
                     translatedPhrase: translatedPhrase,
                     category_id: category
@@ -64,7 +75,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
             setOpenPhrase(false)
 
             onSuccess?.();
-            onOpenModalSucesso(t("added_successfully"))
+            onOpenModalSucesso(isEditing ? t("edited_successfully") : t("added_successfully"))
 
         } catch (error) {
             console.log(error?.message || "Erro inesperado")

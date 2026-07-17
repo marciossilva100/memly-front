@@ -22,6 +22,7 @@ export default function Frases() {
     const [loading, setLoading] = useState(false);
     const [textoBusca, setTextoBusca] = useState("")
     const [openFrase, setOpenFrase] = useState(false)
+    const [fraseEditando, setFraseEditando] = useState(null)
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
     const [openModalConfirm, setOpenModalConfirm] = useState(false);
     const [deleteId, setDeleteId] = useState(0);
@@ -108,6 +109,15 @@ export default function Frases() {
         setOpenModalConfirm(false);
     }
 
+    const buscaNormalizada = textoBusca.trim().toLowerCase();
+
+    const frasesFiltradas = buscaNormalizada
+        ? frases.filter(item =>
+            item.texto_nativo?.toLowerCase().includes(buscaNormalizada) ||
+            item.texto_traduzido?.toLowerCase().includes(buscaNormalizada)
+        )
+        : frases;
+
     return (
 
         <div className="px-5 h-dvh flex flex-col bg-gray-900 ">
@@ -130,10 +140,7 @@ export default function Frases() {
                         className="w-full px-3 py-2 outline-none text-lg text-white !bg-transparent"
                         placeholder={t("search")}
                         value={textoBusca}
-                        onChange={(e) => {
-                            setTextoBusca(e.target.value)
-                            setErro('')
-                        }}
+                        onChange={(e) => setTextoBusca(e.target.value)}
                     />
                 </div>
             </div>
@@ -151,20 +158,29 @@ export default function Frases() {
                     {loading && <div className="h-screen flex items-center justify-center text-white">
                         {t("loading_dots")}
                     </div>}
-                    <div className="flex-1 overflow-y-auto scrollbar-hide">
+                    <div className="flex-1 overflow-y-auto scrollbar-hide pb-24">
 
-                        {!loading && frases.map(item => (
-                            <div key={item.id} className="text-lg grid grid-cols-[1fr_1fr_auto] gap-4 items-center  py-3 border-b-2 overflow text-white" >
-                                <div>{item.texto_nativo}</div>
-                                <div>{item.texto_traduzido}</div>
-                                <div className="flex justify-center">
-                                    <Trash size={18} className="text-red-400" onClick={() => {
-                                        setDeleteId(item.id);
-                                        setOpenModalConfirm(true);
-                                    }} />
+                        {!loading && frasesFiltradas.map((item, index) => {
+                            const isLast = index === frasesFiltradas.length - 1;
+                            return (
+                                <div key={item.id} className={`text-lg grid grid-cols-[1fr_1fr_auto] gap-4 items-center py-3 overflow text-white cursor-pointer ${!isLast ? 'border-b-2' : ''}`}
+                                    onClick={() => {
+                                        setFraseEditando(item);
+                                        setOpenFrase(true);
+                                    }}
+                                >
+                                    <div>{item.texto_nativo}</div>
+                                    <div>{item.texto_traduzido}</div>
+                                    <div className="flex justify-center">
+                                        <Trash size={18} className="text-red-400" onClick={(e) => {
+                                            e.stopPropagation();
+                                            setDeleteId(item.id);
+                                            setOpenModalConfirm(true);
+                                        }} />
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
 
                     </div>
                 </div>
@@ -181,13 +197,17 @@ export default function Frases() {
                     hover:bg-blue-600
                     transition
                     "
-                        onClick={() => setOpenFrase(true)}>
+                        onClick={() => {
+                            setFraseEditando(null);
+                            setOpenFrase(true);
+                        }}>
                         {t("add")}
                     </button>
                 </div>
             </div>
 
             <ModalFrase openPhrase={openFrase} setOpenPhrase={setOpenFrase} category={id} listPhrase={listPhrase}
+                phraseToEdit={fraseEditando}
                 onOpenPremium={() => {
                     setIsPremiumModalOpen(true);
                     setOpenFrase(false);

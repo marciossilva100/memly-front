@@ -98,6 +98,7 @@ export default function Login({ setTitulo }) {
     // No seu componente Login, modifique:
     const login = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
+            setLoading(true);
             try {
                 const res = await fetch(`${API_URL}/controller/auth.php`, {
                     method: 'POST',
@@ -112,6 +113,7 @@ export default function Login({ setTitulo }) {
 
                 if (!data.sucesso) {
                     setErro(data.erro || t("google_login_error"));
+                    setLoading(false);
                     return;
                 }
 
@@ -121,6 +123,7 @@ export default function Login({ setTitulo }) {
 
                 if (!loggedUser) {
                     setErro(t("google_login_error"));
+                    setLoading(false);
                     return;
                 }
 
@@ -133,6 +136,7 @@ export default function Login({ setTitulo }) {
             } catch (error) {
                 console.error(error);
                 setErro(t("server_connection_error"));
+                setLoading(false);
             }
         },
         onError: () => {
@@ -211,6 +215,14 @@ export default function Login({ setTitulo }) {
     //     navigate("/home")
     //     return
     // }
+
+    if (loading) {
+        return (
+            <div className="flex h-[calc(100vh-110px)] items-center justify-center bg-white-100">
+                <img src={imgMemly} alt={t("loading")} className="w-28 animate-pulse" />
+            </div>
+        );
+    }
 
     // NOVA FUNCIONALIDADE: Se for acesso por desktop (não mobile), mostrar apenas QR Code
     if (!isMobile) {
@@ -514,10 +526,10 @@ export default function Login({ setTitulo }) {
                     <br />
 
                     {/* Facebook */}
-                    <button className="text-sm w-full  hover:bg-[#0d65d9] text-white py-2 rounded-full border border-gray-300 flex items-center justify-center gap-3 transition-colors">
+                    {/* <button className="text-sm w-full  hover:bg-[#0d65d9] text-white py-2 rounded-full border border-gray-300 flex items-center justify-center gap-3 transition-colors">
                         <img src={imgFacebook} alt="Facebook icone" width={30} className="rounded-full" />
                         <span className="ff-inter">{t("continue_with_facebook")}</span>
-                    </button>
+                    </button> */}
 
                     <br />
 

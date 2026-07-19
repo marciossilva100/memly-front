@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { Loader2, Volume } from "lucide-react";
+import { Volume } from "lucide-react";
 import { playAudio } from "../utils/audioPlayer";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { RefreshCw } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
 import "../treinoIA.css";
 
@@ -67,9 +68,12 @@ export default function TreinoIA() {
 
     if (loading) {
         return (
-            <div className="h-dvh flex items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
-                <Loader2 className="animate-spin mr-2 w-8 h-8 text-indigo-400" />
-                <span className="text-white text-lg">{t("generating_training")}</span>
+            <div className="flex h-screen items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
+                <img
+                    src={imgChapeuFormatura}
+                    alt={t("loading")}
+                    className="w-28 animate-pulse"
+                />
             </div>
         );
     }

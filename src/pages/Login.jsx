@@ -5,7 +5,7 @@ import imgLogin from '../assets/img/img-login.png'
 import imgGoogle from '../assets/img/google.png'
 import imgFacebook from '../assets/img/logo-face.webp'
 import imgCoruja from '../assets/img/coruja.png'
-import imgMemly from "../assets/img/mascote-memly.png"
+import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 import imgZaldemy from "../assets/img/zaldemy.png"
 import { useAuth } from "../context/AuthContext";
 import { GoogleLogin } from '@react-oauth/google';
@@ -218,8 +218,12 @@ export default function Login({ setTitulo }) {
 
     if (loading) {
         return (
-            <div className="flex h-[calc(100vh-110px)] items-center justify-center bg-white-100">
-                <img src={imgMemly} alt={t("loading")} className="w-28 animate-pulse" />
+            <div className="flex h-screen items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
+                <img
+                    src={imgChapeuFormatura}
+                    alt={t("loading")}
+                    className="w-28 animate-pulse"
+                />
             </div>
         );
     }

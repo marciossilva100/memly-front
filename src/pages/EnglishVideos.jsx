@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader2} from "lucide-react";
 import { useTranslation } from "react-i18next";
+import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
 export default function EnglishVideos({ query = "english conversation", max = 6 }) {
     const { t } = useTranslation();
@@ -36,9 +36,12 @@ export default function EnglishVideos({ query = "english conversation", max = 6 
 
    if (loading) {
         return (
-            <div className="min-h-[calc(100vh-70px)] flex items-center justify-center">
-                <Loader2 className="animate-spin mr-2 w-8 h-8 text-indigo-600" />
-                <span className="text-slate-700 text-lg">{t("loading_videos")}</span>
+            <div className="flex h-screen items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
+                <img
+                    src={imgChapeuFormatura}
+                    alt={t("loading")}
+                    className="w-28 animate-pulse"
+                />
             </div>
         );
     }

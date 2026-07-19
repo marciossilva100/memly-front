@@ -17,7 +17,8 @@ import {
     Mail,
     Crown,
     LogOut,
-    Search
+    Search,
+    Share2
 } from "lucide-react";
 
 // 🌍 Bandeiras
@@ -61,6 +62,7 @@ export default function Header({ titulo }) {
     const navigate = useNavigate()
     const { pathname } = useLocation();
     const rotaBase = pathname.split('/')[1] || 'home';
+    const mostrarSeletorIdioma = pathname === '/home' || pathname === '/metricas' || pathname === '/listcategorias';
 
     const [open, setOpen] = useState(false)
     const [openSelect, setOpenSelect] = useState(false)
@@ -75,6 +77,22 @@ export default function Header({ titulo }) {
     );
 
     const selectRef = useRef(null);
+
+    async function handleShareApp() {
+        const shareData = {
+            title: "Zaldemy",
+            text: t("share_app"),
+            url: window.location.origin,
+        };
+
+        if (navigator.share) {
+            try {
+                await navigator.share(shareData);
+            } catch { }
+        } else {
+            await navigator.clipboard.writeText(shareData.url);
+        }
+    }
 
     // 🔽 Buscar idiomas
     useEffect(() => {
@@ -145,7 +163,7 @@ export default function Header({ titulo }) {
     return (
         <div className={`w-full section-header ${rotaBase === '/home' ? 'shadow-md pb-1' : ''}`}>
 
-            {pathname === '/home' ? (
+            {mostrarSeletorIdioma ? (
                 <header className="from-gray-900 to-gray-800 bg-gradient-to-br">
                     <div className="w-full mx-auto px-4">
                         <div className="flex h-16 ">
@@ -267,21 +285,31 @@ export default function Header({ titulo }) {
 
                 <nav className="flex flex-col text-sm font-medium">
 
-                    <a href="/" className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-white text-lg">
+                    <button type="button" onClick={() => navigate('/')} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-white text-lg text-left">
                         <HelpCircle size={18} />
                         {t("faq")}
-                    </a>
+                    </button>
 
-                    <a href="/" className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-white text-lg">
+                    <button type="button" onClick={() => navigate('/')} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-white text-lg text-left">
                         <Mail size={18} />
                         {t("contact")}
 
-                    </a>
+                    </button>
 
-                    <a href="/" className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 text-white text-lg">
+                    <button onClick={handleShareApp} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-white text-lg text-left">
+                        <Share2 size={18} />
+                        {t("share_app")}
+                    </button>
+
+                    <button type="button" onClick={() => { setOpen(false); navigate('/configuracoes'); }} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-white text-lg text-left">
+                        <Settings size={18} />
+                        {t("settings")}
+                    </button>
+
+                    {/* <a href="/" className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 text-white text-lg">
                         <Crown size={20} className='text-yellow-500' />
                         {t("premium_plan")}
-                    </a>
+                    </a> */}
 
                     <div className='px-4 py-3 text-white text-lg'>
                         <BotaoLogout />

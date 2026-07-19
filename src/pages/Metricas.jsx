@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../context/AuthContext";
+import ModalCategorias from '../components/ModalCategorias';
+import ModalSucesso from '../components/ModalSucesso';
 
 import {
     AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer,
@@ -20,11 +23,14 @@ import {
     AlertCircle,
     PieChart as PieChartIcon,
     BarChart3,
-    Layers
+    Layers,
+    Settings,
+    Home
 } from 'lucide-react';
 
 export default function Metricas() {
     const { t } = useTranslation();
+    const { user } = useAuth();
     const [dadosGrafico, setDadosGrafico] = useState([]);
     const [dadosCategorias, setDadosCategorias] = useState([]);
     const [frasesPorCategoria, setFrasesPorCategoria] = useState({});
@@ -42,6 +48,11 @@ const API_URL = import.meta.env.VITE_API_URL;
 
     // Estado para controlar qual categoria está expandida
     const [categoriaExpandida, setCategoriaExpandida] = useState(null);
+
+    // Estados do modal de adicionar categoria
+    const [open, setOpen] = useState(false);
+    const [openModalSucesso, setOpenModalSucesso] = useState(false);
+    const [msgModalSucesso, setMsgModalSucesso] = useState('');
 
     const [metricasGerais, setMetricasGerais] = useState({
         totalAcertos: 0,
@@ -135,7 +146,7 @@ const API_URL = import.meta.env.VITE_API_URL;
     useEffect(() => {
         carregarDashboard();
         carregarFrasesPorCategoria();
-    }, [periodo]);
+    }, [periodo, user?.learning_language]);
 
     // Card de métrica
     const CardMetrica = ({ titulo, valor, icone: Icone, cor, subtexto }) => (
@@ -181,7 +192,7 @@ const API_URL = import.meta.env.VITE_API_URL;
         const totalFrases = frases.length;
         const frasesComTentativas = frases.filter(f => f.total_tentativas > 0);
         const mediaCategoria = frasesComTentativas.length > 0
-            ? Math.round(frasesComTentativas.reduce((acc, f) => acc + (f.taxa_acerto || 0), 0) / frasesComTentativas.length)
+            ? Math.round(frasesComTentativas.reduce((acc, f) => acc + (Number(f.taxa_acerto) || 0), 0) / frasesComTentativas.length)
             : 0;
 
         return (
@@ -258,9 +269,11 @@ const API_URL = import.meta.env.VITE_API_URL;
         );
     };
 
+    const totalQuestoesCategorias = dadosCategorias.reduce((acc, cat) => acc + (Number(cat.value) || 0), 0);
+
     return (
-        <div className="h-dvh  from-gray-900 to-gray-800 bg-gradient-to-br">
-            <div className="p-3 md:p-6 max-w-5xl mx-auto  bg-gradient-to-br px-6">
+        <div className="h-[calc(100dvh-64px)] flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
+            <div className="flex-1 overflow-y-auto scrollbar-hide p-3 md:p-6 max-w-5xl mx-auto w-full px-6 pb-[220px]">
                 {/* Cabeçalho com voltar */}
                 <div className="mb-4">
                     <button
@@ -441,9 +454,9 @@ const API_URL = import.meta.env.VITE_API_URL;
                                 <div className="space-y-2">
                                     <h4 className="text-sm font-medium text-gray-400 mb-2">{t("category_breakdown")}</h4>
                                     {dadosCategorias.map((categoria, index) => {
-                                        // Calcular porcentagem do total
-                                        const totalQuestoes = dadosCategorias.reduce((acc, cat) => acc + cat.value, 0);
-                                        const porcentagem = ((categoria.value / totalQuestoes) * 100).toFixed(1);
+                                        const porcentagem = totalQuestoesCategorias > 0
+                                            ? (((Number(categoria.value) || 0) / totalQuestoesCategorias) * 100).toFixed(1)
+                                            : '0.0';
 
                                         return (
                                             <div key={index} className="bg-gray-700/30 rounded-lg p-3">
@@ -481,7 +494,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                                 <div className="mt-4 pt-3 border-t border-gray-700 text-center">
                                     <p className="text-sm text-gray-400">
                                         {t("total_label")} <span className="text-white font-semibold">
-                                            {dadosCategorias.reduce((acc, cat) => acc + cat.value, 0)} {t("question_plural")}
+                                            {totalQuestoesCategorias} {t("question_plural")}
                                         </span>
                                     </p>
                                 </div>
@@ -529,6 +542,37 @@ const API_URL = import.meta.env.VITE_API_URL;
                     </DropdownSection>
                 </div>
             </div>
+
+            <div className="fixed inset-x-0 bottom-0 z-10 text-center w-full justify-items-center justify-center items-center  from-gray-900 to-gray-800 bg-gradient-to-br ">
+
+
+                <div className=" w-full ">
+                    <div className='flex  left-0   w-full justify-center py-2 '>
+                        <button type="button" onClick={() => navigate('/home')}>
+                            <div className=' p-3 flex justify-center items-center'>
+                                <Home width={38} height={38} className='text-green-400' />
+                            </div>
+                        </button>
+                        <button type="button" onClick={() => navigate('/configuracoes')}>
+                            <div className=' p-3 flex justify-center items-center'>
+                                <Settings width={38} height={38} className='text-purple-400' />
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <ModalCategorias
+                setOpen={setOpen}
+                open={open}
+                onOpenModalSucesso={(msgSucesso) => {
+                    setOpen(false);
+                    setOpenModalSucesso(true);
+                    setMsgModalSucesso(msgSucesso);
+                }}
+                setOpenModalSucesso={setOpenModalSucesso}
+            />
+            <ModalSucesso msg={msgModalSucesso} openModalSucesso={openModalSucesso} setOpenModalSucesso={setOpenModalSucesso} />
         </div>
     );
 }

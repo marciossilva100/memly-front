@@ -1,6 +1,6 @@
 import { Dialog } from "@headlessui/react";
 import { Play, Repeat, Check, Crown, Bot } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { playAudio } from "../utils/audioPlayer";
@@ -29,14 +29,21 @@ export default function ModalTreino({
     review: 0,
     traine: null
   });
+  const statsCache = useRef({});
 
   // =========================
   // BUSCAR DADOS DO TREINO
   // =========================
   useEffect(() => {
 
-
     if (!openTreino) return;
+
+    const cached = statsCache.current[categoriaId];
+
+    if (cached) {
+      // Mostra o dado já conhecido na hora, sem esperar a rede
+      setCountPhrases(cached);
+    }
 
     fetch(`${API_URL}/controller/treino.php`, {
       method: "POST",
@@ -63,6 +70,7 @@ export default function ModalTreino({
           traine: data.data?.[1]?.segundos_restantes ?? 0
         };
 
+        statsCache.current[categoriaId] = newState;
         setCountPhrases(newState);
 
       })

@@ -379,28 +379,27 @@ export default function Home() {
                     <div className='flex  left-0   w-full justify-center py-2 '>
                         {/*  <a href="/leituradigital"> <div className='bg-blue-400 rounded-full p-3 flex justify-center items-center'> */}
 
-                        <a href="/leituradigital">
+                        <button type="button" onClick={() => navigate('/configuracoes')}>
                             <div className=' p-3 flex justify-center items-center'>
                                 {/*  <BookOpen className='text-white' /> */}
                                 <Settings width={38} height={38} className='text-purple-400' />
                                 {/* <img src={imgSetting} alt="" width={40} /> */}
                             </div>
-                        </a>
-                        <a href="/leituradigital">
+                        </button>
+                        {/* <button type="button" onClick={() => navigate('/leituradigital')} >
                             <div className=' p-3 flex justify-center items-center'>
-                                {/* <img src={imgBook} alt="" width={40} /> */}
-                                {<BookOpen width={38} height={38} className='text-green-600' />}
+                                <BookOpen width={38} height={38} className='text-green-600' />
 
                             </div>
-                        </a>
-                        <a href="/metricas">
+                        </button> */}
+                        <button type="button" onClick={() => navigate('/metricas')}>
                             <div className=' p-3 flex justify-center items-center'>
                                 <BarChart3 className='text-blue-400' width={38} height={38} />
 
                                 {/*  <BookOpen className='text-white' /> */}
                                 {/* <img src={imgEstatistica} alt="" width={40} /> */}
                             </div>
-                        </a>
+                        </button>
                         {/*<a href="/videos">
                             <div className=' p-3 flex justify-center items-center'>
                                 <Play className='text-red-500 ' width={38} height={38} />

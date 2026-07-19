@@ -2,10 +2,12 @@ import { Dialog } from "@headlessui/react";
 import { useState, useEffect } from "react";
 import { FaList, FaPlus } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 import { HelpCircle } from 'lucide-react';
 export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onSuccess,setOpenModalSucesso }) {
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const [categoria, setCategoria] = useState()
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
@@ -125,10 +127,17 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
                     {!yourCategory && (
                         <div className="flex flex-col gap-4 mt-5">
                             <div>
-                                <a href="/listcategorias" className="no-underline hover:text-white visited:text-white flex items-center  gap-2 text-lg py-2 bg-gray-700/50 backdrop-blur-sm  border border-gray-700 px-8 rounded-full w-full text-white">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setOpen(false);
+                                        navigate('/listcategorias');
+                                    }}
+                                    className="no-underline hover:text-white visited:text-white flex items-center  gap-2 text-lg py-2 bg-gray-700/50 backdrop-blur-sm  border border-gray-700 px-8 rounded-full w-full text-white"
+                                >
                                     <FaList className="me-2 " />
                                     {t("existing_categories")}
-                                </a>
+                                </button>
                             </div>
 
 

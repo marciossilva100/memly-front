@@ -6,6 +6,7 @@ import { Volume, RefreshCw } from "lucide-react";
 // import { gerarAudio } from "../services/elevenlabs";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
+import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
 export default function Flashcards() {
   const { t } = useTranslation();
@@ -276,8 +277,12 @@ export default function Flashcards() {
   if (!frases.length) {
 
     return (
-      <div className="h-screen flex items-center justify-center">
-        {t("loading_dots")}
+      <div className="flex h-screen items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
+        <img
+          src={imgChapeuFormatura}
+          alt={t("loading")}
+          className="w-28 animate-pulse"
+        />
       </div>
     );
 

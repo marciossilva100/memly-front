@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import PremiumModal from '../components/PremiumModal';
 import ModalConfirm from '../components/ModalConfirm';
 import { useTranslation } from "react-i18next";
+import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
 import {
     Trash,
@@ -118,6 +119,18 @@ export default function Frases() {
         )
         : frases;
 
+    if (loading) {
+        return (
+            <div className="flex h-screen items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
+                <img
+                    src={imgChapeuFormatura}
+                    alt={t("loading")}
+                    className="w-28 animate-pulse"
+                />
+            </div>
+        );
+    }
+
     return (
 
         <div className="px-5 h-dvh flex flex-col bg-gray-900 ">
@@ -155,12 +168,9 @@ export default function Frases() {
 
 
 
-                    {loading && <div className="h-screen flex items-center justify-center text-white">
-                        {t("loading_dots")}
-                    </div>}
                     <div className="flex-1 overflow-y-auto scrollbar-hide pb-24">
 
-                        {!loading && frasesFiltradas.map((item, index) => {
+                        {frasesFiltradas.map((item, index) => {
                             const isLast = index === frasesFiltradas.length - 1;
                             return (
                                 <div key={item.id} className={`text-lg grid grid-cols-[1fr_1fr_auto] gap-4 items-center py-3 overflow text-white cursor-pointer ${!isLast ? 'border-b-2' : ''}`}

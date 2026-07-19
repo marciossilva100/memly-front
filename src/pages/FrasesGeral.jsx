@@ -4,6 +4,7 @@ import ModalFrase from "../components/ModalFrase";
 import { useAuth } from "../context/AuthContext";
 import PremiumModal from '../components/PremiumModal';
 import { useTranslation } from "react-i18next";
+import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
 import {
     Trash,
@@ -69,7 +70,17 @@ const API_URL = import.meta.env.VITE_API_URL;
 
     };
 
-
+    if (loading) {
+        return (
+            <div className="flex h-screen items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
+                <img
+                    src={imgChapeuFormatura}
+                    alt={t("loading")}
+                    className="w-28 animate-pulse"
+                />
+            </div>
+        );
+    }
 
     return (
 
@@ -108,12 +119,9 @@ const API_URL = import.meta.env.VITE_API_URL;
                     </div>
                 )}
 
-                {loading && <div className="h-screen flex items-center justify-center">
-                    {t("loading_dots")}
-                </div>}
                 <div className="flex-1 overflow-y-auto scrollbar-hide">
 
-                    {!loading && frases.map(item => (
+                    {frases.map(item => (
                         <div key={item.id} className="text-lg grid grid-cols-[1fr_1fr_auto] gap-4 items-center  py-3 border-b-2 overflow" >
                             <div>{item.texto_nativo}</div>
                             <div>{item.texto_traduzido}</div>

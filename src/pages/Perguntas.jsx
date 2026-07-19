@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react"
-import { Volume, Loader2 } from "lucide-react";
+import { Volume } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { playAudio } from "../utils/audioPlayer";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
+import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
 export default function Perguntas() {
     const { t } = useTranslation();
@@ -13,7 +14,6 @@ export default function Perguntas() {
     const [response, setResponse] = useState('')
     const [answer, setAnswer] = useState('')
     const jaBuscou = useRef(false);
-    const [textLoading, setTextLoading] = useState('')
     const navigate = useNavigate();
     const { user } = useAuth();
 
@@ -25,7 +25,6 @@ export default function Perguntas() {
 
     // 🔁 FUNÇÃO PARA BUSCAR PERGUNTA
     const fetchQuestion = () => {
-        setTextLoading(t("generating_training"))
         setLoading(true);
         setError(null);
 
@@ -103,7 +102,6 @@ export default function Perguntas() {
     };
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setTextLoading(t("processing_answer"));
         setLoading(true);
 
         try {
@@ -154,9 +152,12 @@ export default function Perguntas() {
 
     if (loading) {
         return (
-            <div className="h-dvh flex items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
-                <Loader2 className="animate-spin mr-2 w-8 h-8 text-indigo-400" />
-                <span className="text-white text-lg">{textLoading}</span>
+            <div className="flex h-screen items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
+                <img
+                    src={imgChapeuFormatura}
+                    alt={t("loading")}
+                    className="w-28 animate-pulse"
+                />
             </div>
         );
     }

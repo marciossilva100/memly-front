@@ -14,9 +14,36 @@
 />
 
     <title>Zaldemy</title>
+
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+      }
+      #initial-loader {
+        display: flex;
+        height: 100vh;
+        width: 100vw;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(to bottom right, #111827, #1f2937);
+      }
+      #initial-loader img {
+        width: 7rem;
+        animation: initial-loader-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+      @keyframes initial-loader-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="initial-loader">
+        <img src="/loading-icon.png" alt="Loading" />
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

@@ -34,6 +34,9 @@ import imgMemly from "./assets/img/mascote-memly.png"
 import imgChapeuFormatura from "./assets/img/chapeu_formatura.png"
 import PremiumPlan from './components/PremiumModal';
 import Metricas from './pages/Metricas';
+import Configuracoes from './pages/Configuracoes';
+import TermosDeUso from './pages/TermosDeUso';
+import PoliticaPrivacidade from './pages/PoliticaPrivacidade';
 
 // Contexto de conexão
 import { ConnectionProvider, useConnection } from './context/ConnectionContext';
@@ -45,7 +48,7 @@ function PrivateRoute({ children }) {
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-white-100">
+      <div className="flex h-screen items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
         <img
           src={imgChapeuFormatura}
           alt={t("loading")}
@@ -73,18 +76,20 @@ function Layout({ titulo, setTitulo }) {
   const { user, loading } = useAuth()
   const { isOnline } = useConnection()
 
-  const rotasSemHeader = new Set([
-    '/home'
+  const rotasComHeader = new Set([
+    '/home',
+    '/metricas',
+    '/listcategorias'
   ])
 
-  const esconderHeader = rotasSemHeader.has(location.pathname)
+  const mostrarHeader = rotasComHeader.has(location.pathname)
 
   return (
     <>
       {/* Indicador de status de conexão */}
       <ConnectionStatus />
-      
-      {esconderHeader && <Header titulo={titulo} />}
+
+      {mostrarHeader && <Header titulo={titulo} />}
 
       <Routes>
         <Route path="/" element={<Login setTitulo={setTitulo} />} />
@@ -229,6 +234,15 @@ function Layout({ titulo, setTitulo }) {
         />
 
         <Route
+          path="/configuracoes"
+          element={
+            <PrivateRoute>
+              <Configuracoes />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
           path="/musicflashcardfInder"
           element={
             <PrivateRoute>
@@ -240,6 +254,8 @@ function Layout({ titulo, setTitulo }) {
         <Route path="/verificaremail" element={<VerificarEmail />} />
         <Route path="/premiumplan" element={<PremiumPlan />} />
         <Route path="/emailverificado" element={<EmailVerificado />} />
+        <Route path="/termosdeuso" element={<TermosDeUso />} />
+        <Route path="/politicaprivacidade" element={<PoliticaPrivacidade />} />
         <Route path="/videos" element={<EnglishVideos query="english listening practice" />} />
       </Routes>
     </>

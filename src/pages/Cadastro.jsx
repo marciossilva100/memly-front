@@ -7,7 +7,7 @@ import imgZaldemy from "../assets/img/zaldemy.png"
 import imgGoogle from '../assets/img/google.png'
 import imgFacebook from '../assets/img/logo-face.webp'
 import { useGoogleLogin } from '@react-oauth/google';
-import imgMemly from "../assets/img/mascote-memly.png"
+import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 import { useAuth } from "../context/AuthContext";
 
 export default function Cadastro({ setTitulo }) {
@@ -156,8 +156,12 @@ export default function Cadastro({ setTitulo }) {
 
     if (loading) {
         return (
-            <div className="flex h-[calc(100vh-110px)] items-center justify-center bg-white-100">
-                <img src={imgMemly} alt={t("loading")} className="w-28 animate-pulse" />
+            <div className="flex h-screen items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
+                <img
+                    src={imgChapeuFormatura}
+                    alt={t("loading")}
+                    className="w-28 animate-pulse"
+                />
             </div>
         );
     }

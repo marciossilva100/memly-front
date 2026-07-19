@@ -285,23 +285,23 @@ export default function Header({ titulo }) {
 
                 <nav className="flex flex-col text-sm font-medium">
 
-                    <button type="button" onClick={() => navigate('/')} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-white text-lg text-left">
+                    <button type="button" onClick={() => navigate('/')} className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 text-white text-lg text-left">
                         <HelpCircle size={18} />
                         {t("faq")}
                     </button>
 
-                    <button type="button" onClick={() => navigate('/')} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-white text-lg text-left">
+                    <button type="button" onClick={() => navigate('/')} className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 text-white text-lg text-left">
                         <Mail size={18} />
                         {t("contact")}
 
                     </button>
 
-                    <button onClick={handleShareApp} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-white text-lg text-left">
+                    <button onClick={handleShareApp} className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 text-white text-lg text-left">
                         <Share2 size={18} />
                         {t("share_app")}
                     </button>
 
-                    <button type="button" onClick={() => { setOpen(false); navigate('/configuracoes'); }} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-white text-lg text-left">
+                    <button type="button" onClick={() => { setOpen(false); navigate('/configuracoes'); }} className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 text-white text-lg text-left">
                         <Settings size={18} />
                         {t("settings")}
                     </button>

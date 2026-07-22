@@ -37,6 +37,8 @@ import Metricas from './pages/Metricas';
 import Configuracoes from './pages/Configuracoes';
 import TermosDeUso from './pages/TermosDeUso';
 import PoliticaPrivacidade from './pages/PoliticaPrivacidade';
+import Contato from './pages/Contato';
+import Faq from './pages/Faq';
 
 // Contexto de conexão
 import { ConnectionProvider, useConnection } from './context/ConnectionContext';
@@ -256,6 +258,8 @@ function Layout({ titulo, setTitulo }) {
         <Route path="/emailverificado" element={<EmailVerificado />} />
         <Route path="/termosdeuso" element={<TermosDeUso />} />
         <Route path="/politicaprivacidade" element={<PoliticaPrivacidade />} />
+        <Route path="/contato" element={<Contato />} />
+        <Route path="/faq" element={<Faq />} />
         <Route path="/videos" element={<EnglishVideos query="english listening practice" />} />
       </Routes>
     </>

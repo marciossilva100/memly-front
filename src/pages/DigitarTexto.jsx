@@ -104,8 +104,10 @@ export default function DigitarTexto() {
             document.body.style.width = originalWidth;
         };
     }, []);
-    // preload voices
+    // preload voices (Web Speech API nao existe na WebView nativa do Android/Capacitor)
     useEffect(() => {
+
+        if (!window.speechSynthesis) return;
 
         const loadVoices = () => window.speechSynthesis.getVoices();
         loadVoices();
@@ -114,7 +116,7 @@ export default function DigitarTexto() {
 
         const silentUtterance = new SpeechSynthesisUtterance("");
         window.speechSynthesis.speak(silentUtterance);
-        window.speechSynthesis.cancel();
+        window.speechSynthesis?.cancel();
 
     }, []);
 
@@ -224,7 +226,7 @@ export default function DigitarTexto() {
     const nextCard = async () => {
 
 
-        window.speechSynthesis.cancel();
+        window.speechSynthesis?.cancel();
 
         if (flipTimeoutRef.current) {
             clearTimeout(flipTimeoutRef.current);
@@ -264,7 +266,7 @@ export default function DigitarTexto() {
 
     const repeatCard = () => {
 
-        window.speechSynthesis.cancel();
+        window.speechSynthesis?.cancel();
 
         if (flipTimeoutRef.current) {
             clearTimeout(flipTimeoutRef.current);

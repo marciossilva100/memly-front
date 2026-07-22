@@ -4,7 +4,7 @@ import imgSetting from '../assets/img/setting.png'
 import imgEstatistica from '../assets/img/estatistic.png'
 import imgPlay from '../assets/img/play.png'
 
-import { useState, useEffect, useRef, use } from 'react'
+import { useState, useEffect, useLayoutEffect, useRef, use } from 'react'
 import { useNavigate } from "react-router-dom";
 import ModalCategorias from '../components/ModalCategorias';
 import ModalCategoriasEditar from '../components/ModalCategoriasEditar'
@@ -22,7 +22,7 @@ import { BookOpen, BarChart3, Settings, Play, Crown, Bot } from "lucide-react";
 
 
 export default function Home() {
-    const { user, setUser } = useAuth();
+    const { user, setUser, setCategoriasLoading } = useAuth();
     const [open, setOpen] = useState(false);
     const [openCategoriaEditar, setOpenCategoriaEditar] = useState(false);
     const [openTreino, setOpenTreino] = useState(false)
@@ -32,6 +32,7 @@ export default function Home() {
     const [openModalSucesso, setOpenModalSucesso] = useState(false)
     const [categoriaId, setCategoriaId] = useState(0)
     const [categoriaClick, setCategoriaClick] = useState('')
+    const [categoriaPublicaClick, setCategoriaPublicaClick] = useState(0)
     const [msgModalSucesso, setMsgModalSucesso] = useState('')
     const [frase, openFrase] = useState('')
     const [error, setError] = useState('')
@@ -106,10 +107,12 @@ export default function Home() {
 
         if (!nativeLanguage || !learningLanguage) {
             setCategorias([]);
+            setCategoriasLoading(false);
             return;
         }
 
         setRecarregar(false)
+        setCategoriasLoading(true)
         fetch(`${API_URL}/controller/categorias.php`, {
             method: 'POST',
             headers: {
@@ -120,7 +123,12 @@ export default function Home() {
                 action: 'listar-com-quantidade'
             })
         })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`Falha ao carregar categorias (status ${res.status})`);
+                }
+                return res.json();
+            })
             .then(data => {
                 const respostaCategorias = Array.isArray(data)
                     ? data
@@ -144,6 +152,7 @@ export default function Home() {
                     quantidade: cat.total_frases ?? cat.quantidade ?? 0,
                     idiomaNativo: cat.idioma_nativo ?? cat.idiomaNativo ?? cat.idioma_nativo_data ?? null,
                     idiomaAprendendo: cat.idioma_aprendendo ?? cat.idiomaAprendendo ?? cat.idioma_aprendendo_data ?? null,
+                    categoriaPublica: Number(cat.public ?? cat.categoria_publica ?? 0),
                     categoriaDados: cat.categoria_dados ?? cat.categoriaDados ?? null,
                 }));
 
@@ -151,6 +160,9 @@ export default function Home() {
             })
             .catch((error) => {
                 console.error('Erro ao carregar categorias:', error);
+            })
+            .finally(() => {
+                setCategoriasLoading(false)
             });
     };
 
@@ -195,12 +207,16 @@ export default function Home() {
         }
     }
 
-    useEffect(() => {
+    // useLayoutEffect (em vez de useEffect) para marcar categoriasLoading=true
+    // antes do navegador pintar a tela, evitando o flash de conteúdo vazio
+    // entre o loading do AuthGate e o loading do Header.
+    useLayoutEffect(() => {
         console.log('home ', user)
         if (user) {
             carregarCategorias();
         } else {
             setCategorias([]);
+            setCategoriasLoading(false);
         }
     }, [user?.native_language, user?.learning_language, user?.id]);
 
@@ -326,6 +342,7 @@ export default function Home() {
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 setCategoriaClick(item.categoria);
+                                                setCategoriaPublicaClick(item.categoriaPublica);
                                                 setOpenCategoriaEditar(true);
                                                 setCategoriaId(item.id);
                                                 setMenuOpenId(false);
@@ -432,6 +449,7 @@ export default function Home() {
                 setOpenCategoriaEditar={setOpenCategoriaEditar}
                 categoriaEditar={categoriaClick}
                 categoriaIdEditar={categoriaId}
+                categoriaPublicaEditar={categoriaPublicaClick}
                 onSuccess={carregarCategorias}
 
 

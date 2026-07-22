@@ -7,6 +7,9 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  // Indica que a lista de categorias esta sendo (re)carregada (ex: apos trocar idioma),
+  // para o Header poder manter a tela de loading ate os dados estarem prontos.
+  const [categoriasLoading, setCategoriasLoading] = useState(false);
   const API_URL = import.meta.env.VITE_API_URL;
 
   const checkAuth = useCallback(async (silent = false) => {
@@ -114,8 +117,10 @@ export function AuthProvider({ children }) {
     isAuthenticating,
     checkAuth,
     syncAuth,
-    logout
-  }), [user, isLoading, isAuthenticating, checkAuth, syncAuth]);
+    logout,
+    categoriasLoading,
+    setCategoriasLoading
+  }), [user, isLoading, isAuthenticating, checkAuth, syncAuth, categoriasLoading]);
 
   return (
     <AuthContext.Provider value={value}>

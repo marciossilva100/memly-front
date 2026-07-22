@@ -9,6 +9,7 @@ import imgFacebook from '../assets/img/logo-face.webp'
 import { useGoogleLogin } from '@react-oauth/google';
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 import { useAuth } from "../context/AuthContext";
+import { isNativePlatform, signInWithGoogleNative } from "../utils/googleNativeAuth";
 
 export default function Cadastro({ setTitulo }) {
     const { t } = useTranslation();
@@ -41,53 +42,72 @@ export default function Cadastro({ setTitulo }) {
         })
     }
 
-     const login = useGoogleLogin({
-        onSuccess: async (tokenResponse) => {
-            setLoading(true);
-            try {
-                const res = await fetch(`${API_URL}/controller/auth.php`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'login_google',
-                        token: tokenResponse.access_token
-                    })
-                });
+    async function handleGoogleAccessToken(accessToken) {
+        setLoading(true);
+        try {
+            const res = await fetch(`${API_URL}/controller/auth.php`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'login_google',
+                    token: accessToken
+                })
+            });
 
-                const data = await res.json();
+            const data = await res.json();
 
-                if (!data.sucesso) {
-                    setErro(data.erro || t("google_login_error"));
-                    setLoading(false);
-                    return;
-                }
-
-                // Usa syncAuth em vez de checkAuth e confirma que o usuário
-                // foi realmente autenticado antes de navegar para uma rota privada
-                const loggedUser = await syncAuth(data.token);
-
-                if (!loggedUser) {
-                    setErro(t("google_login_error"));
-                    setLoading(false);
-                    return;
-                }
-
-                if (loggedUser.step > 2) {
-                    navigate("/home", { replace: true });
-                } else {
-                    navigate("/escolheridioma", { replace: true });
-                }
-
-            } catch (error) {
-                console.error(error);
-                setErro(t("server_connection_error"));
+            if (!data.sucesso) {
+                setErro(data.erro || t("google_login_error"));
                 setLoading(false);
+                return;
             }
-        },
+
+            // Usa syncAuth em vez de checkAuth e confirma que o usuário
+            // foi realmente autenticado antes de navegar para uma rota privada
+            const loggedUser = await syncAuth(data.token);
+
+            if (!loggedUser) {
+                setErro(t("google_login_error"));
+                setLoading(false);
+                return;
+            }
+
+            if (loggedUser.step > 2) {
+                navigate("/home", { replace: true });
+            } else {
+                navigate("/escolheridioma", { replace: true });
+            }
+
+        } catch (error) {
+            console.error(error);
+            setErro(t("server_connection_error"));
+            setLoading(false);
+        }
+    }
+
+    // Fluxo web (popup do Google Identity Services) — não funciona dentro
+    // da WebView do Capacitor, por isso o app nativo usa signInWithGoogleNative.
+    const loginWeb = useGoogleLogin({
+        onSuccess: (tokenResponse) => handleGoogleAccessToken(tokenResponse.access_token),
         onError: () => {
             setErro(t("google_login_error"));
         },
     });
+
+    async function login() {
+        if (isNativePlatform()) {
+            try {
+                const accessToken = await signInWithGoogleNative();
+                await handleGoogleAccessToken(accessToken);
+            } catch (error) {
+                console.error(error);
+                setErro(t("google_login_error"));
+            }
+            return;
+        }
+
+        loginWeb();
+    }
 
     function handleSubmit(e) {
         e.preventDefault()
@@ -169,7 +189,7 @@ export default function Cadastro({ setTitulo }) {
     if (finish) return;
 
     return (
-        <div className="max-w-6xl mx-auto px-4 px-8 py-4 h-[calc(100svh-20px)] from-gray-900 to-gray-800 bg-gradient-to-br">
+        <div className="max-w-6xl mx-auto px-4 px-8 py-4 h-screen from-gray-900 to-gray-800 bg-gradient-to-br">
             <div className="flex justify-center">
                 <div className="w-full max-w-md text-center mt-4">
 

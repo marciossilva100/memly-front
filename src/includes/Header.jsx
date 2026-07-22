@@ -4,6 +4,7 @@ import imgCoruja from "../assets/img/coruja.png"
 import imgGlobe from "../assets/img/globe.png"
 import imgMemly from "../assets/img/mascote-memly.png"
 import imgZaldemy from "../assets/img/zaldemy.png"
+import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 
@@ -68,9 +69,10 @@ export default function Header({ titulo }) {
     const [openSelect, setOpenSelect] = useState(false)
     const [idioma, setIdioma] = useState("")
     const [languageList, setLanguageList] = useState([])
+    const [trocandoIdioma, setTrocandoIdioma] = useState(false)
     const API_URL = import.meta.env.VITE_API_URL;
 
-    const { user, setUser } = useAuth();
+    const { user, setUser, categoriasLoading } = useAuth();
 
     const idiomaNativo = languageList.find(
         (l) => l.sigla === user?.native_language
@@ -135,11 +137,24 @@ export default function Header({ titulo }) {
     );
 
     const handleSelectLanguage = async (item) => {
+        const idiomaAnterior = idioma;
+        const learningLanguageAnterior = user?.learning_language;
+
         setIdioma(item.sigla);
         setOpenSelect(false);
+        setTrocandoIdioma(true);
+
+        // Atualiza o usuário já aqui (em vez de só depois do fetch terminar) para que
+        // o carregamento das categorias em Home.jsx (disparado por essa mudança) comece
+        // em paralelo com o salvamento da preferência, em vez de esperar um terminar
+        // pra começar o outro.
+        setUser(prev => ({
+            ...prev,
+            learning_language: item.sigla
+        }));
 
         try {
-            await fetch(`${API_URL}/controller/language.php`, {
+            const res = await fetch(`${API_URL}/controller/language.php`, {
                 method: 'POST',
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token")
@@ -151,17 +166,34 @@ export default function Header({ titulo }) {
                 })
             });
 
-            setUser(prev => ({
-                ...prev,
-                learning_language: item.sigla
-            }));
+            if (!res.ok) {
+                throw new Error(`Falha ao salvar idioma (status ${res.status})`);
+            }
         } catch (error) {
             console.error('Erro ao salvar idioma:', error);
+            // servidor não confirmou a troca (ex: sessão expirada) -> desfaz a troca otimista
+            setIdioma(idiomaAnterior);
+            setUser(prev => ({
+                ...prev,
+                learning_language: learningLanguageAnterior
+            }));
+        } finally {
+            setTrocandoIdioma(false);
         }
     };
 
     return (
         <div className={`w-full section-header ${rotaBase === '/home' ? 'shadow-md pb-1' : ''}`}>
+
+            {(trocandoIdioma || categoriasLoading) && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
+                    <img
+                        src={imgChapeuFormatura}
+                        alt={t("loading")}
+                        className="w-28 animate-pulse"
+                    />
+                </div>
+            )}
 
             {mostrarSeletorIdioma ? (
                 <header className="from-gray-900 to-gray-800 bg-gradient-to-br">
@@ -261,7 +293,7 @@ export default function Header({ titulo }) {
 
             {/* SIDEBAR */}
             <aside className={`fixed from-gray-900 to-gray-800 bg-gradient-to-br top-0 left-0 h-full w-64  z-50 transform transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full"}`}>
-                <div className="p-4 flex justify-between items-center  ">
+                <div className="p-4 flex justify-between items-center">
                     <img className="w-32" src={imgZaldemy} alt="Logo" />
                     <button onClick={() => setOpen(false)} className='text-lg text-white font-semibold'>✕</button>
                 </div>
@@ -285,12 +317,12 @@ export default function Header({ titulo }) {
 
                 <nav className="flex flex-col text-sm font-medium">
 
-                    <button type="button" onClick={() => navigate('/')} className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 text-white text-lg text-left">
+                    <button type="button" onClick={() => { setOpen(false); navigate('/faq'); }} className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 text-white text-lg text-left">
                         <HelpCircle size={18} />
                         {t("faq")}
                     </button>
 
-                    <button type="button" onClick={() => navigate('/')} className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 text-white text-lg text-left">
+                    <button type="button" onClick={() => { setOpen(false); navigate('/contato'); }} className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 text-white text-lg text-left">
                         <Mail size={18} />
                         {t("contact")}
 

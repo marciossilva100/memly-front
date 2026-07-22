@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
-import { FileText, Shield, LogOut, ChevronRight, Settings, BookOpen, Home,BarChart3 } from "lucide-react";
+import { FileText, Shield, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2 } from "lucide-react";
+import ModalConfirm from "../components/ModalConfirm";
 
 const QUANTIDADE_FRASES_MIN = 1;
 const QUANTIDADE_FRASES_MAX = 8;
@@ -35,9 +36,46 @@ export default function Configuracoes() {
     const [mensagemQuantidade, setMensagemQuantidade] = useState('');
     const [erroQuantidade, setErroQuantidade] = useState('');
 
+    const [openModalExcluirConta, setOpenModalExcluirConta] = useState(false);
+    const [excluindoConta, setExcluindoConta] = useState(false);
+    const [erroExcluirConta, setErroExcluirConta] = useState('');
+
     async function handleLogout() {
         await logout();
         navigate("/login");
+    }
+
+    async function handleExcluirConta() {
+        setExcluindoConta(true);
+        setErroExcluirConta('');
+
+        try {
+            const res = await fetch(`${API_URL}/controller/configuracoes.php`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({ action: 'excluir_conta' })
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                setErroExcluirConta(data.message || t("unexpected_error"));
+                setOpenModalExcluirConta(false);
+                return;
+            }
+
+            await logout();
+            navigate("/login");
+        } catch (error) {
+            console.error('Erro ao excluir conta:', error);
+            setErroExcluirConta(t("server_connection_error"));
+            setOpenModalExcluirConta(false);
+        } finally {
+            setExcluindoConta(false);
+        }
     }
 
     useEffect(() => {
@@ -199,9 +237,27 @@ export default function Configuracoes() {
                             cor="text-red-400"
                             onClick={handleLogout}
                         />
+
+                        <ItemMenu
+                            icone={Trash2}
+                            titulo={t("delete_account")}
+                            cor="text-red-500"
+                            onClick={() => setOpenModalExcluirConta(true)}
+                        />
+
+                        {erroExcluirConta && (
+                            <p className="text-red-400 text-xs">{erroExcluirConta}</p>
+                        )}
                     </div>
                 </div>
             </div>
+
+            <ModalConfirm
+                openModalConfirm={openModalExcluirConta}
+                setOpenModalConfirm={setOpenModalExcluirConta}
+                msg={t("delete_account_confirm_message")}
+                onConfirm={handleExcluirConta}
+            />
 
             <div className="fixed inset-x-0 bottom-0 z-10 text-center w-full justify-items-center justify-center items-center  from-gray-900 to-gray-800 bg-gradient-to-br ">
 

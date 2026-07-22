@@ -8,11 +8,11 @@ import imgCoruja from '../assets/img/coruja.png'
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 import imgZaldemy from "../assets/img/zaldemy.png"
 import { useAuth } from "../context/AuthContext";
-import { GoogleLogin } from '@react-oauth/google';
 import { useGoogleLogin } from '@react-oauth/google';
 import { QRCodeCanvas } from "qrcode.react";
 import axios from "axios";
 import { useTranslation, Trans } from "react-i18next";
+import { isNativePlatform, signInWithGoogleNative } from "../utils/googleNativeAuth";
 
 export default function Login({ setTitulo }) {
     const { t } = useTranslation();
@@ -59,9 +59,10 @@ export default function Login({ setTitulo }) {
         const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         setIsIOS(ios);
 
-        // Detectar se está rodando como app instalado (standalone)
+        // Detectar se está rodando como app instalado (standalone) ou como app nativo (Capacitor)
         const standalone = window.matchMedia('(display-mode: standalone)').matches ||
-            window.navigator.standalone === true;
+            window.navigator.standalone === true ||
+            isNativePlatform();
         setIsStandalone(standalone);
 
         // Detectar se é mobile
@@ -95,54 +96,72 @@ export default function Login({ setTitulo }) {
         setInstallPrompt(null)
     }
 
-    // No seu componente Login, modifique:
-    const login = useGoogleLogin({
-        onSuccess: async (tokenResponse) => {
-            setLoading(true);
-            try {
-                const res = await fetch(`${API_URL}/controller/auth.php`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'login_google',
-                        token: tokenResponse.access_token
-                    })
-                });
+    async function handleGoogleAccessToken(accessToken) {
+        setLoading(true);
+        try {
+            const res = await fetch(`${API_URL}/controller/auth.php`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'login_google',
+                    token: accessToken
+                })
+            });
 
-                const data = await res.json();
+            const data = await res.json();
 
-                if (!data.sucesso) {
-                    setErro(data.erro || t("google_login_error"));
-                    setLoading(false);
-                    return;
-                }
-
-                // Usa syncAuth em vez de checkAuth e confirma que o usuário
-                // foi realmente autenticado antes de navegar para uma rota privada
-                const loggedUser = await syncAuth(data.token);
-
-                if (!loggedUser) {
-                    setErro(t("google_login_error"));
-                    setLoading(false);
-                    return;
-                }
-
-                if (loggedUser.step > 2) {
-                    navigate("/home", { replace: true });
-                } else {
-                    navigate("/escolheridioma", { replace: true });
-                }
-
-            } catch (error) {
-                console.error(error);
-                setErro(t("server_connection_error"));
+            if (!data.sucesso) {
+                setErro(data.erro || t("google_login_error"));
                 setLoading(false);
+                return;
             }
-        },
+
+            // Usa syncAuth em vez de checkAuth e confirma que o usuário
+            // foi realmente autenticado antes de navegar para uma rota privada
+            const loggedUser = await syncAuth(data.token);
+
+            if (!loggedUser) {
+                setErro(t("google_login_error"));
+                setLoading(false);
+                return;
+            }
+
+            if (loggedUser.step > 2) {
+                navigate("/home", { replace: true });
+            } else {
+                navigate("/escolheridioma", { replace: true });
+            }
+
+        } catch (error) {
+            console.error(error);
+            setErro(t("server_connection_error"));
+            setLoading(false);
+        }
+    }
+
+    // Fluxo web (popup do Google Identity Services) — não funciona dentro
+    // da WebView do Capacitor, por isso o app nativo usa signInWithGoogleNative.
+    const loginWeb = useGoogleLogin({
+        onSuccess: (tokenResponse) => handleGoogleAccessToken(tokenResponse.access_token),
         onError: () => {
             setErro(t("google_login_error"));
         },
     });
+
+    async function login() {
+        if (isNativePlatform()) {
+            try {
+                const accessToken = await signInWithGoogleNative();
+                await handleGoogleAccessToken(accessToken);
+            } catch (error) {
+                console.error(error);
+                setErro(t("google_login_error"));
+            }
+            return;
+        }
+
+        loginWeb();
+    }
 
     function handleChange(e) {
         setForm({
@@ -521,7 +540,7 @@ export default function Login({ setTitulo }) {
                     {/* Google */}
                     <button
                         onClick={() => login()}
-                        className="text-sm w-full border border-gray-300 py-2 rounded-full flex items-center justify-center gap-3 hover:bg-gray-50 transition-colors"
+                        className="text-sm w-full border border-gray-300 py-2 rounded-full flex items-center justify-center gap-3 transition-colors"
                     >
                         <img src={imgGoogle} alt="Google icone" width={30} />
                         <span className="ff-inter text-white">{t("continue_with_google")}</span>

@@ -1,17 +1,21 @@
 import { Dialog } from "@headlessui/react";
 import { useState, useEffect } from "react";
 import { FaList, FaPlus } from "react-icons/fa";
+import { HelpCircle } from 'lucide-react';
 import { useTranslation } from "react-i18next";
 
-export default function ModalCategoriasEditar({ setOpenCategoriaEditar,open,categoriaEditar,categoriaIdEditar,onOpenModalSucesso,onSuccess}) {
+export default function ModalCategoriasEditar({ setOpenCategoriaEditar,open,categoriaEditar,categoriaIdEditar,categoriaPublicaEditar,onOpenModalSucesso,onSuccess}) {
     const { t } = useTranslation();
     const [categoria, setCategoria] = useState()
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [yourCategory, setYourCategory] = useState(false)
+    const [categoriaPublica, setCategoriaPublica] = useState(0)
+    const [showTooltip, setShowTooltip] = useState(false)
 const API_URL = import.meta.env.VITE_API_URL;
     useEffect(() => {
         setCategoria(categoriaEditar)
+        setCategoriaPublica(categoriaPublicaEditar ? 1 : 0)
         setYourCategory(false)
         if (open) {
             setError('');
@@ -40,7 +44,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                     action: 'editar_categoria',
                     categoria_id: categoriaIdEditar,
                     categoria: categoria,
-
+                    categoria_publica: categoriaPublica,
                 })
             });
 
@@ -90,9 +94,46 @@ const API_URL = import.meta.env.VITE_API_URL;
                                     outline-none text-white"
                                     value={categoria}
                                 />
-                                {error && 
+                                {error &&
                                     <span className="text-sm text-red-500">{error}</span>
                                 }
+
+                                <div className="flex items-center mt-4">
+                                    <label className="relative inline-flex items-center cursor-pointer me-2">
+                                        <input
+                                            type="checkbox"
+                                            className="sr-only peer"
+                                            checked={Boolean(categoriaPublica)}
+                                            onChange={(e) => setCategoriaPublica(e.target.checked ? 1 : 0)}
+                                        />
+                                        <div className="w-10 h-5 bg-gray-200 rounded-full peer peer-checked:bg-[#4cb8c4] peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
+                                    </label>
+                                    <div className="flex items-center gap-2 flex-1">
+                                        <span className="text-md font-medium text-white">{t("share_category")}</span>
+                                        <div className="relative">
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowTooltip(!showTooltip)}
+                                                className="focus:outline-none mt-1"
+                                            >
+                                                <HelpCircle size={16} className="text-gray-400 hover:text-blue-500 transition-colors cursor-pointer" />
+                                            </button>
+
+                                            {showTooltip && (
+                                                <>
+                                                    <div
+                                                        className="fixed inset-0 z-40"
+                                                        onClick={() => setShowTooltip(false)}
+                                                    />
+                                                    <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg z-50 max-w-[200px] w-max">
+                                                        <p className="break-words">{t("share_category_description")}</p>
+                                                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="mt-6 flex justify-end gap-2">

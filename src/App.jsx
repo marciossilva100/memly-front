@@ -43,6 +43,7 @@ import Faq from './pages/Faq';
 
 // Contexto de conexão
 import { ConnectionProvider, useConnection } from './context/ConnectionContext';
+import { initAnalytics, trackPageView } from './utils/analytics';
 
 function PrivateRoute({ children }) {
   const { t } = useTranslation();
@@ -86,6 +87,14 @@ function Layout({ titulo, setTitulo }) {
   ])
 
   const mostrarHeader = rotasComHeader.has(location.pathname)
+
+  useEffect(() => {
+    initAnalytics()
+  }, [])
+
+  useEffect(() => {
+    trackPageView(location.pathname)
+  }, [location.pathname])
 
   return (
     <>

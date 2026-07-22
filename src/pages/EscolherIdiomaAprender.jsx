@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import imgCoruja from "../assets/img/coruja.png"
 import { idiomas } from "../data/idiomas"
-import imgMemly from "../assets/img/mascote-memly.png"
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";

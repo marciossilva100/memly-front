@@ -1,8 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useEffect, useState, useRef } from 'react'
-import imgCoruja from "../assets/img/coruja.png"
 import imgGlobe from "../assets/img/globe.png"
-import imgMemly from "../assets/img/mascote-memly.png"
 import imgZaldemy from "../assets/img/zaldemy.png"
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 import { useAuth } from "../context/AuthContext";

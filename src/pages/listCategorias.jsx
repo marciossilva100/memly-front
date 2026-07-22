@@ -1,9 +1,3 @@
-import imgPlus from '../assets/img/plus.png'
-import imgBook from '../assets/img/book.png'
-import imgSetting from '../assets/img/setting.png'
-import imgEstatistica from '../assets/img/estatistic.png'
-import imgPlay from '../assets/img/play.png'
-
 import { useState, useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
 import ModalCategorias from '../components/ModalCategorias';

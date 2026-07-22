@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, Navigate } from "react-router-dom";
 import { Mail, Smartphone, Download, Share2, Globe } from "lucide-react";
-import imgLogin from '../assets/img/img-login.png'
 import imgGoogle from '../assets/img/google.png'
 import imgFacebook from '../assets/img/logo-face.webp'
-import imgCoruja from '../assets/img/coruja.png'
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 import imgZaldemy from "../assets/img/zaldemy.png"
 import { useAuth } from "../context/AuthContext";

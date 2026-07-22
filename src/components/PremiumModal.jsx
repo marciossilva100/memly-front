@@ -1,5 +1,4 @@
 import React from 'react';
-import imgZaldemy from "../assets/img/zaldemy.png"
 import { useTranslation } from "react-i18next";
 
 import {

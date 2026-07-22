@@ -4,6 +4,7 @@ import { translateText } from "../services/translateText"
 import { useAuth } from "../context/AuthContext";
 import { Play, PlayCircle, PlaySquare, Repeat, Check, Crown, Bot } from "lucide-react";
 import { playAudio } from "../utils/audioPlayer";
+import { containsProfanity } from "../utils/contentFilter";
 import { useTranslation } from "react-i18next";
 
 
@@ -42,6 +43,16 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
 
         if (!translatedPhrase) {
             setErrorTranslatedPhrase(t("enter_translation"))
+            return
+        }
+
+        if (containsProfanity(phrase)) {
+            setErrorPhrase(t("inappropriate_content_error"))
+            return
+        }
+
+        if (containsProfanity(translatedPhrase)) {
+            setErrorTranslatedPhrase(t("inappropriate_content_error"))
             return
         }
 

@@ -77,7 +77,17 @@ export default function PoliticaPrivacidade() {
                         </section>
 
                         <section>
-                            <h2 className="text-lg font-semibold text-white mb-1">4. Armazenamento local e cookies</h2>
+                            <h2 className="text-lg font-semibold text-white mb-1">4. Compartilhamento entre usuários</h2>
+                            <p>
+                                Quando você marca uma categoria como pública/compartilhada, o seu nome de cadastro
+                                fica visível para outros usuários do Zaldemy, como identificação de quem
+                                disponibilizou aquele conteúdo. Nenhum outro dado pessoal (como e-mail ou senha) é
+                                exibido nessa situação.
+                            </p>
+                        </section>
+
+                        <section>
+                            <h2 className="text-lg font-semibold text-white mb-1">5. Armazenamento local e cookies</h2>
                             <p>
                                 Guardamos um token de acesso no armazenamento local do seu navegador para manter
                                 você conectado. O Zaldemy também funciona como um app instalável (PWA) e pode
@@ -86,7 +96,7 @@ export default function PoliticaPrivacidade() {
                         </section>
 
                         <section>
-                            <h2 className="text-lg font-semibold text-white mb-1">5. Segurança</h2>
+                            <h2 className="text-lg font-semibold text-white mb-1">6. Segurança</h2>
                             <p>
                                 Adotamos medidas técnicas razoáveis para proteger seus dados, como senhas
                                 criptografadas e conexões seguras (HTTPS). Nenhum sistema é 100% livre de falhas,
@@ -95,7 +105,7 @@ export default function PoliticaPrivacidade() {
                         </section>
 
                         <section>
-                            <h2 className="text-lg font-semibold text-white mb-1">6. Seus direitos</h2>
+                            <h2 className="text-lg font-semibold text-white mb-1">7. Seus direitos</h2>
                             <p>Você pode, a qualquer momento:</p>
                             <ul className="list-disc list-inside mt-1 space-y-1">
                                 <li>Solicitar acesso aos dados que temos sobre você;</li>
@@ -110,7 +120,7 @@ export default function PoliticaPrivacidade() {
                         </section>
 
                         <section>
-                            <h2 className="text-lg font-semibold text-white mb-1">7. Retenção de dados</h2>
+                            <h2 className="text-lg font-semibold text-white mb-1">8. Retenção de dados</h2>
                             <p>
                                 Mantemos seus dados enquanto sua conta estiver ativa ou enquanto for necessário para
                                 cumprir obrigações legais. Ao excluir sua conta, seus dados pessoais são removidos ou
@@ -119,7 +129,7 @@ export default function PoliticaPrivacidade() {
                         </section>
 
                         <section>
-                            <h2 className="text-lg font-semibold text-white mb-1">8. Crianças e adolescentes</h2>
+                            <h2 className="text-lg font-semibold text-white mb-1">9. Crianças e adolescentes</h2>
                             <p>
                                 O Zaldemy não é direcionado a menores de 13 anos. Caso um responsável legal identifique
                                 que uma criança menor de 13 anos criou uma conta sem autorização, entre em contato
@@ -128,7 +138,7 @@ export default function PoliticaPrivacidade() {
                         </section>
 
                         <section>
-                            <h2 className="text-lg font-semibold text-white mb-1">9. Alterações desta política</h2>
+                            <h2 className="text-lg font-semibold text-white mb-1">10. Alterações desta política</h2>
                             <p>
                                 Podemos atualizar esta Política de Privacidade periodicamente. Mudanças relevantes
                                 serão comunicadas dentro do app antes de entrarem em vigor.
@@ -136,7 +146,7 @@ export default function PoliticaPrivacidade() {
                         </section>
 
                         <section>
-                            <h2 className="text-lg font-semibold text-white mb-1">10. Contato</h2>
+                            <h2 className="text-lg font-semibold text-white mb-1">11. Contato</h2>
                             <p>
                                 Para dúvidas sobre esta política ou sobre seus dados, entre em contato pelos canais
                                 disponíveis dentro do app, em Configurações.

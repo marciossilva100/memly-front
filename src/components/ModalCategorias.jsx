@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 import { HelpCircle } from 'lucide-react';
+import { containsProfanity } from '../utils/contentFilter';
 export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onSuccess,setOpenModalSucesso }) {
     const { t } = useTranslation();
     const navigate = useNavigate();
@@ -33,6 +34,11 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
 
         if (!categoria) {
             setError(t("enter_category"))
+            return
+        }
+
+        if (containsProfanity(categoria)) {
+            setError(t("inappropriate_content_error"))
             return
         }
 

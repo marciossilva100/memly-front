@@ -259,7 +259,7 @@ export default function Configuracoes() {
                 onConfirm={handleExcluirConta}
             />
 
-            <div className="fixed inset-x-0 bottom-0 z-10 text-center w-full justify-items-center justify-center items-center  from-gray-900 to-gray-800 bg-gradient-to-br ">
+            <div className="sticky inset-x-0 bottom-0 z-10 text-center w-full justify-items-center justify-center items-center   ">
 
 
                 <div className=" w-full ">

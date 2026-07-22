@@ -26,6 +26,7 @@ import LeituraDigital from './pages/LeituraDigital'
 import BookDetails from "./pages/BookDetails";
 import VerificarEmail from './pages/VerificarEmail'
 import EmailVerificado from './pages/EmailVerificado'
+import RedefinirSenha from './pages/RedefinirSenha'
 import EnglishVideos from './pages/EnglishVideos'
 import MusicFlashcardFinder from './pages/MusicFlashcardFInder';
 import ConnectionStatus from './components/ConnectionStatus'; // Novo componente
@@ -256,6 +257,7 @@ function Layout({ titulo, setTitulo }) {
         <Route path="/verificaremail" element={<VerificarEmail />} />
         <Route path="/premiumplan" element={<PremiumPlan />} />
         <Route path="/emailverificado" element={<EmailVerificado />} />
+        <Route path="/redefinirsenha" element={<RedefinirSenha />} />
         <Route path="/termosdeuso" element={<TermosDeUso />} />
         <Route path="/politicaprivacidade" element={<PoliticaPrivacidade />} />
         <Route path="/contato" element={<Contato />} />

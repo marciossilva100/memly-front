@@ -21,7 +21,7 @@ export default function DigitarTexto() {
     const containerRef = useRef(null);
     const [hasOverflow, setHasOverflow] = useState(false);
     const textareaRef = useRef(null);
-
+const API_URL = import.meta.env.VITE_API_URL;
     useEffect(() => {
         if (!isFlipped) {
             const timer = setTimeout(() => {
@@ -50,7 +50,7 @@ export default function DigitarTexto() {
             mode === "traine" ? "controller/treino.php" : "controller/frases.php";
         setLoading(true);
 
-        fetch(`https://api.zaldemy.com/${endpoint}`, {
+        fetch(`${API_URL}/${endpoint}`, {
             method: "POST",
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token")

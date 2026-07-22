@@ -5,25 +5,32 @@ import imgLogin from '../assets/img/img-login.png'
 import imgGoogle from '../assets/img/google.png'
 import imgFacebook from '../assets/img/logo-face.webp'
 import imgCoruja from '../assets/img/coruja.png'
-import imgMemly from "../assets/img/mascote-memly.png"
+import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 import imgZaldemy from "../assets/img/zaldemy.png"
 import { useAuth } from "../context/AuthContext";
-import { GoogleLogin } from '@react-oauth/google';
 import { useGoogleLogin } from '@react-oauth/google';
 import { QRCodeCanvas } from "qrcode.react";
 import axios from "axios";
+import { useTranslation, Trans } from "react-i18next";
+import { isNativePlatform, signInWithGoogleNative } from "../utils/googleNativeAuth";
 
 export default function Login({ setTitulo }) {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [finish, setFinish] = useState(false)
-    const { checkAuth } = useAuth();
+    const { checkAuth, syncAuth } = useAuth();
     const [installPrompt, setInstallPrompt] = useState(null);
     const [isIOS, setIsIOS] = useState(false);
     const [isStandalone, setIsStandalone] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
-    const { user,setUser } = useAuth(); 
+    const { user, setUser } = useAuth();
     const appUrl = "https://zaldem.com"; // troque pelo seu domínio
+    const API_URL = import.meta.env.VITE_API_URL;
+
+    useEffect(() => {
+        console.log("API:", import.meta.env.VITE_API_URL);
+    }, []);
 
     const [form, setForm] = useState({
         email: '',
@@ -42,19 +49,20 @@ export default function Login({ setTitulo }) {
     // }, [user]);
 
     useEffect(() => {
-        setTitulo('Login')
+        setTitulo(t("login"))
     }, [])
 
     useEffect(() => {
-        setTitulo('Login')
+        setTitulo(t("login"))
 
         // Detectar se é iOS
         const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         setIsIOS(ios);
 
-        // Detectar se está rodando como app instalado (standalone)
+        // Detectar se está rodando como app instalado (standalone) ou como app nativo (Capacitor)
         const standalone = window.matchMedia('(display-mode: standalone)').matches ||
-            window.navigator.standalone === true;
+            window.navigator.standalone === true ||
+            isNativePlatform();
         setIsStandalone(standalone);
 
         // Detectar se é mobile
@@ -88,72 +96,72 @@ export default function Login({ setTitulo }) {
         setInstallPrompt(null)
     }
 
-    const login = useGoogleLogin({
-        onSuccess: async (tokenResponse) => {
+    async function handleGoogleAccessToken(accessToken) {
+        setLoading(true);
+        try {
+            const res = await fetch(`${API_URL}/controller/auth.php`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'login_google',
+                    token: accessToken
+                })
+            });
 
-            try {
+            const data = await res.json();
 
-                const res = await fetch('https://api.zaldemy.com/controller/auth.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        action: 'login_google',
-                        token: tokenResponse.access_token
-                    })
-                });
-
-                const data = await res.json();
-
-                console.log("DATA:", data);
-
-                if (!data.sucesso) {
-                    setErro(data.erro || "Erro ao fazer login com Google");
-                    return;
-                }
-
-                localStorage.setItem("token", data.token);
-
-                console.log("ANTES DO CHECKAUTH");
-                console.log('dados ', data);
-
-                await checkAuth();
-
-                //await checkAuth();
-                // setUser({
-                //     id: data.user_id,
-                //     name: data.nome,
-                //     email: data.email,
-                //     step: data.step
-                // });
-
-                // setTimeout(() => {
-                //     checkAuth();
-                // }, 0);
-                // if (data.step > 2) {
-                //     setFinishStep(true)
-
-                // }
-
-                // if (data.step > 2) {
-                //     navigate("/home", { replace: true })
-                //     return
-                // }
-
-
-                // navigate("/escolheridioma");
-
-            } catch (error) {
-                setErro('Erro ao conectar com o servidor');
+            if (!data.sucesso) {
+                setErro(data.erro || t("google_login_error"));
+                setLoading(false);
+                return;
             }
 
-        },
+            // Usa syncAuth em vez de checkAuth e confirma que o usuário
+            // foi realmente autenticado antes de navegar para uma rota privada
+            const loggedUser = await syncAuth(data.token);
 
-        onError: () => {
-            setErro("Erro ao autenticar com Google");
+            if (!loggedUser) {
+                setErro(t("google_login_error"));
+                setLoading(false);
+                return;
+            }
+
+            if (loggedUser.step > 2) {
+                navigate("/home", { replace: true });
+            } else {
+                navigate("/escolheridioma", { replace: true });
+            }
+
+        } catch (error) {
+            console.error(error);
+            setErro(t("server_connection_error"));
+            setLoading(false);
         }
+    }
+
+    // Fluxo web (popup do Google Identity Services) — não funciona dentro
+    // da WebView do Capacitor, por isso o app nativo usa signInWithGoogleNative.
+    const loginWeb = useGoogleLogin({
+        onSuccess: (tokenResponse) => handleGoogleAccessToken(tokenResponse.access_token),
+        onError: () => {
+            setErro(t("google_login_error"));
+        },
     });
+
+    async function login() {
+        if (isNativePlatform()) {
+            try {
+                const accessToken = await signInWithGoogleNative();
+                await handleGoogleAccessToken(accessToken);
+            } catch (error) {
+                console.error(error);
+                setErro(t("google_login_error"));
+            }
+            return;
+        }
+
+        loginWeb();
+    }
 
     function handleChange(e) {
         setForm({
@@ -167,12 +175,12 @@ export default function Login({ setTitulo }) {
         if (loading) return
 
         if (!form.email) {
-            setErro('O email deve ser preenchido')
+            setErro(t("email_required"))
             return
         }
 
         if (!form.password) {
-            setErro('Digite a senha')
+            setErro(t("enter_password"))
             return
         }
 
@@ -180,15 +188,11 @@ export default function Login({ setTitulo }) {
     }
 
     async function validate() {
-
         setLoading(true)
-
         try {
-            const res = await fetch('https://api.zaldemy.com/controller/auth.php', {
+            const res = await fetch(`${API_URL}/controller/auth.php`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     action: 'login',
                     email: form.email,
@@ -199,30 +203,26 @@ export default function Login({ setTitulo }) {
             const data = await res.json();
 
             if (!data.sucesso) {
-                setErro(data.erro || "Erro ao fazer login")
-                return
+                setErro(data.erro || t("login_error"))
+                return;
             }
 
             localStorage.setItem("token", data.token);
-            await checkAuth();
+            const loggedUser = await checkAuth();
 
-           // setUser(data.usuario);
+            if (!loggedUser) {
+                setErro(t("login_error"));
+                return;
+            }
 
-            // setTimeout(() => {
-            //     checkAuth();
-            // }, 0);
-
-            console.log('dados ', data);
-
-            // if (data.usuario.step > 2) {
-            //     navigate("/home", { replace: true })
-            //     return
-            // }
-
-            // navigate("/escolheridioma")
+            if (loggedUser.step > 2) {
+                navigate("/home", { replace: true });
+            } else {
+                navigate("/escolheridioma", { replace: true });
+            }
 
         } catch (error) {
-            setErro('Erro ao conectar com o servidor')
+            setErro(t("server_connection_error"))
         } finally {
             setLoading(false)
         }
@@ -235,10 +235,22 @@ export default function Login({ setTitulo }) {
     //     return
     // }
 
+    if (loading) {
+        return (
+            <div className="flex h-screen items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
+                <img
+                    src={imgChapeuFormatura}
+                    alt={t("loading")}
+                    className="w-28 animate-pulse"
+                />
+            </div>
+        );
+    }
+
     // NOVA FUNCIONALIDADE: Se for acesso por desktop (não mobile), mostrar apenas QR Code
     if (!isMobile) {
         const currentUrl = window.location.href;
-        
+
         return (
             <div className="w-full mx-auto px-8 section-login py-4 h-dvh flex items-center from-gray-900 to-gray-800 bg-gradient-to-br">
                 <div className="flex-1 justify-center overflow-y-auto scrollbar-hide">
@@ -249,17 +261,17 @@ export default function Login({ setTitulo }) {
                         </div>
 
                         <h2 className="text-[#41a9e3] text-2xl font-bold mb-4">
-                            Acesse pelo seu celular
+                            {t("access_from_phone")}
                         </h2>
 
                         <p className="text-white mb-6">
-                            Escaneie o QR Code abaixo com a câmera do seu celular para instalar o app e fazer login
+                            {t("scan_qr_instructions")}
                         </p>
 
                         {/* QR Code */}
                         <div className="bg-white p-4 rounded-2xl inline-block mb-6 shadow-xl">
-                            <QRCodeCanvas 
-                                value={currentUrl} 
+                            <QRCodeCanvas
+                                value={currentUrl}
                                 size={200}
                                 bgColor="#ffffff"
                                 fgColor="#085078"
@@ -271,7 +283,7 @@ export default function Login({ setTitulo }) {
                         {/* Instruções */}
                         <div className="bg-gradient-to-br from-[#4cb8c4]/10 to-[#085078]/10 rounded-2xl p-6 border border-[#4cb8c4]/20 text-left">
                             <h3 className="text-lg font-semibold text-[#085078] mb-3 text-center">
-                                Como instalar no celular:
+                                {t("how_to_install_mobile")}
                             </h3>
 
                             <div className="space-y-4">
@@ -280,7 +292,7 @@ export default function Login({ setTitulo }) {
                                         <span className="text-[#085078] font-bold text-sm">1</span>
                                     </div>
                                     <p className="text-sm text-white">
-                                        Escaneie o QR Code com a câmera do seu celular
+                                        {t("scan_qr_step")}
                                     </p>
                                 </div>
 
@@ -289,7 +301,7 @@ export default function Login({ setTitulo }) {
                                         <span className="text-[#085078] font-bold text-sm">2</span>
                                     </div>
                                     <p className="text-sm text-white">
-                                        No iPhone: Toque em <span className="font-semibold">Compartilhar</span> e depois em <span className="font-semibold">"Adicionar à Tela de Início"</span>
+                                        <Trans i18nKey="iphone_step2" components={{ 1: <span className="font-semibold" /> }} />
                                     </p>
                                 </div>
 
@@ -298,7 +310,7 @@ export default function Login({ setTitulo }) {
                                         <span className="text-[#085078] font-bold text-sm">3</span>
                                     </div>
                                     <p className="text-sm text-white">
-                                        No Android: Toque no menu do navegador e selecione <span className="font-semibold">"Instalar aplicativo"</span> ou <span className="font-semibold">"Adicionar à tela inicial"</span>
+                                        <Trans i18nKey="android_step3" components={{ 1: <span className="font-semibold" /> }} />
                                     </p>
                                 </div>
                             </div>
@@ -307,7 +319,7 @@ export default function Login({ setTitulo }) {
                         <div className="mt-6">
                             <p className="text-xs text-gray-400">
                                 <Globe className="w-3 h-3 inline mr-1" />
-                                Após instalar, o app funcionará como nativo e você poderá fazer login diretamente pelo celular
+                                {t("after_install_hint")}
                             </p>
                         </div>
 
@@ -321,7 +333,7 @@ export default function Login({ setTitulo }) {
                                 }}
                                 className="text-[#41a9e3] hover:text-[#085078] transition-colors text-sm underline"
                             >
-                                Continuar no computador (não recomendado)
+                                {t("continue_on_desktop")}
                             </button>
                         </div>
                     </div>
@@ -348,11 +360,11 @@ export default function Login({ setTitulo }) {
                         </div> */}
 
                         <h2 className="text-[#41a9e3] text-2xl font-bold mb-4">
-                            Instale nosso App
+                            {t("install_our_app")}
                         </h2>
 
                         <p className="text-white mb-8">
-                            Para uma experiência completa, instale o Zaldemy em seu dispositivo
+                            {t("install_for_full_experience")}
                         </p>
 
                         {isIOS ? (
@@ -365,7 +377,7 @@ export default function Login({ setTitulo }) {
                                 </div>
 
                                 <h3 className="text-lg font-semibold text-[#085078] mb-3">
-                                    Como instalar no iPhone/iPad
+                                    {t("how_to_install_iphone")}
                                 </h3>
 
                                 <div className="space-y-4 text-left">
@@ -374,7 +386,7 @@ export default function Login({ setTitulo }) {
                                             <span className="text-[#085078] font-bold text-sm">1</span>
                                         </div>
                                         <p className="text-sm text-gray-600">
-                                            Toque no <span className="font-semibold">botão Compartilhar</span> <Share2 className="w-4 h-4 inline text-[#4cb8c4]" /> na barra do Safari
+                                            <Trans i18nKey="ios_step1_before" components={{ b: <span className="font-semibold" /> }} /> <Share2 className="w-4 h-4 inline text-[#4cb8c4]" /> {t("ios_step1_after")}
                                         </p>
                                     </div>
 
@@ -383,7 +395,7 @@ export default function Login({ setTitulo }) {
                                             <span className="text-[#085078] font-bold text-sm">2</span>
                                         </div>
                                         <p className="text-sm text-gray-600">
-                                            Role para baixo e selecione <span className="font-semibold">"Adicionar à Tela de Início"</span>
+                                            <Trans i18nKey="ios_step2" components={{ 1: <span className="font-semibold" /> }} />
                                         </p>
                                     </div>
 
@@ -392,7 +404,7 @@ export default function Login({ setTitulo }) {
                                             <span className="text-[#085078] font-bold text-sm">3</span>
                                         </div>
                                         <p className="text-sm text-gray-600">
-                                            Toque em <span className="font-semibold">"Adicionar"</span> no canto superior direito
+                                            <Trans i18nKey="ios_step3" components={{ 1: <span className="font-semibold" /> }} />
                                         </p>
                                     </div>
                                 </div>
@@ -400,7 +412,7 @@ export default function Login({ setTitulo }) {
                                 <div className="mt-6 p-3 bg-white/50 rounded-lg">
                                     <p className="text-xs text-gray-500">
                                         <Globe className="w-3 h-3 inline mr-1" />
-                                        Após instalar, o Zaldemy funcionará como um app nativo!
+                                        {t("after_install_native")}
                                     </p>
                                 </div>
                             </div>
@@ -412,14 +424,14 @@ export default function Login({ setTitulo }) {
                                 className={`w-full bg-gradient-to-r from-[#4cb8c4] to-[#085078] text-white font-bold py-4 px-6 rounded-xl transition-all transform hover:scale-[1.02] shadow-xl hover:shadow-2xl flex items-center justify-center space-x-3 group ${!installPrompt ? 'opacity-50 cursor-not-allowed' : ''}`}
                             >
                                 <Download className="w-5 h-5 group-hover:animate-bounce" />
-                                <span>Instalar aplicativo Zaldemy</span>
+                                <span>{t("install_app_button")}</span>
                                 <Smartphone className="w-5 h-5" />
                             </button>
                         )}
 
                         {!isIOS && !installPrompt && (
                             <p className="text-sm text-gray-500 mt-4">
-                                💡 O botão aparecerá quando o aplicativo estiver disponível para instalação
+                                {t("install_button_hint")}
                             </p>
                         )}
 
@@ -429,7 +441,7 @@ export default function Login({ setTitulo }) {
                                 onClick={() => setIsStandalone(true)} // Força mostrar login
                                 className="text-[#41a9e3] hover:text-[#085078] transition-colors text-sm underline"
                             >
-                                Continuar na versão web
+                                {t("continue_web_version")}
                             </button>
                         </div>
                     </div>
@@ -449,11 +461,11 @@ export default function Login({ setTitulo }) {
                     </div>
 
                     <h2 className="text-white text-2xl font-semibold ">
-                        Bem-vindo!
+                        {t("welcome")}
                     </h2>
 
                     <h5 className="text-sm text-white">
-                        Faça o login para continuar
+                        {t("login_to_continue")}
                     </h5>
 
                     <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -467,12 +479,12 @@ export default function Login({ setTitulo }) {
                                 type="email"
                                 className="outline-none bg-white flex-1 !bg-transparent text-white"
                                 name='email'
-                                placeholder="Email"
+                                placeholder={t("email")}
                                 value={form.email}
                                 onChange={(e) => handleChange(e)}
                             />
                         </div>
- 
+
                         {/* Senha */}
                         <div>
                             <div className="flex items-center border overflow-hidden rounded-full py-3">
@@ -484,7 +496,7 @@ export default function Login({ setTitulo }) {
                                     type="password"
                                     className="flex-1 outline-none !bg-transparent text-white"
                                     name='password'
-                                    placeholder="Senha"
+                                    placeholder={t("password")}
                                     value={form.password}
                                     onChange={(e) => handleChange(e)}
                                 />
@@ -493,7 +505,7 @@ export default function Login({ setTitulo }) {
                             <div className="text-right mt-2">
                                 <Link to="/esquecisenha" className='text-white'>
                                     <small className="text-white">
-                                        Esqueceu a senha?
+                                        {t("forgot_password_question")}
                                     </small>
                                 </Link>
                             </div>
@@ -512,7 +524,7 @@ export default function Login({ setTitulo }) {
                             type="submit"
                             className="w-full bg-[#4cb8c4] text-white py-3 rounded-full fw-800 text-lg"
                         >
-                            {loading ? "Entrando..." : "Entrar"}
+                            {loading ? t("entering") : t("sign_in")}
                         </button>
                     </form>
 
@@ -520,7 +532,7 @@ export default function Login({ setTitulo }) {
                     <div className="flex items-center my-6">
                         <div className="flex-grow border-t"></div>
                         <span className="mx-3 text-white text-sm">
-                            Ou entre com
+                            {t("or_login_with")}
                         </span>
                         <div className="flex-grow border-t"></div>
                     </div>
@@ -528,29 +540,29 @@ export default function Login({ setTitulo }) {
                     {/* Google */}
                     <button
                         onClick={() => login()}
-                        className="text-sm w-full border border-gray-300 py-2 rounded-full flex items-center justify-center gap-3 hover:bg-gray-50 transition-colors"
+                        className="text-sm w-full border border-gray-300 py-2 rounded-full flex items-center justify-center gap-3 transition-colors"
                     >
                         <img src={imgGoogle} alt="Google icone" width={30} />
-                        <span className="ff-inter text-white">Entrar com Google</span>
+                        <span className="ff-inter text-white">{t("continue_with_google")}</span>
                     </button>
 
                     <br />
 
                     {/* Facebook */}
-                    <button className="text-sm w-full  hover:bg-[#0d65d9] text-white py-2 rounded-full border border-gray-300 flex items-center justify-center gap-3 transition-colors">
+                    {/* <button className="text-sm w-full  hover:bg-[#0d65d9] text-white py-2 rounded-full border border-gray-300 flex items-center justify-center gap-3 transition-colors">
                         <img src={imgFacebook} alt="Facebook icone" width={30} className="rounded-full" />
-                        <span className="ff-inter">Entrar com Facebook</span>
-                    </button>
+                        <span className="ff-inter">{t("continue_with_facebook")}</span>
+                    </button> */}
 
                     <br />
 
                     <p className="text-sm text-white">
-                        Não tem uma conta?{' '}
+                        {t("no_account_question")}{' '}
                         <Link
                             to="/cadastrar"
                             className="underline text-[#4cb8c4] hover:text-[#085078] transition-colors"
                         >
-                            Cadastrar
+                            {t("sign_up_button")}
                         </Link>
                     </p>
 
@@ -561,7 +573,7 @@ export default function Login({ setTitulo }) {
                             className="mt-6 w-full bg-gradient-to-r from-[#4cb8c4] to-[#085078] text-white px-4 py-3 rounded-full text-sm font-semibold flex items-center justify-center space-x-2 hover:shadow-lg transition-all"
                         >
                             <Download className="w-4 h-4" />
-                            <span>📲 Instalar aplicativo</span>
+                            <span>{t("install_app_short")}</span>
                         </button>
                     )}
 

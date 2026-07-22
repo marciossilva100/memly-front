@@ -1,13 +1,15 @@
 import { Dialog } from "@headlessui/react";
 import { useState, useEffect } from "react";
 import { FaList, FaPlus } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 export default function ModalIncorporarFrases({openIncorporar,setOpenIncorporar}) {
+    const { t } = useTranslation();
     const [categoria, setCategoria] = useState()
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [yourCategory, setYourCategory] = useState(false)
-    
+    const API_URL = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         if (open) {
@@ -24,7 +26,7 @@ export default function ModalIncorporarFrases({openIncorporar,setOpenIncorporar}
         setLoading(true);
 
         try {
-            const res = await fetch('https://api.zaldemy.com/controller/categorias.php', {
+            const res = await fetch(`${API_URL}/controller/categorias.php`, {
                 method: 'POST',
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token")
@@ -44,10 +46,10 @@ export default function ModalIncorporarFrases({openIncorporar,setOpenIncorporar}
 
             setError('')
             onSuccess?.();
-            onOpenModalSucesso('Adicionado com sucesso')
+            onOpenModalSucesso(t("added_successfully"))
 
         } catch (error) {
-            setError(error?.message || "Erro inesperado")
+            setError(error?.message || t("unexpected_error"))
         } finally {
             setLoading(false)
         }
@@ -66,7 +68,7 @@ export default function ModalIncorporarFrases({openIncorporar,setOpenIncorporar}
             <div className="fixed inset-0 flex items-center justify-center px-4 ">
                 <Dialog.Panel className="w-full max-w-md rounded-2xl  px-6 py-8 shadow-xl from-gray-900 to-gray-800 bg-gradient-to-br border border-white/30">
                     <Dialog.Title className="text-xl font-semibold mb-3 text-white ">
-                        Categoria já existe na sua lista. Deseja incorporar as frases para sua categoria existente?
+                        {t("category_exists_incorporate")}
                     </Dialog.Title>
       
 
@@ -84,11 +86,11 @@ export default function ModalIncorporarFrases({openIncorporar,setOpenIncorporar}
                                     onClick={() => setOpenIncorporar(false)}
                                     className="text-lg text-slate-600 me-3 w-full"
                                 >
-                                    Cancelar
+                                    {t("cancel")}
                                 </button>
 
                                 <button type="submit" disabled={loading} className="w-full bg-[#4cb8c4] text-white px-4 py-2 rounded-full text-lg ">
-                                    Incorporar
+                                    {t("incorporate")}
                                 </button>
                             </div>
                         </form>

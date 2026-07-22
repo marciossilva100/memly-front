@@ -6,25 +6,41 @@ export function AuthProvider({ children }) {
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  // Indica que a lista de categorias esta sendo (re)carregada (ex: apos trocar idioma),
+  // para o Header poder manter a tela de loading ate os dados estarem prontos.
+  const [categoriasLoading, setCategoriasLoading] = useState(false);
+  const API_URL = import.meta.env.VITE_API_URL;
 
-  const checkAuth = useCallback(async () => {
+  const checkAuth = useCallback(async (silent = false) => {
+    // Se não for silencioso, marca como autenticando
+    if (!silent) {
+      setIsAuthenticating(true);
+    }
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setUser(null);
+      setLoading(false);
+      setIsAuthenticating(false);
+      return null;
+    }
 
     try {
-
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        setUser(null);
-        setLoading(false);
-        return;
-      }
-
-      const res = await fetch("https://api.zaldemy.com/controller/me.php", {
+      const res = await fetch(`${API_URL}/controller/me.php`, {
         method: "GET",
         headers: {
           "Authorization": "Bearer " + token
         }
       });
+
+      // Servidor confirmou explicitamente que o token não é válido
+      if (res.status === 401 || res.status === 403) {
+        setUser(null);
+        localStorage.removeItem("token");
+        return null;
+      }
 
       if (!res.ok) {
         throw new Error("Erro na requisição");
@@ -32,33 +48,48 @@ export function AuthProvider({ children }) {
 
       const data = await res.json();
 
-      setUser(data.authenticated ? data.user : null);
+      if (data.authenticated) {
+        setUser(data.user);
+        return data.user;
+      }
+
+      // Token inválido, remove do localStorage
+      setUser(null);
+      localStorage.removeItem("token");
+      return null;
 
     } catch (error) {
-
+      // Falha de rede/servidor: mantém o token e o usuário atuais,
+      // não desloga o usuário por causa de uma instabilidade de conexão
       console.log("Erro auth:", error);
-      setUser(null);
-
+      return null;
     } finally {
-
       setLoading(false);
+      setIsAuthenticating(false);
+    }
+  }, [API_URL]);
 
+  // Força uma reautenticação imediata (usado após login)
+  const syncAuth = useCallback(async (newToken = null) => {
+    if (newToken) {
+      localStorage.setItem("token", newToken);
     }
 
-  }, []);
+    setLoading(true);
+    setIsAuthenticating(true);
+    return await checkAuth(true);
+  }, [checkAuth]);
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
   async function logout() {
-
     try {
-
       const token = localStorage.getItem("token");
 
       if (token) {
-        await fetch("https://api.zaldemy.com/controller/logout.php", {
+        await fetch(`${API_URL}/controller/logout.php`, {
           method: "POST",
           headers: {
             "Authorization": "Bearer " + token
@@ -67,25 +98,29 @@ export function AuthProvider({ children }) {
       }
 
     } catch (err) {
-
       console.log("Erro ao deslogar:", err);
-
     } finally {
-
       localStorage.removeItem("token");
       setUser(null);
-
+      setLoading(false);
+      setIsAuthenticating(false);
     }
-
   }
+
+  // Combine loading states
+  const isLoading = loading || isAuthenticating;
 
   const value = useMemo(() => ({
     user,
     setUser,
-    loading,
+    loading: isLoading,
+    isAuthenticating,
     checkAuth,
-    logout
-  }), [user, loading, checkAuth]);
+    syncAuth,
+    logout,
+    categoriasLoading,
+    setCategoriasLoading
+  }), [user, isLoading, isAuthenticating, checkAuth, syncAuth, categoriasLoading]);
 
   return (
     <AuthContext.Provider value={value}>
@@ -95,7 +130,6 @@ export function AuthProvider({ children }) {
 }
 
 export function useAuth() {
-
   const context = useContext(AuthContext);
 
   if (!context) {

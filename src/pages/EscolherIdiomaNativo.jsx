@@ -1,32 +1,73 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import imgCoruja from "../assets/img/coruja.png"
 import { idiomas } from "../data/idiomas"
 import { useAuth } from "../context/AuthContext";
-import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
+import { useTranslation } from "react-i18next";
+import imgChapeuFormatura from "../assets/img/chapeu_formatura-v2.png"
 
 import imgMemly from "../assets/img/mascote-memly.png"
-import {Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+
+// 🌍 Bandeiras
+const flags = {
+  pt: "https://flagcdn.com/w40/br.png",
+  en: "https://flagcdn.com/w40/us.png",
+  es: "https://flagcdn.com/w40/es.png",
+  fr: "https://flagcdn.com/w40/fr.png",
+  de: "https://flagcdn.com/w40/de.png",
+  it: "https://flagcdn.com/w40/it.png",
+  zh: "https://flagcdn.com/w40/cn.png",
+  ja: "https://flagcdn.com/w40/jp.png",
+  ru: "https://flagcdn.com/w40/ru.png",
+  ar: "https://flagcdn.com/w40/sa.png",
+  hi: "https://flagcdn.com/w40/in.png",
+  ko: "https://flagcdn.com/w40/kr.png",
+  nl: "https://flagcdn.com/w40/nl.png",
+  tr: "https://flagcdn.com/w40/tr.png",
+  pl: "https://flagcdn.com/w40/pl.png",
+};
 
 
 export default function EscolherIdiomaNativo() {
-  const { user, setUser } = useAuth();
+  const { t } = useTranslation();
+  const { user, setUser, checkAuth } = useAuth();
   const [erro, setErro] = useState('')
   const [languageList, setLanguageList] = useState([])
   const [finishStep, setFinishStep] = useState(false)
-
+  const [openSelect, setOpenSelect] = useState(false)
+  const selectRef = useRef(null)
+  const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
+
 
   const [form, setForm] = useState({
     native_language: ''
   })
 
-
-  if (user?.step > 0) {
-    return <Navigate to="/escolheridiomaaprender" replace />
-  }
+  const idiomaSelecionado = languageList.find(
+    (l) => l.id == form.native_language
+  );
 
   useEffect(() => {
-    fetch('https://api.zaldemy.com/controller/language.php',
+    if (user?.step > 0) {
+      navigate("/escolheridiomaaprender", { replace: true });
+    }
+  }, [user]);
+
+  useEffect(() => {
+
+    function handleClickOutside(e) {
+      if (selectRef.current && !selectRef.current.contains(e.target)) {
+        setOpenSelect(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    fetch(`${API_URL}/controller/language.php`,
       {
         method: 'POST',
         headers: {
@@ -42,76 +83,79 @@ export default function EscolherIdiomaNativo() {
         setLanguageList(data)
         // console.log(data)
       }).catch(() => {
-        setErro('Erro ao conectar com o servidor');
+        setErro(t("server_connection_error"));
       });
   }, [])
 
-  function languageRegister() {
-
-    //   setLoading(true)
-    fetch('https://api.zaldemy.com/controller/language.php', {
-      method: 'POST',
-      headers: {
-        "Authorization": "Bearer " + localStorage.getItem("token")
-      },
-
-      body: JSON.stringify({
-        action: 'set_native_language',
-        native_language: form.native_language,
-      })
-    })
-      .then(res => res.json())
-      .then(data => {
-
-        console.log(data);
-
-        if (data.erro) {
-          //   setLoading(false)
-          setErro(data.erro);
-          return
-        }
-        //  setFinish(true)
-        // setLoading(false)
-
-        setUser(prev => ({
-          ...prev,
-          step: 1,
-          native_language: form.acronym
-        }));
-
-        navigate("/escolheridiomaaprender", {
-          state: { email: form.email }
+  async function languageRegister() {
+    try {
+      const res = await fetch(`${API_URL}/controller/language.php`, {
+        method: 'POST',
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem("token")
+        },
+        body: JSON.stringify({
+          action: 'set_native_language',
+          native_language: form.native_language,
         })
-
-      })
-      .catch(() => {
-        setErro('Erro ao conectar com o servidor');
       });
 
+      const data = await res.json();
+
+      if (data.erro) {
+        setErro(data.erro);
+        return;
+      }
+
+      // 🔥 Garante que o idioma existe
+      const idiomaSelecionado = languageList.find(
+        (l) => l.id == form.native_language
+      );
+
+      // 🔥 Atualiza local imediatamente (sem quebrar se user for null)
+      setUser(prev => ({
+        ...(prev || {}),
+        step: 1,
+        native_language: idiomaSelecionado?.sigla || null
+      }));
+
+      // 🔥 SINCRONIZA COM BACKEND (ESSENCIAL)
+      await checkAuth(true);
+
+      // 🔥 Agora sim navega com dados corretos
+      navigate("/escolheridiomaaprender");
+
+    } catch (error) {
+      setErro(t("server_connection_error"));
+    }
   }
 
-  function handleChange(e) {
-    setErro('');
+  useEffect(() => {
+    console.log("USER ATUALIZADO:", user);
+  }, [user]);
 
-    const { name, value } = e.target;
+  // function handleChange(e) {
+  //   setErro('');
 
-    const selectedLanguage = languageList.find(
-      (lang) => lang.id == value
-    );
+  //   const { name, value } = e.target;
 
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-      language: selectedLanguage?.idioma,
-      acronym: selectedLanguage?.sigla
-    }));
-  }
+  //   const selectedLanguage = languageList.find(
+  //     (lang) => lang.id == value
+  //   );
+
+  //   setForm((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //     language: selectedLanguage?.idioma,
+  //     acronym: selectedLanguage?.sigla
+  //   }));
+  // }
 
   function handleSubmit(e) {
     e.preventDefault();
 
     if (!form.native_language) {
-      setErro('Escolha um idioma')
+      setErro(t("choose_a_language"))
       return
     }
     languageRegister();
@@ -129,7 +173,7 @@ export default function EscolherIdiomaNativo() {
         flex-col
         px-10
         pt-6
-        pb-[env(safe-area-inset-bottom)]
+        pb-[env(safe-area-inset-bottom)] from-gray-900 to-gray-800 bg-gradient-to-br
       "
     >
       <form action="" onSubmit={(e) => handleSubmit(e)}>
@@ -143,40 +187,70 @@ export default function EscolherIdiomaNativo() {
               className="w-28 "
             />
           </div>}
-          <h4 className="text-lg font-medium text-slate-700">
-            Escolha seu idioma nativo
+          <h4 className="text-lg font-medium text-white">
+            {t("choose_native_language_prompt")}
           </h4>
         </div>
 
         {/* SELECT */}
         <div className="w-full max-w-md mx-auto">
           <div className="relative">
-            <select
-              name="native_language"
-              value={form.native_language}
-              onChange={(e) => handleChange(e)}
-              className="
-              w-full
-              h-10
-              px-4
-              pr-12
-              rounded-2xl
-              border
-              border-blue-500
-              bg-white
-              focus:outline-none
-              focus:ring-2
-              focus:ring-blue-500
-              appearance-none
-            "
+            <div
+              ref={selectRef}
+              className="relative h-12 flex items-center rounded-2xl border border-blue-500 w-full"
             >
-              <option value="">Selecione um idioma</option>
-              {languageList.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.idioma}
-                </option>
-              ))}
-            </select>
+              {/* BOTÃO */}
+              <div
+                onClick={() => setOpenSelect(!openSelect)}
+                className="flex items-center gap-2 px-4 w-full cursor-pointer"
+              >
+                {idiomaSelecionado ? (
+                  <>
+                    <img
+                      src={flags[idiomaSelecionado.sigla] || "https://flagcdn.com/w40/un.png"}
+                      className="w-5 h-5 rounded-full"
+                    />
+                    <span className="text-sm text-white">
+                      {idiomaSelecionado.idioma}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-sm text-white">
+                    {t("select_a_language")}
+                  </span>
+                )}
+
+
+              </div>
+
+              {/* DROPDOWN */}
+              {openSelect && (
+                <div className="absolute top-14 left-0 w-full bg-gray-900 border border-blue-500 rounded-xl shadow-lg z-50 max-h-60 overflow-auto">
+                  {languageList.map((item) => (
+                    <div
+                      key={item.id}
+                      onClick={() => {
+                        setForm((prev) => ({
+                          ...prev,
+                          native_language: item.id,
+                          language: item.idioma,
+                          acronym: item.sigla
+                        }));
+
+                        setOpenSelect(false);
+                      }}
+                      className="flex items-center gap-2 px-4 py-3 hover:bg-gray-700 cursor-pointer text-white"
+                    >
+                      <img
+                        src={flags[item.sigla] || "https://flagcdn.com/w40/un.png"}
+                        className="w-5 h-5 rounded-full"
+                      />
+                      <span className="text-sm">{item.idioma}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
             <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
               <svg
@@ -208,8 +282,9 @@ export default function EscolherIdiomaNativo() {
             className="
           block
           w-full
-          bg-[#4cb8c4]
+          bg-gray-800/50 backdrop-blur-sm  border border-gray-700
           bottom-0
+          text-lg
           text-white
           font-medium
           py-3
@@ -218,7 +293,7 @@ export default function EscolherIdiomaNativo() {
           text-center
         "
           >
-            Confirmar
+            {t("confirm")}
           </button>
 
         </div>

@@ -1,0 +1,20 @@
+{
+  "appId": "com.zaldemy.app",
+  "appName": "Zaldemy",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": false,
+      "backgroundColor": "#111827",
+      "androidSplashResourceName": "splash"
+    },
+    "SocialLogin": {
+      "providers": {
+        "google": true,
+        "facebook": false,
+        "apple": false,
+        "twitter": false
+      }
+    }
+  }
+}

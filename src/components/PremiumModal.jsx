@@ -1,5 +1,6 @@
 import React from 'react';
 import imgZaldemy from "../assets/img/zaldemy.png"
+import { useTranslation } from "react-i18next";
 
 import {
   Sparkles,
@@ -25,36 +26,37 @@ import {
 } from 'lucide-react';
 
 const PremiumModal = ({ isOpen, onClose, setOpenFrase }) => {
+  const { t } = useTranslation();
   const premiumFeatures = [
     {
       icon: <Infinity className="w-5 h-5" />,
-      title: "Flashcards ilimitados",
-      description: "Sem limites de cards ativos para seu vocabulário"
+      title: t("unlimited_flashcards_title"),
+      description: t("unlimited_flashcards_desc")
     },
     {
       icon: <FileText className="w-5 h-5" />,
-      title: "Textos personalizados com IA",
-      description: "Conteúdo gerado exclusivamente com suas palavras"
+      title: t("ai_texts_title"),
+      description: t("ai_texts_desc")
     },
     {
       icon: <MessageSquare className="w-5 h-5" />,
-      title: "Perguntas automáticas",
-      description: "IA cria exercícios contextualizados para você"
+      title: t("auto_questions_title"),
+      description: t("auto_questions_desc")
     },
     {
       icon: <CheckCircle className="w-5 h-5" />,
-      title: "Correção em tempo real",
-      description: "Feedback instantâneo em todos os exercícios"
+      title: t("realtime_correction_title"),
+      description: t("realtime_correction_desc")
     },
     {
       icon: <BarChart3 className="w-5 h-5" />,
-      title: "Relatórios detalhados",
-      description: "Métricas completas do seu progresso"
+      title: t("detailed_reports_title"),
+      description: t("detailed_reports_desc")
     },
     {
       icon: <Zap className="w-5 h-5" />,
-      title: "Cache inteligente",
-      description: "Experiência otimizada e sem custos extras"
+      title: t("smart_cache_title"),
+      description: t("smart_cache_desc")
     }
   ];
 
@@ -98,19 +100,19 @@ const PremiumModal = ({ isOpen, onClose, setOpenFrase }) => {
 
                 <div className="inline-flex items-center bg-[#4cb8c4]/10 text-[#085078] px-4 py-2 rounded-full mb-4 border border-[#4cb8c4]/20 shadow-sm">
                   <Gem className="w-4 h-4 mr-2 text-[#4cb8c4]" />
-                  <span className="text-sm font-semibold">PLANO PREMIUM ZALDEMY+</span>
+                  <span className="text-sm font-semibold">{t("premium_badge")}</span>
                 </div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-3">
-                  Acelere seu aprendizado{' '}
+                  {t("premium_headline_part1")}{' '}
                   <span className="bg-gradient-to-r from-[#4cb8c4] to-[#085078] bg-clip-text text-transparent">
-                    com IA
+                    {t("premium_headline_part2")}
                   </span>
                 </h1>
                 <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                  Tenha acesso ilimitado a todos os recursos e transforme seu vocabulário em conhecimento fluente
+                  {t("premium_subtitle")}
                 </p>
                 <button className="bg-gradient-to-r from-[#4cb8c4] to-[#085078] hover:from-[#3da5b0] hover:to-[#064060] text-white px-4 py-2 rounded-lg text-lg font-semibold transition-all shadow-md hover:shadow-lg mt-4">
-                  Começar grátis
+                  {t("start_free")}
                 </button>
               </div>
 
@@ -127,7 +129,7 @@ const PremiumModal = ({ isOpen, onClose, setOpenFrase }) => {
                     <div className="absolute inset-0 bg-white/10 animate-pulse"></div>
                     <span className="relative z-10 flex items-center justify-center">
                       <Rocket className="w-3 h-3 mr-1" />
-                      EXPERIÊNCIA COMPLETA • SEM ANÚNCIOS • CONTEÚDO PERSONALIZADO
+                      {t("premium_ribbon")}
                     </span>
                   </div>
 
@@ -137,19 +139,19 @@ const PremiumModal = ({ isOpen, onClose, setOpenFrase }) => {
                       <div className="text-center lg:text-left">
                         <div className="flex items-center justify-center lg:justify-start mb-1">
                           <span className="text-5xl font-bold text-gray-900">US$ 5</span>
-                          <span className="text-gray-500 ml-2">/mês</span>
+                          <span className="text-gray-500 ml-2">{t("per_month")}</span>
                         </div>
                         <div className="flex items-center space-x-2">
                           <Star className="w-4 h-4 text-[#4cb8c4] fill-current" />
-                          <p className="text-sm text-gray-600">Economize até 80% comparado a outros apps</p>
+                          <p className="text-sm text-gray-600">{t("save_up_to")}</p>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-3 bg-[#4cb8c4]/10 px-5 py-2 rounded-xl border border-[#4cb8c4]/20">
                         <Target className="w-5 h-5 text-[#085078]" />
                         <div>
-                          <p className="text-xs text-gray-600">Conteúdo exclusivo</p>
-                          <p className="font-bold text-[#085078] text-sm">90% baseado no seu vocabulário</p>
+                          <p className="text-xs text-gray-600">{t("exclusive_content")}</p>
+                          <p className="font-bold text-[#085078] text-sm">{t("based_on_vocabulary")}</p>
                         </div>
                       </div>
                     </div>
@@ -160,48 +162,48 @@ const PremiumModal = ({ isOpen, onClose, setOpenFrase }) => {
                         <div className="bg-[#085078]/10 p-1.5 rounded-lg">
                           <Mic2 className="w-4 h-4 text-[#085078]" />
                         </div>
-                        <h3 className="font-semibold text-[#085078] text-sm">Áudio com qualidade superior</h3>
+                        <h3 className="font-semibold text-[#085078] text-sm">{t("superior_audio_quality")}</h3>
                       </div>
 
                       <div className="grid sm:grid-cols-2 gap-3">
                         {/* Plano Free */}
                         <div className="bg-white/60 rounded-lg p-3 border border-gray-200">
                           <div className="flex items-center justify-between mb-1">
-                            <span className="text-xs font-medium text-gray-700">Plano Free</span>
+                            <span className="text-xs font-medium text-gray-700">{t("free_plan")}</span>
                             <Volume2 className="w-3 h-3 text-gray-400" />
                           </div>
-                          <p className="text-xs text-gray-500 mb-1">voz padrão</p>
+                          <p className="text-xs text-gray-500 mb-1">{t("standard_voice")}</p>
                           <div className="flex items-center gap-1">
                             <WavesIcon className="w-3 h-3 text-gray-300" />
                             <WavesIcon className="w-3 h-3 text-gray-300" />
                             <WavesIcon className="w-3 h-3 text-gray-300" />
-                            <span className="text-xs text-gray-400 ml-1">qualidade padrão</span>
+                            <span className="text-xs text-gray-400 ml-1">{t("standard_quality")}</span>
                           </div>
                         </div>
 
                         {/* Plano Premium com ElevenLabs */}
                         <div className="bg-gradient-to-r from-[#4cb8c4]/10 to-[#085078]/10 rounded-lg p-3 border border-[#4cb8c4]/30">
                           <div className="flex items-center justify-between mb-1">
-                            <span className="text-xs font-medium text-[#085078]">Plano Premium</span>
+                            <span className="text-xs font-medium text-[#085078]">{t("premium_plan")}</span>
                             <div className="flex items-center gap-1">
                               <Sparkles className="w-3 h-3 text-[#4cb8c4]" />
                               <Mic2 className="w-3 h-3 text-[#085078]" />
                             </div>
                           </div>
                           <p className="text-xs font-medium text-[#4cb8c4] mb-1">ElevenLabs</p>
-                          <p className="text-xs text-gray-600 mb-1">áudios ultra-realistas</p>
+                          <p className="text-xs text-gray-600 mb-1">{t("ultra_realistic_audio")}</p>
                           <div className="flex items-center gap-1">
                             <WavesIcon className="w-3 h-3 text-[#4cb8c4]" />
                             <WavesIcon className="w-3 h-3 text-[#4cb8c4]" />
                             <WavesIcon className="w-3 h-3 text-[#4cb8c4]" />
                             <WavesIcon className="w-3 h-3 text-[#4cb8c4]" />
-                            <span className="text-xs text-[#085078] ml-1">qualidade premium</span>
+                            <span className="text-xs text-[#085078] ml-1">{t("premium_quality")}</span>
                           </div>
                         </div>
                       </div>
 
                       <p className="text-xs text-gray-500 mt-2 italic">
-                        ✨ No plano free você já tem acesso a pronúncias claras. No Premium, suas palavras ganham vida com vozes ultra-realistas do ElevenLabs!
+                        {t("audio_quality_note")}
                       </p>
                     </div>
 
@@ -231,25 +233,25 @@ const PremiumModal = ({ isOpen, onClose, setOpenFrase }) => {
                     <div className="grid sm:grid-cols-3 gap-3 mb-6">
                       <div className="bg-gradient-to-br from-[#4cb8c4]/10 to-[#085078]/10 rounded-xl p-3 text-center border border-[#4cb8c4]/20">
                         <Brain className="w-5 h-5 text-[#085078] mx-auto mb-1" />
-                        <p className="text-xs font-semibold text-gray-700">IA Adaptativa</p>
-                        <p className="text-xs text-gray-500">Aprende com seu progresso</p>
+                        <p className="text-xs font-semibold text-gray-700">{t("adaptive_ai")}</p>
+                        <p className="text-xs text-gray-500">{t("adaptive_ai_desc")}</p>
                       </div>
                       <div className="bg-gradient-to-br from-[#4cb8c4]/10 to-[#085078]/10 rounded-xl p-3 text-center border border-[#4cb8c4]/20">
                         <Zap className="w-5 h-5 text-[#085078] mx-auto mb-1" />
-                        <p className="text-xs font-semibold text-gray-700">Cache Inteligente</p>
-                        <p className="text-xs text-gray-500">Performance otimizada</p>
+                        <p className="text-xs font-semibold text-gray-700">{t("smart_cache_label")}</p>
+                        <p className="text-xs text-gray-500">{t("smart_cache_label_desc")}</p>
                       </div>
                       <div className="bg-gradient-to-br from-[#4cb8c4]/10 to-[#085078]/10 rounded-xl p-3 text-center border border-[#4cb8c4]/20">
                         <Award className="w-5 h-5 text-[#085078] mx-auto mb-1" />
-                        <p className="text-xs font-semibold text-gray-700">Conteúdo Exclusivo</p>
-                        <p className="text-xs text-gray-500">Feito sob medida para você</p>
+                        <p className="text-xs font-semibold text-gray-700">{t("exclusive_content_label")}</p>
+                        <p className="text-xs text-gray-500">{t("exclusive_content_desc")}</p>
                       </div>
                     </div>
 
                     {/* Botão de assinatura */}
                     <button className="w-full bg-gradient-to-r from-[#4cb8c4] to-[#085078] hover:from-[#3da5b0] hover:to-[#064060] text-white font-bold py-4 px-6 rounded-xl transition-all transform hover:scale-[1.02] shadow-xl hover:shadow-2xl flex items-center justify-center space-x-2 group mb-4">
                       <Sparkles className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-                      <span>Ativar Zaldemy+ por apenas US$ 5/mês</span>
+                      <span>{t("activate_premium_button")}</span>
                       <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </button>
 
@@ -257,15 +259,15 @@ const PremiumModal = ({ isOpen, onClose, setOpenFrase }) => {
                     <div className="flex flex-wrap justify-center gap-4">
                       <div className="flex items-center text-xs text-gray-500">
                         <Shield className="w-3 h-3 text-[#4cb8c4] mr-1" />
-                        Pagamento 100% seguro
+                        {t("secure_payment")}
                       </div>
                       <div className="flex items-center text-xs text-gray-500">
                         <CheckCircle className="w-3 h-3 text-[#4cb8c4] mr-1" />
-                        Cancele quando quiser
+                        {t("cancel_anytime")}
                       </div>
                       <div className="flex items-center text-xs text-gray-500">
                         <Star className="w-3 h-3 text-[#60a5fa] mr-1 fill-current" />
-                        7 dias de garantia
+                        {t("money_back_guarantee")}
                       </div>
                     </div>
                   </div>
@@ -276,7 +278,7 @@ const PremiumModal = ({ isOpen, onClose, setOpenFrase }) => {
               <div className="mt-8 text-center">
                 <div className="inline-flex items-center gap-2 bg-white/60 backdrop-blur-sm px-5 py-2 rounded-full border border-[#4cb8c4]/20">
                   <span className="text-[#085078] font-bold text-sm">6.000+</span>
-                  <span className="text-gray-600 text-xs">alunos ativos</span>
+                  <span className="text-gray-600 text-xs">{t("active_students")}</span>
                   <span className="w-1 h-1 bg-[#4cb8c4] rounded-full"></span>
                   <span className="text-[#4cb8c4] font-bold text-sm">★★★★★</span>
                   <span className="text-gray-500 text-xs">(4.8)</span>
@@ -285,15 +287,15 @@ const PremiumModal = ({ isOpen, onClose, setOpenFrase }) => {
                 <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl mx-auto">
                   <div className="bg-white/50 backdrop-blur-sm rounded-xl p-3 border border-[#4cb8c4]/20">
                     <p className="text-xl font-bold text-[#085078]">105</p>
-                    <p className="text-xs text-gray-600">Premium no Ano 1</p>
+                    <p className="text-xs text-gray-600">{t("premium_year1")}</p>
                   </div>
                   <div className="bg-white/50 backdrop-blur-sm rounded-xl p-3 border border-[#4cb8c4]/20">
                     <p className="text-xl font-bold text-[#085078]">750</p>
-                    <p className="text-xs text-gray-600">Premium no Ano 2</p>
+                    <p className="text-xs text-gray-600">{t("premium_year2")}</p>
                   </div>
                   <div className="bg-white/50 backdrop-blur-sm rounded-xl p-3 border border-[#4cb8c4]/20">
                     <p className="text-xl font-bold text-[#085078]">2.8k</p>
-                    <p className="text-xs text-gray-600">Premium no Ano 3</p>
+                    <p className="text-xs text-gray-600">{t("premium_year3")}</p>
                   </div>
                 </div>
               </div>

@@ -1,0 +1,296 @@
+import { useState, useEffect, useRef } from 'react'
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom'
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { AuthProvider, useAuth } from './context/AuthContext'
+import { registerSW } from "virtual:pwa-register";
+
+import AuthGate from "./components/AuthGate";
+import Login from './pages/Login'
+import Cadastro from './pages/Cadastro'
+import FrasesGeral from './pages/FrasesGeral'
+import EsqueciSenha from './pages/EsqueciSenha'
+import EscolherIdiomaNativo from './pages/EscolherIdiomaNativo'
+import ListCategoria from './pages/listCategorias';
+import EscolherIdiomaAprender from './pages/EscolherIdiomaAprender'
+import Header from './includes/Header'
+import ReferenciaUsuario from './pages/ReferenciaUsuário'
+import Home from './pages/Home'
+import Frases from './pages/Frases'
+import Flashcards from './pages/Flashcards'
+import Emparelhar from './pages/Emparelhar'
+import TreinoIA from './pages/treinoIA'
+import Perguntas from './pages/Perguntas'
+import DigitarTexto from './pages/DigitarTexto'
+import LeituraDigital from './pages/LeituraDigital'
+import BookDetails from "./pages/BookDetails";
+import VerificarEmail from './pages/VerificarEmail'
+import EmailVerificado from './pages/EmailVerificado'
+import EnglishVideos from './pages/EnglishVideos'
+import MusicFlashcardFinder from './pages/MusicFlashcardFInder';
+
+import imgMemly from "./assets/img/mascote-memly.png"
+import imgChapeuFormatura from "./assets/img/chapeu_formatura.png"
+import PremiumPlan from './components/PremiumModal';
+import Metricas from './pages/Metricas';
+
+
+/* function setRealViewportHeight() {
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+setRealViewportHeight();
+
+window.addEventListener('resize', setRealViewportHeight); */
+
+
+
+
+function PrivateRoute({ children }) {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-white-100">
+        <img
+          src={imgChapeuFormatura}
+          alt="Carregando"
+          className="w-28 animate-pulse"
+        />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+}
+
+
+function Layout({ titulo, setTitulo }) {
+
+  const location = useLocation()
+  const { user, loading } = useAuth()
+
+  const rotasSemHeader = new Set([
+    //'/login',
+    //'/escolheridioma',
+    //'/emparelhar',
+    '/home'
+  ])
+
+  const esconderHeader = rotasSemHeader.has(location.pathname)
+
+  // if (loading) {
+  //   return (
+  //     <div className="flex h-screen items-center justify-center bg-white-100">
+  //       <img
+  //         src={imgChapeuFormatura}
+  //         alt="Carregando"
+  //         className="w-28 animate-pulse"
+  //       />
+  //     </div>
+  //   )
+  // }
+
+  return (
+    <>
+      {esconderHeader && <Header titulo={titulo} />}
+
+      <Routes>
+
+        <Route path="/" element={<Login setTitulo={setTitulo} />} />
+        <Route path="/login" element={<Login setTitulo={setTitulo} />} />
+
+        <Route path="/cadastrar" element={<Cadastro setTitulo={setTitulo} />} />
+        <Route path="/esquecisenha" element={<EsqueciSenha setTitulo={setTitulo} />} />
+
+        <Route
+          path="/escolheridioma"
+          element={
+            <PrivateRoute>
+              <EscolherIdiomaNativo user={user} />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/escolheridiomaaprender"
+          element={
+            <PrivateRoute>
+              <EscolherIdiomaAprender user={user} />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/referenciausuario"
+          element={
+            <PrivateRoute>
+              <ReferenciaUsuario setTitulo={setTitulo} />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/home"
+          element={
+            <PrivateRoute>
+              <Home setTitulo={setTitulo} />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/frases/:id"
+          element={
+            <PrivateRoute>
+              <Frases />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/flashcards/:id/:mode"
+          element={
+            <PrivateRoute>
+              <Flashcards />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/emparelhar/:id/:mode"
+          element={
+            <PrivateRoute>
+              <Emparelhar />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/treinoia"
+          element={
+            <PrivateRoute>
+              <TreinoIA />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/perguntasia"
+          element={
+            <PrivateRoute>
+              <Perguntas />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/digitartexto/:id/:mode"
+          element={
+            <PrivateRoute>
+              <DigitarTexto />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/leituradigital"
+          element={
+            <PrivateRoute>
+              <LeituraDigital />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/book/:id"
+          element={
+            <PrivateRoute>
+              <BookDetails />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/listcategorias"
+          element={
+            <PrivateRoute>
+              <ListCategoria />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/frasesgeral/:id"
+          element={
+            <PrivateRoute>
+              <FrasesGeral />
+            </PrivateRoute>
+          }
+        />
+
+
+        <Route
+          path="/metricas"
+          element={
+            <PrivateRoute>
+              <Metricas />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/musicflashcardfInder"
+          element={
+            <PrivateRoute>
+              <MusicFlashcardFinder />
+            </PrivateRoute>
+          }
+        />
+
+          <Route path="/verificaremail" element={<VerificarEmail />} />
+          <Route path="/premiumplan" element={<PremiumPlan />} />
+          <Route path="/emailverificado" element={<EmailVerificado />} />
+          <Route path="/videos" element={<EnglishVideos query="english listening practice" />} />
+      </Routes>
+    </>
+  )
+}
+
+
+
+function App() {
+
+  const containerRef = useRef(null);
+  const [hasOverflow, setHasOverflow] = useState(false);
+
+  const [titulo, setTitulo] = useState('')
+
+  registerSW({
+    onNeedRefresh() {
+      console.log("Nova versão disponível");
+      window.location.reload();
+    },
+    onOfflineReady() {
+      console.log("App pronto para offline");
+    }
+  });
+
+  return (
+    <GoogleOAuthProvider clientId="1055075063152-tkobce7c2j9eq1t4doi0419votjlemis.apps.googleusercontent.com">
+      <AuthProvider>
+        <BrowserRouter>
+          <AuthGate>
+            <Layout titulo={titulo} setTitulo={setTitulo} />
+          </AuthGate>
+        </BrowserRouter>
+      </AuthProvider>
+    </GoogleOAuthProvider>
+  )
+}
+
+export default App

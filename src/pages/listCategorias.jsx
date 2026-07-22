@@ -14,12 +14,14 @@ import ModalSucesso from '../components/ModalSucesso';
 import PremiumModal from '../components/PremiumModal'
 import { useAuth } from "../context/AuthContext";
 import ModalIncorporarFrases from '../components/ModalIncorporarFrases'
+import { useTranslation } from "react-i18next";
 
 
-import { BookOpen,Search,Filter } from "lucide-react";
+import { BookOpen,Search,Filter,Loader2,Home,Settings,BarChart3 } from "lucide-react";
 
 
 export default function ListCategoria() {
+    const { t } = useTranslation();
     const { user, setUser } = useAuth();
     const [open, setOpen] = useState(false);
     const [openIncorporar, setOpenIncorporar] = useState(false)
@@ -36,53 +38,56 @@ export default function ListCategoria() {
     const [hasMore, setHasMore] = useState(true);
     const [contador, setContador] = useState(0);
     const [textoBusca, setTextoBusca] = useState("")
+    const API_URL = import.meta.env.VITE_API_URL;
 
     const navigate = useNavigate();
 
-    const carregarCategorias = (pageAtual = 1) => {
-        if (loading || !hasMore) return;
+    const carregarCategorias = async (pageAtual = 1, reset = false) => {
+        if (!reset && (loading || !hasMore)) return;
 
         setLoading(true);
 
-        fetch('https://api.zaldemy.com/controller/categorias.php', {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            },
-            body: JSON.stringify({
-                action: 'get_all',
-                page: pageAtual
-            })
-        })
-            .then(res => res.json())
-            .then(data => {
+        if (reset) {
+            // Some a listagem antiga na hora, sem esperar a resposta do novo idioma
+            setCategorias([]);
+        }
 
-                const categoriasFormatadas = data.map(cat => ({
-                    id: cat.id,
-                    categoria: cat.categoria,
-                    quantidade: cat.total_frases
-                }));
-
-                // 🔥 concatena (não sobrescreve)
-                setCategorias(prev => [...prev, ...categoriasFormatadas]);
-
-                // 🔥 controle de fim
-                if (categoriasFormatadas.length < 20) {
-                    setHasMore(false);
-                }
-
-                setPage(pageAtual);
-
-            })
-            .finally(() => {
-                setLoading(false);
+        try {
+            const res = await fetch(`${API_URL}/controller/categorias.php`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({
+                    action: 'get_all',
+                    page: pageAtual
+                })
             });
+
+            const data = await res.json();
+
+            const categoriasFormatadas = data.map(cat => ({
+                id: cat.id,
+                categoria: cat.categoria,
+                quantidade: cat.total_frases
+            }));
+
+            // 🔥 concatena (não sobrescreve), exceto ao trocar de idioma
+            setCategorias(prev => reset ? categoriasFormatadas : [...prev, ...categoriasFormatadas]);
+
+            // 🔥 controle de fim
+            setHasMore(categoriasFormatadas.length >= 20);
+
+            setPage(pageAtual);
+        } finally {
+            setLoading(false);
+        }
     };
 
     function adicionar(id) {
 
-        fetch('https://api.zaldemy.com/controller/categorias.php', {
+        fetch(`${API_URL}/controller/categorias.php`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -102,11 +107,11 @@ export default function ListCategoria() {
 
 
                 if (data.inseridas === 0) {
-                    setMsgModalSucesso("Categoria e frases já existem em sua lista.")
+                    setMsgModalSucesso(t("category_phrases_already_exist"))
                 }
 
                 if (data.inseridas > 0) {
-                    setMsgModalSucesso("Adicionado")
+                    setMsgModalSucesso(t("added"))
                 }
 
                 setContador(contador + 1);
@@ -119,8 +124,8 @@ export default function ListCategoria() {
     }
 
     useEffect(() => {
-        carregarCategorias(1);
-    }, []);
+        carregarCategorias(1, true);
+    }, [user?.learning_language]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -147,19 +152,19 @@ export default function ListCategoria() {
 
 
     return (
-        <div className="h-dvh flex flex-col max-w-7xl mx-auto  px-6 from-gray-900 to-gray-800 bg-gradient-to-br">
+        <div className="h-[calc(100dvh-64px)] flex flex-col max-w-7xl mx-auto  px-6 from-gray-900 to-gray-800 bg-gradient-to-br">
 
             {/* HEADER */}
-            <div className="relative  mb-4 text-left mt-4">
+            {/* <div className="relative  mb-4 text-left mt-4">
                 <div
                     className=" cursor-pointer"
                     onClick={() => navigate(-1)}
                 >
                     <i className="bi bi-arrow-left text-2xl text-white"></i>
                 </div>
-            </div>
+            </div> */}
 
-            <div className="lista-categoria  flex-1 overflow-y-auto pb-4 scrollbar-hide" id="lista-categoria">
+            <div className="lista-categoria  flex-1 overflow-y-auto pb-[140px] scrollbar-hide mt-6" id="lista-categoria">
                 <div className="flex-1 flex flex-col">
 
                     <div >
@@ -171,23 +176,24 @@ export default function ListCategoria() {
                             <input
                                 type="email"
                                 className="w-full px-3 py-2 outline-none text-white text-lg bg-gray-800/50 backdrop-blur-sm"
-                                placeholder="Buscar"
+                                placeholder={t("search")}
                                 value={textoBusca}
                                 onChange={(e) => {
                                     setTextoBusca(e.target.value)
-                                    setErro('')
                                 }}
                             />
                         </div>
                     </div>
-                    
+
                         <div className="cursor-pointer flex justify-end mb-4">
                             <Filter className="text-white mt-2" width={15} />
                         </div>
-                    
-                    {loading && <div className="h-screen flex items-center justify-center">
-                        Carregando...
-                    </div>}
+
+                    {loading && (
+                        <div className="flex justify-center py-8">
+                            <Loader2 className="w-6 h-6 text-green-400 animate-spin" />
+                        </div>
+                    )}
             
                 </div>
 
@@ -203,7 +209,7 @@ export default function ListCategoria() {
                                 </p>
                                 <div className="flex items-center gap-3">
                                     <span className="text-xs py-0.5  rounded-full  text-gray-300 ">
-                                        {item.quantidade} palavras
+                                        {item.quantidade} {t("words")}
                                     </span>
                                 </div>
                             </div>
@@ -215,7 +221,7 @@ export default function ListCategoria() {
                                         adicionar(item.id);
 
                                     }}>
-                                    Adicionar
+                                    {t("add")}
                                 </button>
                             </div>
                         </div>
@@ -232,6 +238,33 @@ export default function ListCategoria() {
             <ModalIA setOpenTreinoIA={setOpenTreinoIA} openTreinoIA={openTreinoIA} />
             <ModalSucesso msg={msgModalSucesso} openModalSucesso={openModalSucesso} setOpenModalSucesso={setOpenModalSucesso} />
             <ModalIncorporarFrases openIncorporar={openIncorporar} setOpenIncorporar={setOpenIncorporar} />
+
+            <div className="fixed inset-x-0 bottom-0 z-10 text-center w-full justify-items-center justify-center items-center  from-gray-900 to-gray-800 bg-gradient-to-br ">
+
+
+                <div className=" w-full ">
+                    <div className='flex  left-0   w-full justify-center py-2 '>
+                        <button type="button" onClick={() => navigate('/home')}>
+                            <div className=' p-3 flex justify-center items-center'>
+                                <Home width={38} height={38} className='text-green-400' />
+                            </div>
+                        </button>
+                        <button type="button" onClick={() => navigate('/configuracoes')}>
+                            <div className=' p-3 flex justify-center items-center'>
+                                <Settings width={38} height={38} className='text-purple-400' />
+                            </div>
+                        </button>
+                        <button type="button" onClick={() => navigate('/metricas')}>
+                            <div className=' p-3 flex justify-center items-center'>
+                                <BarChart3 className='text-blue-400' width={38} height={38} />
+
+                                {/*  <BookOpen className='text-white' /> */}
+                                {/* <img src={imgEstatistica} alt="" width={40} /> */}
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

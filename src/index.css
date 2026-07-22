@@ -5,6 +5,11 @@
 
 /* seu CSS customizado abaixo */
 
+/* Evita o "flash" branco/cinza que o WebView aplica ao tocar em botões/links */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
 :root {
   /* =========================
      SUA PALETA (documentação)
@@ -94,8 +99,13 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-/*   background: #1F2937;
-background: linear-gradient(90deg,rgba(31, 41, 55, 1) 0%, rgba(55, 65, 81, 1) 100%); */
+  overscroll-behavior: none;
+  /* fundo escuro fixo: evita flash branco entre a splash nativa e o app carregar */
+  background: #111827;
+}
+
+html {
+  overscroll-behavior: none;
 }
 .center-vertical {
   min-height: 100vh;
@@ -178,10 +188,14 @@ input{
   /* font-size: 1.4rem; */
   font-weight: 600;
   color: white;
+   -webkit-backface-visibility: hidden; /* 🔥 importante */
+  transform-style: preserve-3d; /* 🔥 ajuda no render */
+  will-change: transform; /* 🔥 melhora GPU */
   /* box-shadow: 0 20px 40px rgba(0,0,0,0.15); */
 }
 .card-back {
   /* background: white; */
+  
 
 }
 .card-front{
@@ -190,11 +204,11 @@ input{
 }
 
 .card-front {
-  transform: rotateY(0deg);
+   transform: rotateY(0deg) translateZ(1px);
 }
 
 .card-back {
-  transform: rotateY(180deg);
+    transform: rotateY(180deg) translateZ(1px);
 }
 
 

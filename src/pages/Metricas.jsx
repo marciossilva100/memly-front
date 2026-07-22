@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "../context/AuthContext";
+import ModalCategorias from '../components/ModalCategorias';
+import ModalSucesso from '../components/ModalSucesso';
 
 import {
     AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer,
@@ -19,17 +23,21 @@ import {
     AlertCircle,
     PieChart as PieChartIcon,
     BarChart3,
-    Layers
+    Layers,
+    Settings,
+    Home
 } from 'lucide-react';
 
 export default function Metricas() {
+    const { t } = useTranslation();
+    const { user } = useAuth();
     const [dadosGrafico, setDadosGrafico] = useState([]);
     const [dadosCategorias, setDadosCategorias] = useState([]);
     const [frasesPorCategoria, setFrasesPorCategoria] = useState({});
     const [loading, setLoading] = useState(false);
     const [loadingFrases, setLoadingFrases] = useState(false);
     const [periodo, setPeriodo] = useState('30d');
-
+const API_URL = import.meta.env.VITE_API_URL;
     // Estados para controlar os dropdowns
     const [dropdownsAbertos, setDropdownsAbertos] = useState({
         resumo: true, // Começa aberto pra mostrar o básico
@@ -40,6 +48,11 @@ export default function Metricas() {
 
     // Estado para controlar qual categoria está expandida
     const [categoriaExpandida, setCategoriaExpandida] = useState(null);
+
+    // Estados do modal de adicionar categoria
+    const [open, setOpen] = useState(false);
+    const [openModalSucesso, setOpenModalSucesso] = useState(false);
+    const [msgModalSucesso, setMsgModalSucesso] = useState('');
 
     const [metricasGerais, setMetricasGerais] = useState({
         totalAcertos: 0,
@@ -56,7 +69,7 @@ export default function Metricas() {
         setLoading(true);
 
         try {
-            const response = await fetch('https://api.zaldemy.com/controller/metricas.php', {
+            const response = await fetch(`${API_URL}/controller/metricas.php`, {
                 method: 'POST',
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token"),
@@ -93,7 +106,7 @@ export default function Metricas() {
         setLoadingFrases(true);
 
         try {
-            const response = await fetch('https://api.zaldemy.com/controller/metricas.php?action=listar_frases_metricas', {
+            const response = await fetch(`${API_URL}/controller/metricas.php?action=listar_frases_metricas`, {
                 method: 'GET',
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token"),
@@ -107,7 +120,7 @@ export default function Metricas() {
                 // Organizar frases por categoria
                 const agrupadas = {};
                 data.frases.forEach(frase => {
-                    const categoria = frase.categoria || 'Sem categoria';
+                    const categoria = frase.categoria || t("no_category");
                     if (!agrupadas[categoria]) {
                         agrupadas[categoria] = [];
                     }
@@ -133,7 +146,7 @@ export default function Metricas() {
     useEffect(() => {
         carregarDashboard();
         carregarFrasesPorCategoria();
-    }, [periodo]);
+    }, [periodo, user?.learning_language]);
 
     // Card de métrica
     const CardMetrica = ({ titulo, valor, icone: Icone, cor, subtexto }) => (
@@ -179,7 +192,7 @@ export default function Metricas() {
         const totalFrases = frases.length;
         const frasesComTentativas = frases.filter(f => f.total_tentativas > 0);
         const mediaCategoria = frasesComTentativas.length > 0
-            ? Math.round(frasesComTentativas.reduce((acc, f) => acc + (f.taxa_acerto || 0), 0) / frasesComTentativas.length)
+            ? Math.round(frasesComTentativas.reduce((acc, f) => acc + (Number(f.taxa_acerto) || 0), 0) / frasesComTentativas.length)
             : 0;
 
         return (
@@ -191,14 +204,14 @@ export default function Metricas() {
                     <div className="flex items-center gap-3">
                         <span className="font-medium text-white">{categoria}</span>
                         <span className="text-xs text-gray-400">
-                            {totalFrases} {totalFrases === 1 ? 'frase' : 'frases'}
+                            {totalFrases} {totalFrases === 1 ? t("phrase_singular") : t("phrase_plural")}
                         </span>
                         {frasesComTentativas.length > 0 && (
                             <span className={`text-xs px-2 py-0.5 rounded-full ${mediaCategoria >= 70 ? 'bg-green-500/20 text-green-400' :
                                     mediaCategoria >= 40 ? 'bg-yellow-500/20 text-yellow-400' :
                                         'bg-red-500/20 text-red-400'
                                 }`}>
-                                {mediaCategoria}% média
+                                {t("average_percent", { percent: mediaCategoria })}
                             </span>
                         )}
                     </div>
@@ -219,7 +232,7 @@ export default function Metricas() {
                                         {frase.total_tentativas > 0 ? (
                                             <>
                                                 <div className="text-center min-w-[40px]">
-                                                    <p className="text-gray-400 text-xs">Taxa</p>
+                                                    <p className="text-gray-400 text-xs">{t("rate_label")}</p>
                                                     <span className={`text-xs font-semibold ${frase.taxa_acerto >= 70 ? 'text-green-500' :
                                                             frase.taxa_acerto >= 40 ? 'text-yellow-500' :
                                                                 'text-red-500'
@@ -228,7 +241,7 @@ export default function Metricas() {
                                                     </span>
                                                 </div>
                                                 <div className="text-center min-w-[40px]">
-                                                    <p className="text-gray-400 text-xs">Tent.</p>
+                                                    <p className="text-gray-400 text-xs">{t("attempts_abbr")}</p>
                                                     <span className="text-white text-xs font-semibold">
                                                         {frase.total_tentativas}
                                                     </span>
@@ -244,7 +257,7 @@ export default function Metricas() {
                                                 )}
                                             </>
                                         ) : (
-                                            <span className="text-xs text-gray-500">Não iniciada</span>
+                                            <span className="text-xs text-gray-500">{t("not_started")}</span>
                                         )}
                                     </div>
                                 </div>
@@ -256,9 +269,11 @@ export default function Metricas() {
         );
     };
 
+    const totalQuestoesCategorias = dadosCategorias.reduce((acc, cat) => acc + (Number(cat.value) || 0), 0);
+
     return (
-        <div className="h-dvh  from-gray-900 to-gray-800 bg-gradient-to-br">
-            <div className="p-3 md:p-6 max-w-5xl mx-auto  bg-gradient-to-br px-6">
+        <div className="h-[calc(100dvh-64px)] flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
+            <div className="flex-1 overflow-y-auto scrollbar-hide p-3 md:p-6 max-w-5xl mx-auto w-full px-6 pb-[220px]">
                 {/* Cabeçalho com voltar */}
                 <div className="mb-4">
                     <button
@@ -275,12 +290,12 @@ export default function Metricas() {
                     <div>
                         <h1 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-2">
                             <TrendingUp className="w-6 h-6 md:w-8 md:h-8 text-green-400" />
-                            Métricas
+                            {t("metrics")}
                         </h1>
                         <p className="text-sm text-gray-400 mt-1">
                             {metricasGerais.totalQuestoes > 0
-                                ? `${metricasGerais.totalQuestoes} questões respondidas`
-                                : 'Comece a estudar para ver suas métricas'}
+                                ? t("questions_answered_count", { count: metricasGerais.totalQuestoes })
+                                : t("start_studying_hint")}
                         </p>
                     </div>
 
@@ -290,9 +305,9 @@ export default function Metricas() {
                             onChange={(e) => setPeriodo(e.target.value)}
                             className="bg-gray-700 text-white text-sm border border-gray-600 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-400"
                         >
-                            <option value="7d">7 dias</option>
-                            <option value="30d">30 dias</option>
-                            <option value="90d">90 dias</option>
+                            <option value="7d">{t("days_count", { count: 7 })}</option>
+                            <option value="30d">{t("days_count", { count: 30 })}</option>
+                            <option value="90d">{t("days_count", { count: 90 })}</option>
                         </select>
 
                         <button
@@ -310,7 +325,7 @@ export default function Metricas() {
                 {/* Cards de Resumo - Sempre visíveis */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-4">
                     <CardMetrica
-                        titulo="Taxa de Acerto"
+                        titulo={t("accuracy_rate")}
                         valor={metricasGerais.taxaAcerto ? `${metricasGerais.taxaAcerto}%` : '0%'}
                         icone={Target}
                         cor="from-green-500 to-green-600"
@@ -321,7 +336,7 @@ export default function Metricas() {
                         valor={metricasGerais.streakAtual > 0 ? `${metricasGerais.streakAtual}d` : '0d'}
                         icone={Award}
                         cor="from-orange-500 to-orange-600"
-                        subtexto="dias seguidos"
+                        subtexto={t("consecutive_days")}
                     />
                 </div>
 
@@ -329,7 +344,7 @@ export default function Metricas() {
                 <div className="space-y-3">
                     {/* Gráfico de Desempenho */}
                     <DropdownSection
-                        titulo="Evolução do Desempenho"
+                        titulo={t("performance_evolution")}
                         icone={BarChart3}
                         aberto={dropdownsAbertos.grafico}
                         onToggle={() => toggleDropdown('grafico')}
@@ -381,7 +396,7 @@ export default function Metricas() {
                             ) : (
                                 <div className="flex flex-col items-center justify-center h-full text-gray-400">
                                     <AlertCircle className="w-12 h-12 mb-2 text-gray-600" />
-                                    <p className="text-sm">Nenhum dado no período</p>
+                                    <p className="text-sm">{t("no_data_period")}</p>
                                 </div>
                             )}
                         </div>
@@ -390,7 +405,7 @@ export default function Metricas() {
                     {/* Categorias */}
                     {/* Categorias */}
                     <DropdownSection
-                        titulo="Categorias"
+                        titulo={t("categories")}
                         icone={PieChartIcon}
                         aberto={dropdownsAbertos.categorias}
                         onToggle={() => toggleDropdown('categorias')}
@@ -421,7 +436,7 @@ export default function Metricas() {
                                             </Pie>
                                             <Tooltip
                                                 formatter={(value, name, props) => [
-                                                    `${value} questões`,
+                                                    `${value} ${t("question_plural")}`,
                                                     props.payload.name
                                                 ]}
                                                 contentStyle={{
@@ -437,11 +452,11 @@ export default function Metricas() {
 
                                 {/* Lista de Categorias */}
                                 <div className="space-y-2">
-                                    <h4 className="text-sm font-medium text-gray-400 mb-2">Detalhamento por categoria:</h4>
+                                    <h4 className="text-sm font-medium text-gray-400 mb-2">{t("category_breakdown")}</h4>
                                     {dadosCategorias.map((categoria, index) => {
-                                        // Calcular porcentagem do total
-                                        const totalQuestoes = dadosCategorias.reduce((acc, cat) => acc + cat.value, 0);
-                                        const porcentagem = ((categoria.value / totalQuestoes) * 100).toFixed(1);
+                                        const porcentagem = totalQuestoesCategorias > 0
+                                            ? (((Number(categoria.value) || 0) / totalQuestoesCategorias) * 100).toFixed(1)
+                                            : '0.0';
 
                                         return (
                                             <div key={index} className="bg-gray-700/30 rounded-lg p-3">
@@ -451,7 +466,7 @@ export default function Metricas() {
                                                         <span className="text-white font-medium">{categoria.name}</span>
                                                     </div>
                                                     <span className="text-sm text-gray-300">
-                                                        {categoria.value} {categoria.value === 1 ? 'questão' : 'questões'}
+                                                        {categoria.value} {categoria.value === 1 ? t("question_singular") : t("question_plural")}
                                                     </span>
                                                 </div>
 
@@ -468,7 +483,7 @@ export default function Metricas() {
 
                                                 {/* Porcentagem */}
                                                 <div className="flex justify-end mt-1">
-                                                    <span className="text-xs text-gray-400">{porcentagem}% do total</span>
+                                                    <span className="text-xs text-gray-400">{t("percent_of_total", { percent: porcentagem })}</span>
                                                 </div>
                                             </div>
                                         );
@@ -478,8 +493,8 @@ export default function Metricas() {
                                 {/* Total de questões */}
                                 <div className="mt-4 pt-3 border-t border-gray-700 text-center">
                                     <p className="text-sm text-gray-400">
-                                        Total: <span className="text-white font-semibold">
-                                            {dadosCategorias.reduce((acc, cat) => acc + cat.value, 0)} questões
+                                        {t("total_label")} <span className="text-white font-semibold">
+                                            {totalQuestoesCategorias} {t("question_plural")}
                                         </span>
                                     </p>
                                 </div>
@@ -487,15 +502,15 @@ export default function Metricas() {
                         ) : (
                             <div className="text-center py-8 text-gray-400 text-sm">
                                 <AlertCircle className="w-12 h-12 mx-auto mb-2 text-gray-600" />
-                                <p>Nenhuma categoria encontrada</p>
-                                <p className="text-xs mt-1">As categorias aparecerão aqui quando você responder questões</p>
+                                <p>{t("no_category_found")}</p>
+                                <p className="text-xs mt-1">{t("categories_will_appear_hint")}</p>
                             </div>
                         )}
                     </DropdownSection>
 
                     {/* Frases por Categoria */}
                     <DropdownSection
-                        titulo="Frases por Categoria"
+                        titulo={t("phrases_by_category")}
                         icone={Layers}
                         aberto={dropdownsAbertos.frases}
                         onToggle={() => toggleDropdown('frases')}
@@ -521,12 +536,43 @@ export default function Metricas() {
                             </div>
                         ) : (
                             <div className="text-center py-8 text-gray-400 text-sm">
-                                Nenhuma frase encontrada
+                                {t("no_phrase_found")}
                             </div>
                         )}
                     </DropdownSection>
                 </div>
             </div>
+
+            <div className="fixed inset-x-0 bottom-0 z-10 text-center w-full justify-items-center justify-center items-center  from-gray-900 to-gray-800 bg-gradient-to-br ">
+
+
+                <div className=" w-full ">
+                    <div className='flex  left-0   w-full justify-center py-2 '>
+                        <button type="button" onClick={() => navigate('/home')}>
+                            <div className=' p-3 flex justify-center items-center'>
+                                <Home width={38} height={38} className='text-green-400' />
+                            </div>
+                        </button>
+                        <button type="button" onClick={() => navigate('/configuracoes')}>
+                            <div className=' p-3 flex justify-center items-center'>
+                                <Settings width={38} height={38} className='text-purple-400' />
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <ModalCategorias
+                setOpen={setOpen}
+                open={open}
+                onOpenModalSucesso={(msgSucesso) => {
+                    setOpen(false);
+                    setOpenModalSucesso(true);
+                    setMsgModalSucesso(msgSucesso);
+                }}
+                setOpenModalSucesso={setOpenModalSucesso}
+            />
+            <ModalSucesso msg={msgModalSucesso} openModalSucesso={openModalSucesso} setOpenModalSucesso={setOpenModalSucesso} />
         </div>
     );
 }

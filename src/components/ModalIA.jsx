@@ -1,5 +1,6 @@
 import { Dialog } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import {
     Shuffle,
@@ -13,6 +14,7 @@ import {
 } from "lucide-react";
 
 export default function ModalIA({ setOpenTreinoIA, openTreinoIA}) {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     return (
@@ -36,7 +38,7 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA}) {
                             <Type size={32} className="text-blue-400" />
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-lg text-white">Treino com texto</span>
+                            <span className="text-lg text-white">{t("text_training")}</span>
                         </div>
                     </div>
                       
@@ -48,7 +50,7 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA}) {
                             <FileQuestion size={32} className="text-green-400" />
                         </div>
                         <div className="flex flex-col ">
-                            <span className="text-lg leading-tight  flex text-white">Treino com perguntas</span>
+                            <span className="text-lg leading-tight  flex text-white">{t("questions_training")}</span>
                         </div>
                     </div>
 

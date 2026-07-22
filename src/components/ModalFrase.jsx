@@ -4,9 +4,11 @@ import { translateText } from "../services/translateText"
 import { useAuth } from "../context/AuthContext";
 import { Play, PlayCircle, PlaySquare, Repeat, Check, Crown, Bot } from "lucide-react";
 import { playAudio } from "../utils/audioPlayer";
+import { useTranslation } from "react-i18next";
 
 
-export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listPhrase, onOpenPremium }) {
+export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listPhrase, onOpenPremium, phraseToEdit }) {
+    const { t } = useTranslation();
     const { user, setUser } = useAuth();
 
     const [loading, setLoading] = useState(false)
@@ -16,6 +18,17 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
     const [errorPhrase, setErrorPhrase] = useState('')
     const [errorTranslatedPhrase, setErrorTranslatedPhrase] = useState('')
     const [error, setError] = useState('')
+    const API_URL = import.meta.env.VITE_API_URL;
+    const isEditing = Boolean(phraseToEdit?.id);
+
+    useEffect(() => {
+        if (openPhrase) {
+            setPhrase(phraseToEdit?.texto_nativo || '');
+            setTranslatedPhrase(phraseToEdit?.texto_traduzido || '');
+            setErrorPhrase('');
+            setErrorTranslatedPhrase('');
+        }
+    }, [openPhrase, phraseToEdit]);
 
     async function handleSubmit(e) {
         e.preventDefault()
@@ -23,25 +36,26 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
         if (loading) return;
 
         if (!phrase) {
-            setErrorPhrase('Digite o texto ou palavra')
+            setErrorPhrase(t("enter_text_or_word"))
             return
         }
 
         if (!translatedPhrase) {
-            setErrorTranslatedPhrase('Digite a tradução')
+            setErrorTranslatedPhrase(t("enter_translation"))
             return
         }
 
         setLoading(true);
 
         try {
-            const res = await fetch('https://api.zaldemy.com/controller/frases.php', {
+            const res = await fetch(`${API_URL}/controller/frases.php`, {
                 method: 'POST',
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 },
                 body: JSON.stringify({
-                    action: 'add_phrase',
+                    action: isEditing ? 'edit_phrase' : 'add_phrase',
+                    ...(isEditing && { id_phrase: phraseToEdit.id }),
                     phrase: phrase,
                     translatedPhrase: translatedPhrase,
                     category_id: category
@@ -61,7 +75,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
             setOpenPhrase(false)
 
             onSuccess?.();
-            onOpenModalSucesso('Adicionado com sucesso')
+            onOpenModalSucesso(isEditing ? t("edited_successfully") : t("added_successfully"))
 
         } catch (error) {
             console.log(error?.message || "Erro inesperado")
@@ -85,7 +99,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
 
         e.preventDefault();
 
-        const res = await fetch('https://api.zaldemy.com/controller/libreTranslate.php', {
+        const res = await fetch(`${API_URL}/controller/libreTranslate.php`, {
             method: 'POST',
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token")
@@ -134,7 +148,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                     <form action="" onSubmit={handleSubmit}>
                         <div>
                             <div className="">
-                                <label className="font-medium text-sm mb-3 text-white">Palavra ou frase em português</label>
+                                <label className="font-medium text-sm mb-3 text-white">{t("word_or_phrase_pt")}</label>
                             </div>
                             <textarea
                                 onChange={(e) => {
@@ -142,7 +156,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                                     setErrorPhrase('');
                                 }}
                                 value={phrase}
-                                placeholder="Eu adoro estudar"
+                                placeholder={t("example_phrase_placeholder")}
                                 className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-2 text-lg !bg-transparent
                                     text-white
                                     focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20
@@ -155,7 +169,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                         <div className="mt-4">
 
                             <div className="flex justify-between">
-                                <label className="font-medium text-sm mb-3 text-white">Tradução</label>
+                                <label className="font-medium text-sm mb-3 text-white">{t("translation")}</label>
                                 {translatedPhrase && (
                                     <PlayCircle className="text-[#4cb8c4]" onClick={()=>playAudio(translatedPhrase,user)} />
                                 )}
@@ -184,7 +198,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                                             <Crown size={20} className="me-2 text-yellow-500" />
                                         )}
 
-                                        Sugerir tradução
+                                        {t("suggest_translation")}
                                     </button>
                                 </div>
                             )}
@@ -203,11 +217,11 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                                 }}
                                 className="text-lg text-white me-3"
                             >
-                                Cancelar
+                                {t("cancel")}
                             </button>
 
                             <button type="submit" disabled={loading} className="bg-blue-400 text-white px-4 py-2 rounded-full text-lg ">
-                                Salvar
+                                {t("save")}
                             </button>
                         </div>
                     </form>

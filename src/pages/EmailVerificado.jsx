@@ -1,8 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import imgMemly from "../assets/img/mascote-memly.png"
 
 export default function EmailVerificado() {
+    const { t } = useTranslation();
 
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
@@ -10,7 +12,7 @@ export default function EmailVerificado() {
 
     // 🔒 Proteção contra execução dupla (React 18 StrictMode)
     const hasRun = useRef(false);
-
+const API_URL = import.meta.env.VITE_API_URL;
     useEffect(() => {
 
         // Impede rodar duas vezes no modo desenvolvimento
@@ -24,7 +26,7 @@ export default function EmailVerificado() {
             return;
         }
 
-        fetch("https://api.zaldemy.com/controller/verify.php?token=" + token)
+        fetch(`${API_URL}/controller/verify.php?token=` + token)
             .then(res => {
                 if (!res.ok) {
                     throw new Error("Erro HTTP");
@@ -61,7 +63,7 @@ export default function EmailVerificado() {
     if (status === "verificando") {
         return (
             <div className="text-center mt-10">
-                <p>Verificando seu email...</p>
+                <p>{t("verifying_email")}</p>
             </div>
         );
     }
@@ -71,13 +73,13 @@ export default function EmailVerificado() {
             <div className="text-center mt-10">
                
                 <h2 className="text-red-600">
-                    Link inválido ou expirado.
+                    {t("invalid_or_expired_link")}
                 </h2>
                 <button
                     className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
                     onClick={() => navigate("/login")}
                 >
-                    Ir para Login
+                    {t("go_to_login")}
                 </button>
             </div>
         );
@@ -90,10 +92,10 @@ export default function EmailVerificado() {
                     
                 </div>
             <h2 className="text-green-600 text-lg">
-                Email confirmado com sucesso!
+                {t("email_confirmed_success")}
             </h2>
             <p className="mt-2">
-                Redirecionando para o login...
+                {t("redirecting_to_login")}
             </p>
         </div>
     );

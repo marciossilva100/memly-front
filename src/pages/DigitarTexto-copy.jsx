@@ -18,7 +18,7 @@ export default function DigitarTexto() {
     const [listIdCorrectPhrase, setListIdCorrectPhrase] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
-
+const API_URL = import.meta.env.VITE_API_URL;
     const textareaRef = useRef(null);
 
     useEffect(() => {
@@ -49,7 +49,7 @@ export default function DigitarTexto() {
             mode === "traine" ? "controller/treino.php" : "controller/frases.php";
         setLoading(true);
 
-        fetch(`https://api.zaldemy.com/${endpoint}`, {
+        fetch(`${API_URL}/${endpoint}`, {
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json" },

@@ -1,17 +1,23 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import imgZaldemy from "../assets/img/zaldemy.png"
 import imgGoogle from '../assets/img/google.png'
 import imgFacebook from '../assets/img/logo-face.webp'
-import imgMemly from "../assets/img/mascote-memly.png"
+import { useGoogleLogin } from '@react-oauth/google';
+import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
+import { useAuth } from "../context/AuthContext";
+import { isNativePlatform, signInWithGoogleNative } from "../utils/googleNativeAuth";
 
 export default function Cadastro({ setTitulo }) {
+    const { t } = useTranslation();
+    const { syncAuth } = useAuth();
 
     const [loading, setLoading] = useState(false);
     const [finish, setFinish] = useState(false)
-
+    const API_URL = import.meta.env.VITE_API_URL;
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
@@ -26,7 +32,7 @@ export default function Cadastro({ setTitulo }) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        setTitulo('Cadastro')
+        setTitulo(t("sign_up"))
     }, [])
 
     const handleChange = (e) => {
@@ -36,26 +42,93 @@ export default function Cadastro({ setTitulo }) {
         })
     }
 
+    async function handleGoogleAccessToken(accessToken) {
+        setLoading(true);
+        try {
+            const res = await fetch(`${API_URL}/controller/auth.php`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'login_google',
+                    token: accessToken
+                })
+            });
+
+            const data = await res.json();
+
+            if (!data.sucesso) {
+                setErro(data.erro || t("google_login_error"));
+                setLoading(false);
+                return;
+            }
+
+            // Usa syncAuth em vez de checkAuth e confirma que o usuário
+            // foi realmente autenticado antes de navegar para uma rota privada
+            const loggedUser = await syncAuth(data.token);
+
+            if (!loggedUser) {
+                setErro(t("google_login_error"));
+                setLoading(false);
+                return;
+            }
+
+            if (loggedUser.step > 2) {
+                navigate("/home", { replace: true });
+            } else {
+                navigate("/escolheridioma", { replace: true });
+            }
+
+        } catch (error) {
+            console.error(error);
+            setErro(t("server_connection_error"));
+            setLoading(false);
+        }
+    }
+
+    // Fluxo web (popup do Google Identity Services) — não funciona dentro
+    // da WebView do Capacitor, por isso o app nativo usa signInWithGoogleNative.
+    const loginWeb = useGoogleLogin({
+        onSuccess: (tokenResponse) => handleGoogleAccessToken(tokenResponse.access_token),
+        onError: () => {
+            setErro(t("google_login_error"));
+        },
+    });
+
+    async function login() {
+        if (isNativePlatform()) {
+            try {
+                const accessToken = await signInWithGoogleNative();
+                await handleGoogleAccessToken(accessToken);
+            } catch (error) {
+                console.error(error);
+                setErro(t("google_login_error"));
+            }
+            return;
+        }
+
+        loginWeb();
+    }
+
     function handleSubmit(e) {
         e.preventDefault()
 
         if (!form.name) {
-            setErro('O nome deve ser preenchido')
+            setErro(t("name_required"))
             return
         }
 
         if (!form.email) {
-            setErro('O email deve ser preenchido')
+            setErro(t("email_required"))
             return
         }
 
         if (!form.password) {
-            setErro('Digite a senha')
+            setErro(t("enter_password"))
             return
         }
 
         if (!form.confirm_password) {
-            setErro('Digite a senha para confirmar')
+            setErro(t("enter_password_confirm"))
             return
         }
 
@@ -66,7 +139,7 @@ export default function Cadastro({ setTitulo }) {
     function cadastrar() {
         setLoading(true)
 
-        fetch('https://api.zaldemy.com/controller/auth.php', {
+        fetch(`${API_URL}/controller/auth.php`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -97,14 +170,18 @@ export default function Cadastro({ setTitulo }) {
 
             })
             .catch(() => {
-                setErro('Erro ao conectar com o servidor')
+                setErro(t("server_connection_error"))
             })
     }
 
     if (loading) {
         return (
-            <div className="flex h-[calc(100vh-110px)] items-center justify-center bg-white-100">
-                <img src={imgMemly} alt="Carregando" className="w-28 animate-pulse"/>
+            <div className="flex h-screen items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
+                <img
+                    src={imgChapeuFormatura}
+                    alt={t("loading")}
+                    className="w-28 animate-pulse"
+                />
             </div>
         );
     }
@@ -112,7 +189,7 @@ export default function Cadastro({ setTitulo }) {
     if (finish) return;
 
     return (
-        <div className="max-w-6xl mx-auto px-4 px-8 py-4 h-[calc(100svh-20px)]">
+        <div className="max-w-6xl mx-auto px-4 px-8 py-4 h-screen from-gray-900 to-gray-800 bg-gradient-to-br">
             <div className="flex justify-center">
                 <div className="w-full max-w-md text-center mt-4">
 
@@ -120,18 +197,18 @@ export default function Cadastro({ setTitulo }) {
                         <img width={200} src={imgZaldemy} alt="Login" />
                     </div>
 
-                    <h5 className="text-sm text-gray-600">
-                        Faça seu cadastro
+                    <h5 className="text-sm text-white">
+                        {t("do_your_signup")}
                     </h5>
 
                     <form onSubmit={handleSubmit} className="mt-4 space-y-4">
 
                         {/* Nome */}
-                        <div className="flex items-center border rounded-full overflow-hidden py-3">
+                        <div className="flex items-center border rounded-full overflow-hidden py-3 ">
                             <input
                                 type="text"
-                                className="w-full px-4 outline-none"
-                                placeholder="Nome"
+                                className="w-full px-4 outline-none bg-white flex-1 !bg-transparent text-white"
+                                placeholder={t("name")}
                                 name="name"
                                 value={form.name}
                                 onChange={(e) => {
@@ -145,8 +222,8 @@ export default function Cadastro({ setTitulo }) {
                         <div className="flex items-center border rounded-full overflow-hidden py-3">
                             <input
                                 type="email"
-                                className="w-full px-4 outline-none"
-                                placeholder="Email"
+                                className="w-full px-4 outline-none bg-white flex-1 !bg-transparent text-white"
+                                placeholder={t("email")}
                                 name="email"
                                 value={form.email}
                                 onChange={(e) => {
@@ -161,8 +238,8 @@ export default function Cadastro({ setTitulo }) {
 
                             <input
                                 type={showPassword ? "text" : "password"}
-                                className="w-full px-2 outline-none"
-                                placeholder="Senha"
+                                className="w-full px-2 outline-none bg-white flex-1 !bg-transparent text-white"
+                                placeholder={t("password")}
                                 name="password"
                                 value={form.password}
                                 onChange={(e) => {
@@ -176,7 +253,7 @@ export default function Cadastro({ setTitulo }) {
                                 onClick={() => setShowPassword(!showPassword)}
                                 className="text-gray-500"
                             >
-                                {showPassword ? <EyeOff size={20}/> : <Eye size={20}/>}
+                                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                             </button>
 
                         </div>
@@ -186,8 +263,8 @@ export default function Cadastro({ setTitulo }) {
 
                             <input
                                 type={showConfirmPassword ? "text" : "password"}
-                                className="w-full px-2 outline-none"
-                                placeholder="Confirmar senha"
+                                className="w-full px-2 outline-none bg-white flex-1 !bg-transparent text-white"
+                                placeholder={t("confirm_password_placeholder")}
                                 name="confirm_password"
                                 value={form.confirm_password}
                                 onChange={(e) => {
@@ -201,7 +278,7 @@ export default function Cadastro({ setTitulo }) {
                                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                                 className="text-gray-500"
                             >
-                                {showConfirmPassword ? <EyeOff size={20}/> : <Eye size={20}/>}
+                                {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                             </button>
 
                         </div>
@@ -214,39 +291,42 @@ export default function Cadastro({ setTitulo }) {
 
                         <button
                             type="submit"
-                            className="w-full bg-avocado-500 text-white py-2 rounded-full fw-700"
+                            className="w-full bg-[#4cb8c4] text-white py-3 rounded-full fw-800 text-lg"
                         >
-                            Cadastrar
+                            {t("sign_up_button")}
                         </button>
 
                     </form>
 
                     <div className="flex items-center my-6">
                         <div className="flex-grow border-t"></div>
-                        <span className="mx-3 text-gray-400 text-sm">
-                            Ou cadastre-se com
+                        <span className="mx-3 text-white text-sm">
+                            {t("or_signup_with")}
                         </span>
                         <div className="flex-grow border-t"></div>
                     </div>
 
-                    <button className="text-sm w-full border border-gray-300 py-3 rounded-full flex items-center justify-center gap-3">
-                        <img src={imgGoogle} alt="Google icone" width={20}/>
-                        Entrar com Google
+                    <button
+                        onClick={() => login()}
+                        className="text-sm w-full border border-gray-300 py-2 rounded-full flex items-center justify-center gap-3  transition-colors"
+                    >
+                        <img src={imgGoogle} alt="Google icone" width={30} />
+                        <span className="ff-inter text-white">{t("continue_with_google")}</span>
                     </button>
 
                     <br />
 
-                    <button className="text-sm w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-full flex items-center justify-center gap-3">
+                    {/* <button className="text-sm w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-full flex items-center justify-center gap-3">
                         <img src={imgFacebook} alt="Facebook icone" width={20}/>
-                        Entrar com Facebook
-                    </button>
+                        {t("continue_with_facebook")}
+                    </button> */}
 
                     <br />
 
-                    <p className="text-sm">
-                        Já tem uma conta?{' '}
-                        <Link to="/login" className="underline text-primary">
-                            Entrar
+                    <p className="text-sm text-white">
+                        {t("already_have_account")}{' '}
+                        <Link to="/login" className="underline text-[#4cb8c4] hover:text-[#085078] transition-colors">
+                            {t("sign_in")}
                         </Link>
                     </p>
 

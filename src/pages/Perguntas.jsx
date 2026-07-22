@@ -1,17 +1,19 @@
 import { useState, useEffect, useRef } from "react"
-import { Volume, Loader2 } from "lucide-react";
+import { Volume } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { playAudio } from "../utils/audioPlayer";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
+import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
-export default function () {
+export default function Perguntas() {
+    const { t } = useTranslation();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null)
     const [question, setQuestion] = useState('')
     const [response, setResponse] = useState('')
     const [answer, setAnswer] = useState('')
     const jaBuscou = useRef(false);
-    const [textLoading, setTextLoading] = useState('')
     const navigate = useNavigate();
     const { user } = useAuth();
 
@@ -19,14 +21,14 @@ export default function () {
     const [limitReached, setLimitReached] = useState(false);
     const [totalToday, setTotalToday] = useState(0);
     const [isCorrect, setIsCorrect] = useState(false);
+    const API_URL = import.meta.env.VITE_API_URL;
 
     // 🔁 FUNÇÃO PARA BUSCAR PERGUNTA
     const fetchQuestion = () => {
-        setTextLoading('Gerando treino...')
         setLoading(true);
         setError(null);
 
-        fetch('/api/controller/DailyQuestionController.php', {
+        fetch(`${API_URL}/controller/DailyQuestionController.php`, {
             method: 'GET',
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token")
@@ -55,7 +57,7 @@ export default function () {
             })
             .catch(err => {
                 console.error(err);
-                setError('Não foi possível gerar o treino.');
+                setError(t("could_not_generate_training"));
             })
             .finally(() => setLoading(false));
     };
@@ -69,40 +71,44 @@ export default function () {
 
     const handleSkip = async () => {
         try {
-            await fetch('/api/controller/DailyQuestionController.php', {
+            const res = await fetch(`${API_URL}/controller/DailyQuestionController.php`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 },
                 body: JSON.stringify({
-                    question: question, // ✅ corrigido
+                    question: question,
                     action: 'skip'
                 }),
             });
 
-            // limpa estado
+            const data = await res.json();
+
+            // ✅ ATUALIZA NA HORA
+            if (typeof data.total_today !== "undefined") {
+                setTotalToday(data.total_today);
+            }
+
             setAnswer('');
-            setResponse(''); // ✅ corrigido
+            setResponse('');
             setIsCorrect(false);
 
-            // carrega próxima pergunta
             fetchQuestion();
 
         } catch (err) {
             console.error(err);
         }
     };
-
     const handleSubmit = async (e) => {
-        setTextLoading('Processando resposta...')
         e.preventDefault();
         setLoading(true);
 
         try {
-            const res = await fetch('/api/controller/DailyQuestionController.php', {
+            const res = await fetch(`${API_URL}/controller/DailyQuestionController.php`, {
                 method: 'POST',
                 headers: {
+                    "Content-Type": "application/json",
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 },
                 body: JSON.stringify({ question, answer })
@@ -117,7 +123,12 @@ export default function () {
             setResponse(data.feedback);
             setIsCorrect(data.is_correct);
 
-            // ✅ SE ACERTOU → PRÓXIMA PERGUNTA
+            // ✅ ESSA LINHA É A CORREÇÃO
+            if (typeof data.total_today !== "undefined") {
+                setTotalToday(data.total_today);
+            }
+
+            // próxima pergunta se acertou
             if (data.is_correct) {
                 setTimeout(() => {
                     setResponse('');
@@ -141,18 +152,21 @@ export default function () {
 
     if (loading) {
         return (
-            <div className="min-h-[calc(100vh-70px)] flex items-center justify-center">
-                <Loader2 className="animate-spin mr-2 w-8 h-8 text-indigo-600" />
-                <span className="text-white text-lg">{textLoading}</span>
+            <div className="flex h-screen items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
+                <img
+                    src={imgChapeuFormatura}
+                    alt={t("loading")}
+                    className="w-28 animate-pulse"
+                />
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="min-h-[calc(100vh-70px)] flex flex-col items-center justify-center text-center p-6">
+            <div className="min-h-[calc(100vh-70px)] flex flex-col items-center justify-center text-center p-6 ">
                 <h1 className="text-2xl font-semibold text-yellow-600 mb-4">
-                    ⚠️ Conteúdo insuficiente
+                    {t("insufficient_content")}
                 </h1>
 
                 <p className="text-slate-600 mb-2">
@@ -160,14 +174,14 @@ export default function () {
                 </p>
 
                 <p className="text-slate-500">
-                    Adicione mais frases com mais detalhes para liberar o treino.
+                    {t("add_more_phrases_hint")}
                 </p>
 
                 <button
                     onClick={() => navigate(-1)}
                     className="mt-6 px-6 py-3 rounded-full bg-[#4cb8c4] text-white"
                 >
-                    Voltar
+                    {t("back")}
                 </button>
             </div>
         );
@@ -176,30 +190,30 @@ export default function () {
     // 🚫 LIMITE ATINGIDO
     if (limitReached) {
         return (
-            <div className="min-h-[calc(100vh-70px)] flex flex-col items-center justify-center text-center p-6">
-                <h1 className="text-2xl font-semibold text-red-500 mb-4">
-                    Limite diário atingido 🚫
+            <div className="h-screen flex flex-col items-center justify-center text-center p-6 from-gray-900 to-gray-800 bg-gradient-to-br">
+                <h1 className="text-2xl font-semibold text-red-400 mb-4">
+                    {t("daily_limit_reached")}
                 </h1>
-                <p className="text-slate-600">
-                    Você já fez {totalToday} perguntas hoje.
+                <p className="text-white">
+                    {t("already_did_questions_today", { count: totalToday })}
                 </p>
-                <p className="text-slate-500 mt-2">
-                    Volte amanhã para continuar praticando 💪
+                <p className="text-white mt-2">
+                    {t("come_back_tomorrow")}
                 </p>
 
                 <button
                     onClick={() => navigate(-1)}
                     className="mt-6 px-6 py-3 rounded-full  text-white"
                 >
-                    Voltar
+                    {t("back")}
                 </button>
             </div>
         );
     }
 
     return (
-        <div className="p-4 justify-center w-full px-6 h-dvh flex flex-col h-dvh">
-            <div className="flex-1 overflow-y-auto scrollbar-hide">
+        <div className="p-4 justify-center w-full px-6 h-screen flex flex-col h-dvh from-gray-900 to-gray-800 bg-gradient-to-br">
+            <div className="flex-1 overflow-y-auto scrollbar-hide ">
                 <div className="relative mb-6">
                     <div
                         className="cursor-pointer"
@@ -211,7 +225,7 @@ export default function () {
 
                 {/* PROGRESSO */}
                 <p className="text-sm text-white text-center mb-2">
-                    {totalToday}/4 perguntas hoje
+                    {t("questions_today_progress", { count: totalToday })}
                 </p>
 
                 {response && !isCorrect &&
@@ -226,18 +240,18 @@ export default function () {
 
                 {!response &&
                     <form onSubmit={handleSubmit} className="w-full" id="respostaForm">
-                        <div>
-                            <div className="flex border border-gray-700 p-6 text-center shadow-md bg-[linear-gradient(to_right,#233245,#0d1425)] text-white rounded-lg min-h-80 items-center justify-center">
+                        <div className="">
+                            <div className="flex border border-gray-700 p-6 text-center shadow-md bg-[linear-gradient(to_right,#233245,#0d1425)] text-white rounded-lg  items-center justify-center">
                                 <p className="text-2xl">{question}</p>
                             </div>
 
                             <div className="text-center flex justify-center mt-5">
                                 <button onClick={(e) => {
                                     e.preventDefault();
-                                    playAudio(question, user,true);
+                                    playAudio(question, user, true);
                                 }} className="px-4 py-2 rounded-md bg-slate-400 text-white text-sm hover:bg-blue-600 transition flex">
                                     <Volume className="w-5 h-5" />
-                                    Ouvir
+                                    {t("listen")}
                                 </button>
                             </div>
                         </div>
@@ -246,7 +260,7 @@ export default function () {
                             <textarea
                                 value={answer}
                                 onChange={(e) => setAnswer(e.target.value)}
-                                placeholder="Deixe sua resposta em inglês"
+                                placeholder={t("leave_answer_in_english")}
                                 className="text-white w-full mb-6 text-lg h-32 pt-6 text-center rounded-lg bg-gray-800/50 backdrop-blur-sm  border border-gray-700 resize-none"
                             />
                         </div>
@@ -257,7 +271,7 @@ export default function () {
             {!response &&
                 <div className="sticky bottom-0 py-4 text-center">
                     <button form="respostaForm" className="px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm  border border-gray-700 text-white w-full">
-                        Enviar
+                        {t("send")}
                     </button>
                 </div>
             }
@@ -266,14 +280,14 @@ export default function () {
                 <div className="sticky bottom-0 py-4 text-center flex gap-3">
                     <button
                         onClick={tryAgain}
-                        className="px-6 py-3 w-full rounded-full bg-gray-700/50 backdrop-blur-sm  border border-gray-700 text-white">
-                        Tentar novamente
+                        className="px-6 py-3 w-full rounded-full bg-red-400/70 backdrop-blur-sm  border border-gray-700 text-white">
+                        {t("try_again")}
                     </button>
 
                     <button
                         onClick={handleSkip}
                         className="px-8 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm  border border-gray-700 text-white">
-                        Pular
+                        {t("next_question")}
                     </button>
                 </div>
             }

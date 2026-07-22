@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import imgLogin from '../assets/img/img-login.png'
 import imgGoogle from '../assets/img/google.png'
@@ -7,19 +8,20 @@ import imgFacebook from '../assets/img/logo-face.webp'
 import imgCoruja from '../assets/img/coruja-esqueci-senha.png'
 
 export default function EsqueciSenha({ setTitulo }) {
+    const { t } = useTranslation();
 
     const [email, setEmail] = useState('')
     const [erro, setErro] = useState('')
 
     useEffect(() => {
-        setTitulo('Esqueci a senha')
+        setTitulo(t("forgot_password"))
     }, [])
 
     function handleSubmit(e) {
         e.preventDefault()
 
         if (!email) {
-            setErro('O email deve ser preenchido')
+            setErro(t("email_required"))
             return
         }
 
@@ -32,7 +34,7 @@ export default function EsqueciSenha({ setTitulo }) {
                 <div className="w-full max-w-md text-center mt-4">
 
                     <div className="mt-4 flex justify-center">
-                        <img className="logo-coruja" src={imgCoruja} alt="Esqueci a senha" />
+                        <img className="logo-coruja" src={imgCoruja} alt={t("forgot_password")} />
                     </div>
 
                     <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -46,7 +48,7 @@ export default function EsqueciSenha({ setTitulo }) {
                             <input
                                 type="email"
                                 className="w-full px-3 py-2 outline-none"
-                                placeholder="Email"
+                                placeholder={t("email")}
                                 value={email}
                                 onChange={(e) => {
                                     setEmail(e.target.value)
@@ -67,7 +69,7 @@ export default function EsqueciSenha({ setTitulo }) {
                             type="submit"
                             className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded fw-700"
                         >
-                            Enviar
+                            {t("send")}
                         </button>
                     </form>
 
@@ -75,14 +77,14 @@ export default function EsqueciSenha({ setTitulo }) {
 
                     <div>
                         <h6 className="text-primary-aux">
-                            Lembrou sua senha?
+                            {t("remembered_password")}
                         </h6>
 
                         <Link
                             to="/login"
                             className="text-primary-aux underline"
                         >
-                            Fazer login
+                            {t("do_login")}
                         </Link>
                     </div>
 

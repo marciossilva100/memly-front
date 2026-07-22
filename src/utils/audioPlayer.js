@@ -1,23 +1,36 @@
 let currentAudio = null;
+let currentToken = 0;
 
-export const playAudio = async (text, user,ia = false) => {
+export const playAudio = async (text, user, ia = false, lang = null) => {
+    const API_URL = import.meta.env.VITE_API_URL;
     if (!text) return;
 
-    // cancela áudio anterior
-    if (currentAudio) {
-        currentAudio.pause();
-        currentAudio = null;
-    }
+    const voiceLang = lang || user?.learning_language;
 
-    if (user.plano === 1 && user.id === 47 && !ia) {
+    // cancela áudio anterior e invalida qualquer chamada anterior ainda em andamento
+    const myToken = ++currentToken;
+    if (currentAudio && currentAudio.pause) {
+        currentAudio.pause();
+    }
+    currentAudio = null;
+
+    // fluxo ElevenLabs (mantido)
+    // if (user.plano === 1 && user.id === 47 && !ia) {
+    if (user.plano === 1 && user.id === 47) {
         const url = await gerarAudio(text);
         if (!url) return;
+
+        // uma chamada mais recente já assumiu o controle enquanto aguardávamos o áudio
+        if (myToken !== currentToken) {
+            URL.revokeObjectURL(url);
+            return;
+        }
 
         const audio = new Audio(url);
         currentAudio = audio;
 
         audio.playbackRate = 0.9;
-        audio.play().catch(() => { });
+        audio.play().catch(() => {});
 
         audio.onended = () => {
             URL.revokeObjectURL(url);
@@ -27,23 +40,78 @@ export const playAudio = async (text, user,ia = false) => {
         return;
     }
 
-    const url =
-        "/api/controller/treino.php?action=voice" +
-        "&text=" + encodeURIComponent(text) +
-        "&lang=" + encodeURIComponent(user.learning_language);
+    try {
+        const cleanText = text.trim().replace(/^"|"$/g, '');
 
-    const audio = new Audio();
-    audio.src = url;
-    audio.playbackRate = 0.9;
+        const url =
+            `${API_URL}/controller/treino.php?action=voice` +
+            "&text=" + encodeURIComponent(cleanText) +
+            "&lang=" + encodeURIComponent(voiceLang);
 
-    currentAudio = audio;
+        const res = await fetch(url);
 
-    audio.play().catch(() => { });
+        if (!res.ok) {
+            throw new Error("Erro HTTP: " + res.status);
+        }
+
+        const audios = await res.json();
+
+        console.log("AUDIOS:", audios);
+
+        if (!Array.isArray(audios) || audios.length === 0) {
+            console.error("Áudios inválidos:", audios);
+            return;
+        }
+
+        // uma chamada mais recente já assumiu o controle enquanto buscávamos o áudio
+        if (myToken !== currentToken) return;
+
+        // controle de execução
+        currentAudio = { playing: true };
+
+        for (const base64 of audios) {
+
+            // se cancelado por uma chamada mais recente
+            if (myToken !== currentToken || !currentAudio || currentAudio.playing !== true) break;
+
+            const byteArray = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+            const blob = new Blob([byteArray], { type: "audio/mpeg" });
+            const urlAudio = URL.createObjectURL(blob);
+
+            const audio = new Audio(urlAudio);
+            currentAudio = audio;
+
+            audio.playbackRate = 1.0;
+
+            await audio.play().catch(err => {
+                console.error("ERRO PLAY:", err);
+            });
+
+            await new Promise(resolve => {
+                audio.onended = resolve;
+                audio.onerror = resolve;
+            });
+
+            URL.revokeObjectURL(urlAudio);
+        }
+
+        if (myToken === currentToken) {
+            currentAudio = null;
+        }
+
+    } catch (err) {
+        console.error("Erro ao tocar áudio:", err);
+        if (myToken === currentToken) {
+            currentAudio = null;
+        }
+    }
 };
 
 const gerarAudio = async (texto) => {
+    const API_URL = import.meta.env.VITE_API_URL;
+
     try {
-        const res = await fetch("/api/controller/elevenlabs.php", {
+        const res = await fetch(`${API_URL}/controller/elevenlabs.php`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

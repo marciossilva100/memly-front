@@ -1,7 +1,10 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
 export default function BookDetails() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -34,8 +37,12 @@ export default function BookDetails() {
 
   if (loading) {
     return (
-      <div className="bg-gray-900 text-white flex items-center justify-center h-screen">
-        Loading...
+      <div className="flex h-screen items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
+        <img
+          src={imgChapeuFormatura}
+          alt={t("loading")}
+          className="w-28 animate-pulse"
+        />
       </div>
     );
   }
@@ -60,7 +67,7 @@ export default function BookDetails() {
           />
         ) : (
           <div className="flex items-center justify-center h-full text-gray-400">
-            Livro não disponível para leitura 😢
+            {t("book_not_available")}
           </div>
         )}
       </div>

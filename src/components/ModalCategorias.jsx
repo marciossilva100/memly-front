@@ -1,14 +1,19 @@
 import { Dialog } from "@headlessui/react";
 import { useState, useEffect } from "react";
 import { FaList, FaPlus } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 import { HelpCircle } from 'lucide-react';
 export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onSuccess,setOpenModalSucesso }) {
+    const { t } = useTranslation();
+    const navigate = useNavigate();
     const [categoria, setCategoria] = useState()
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [yourCategory, setYourCategory] = useState(false)
     const [categoriaPublica, setCategoriaPublica] = useState(1)
+    const API_URL = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         setYourCategory(false)
@@ -27,14 +32,14 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
         if (loading) return;
 
         if (!categoria) {
-            setError('Digite a categoria')
+            setError(t("enter_category"))
             return
         }
 
         setLoading(true);
 
         try {
-            const res = await fetch('https://api.zaldemy.com/controller/categorias.php', {
+            const res = await fetch(`${API_URL}/controller/categorias.php`, {
                 method: 'POST',
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token")
@@ -55,13 +60,13 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
 
             setError('')
             onSuccess?.();
-            onOpenModalSucesso('Adicionado com sucesso')
+            onOpenModalSucesso(t("added_successfully"))
             setTimeout(() => {
                 setOpenModalSucesso(false);
             }, 2500); // 3 segundos
 
         } catch (error) {
-            setError(error?.message || "Erro inesperado")
+            setError(error?.message || t("unexpected_error"))
         } finally {
             setLoading(false)
         }
@@ -117,15 +122,22 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
             <div className="fixed inset-0 flex items-center justify-center px-4 backdrop-blur-[2px]">
                 <Dialog.Panel className="w-full max-w-md rounded-2xl px-6 py-8 shadow-xl from-gray-900 to-gray-800 bg-gradient-to-br">
                     <Dialog.Title className="text-xl font-semibold mb-3 text-white  mb-8">
-                        Adicionar categoria
+                        {t("add_category")}
                     </Dialog.Title>
                     {!yourCategory && (
                         <div className="flex flex-col gap-4 mt-5">
                             <div>
-                                <a href="/listcategorias" className="no-underline hover:text-white visited:text-white flex items-center  gap-2 text-lg py-2 bg-gray-700/50 backdrop-blur-sm  border border-gray-700 px-8 rounded-full w-full text-white">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setOpen(false);
+                                        navigate('/listcategorias');
+                                    }}
+                                    className="no-underline hover:text-white visited:text-white flex items-center  gap-2 text-lg py-2 bg-gray-700/50 backdrop-blur-sm  border border-gray-700 px-8 rounded-full w-full text-white"
+                                >
                                     <FaList className="me-2 " />
-                                    Categorias existentes
-                                </a>
+                                    {t("existing_categories")}
+                                </button>
                             </div>
 
 
@@ -134,7 +146,7 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
 
                             }}>
                                 <FaPlus className="me-2" />
-                                Adicione sua categoria
+                                {t("add_your_category")}
                             </button>
                         </div>
                     )}
@@ -145,7 +157,7 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
                                 <input
                                     onChange={(e) => setCategoria(e.target.value)}
                                     type="text"
-                                    placeholder="Nome da categoria"
+                                    placeholder={t("category_name_placeholder")}
                                     className="text-white bg-gray-800/50 backdrop-blur-sm w-full rounded-xl border border-slate-300 px-4 py-2 text-lg
                                     focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20
                                     outline-none"
@@ -156,8 +168,8 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
                                 <div className="space-y-3">
 
                                     <ToggleItem
-                                        label="Compartilhar categoria"
-                                        helpText="Deixando essa opção marcada, você compartilha sua categoria com outros usuários."
+                                        label={t("share_category")}
+                                        helpText={t("share_category_description")}
                                     />
                                 </div>
                             </div>
@@ -167,11 +179,11 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
                                     onClick={() => setOpen(false)}
                                     className="text-lg text-white me-3"
                                 >
-                                    Cancelar
+                                    {t("cancel")}
                                 </button>
 
                                 <button type="submit" disabled={loading} className="bg-[#4cb8c4] text-white px-4 py-2 rounded-full text-lg ">
-                                    Salvar
+                                    {t("save")}
                                 </button>
                             </div>
                         </form>

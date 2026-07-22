@@ -1,8 +1,10 @@
 import { Dialog } from "@headlessui/react";
 import { useState, useEffect } from "react";
 import { FaList, FaPlus } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 export default function ModalConfirm({openModalConfirm,setOpenModalConfirm,msg,onConfirm}) {
+    const { t } = useTranslation();
     const [categoria, setCategoria] = useState()
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
@@ -46,11 +48,11 @@ export default function ModalConfirm({openModalConfirm,setOpenModalConfirm,msg,o
                                     onClick={() => setOpenModalConfirm(false)}
                                     className="text-lg text-white me-3 w-full bg-gray-800/50 backdrop-blur-sm  border border-gray-700 rounded-full"
                                 >
-                                    Cancelar
+                                    {t("cancel")}
                                 </button>
 
                                 <button onClick={()=>onConfirm(true)}  type="submit" disabled={loading} className="w-full bg-[#4cb8c4] text-white px-4 py-2 rounded-full text-lg ">
-                                    Confirmar
+                                    {t("confirm")}
                                 </button>
                             </div>
                         

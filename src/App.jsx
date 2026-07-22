@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-route
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { registerSW } from "virtual:pwa-register";
+import { useTranslation } from "react-i18next";
 
 import AuthGate from "./components/AuthGate";
 import Login from './pages/Login'
@@ -26,71 +27,73 @@ import BookDetails from "./pages/BookDetails";
 import VerificarEmail from './pages/VerificarEmail'
 import EmailVerificado from './pages/EmailVerificado'
 import EnglishVideos from './pages/EnglishVideos'
+import MusicFlashcardFinder from './pages/MusicFlashcardFInder';
+import ConnectionStatus from './components/ConnectionStatus'; // Novo componente
 
 import imgMemly from "./assets/img/mascote-memly.png"
 import imgChapeuFormatura from "./assets/img/chapeu_formatura.png"
 import PremiumPlan from './components/PremiumModal';
 import Metricas from './pages/Metricas';
+import Configuracoes from './pages/Configuracoes';
+import TermosDeUso from './pages/TermosDeUso';
+import PoliticaPrivacidade from './pages/PoliticaPrivacidade';
+import Contato from './pages/Contato';
+import Faq from './pages/Faq';
 
-
-/* function setRealViewportHeight() {
-  const vh = window.innerHeight * 0.01;
-  document.documentElement.style.setProperty('--vh', `${vh}px`);
-}
-
-setRealViewportHeight();
-
-window.addEventListener('resize', setRealViewportHeight); */
-
-
-
+// Contexto de conexão
+import { ConnectionProvider, useConnection } from './context/ConnectionContext';
 
 function PrivateRoute({ children }) {
+  const { t } = useTranslation();
   const { user, loading } = useAuth();
+  const { isOnline } = useConnection();
 
-  if (loading) return null; // 👈 ESSA LINHA resolve seu problema
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
+        <img
+          src={imgChapeuFormatura}
+          alt={t("loading")}
+          className="w-28 animate-pulse"
+        />
+      </div>
+    );
+  }
 
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
+  // Verifica conexão para rotas que precisam de internet
+  const offlineRoutes = ['/home', '/flashcards', '/emparelhar']; // Rotas que funcionam offline
+  if (!isOnline && !offlineRoutes.some(route => window.location.pathname.startsWith(route))) {
+    return <ConnectionStatus />;
+  }
+
   return children;
 }
 
-
-
 function Layout({ titulo, setTitulo }) {
-
   const location = useLocation()
   const { user, loading } = useAuth()
+  const { isOnline } = useConnection()
 
-  const rotasSemHeader = new Set([
-    //'/login',
-    //'/escolheridioma',
-    //'/emparelhar',
-    '/home'
+  const rotasComHeader = new Set([
+    '/home',
+    '/metricas',
+    '/listcategorias'
   ])
 
-  const esconderHeader = rotasSemHeader.has(location.pathname)
-
-  // if (loading) {
-  //   return (
-  //     <div className="flex h-screen items-center justify-center bg-white-100">
-  //       <img
-  //         src={imgChapeuFormatura}
-  //         alt="Carregando"
-  //         className="w-28 animate-pulse"
-  //       />
-  //     </div>
-  //   )
-  // }
+  const mostrarHeader = rotasComHeader.has(location.pathname)
 
   return (
     <>
-      {esconderHeader && <Header titulo={titulo} />}
+      {/* Indicador de status de conexão */}
+      <ConnectionStatus />
+
+      {mostrarHeader && <Header titulo={titulo} />}
 
       <Routes>
-
         <Route path="/" element={<Login setTitulo={setTitulo} />} />
         <Route path="/login" element={<Login setTitulo={setTitulo} />} />
 
@@ -223,7 +226,6 @@ function Layout({ titulo, setTitulo }) {
           }
         />
 
-        
         <Route
           path="/metricas"
           element={
@@ -233,43 +235,71 @@ function Layout({ titulo, setTitulo }) {
           }
         />
 
+        <Route
+          path="/configuracoes"
+          element={
+            <PrivateRoute>
+              <Configuracoes />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/musicflashcardfInder"
+          element={
+            <PrivateRoute>
+              <MusicFlashcardFinder />
+            </PrivateRoute>
+          }
+        />
+
         <Route path="/verificaremail" element={<VerificarEmail />} />
         <Route path="/premiumplan" element={<PremiumPlan />} />
         <Route path="/emailverificado" element={<EmailVerificado />} />
+        <Route path="/termosdeuso" element={<TermosDeUso />} />
+        <Route path="/politicaprivacidade" element={<PoliticaPrivacidade />} />
+        <Route path="/contato" element={<Contato />} />
+        <Route path="/faq" element={<Faq />} />
         <Route path="/videos" element={<EnglishVideos query="english listening practice" />} />
       </Routes>
     </>
   )
 }
 
-
-
 function App() {
-
+  const { t } = useTranslation();
   const containerRef = useRef(null);
   const [hasOverflow, setHasOverflow] = useState(false);
-
   const [titulo, setTitulo] = useState('')
 
-  registerSW({
-    onNeedRefresh() {
-      console.log("Nova versão disponível");
-      window.location.reload();
-    },
-    onOfflineReady() {
-      console.log("App pronto para offline");
-    }
-  });
+  useEffect(() => {
+    registerSW({
+      onNeedRefresh() {
+        console.log("Nova versão disponível");
+        // Adiciona confirmação antes de recarregar
+        if (window.confirm(t("new_version_available_confirm"))) {
+          window.location.reload();
+        }
+      },
+      onOfflineReady() {
+        console.log("App pronto para offline");
+        // Notifica o usuário que o app está disponível offline
+        alert(t("app_ready_offline"));
+      }
+    });
+  }, []);
 
   return (
     <GoogleOAuthProvider clientId="1055075063152-tkobce7c2j9eq1t4doi0419votjlemis.apps.googleusercontent.com">
-      <AuthProvider>
-        <BrowserRouter>
-          <AuthGate>
-            <Layout titulo={titulo} setTitulo={setTitulo} />
-          </AuthGate>
-        </BrowserRouter>
-      </AuthProvider>
+      <ConnectionProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <AuthGate>
+              <Layout titulo={titulo} setTitulo={setTitulo} />
+            </AuthGate>
+          </BrowserRouter>
+        </AuthProvider>
+      </ConnectionProvider>
     </GoogleOAuthProvider>
   )
 }

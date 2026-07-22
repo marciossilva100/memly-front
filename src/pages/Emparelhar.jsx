@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { playAudio } from "../utils/audioPlayer";
+import { useTranslation } from "react-i18next";
 
 export default function JogoFrases() {
+  const { t } = useTranslation();
+
   const { id, mode } = useParams();
 
   const [todasFrases, setTodasFrases] = useState([]);
@@ -21,13 +24,14 @@ export default function JogoFrases() {
   const [sucessoEsquerdaId, setSucessoEsquerdaId] = useState(null);
   const [sucessoDireitaId, setSucessoDireitaId] = useState(null);
   const [idPhrases, setIdPhrases] = useState([]);
-
+  const location = useLocation();
+  const correctIds = location.state?.correctIds || [];
   const [bloqueado, setBloqueado] = useState(false);
 
   const [totalPerguntas, setTotalPerguntas] = useState(0);
   const [acertos, setAcertos] = useState(0);
   const [erros, setErros] = useState(0);
-
+  const API_URL = import.meta.env.VITE_API_URL;
   const [finalizado, setFinalizado] = useState(false);
   const { user } = useAuth();
 
@@ -49,7 +53,7 @@ export default function JogoFrases() {
 
   async function trainingUpdate(updatedList, actionToSend) {
     try {
-      await fetch("https://api.zaldemy.com/controller/treino.php", {
+      await fetch(`${API_URL}/controller/treino.php`, {
         method: "POST",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
@@ -58,6 +62,7 @@ export default function JogoFrases() {
           action: actionToSend,
           updatedList: updatedList,
           category_id: id,
+
         }),
       });
     } catch (error) {
@@ -69,7 +74,7 @@ export default function JogoFrases() {
     let endpoint =
       mode === "traine" ? "controller/treino.php" : "controller/frases.php";
 
-    fetch(`https://api.zaldemy.com/${endpoint}`, {
+    fetch(`${API_URL}/${endpoint}`, {
       method: "POST",
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
@@ -77,6 +82,8 @@ export default function JogoFrases() {
       body: JSON.stringify({
         action: mode,
         category_id: id,
+        correctIds: (correctIds ? correctIds : '')
+
       }),
     })
       .then((res) => res.json())
@@ -105,7 +112,10 @@ export default function JogoFrases() {
     const lote = todasFrases.slice(proximoIndice, proximoIndice + 4);
 
     if (lote.length === 0) {
-      await trainingUpdate(idPhrases, "trainee_finish");
+
+      if (mode !== 'learn')
+        await trainingUpdate(idPhrases, "trainee_finish");
+
       setFinalizado(true);
       return;
     }
@@ -182,10 +192,10 @@ export default function JogoFrases() {
     : 0;
 
   function mensagemFinal() {
-    if (porcentagem === 100) return "🏆 Parabéns! Você é um mestre!";
-    if (porcentagem >= 80) return "🔥 Excelente desempenho!";
-    if (porcentagem >= 60) return "👏 Muito bom!";
-    return "💪 Continue treinando!";
+    if (porcentagem === 100) return t("congrats_master");
+    if (porcentagem >= 80) return t("excellent_performance");
+    if (porcentagem >= 60) return t("match_very_good");
+    return t("keep_training");
   }
 
   if (totalPerguntas < 1) {
@@ -194,6 +204,15 @@ export default function JogoFrases() {
   }
 
   if (finalizado) {
+
+    if (mode === 'learn') {
+      navigate(`/flashcards/${id}/learn`, {
+        state: { correctIds }
+      });
+      return
+    }
+
+
     return (
       <div className="h-dvh flex items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br px-10">
         <div className="bg-white p-10 rounded-2xl shadow-2xl text-center max-w-md">
@@ -204,14 +223,14 @@ export default function JogoFrases() {
           </div>
 
           <p className="text-text mb-6">
-            {acertos} acertos • {erros} erros
+            {t("results_summary", { acertos, erros })}
           </p>
 
           <button
             onClick={() => navigate("/home")}
             className="px-6 py-3 bg-indigo-600 text-white hover:bg-indigo-700 transition rounded-full"
           >
-            Voltar ao início
+            {t("back_to_home")}
           </button>
         </div>
       </div>
@@ -222,11 +241,11 @@ export default function JogoFrases() {
     <div className="px-6 pt-4 h-screen grid grid-rows-[auto,1fr] overflow-hidden from-gray-900 to-gray-800 bg-gradient-to-br">
       <div className="mb-4">
         <div onClick={() => navigate(-1)} className="cursor-pointer text-white text-2xl">
-          ← 
+          ←
         </div>
       </div>
 
-      <div className="flex justify-center">
+      <div className="flex justify-center pb-6">
         <div className="w-full max-w-5xl grid grid-cols-2 gap-8 h-full">
           <div className="grid grid-rows-4 gap-3">
             {nativas.map((frase) => (
@@ -234,15 +253,14 @@ export default function JogoFrases() {
                 key={frase.id}
                 disabled={bloqueado}
                 onClick={() => setSelecionadaEsquerda(frase)}
-                className={`p-4 rounded-lg border
-                  ${
-                    sucessoEsquerdaId === frase.id
-                      ? "bg-green-100"
-                      : erroEsquerdaId === frase.id
-                      ? "bg-red-100"
+                className={`p-4 rounded-lg border text-white border-slate-400
+                  ${sucessoEsquerdaId === frase.id
+                    ? "bg-[#469118]"
+                    : erroEsquerdaId === frase.id
+                      ? "bg-[#861616]"
                       : selecionadaEsquerda?.id === frase.id
-                      ? "bg-blue-100"
-                      : "bg-white"
+                        ? "bg-slate-600"
+                        : "bg-[linear-gradient(to_right,#233245,#0d1425)]"
                   }`}
               >
                 {frase.texto_nativo}
@@ -256,15 +274,14 @@ export default function JogoFrases() {
                 key={frase.id}
                 disabled={bloqueado}
                 onClick={() => setSelecionadaDireita(frase)}
-                className={`p-4 rounded-lg border
-                  ${
-                    sucessoDireitaId === frase.id
-                      ? "bg-green-100"
-                      : erroDireitaId === frase.id
-                      ? "bg-red-100"
+                className={`p-4 rounded-lg border text-white border-slate-400
+                  ${sucessoDireitaId === frase.id
+                    ? "bg-[#469118]"
+                    : erroDireitaId === frase.id
+                      ? "bg-[#861616]"
                       : selecionadaDireita?.id === frase.id
-                      ? "bg-blue-100"
-                      : "bg-white"
+                        ? "bg-slate-600"
+                        : "bg-[linear-gradient(to_right,#233245,#0d1425)]"
                   }`}
               >
                 {frase.texto_traduzido}

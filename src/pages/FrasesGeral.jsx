@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import ModalFrase from "../components/ModalFrase";
 import { useAuth } from "../context/AuthContext";
 import PremiumModal from '../components/PremiumModal';
+import { useTranslation } from "react-i18next";
+import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
 import {
     Trash,
@@ -12,6 +14,7 @@ import {
 
 
 export default function FrasesGeral() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const { user } = useAuth();
 
@@ -20,7 +23,7 @@ export default function FrasesGeral() {
     const [textoBusca, setTextoBusca] = useState("")
     const [openFrase, setOpenFrase] = useState(false)
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
-
+const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -31,7 +34,7 @@ export default function FrasesGeral() {
     async function listPhrase() {
         setLoading(true);
 
-        fetch('https://api.zaldemy.com/controller/frases.php', {
+        fetch(`${API_URL}/controller/frases.php`, {
             method: 'POST',
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token")
@@ -67,7 +70,17 @@ export default function FrasesGeral() {
 
     };
 
-
+    if (loading) {
+        return (
+            <div className="flex h-screen items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
+                <img
+                    src={imgChapeuFormatura}
+                    alt={t("loading")}
+                    className="w-28 animate-pulse"
+                />
+            </div>
+        );
+    }
 
     return (
 
@@ -91,7 +104,7 @@ export default function FrasesGeral() {
                         <input
                             type="email"
                             className="w-full px-3 py-2 outline-none text-lg"
-                            placeholder="Buscar"
+                            placeholder={t("search")}
                             value={textoBusca}
                             onChange={(e) => {
                                 setTextoBusca(e.target.value)
@@ -106,12 +119,9 @@ export default function FrasesGeral() {
                     </div>
                 )}
 
-                {loading && <div className="h-screen flex items-center justify-center">
-                    Carregando...
-                </div>}
                 <div className="flex-1 overflow-y-auto scrollbar-hide">
 
-                    {!loading && frases.map(item => (
+                    {frases.map(item => (
                         <div key={item.id} className="text-lg grid grid-cols-[1fr_1fr_auto] gap-4 items-center  py-3 border-b-2 overflow" >
                             <div>{item.texto_nativo}</div>
                             <div>{item.texto_traduzido}</div>

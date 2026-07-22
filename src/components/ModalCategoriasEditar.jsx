@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { FaList, FaPlus } from "react-icons/fa";
 import { HelpCircle } from 'lucide-react';
 import { useTranslation } from "react-i18next";
+import { containsProfanity } from '../utils/contentFilter';
 
 export default function ModalCategoriasEditar({ setOpenCategoriaEditar,open,categoriaEditar,categoriaIdEditar,categoriaPublicaEditar,onOpenModalSucesso,onSuccess}) {
     const { t } = useTranslation();
@@ -29,6 +30,11 @@ const API_URL = import.meta.env.VITE_API_URL;
 
         if (!categoria) {
             setError(t("enter_category"))
+            return
+        }
+
+        if (containsProfanity(categoria)) {
+            setError(t("inappropriate_content_error"))
             return
         }
 

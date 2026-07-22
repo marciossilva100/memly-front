@@ -25,7 +25,9 @@ import {
     BarChart3,
     Layers,
     Settings,
-    Home
+    Home,
+    Flame,
+    Zap
 } from 'lucide-react';
 
 export default function Metricas() {
@@ -58,7 +60,9 @@ const API_URL = import.meta.env.VITE_API_URL;
         totalAcertos: 0,
         totalQuestoes: 0,
         taxaAcerto: 0,
-        streakAtual: 0
+        streakAtual: 0,
+        melhorStreak: 0,
+        melhorSequenciaAcertos: 0
     });
 
     const navigate = useNavigate();
@@ -91,7 +95,9 @@ const API_URL = import.meta.env.VITE_API_URL;
                     totalQuestoes: data.resumo?.total || 0,
                     totalAcertos: data.resumo?.acertos || 0,
                     taxaAcerto: data.resumo?.taxa_acerto || 0,
-                    streakAtual: data.streak || 0
+                    streakAtual: data.streak || 0,
+                    melhorStreak: data.melhor_streak || 0,
+                    melhorSequenciaAcertos: data.melhor_sequencia_acertos || 0
                 });
             }
         } catch (error) {
@@ -338,6 +344,20 @@ const API_URL = import.meta.env.VITE_API_URL;
                         cor="from-orange-500 to-orange-600"
                         subtexto={t("consecutive_days")}
                     />
+                    <CardMetrica
+                        titulo={t("longest_streak")}
+                        valor={metricasGerais.melhorStreak > 0 ? `${metricasGerais.melhorStreak}d` : '0d'}
+                        icone={Flame}
+                        cor="from-red-500 to-orange-600"
+                        subtexto={t("personal_record")}
+                    />
+                    <CardMetrica
+                        titulo={t("best_answer_streak")}
+                        valor={metricasGerais.melhorSequenciaAcertos}
+                        icone={Zap}
+                        cor="from-yellow-500 to-yellow-600"
+                        subtexto={t("consecutive_correct_answers")}
+                    />
                 </div>
 
                 {/* Dropdowns */}
@@ -543,7 +563,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                 </div>
             </div>
 
-            <div className="fixed inset-x-0 bottom-0 z-10 text-center w-full justify-items-center justify-center items-center  from-gray-900 to-gray-800 bg-gradient-to-br ">
+            <div className="sticky inset-x-0 bottom-0 z-10 text-center w-full justify-items-center justify-center items-center   ">
 
 
                 <div className=" w-full ">

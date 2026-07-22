@@ -17,7 +17,7 @@ import ModalIncorporarFrases from '../components/ModalIncorporarFrases'
 import { useTranslation } from "react-i18next";
 
 
-import { BookOpen,Search,Filter,Loader2,Home,Settings,BarChart3 } from "lucide-react";
+import { BookOpen,Search,Filter,Loader2,Home,Settings,BarChart3,UserRound } from "lucide-react";
 
 
 export default function ListCategoria() {
@@ -70,7 +70,8 @@ export default function ListCategoria() {
             const categoriasFormatadas = data.map(cat => ({
                 id: cat.id,
                 categoria: cat.categoria,
-                quantidade: cat.total_frases
+                quantidade: cat.total_frases,
+                usuario: cat.usuario
             }));
 
             // 🔥 concatena (não sobrescreve), exceto ao trocar de idioma
@@ -167,7 +168,11 @@ export default function ListCategoria() {
             <div className="lista-categoria  flex-1 overflow-y-auto pb-[140px] scrollbar-hide mt-6" id="lista-categoria">
                 <div className="flex-1 flex flex-col">
 
-                    <div >
+                    <h1 className="text-base font-semibold text-white mb-8">
+                        {t("add_category")}
+                    </h1>
+
+                    <div  className='mb-6'>
                         <div className="flex items-center border rounded-md overflow-hidden ">
                             <span className="px-3 text-gray-500">
                                 <Search width={20} className='text-white' />
@@ -185,9 +190,9 @@ export default function ListCategoria() {
                         </div>
                     </div>
 
-                        <div className="cursor-pointer flex justify-end mb-4">
+                        {/* <div className="cursor-pointer flex justify-end mb-4">
                             <Filter className="text-white mt-2" width={15} />
-                        </div>
+                        </div> */}
 
                     {loading && (
                         <div className="flex justify-center py-8">
@@ -212,6 +217,13 @@ export default function ListCategoria() {
                                         {item.quantidade} {t("words")}
                                     </span>
                                 </div>
+                                {item.usuario && (
+                                    <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
+                                        <UserRound size={12} className="text-blue-400 shrink-0" />
+                                        <span>{t("shared_by")}</span>
+                                        <span className="text-yellow-500 font-medium">{item.usuario}</span>
+                                    </p>
+                                )}
                             </div>
 
                             <div className="flex items-center gap-3">
@@ -239,7 +251,7 @@ export default function ListCategoria() {
             <ModalSucesso msg={msgModalSucesso} openModalSucesso={openModalSucesso} setOpenModalSucesso={setOpenModalSucesso} />
             <ModalIncorporarFrases openIncorporar={openIncorporar} setOpenIncorporar={setOpenIncorporar} />
 
-            <div className="fixed inset-x-0 bottom-0 z-10 text-center w-full justify-items-center justify-center items-center  from-gray-900 to-gray-800 bg-gradient-to-br ">
+            <div className="sticky inset-x-0 bottom-0 z-10 text-center w-full justify-items-center justify-center items-center   ">
 
 
                 <div className=" w-full ">

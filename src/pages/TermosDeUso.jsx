@@ -68,8 +68,9 @@ export default function TermosDeUso() {
                             <p>
                                 As categorias e frases que você cria continuam sendo suas. Ao marcar uma categoria
                                 como pública/compartilhada, você autoriza que outros usuários do Zaldemy possam
-                                visualizá-la e adicioná-la à própria conta. Reservamo-nos o direito de remover
-                                conteúdo que viole estes termos.
+                                visualizá-la e adicioná-la à própria conta. Nesse caso, seu nome de cadastro é
+                                exibido para outros usuários como identificação de quem compartilhou o conteúdo.
+                                Reservamo-nos o direito de remover conteúdo que viole estes termos.
                             </p>
                         </section>
 

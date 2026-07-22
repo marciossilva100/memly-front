@@ -70,6 +70,15 @@ const API_URL = import.meta.env.VITE_API_URL;
 
     };
 
+    const buscaNormalizada = textoBusca.trim().toLowerCase();
+
+    const frasesFiltradas = buscaNormalizada
+        ? frases.filter(item =>
+            item.texto_nativo?.toLowerCase().includes(buscaNormalizada) ||
+            item.texto_traduzido?.toLowerCase().includes(buscaNormalizada)
+        )
+        : frases;
+
     if (loading) {
         return (
             <div className="flex h-screen items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
@@ -84,50 +93,73 @@ const API_URL = import.meta.env.VITE_API_URL;
 
     return (
 
-        <div className="px-5 h-dvh flex flex-col">
-                <div className="relative mb-4 mt-4">
-                    <div
-                        className="left-0  cursor-pointer"
-                        onClick={() => navigate(-1)}
-                    >
-                        <i className="bi bi-arrow-left text-2xl"></i>
+        <div className="px-5 h-dvh flex flex-col bg-gray-900 ">
+            <div className="relative mb-4 mt-4">
+                <div
+                    className="left-0  cursor-pointer"
+                    onClick={() => navigate(-1)}
+                >
+                    <i className="bi bi-arrow-left text-2xl text-white"></i>
+                </div>
+            </div>
+            <div className={`mt-4 `}>
+                <div className="flex items-center border rounded-md overflow-hidden ">
+                    <span className="px-3 text-gray-500">
+                        <Search width={20} />
+                    </span>
+
+                    <input
+                        type="email"
+                        className="w-full px-3 py-2 outline-none text-lg text-white !bg-transparent"
+                        placeholder={t("search")}
+                        value={textoBusca}
+                        onChange={(e) => setTextoBusca(e.target.value)}
+                    />
+                </div>
+            </div>
+            {frases.length > 0 && (
+                <div className="cursor-pointer flex justify-end mb-4">
+                    <Filter className="text-white mt-2" size={18} />
+                </div>
+            )}
+            <div className="overflow-auto scrollbar-hide">
+
+                <div className="flex-1 flex flex-col">
+
+                    <div className="flex-1 overflow-y-auto scrollbar-hide pb-24">
+
+                        {frasesFiltradas.map((item, index) => {
+                            const isLast = index === frasesFiltradas.length - 1;
+                            return (
+                                <div key={item.id} className={`text-lg grid grid-cols-[1fr_1fr_auto] gap-4 items-center py-3 overflow text-white ${!isLast ? 'border-b-2' : ''}`}
+                                >
+                                    <div>{item.texto_nativo}</div>
+                                    <div>{item.texto_traduzido}</div>
+                                    <div />
+                                </div>
+                            );
+                        })}
+
                     </div>
                 </div>
-            <div className="flex-1 flex flex-col">
 
-                <div className={`mt-4 `}>
-                    <div className="flex items-center border rounded-md overflow-hidden ">
-                        <span className="px-3 text-gray-500">
-                            <Search width={20} />
-                        </span>
-
-                        <input
-                            type="email"
-                            className="w-full px-3 py-2 outline-none text-lg"
-                            placeholder={t("search")}
-                            value={textoBusca}
-                            onChange={(e) => {
-                                setTextoBusca(e.target.value)
-                                setErro('')
-                            }}
-                        />
-                    </div>
-                </div>
-                {frases.length > 0 && (
-                    <div className="cursor-pointer flex justify-end mb-4">
-                        <Filter className="text-slate-500 mt-2" width={15} />
-                    </div>
-                )}
-
-                <div className="flex-1 overflow-y-auto scrollbar-hide">
-
-                    {frases.map(item => (
-                        <div key={item.id} className="text-lg grid grid-cols-[1fr_1fr_auto] gap-4 items-center  py-3 border-b-2 overflow" >
-                            <div>{item.texto_nativo}</div>
-                            <div>{item.texto_traduzido}</div>
-                        </div>
-                    ))}
-
+                <div className="fixed bottom-0 left-0 w-full justify-center items-center py-4  w-full px-6 bg-gray-900">
+                    <button className="
+                    px-6
+                    py-3
+                    w-full
+                    rounded-full
+                      bg-gray-800/50   border border-gray-700
+                    text-white
+                    text-lg
+                    hover:bg-blue-600
+                    transition
+                    "
+                        onClick={() => {
+                            setOpenFrase(true);
+                        }}>
+                        {t("add")}
+                    </button>
                 </div>
             </div>
 

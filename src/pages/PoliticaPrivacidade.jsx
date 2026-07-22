@@ -73,6 +73,9 @@ export default function PoliticaPrivacidade() {
                                 <li>YouTube e Open Library, para buscar vídeos e livros usados nas práticas de
                                     leitura e escuta (nesse caso, apenas o termo de busca é enviado, sem dados
                                     pessoais identificáveis).</li>
+                                <li>Google Analytics, para entendermos como o app é usado (páginas visitadas,
+                                    tempo de uso) e melhorá-lo. Não usamos esses dados para identificar você
+                                    pessoalmente.</li>
                             </ul>
                         </section>
 
@@ -91,7 +94,9 @@ export default function PoliticaPrivacidade() {
                             <p>
                                 Guardamos um token de acesso no armazenamento local do seu navegador para manter
                                 você conectado. O Zaldemy também funciona como um app instalável (PWA) e pode
-                                armazenar arquivos em cache no seu dispositivo para permitir uso offline.
+                                armazenar arquivos em cache no seu dispositivo para permitir uso offline. O
+                                Google Analytics também grava cookies próprios no seu navegador para nos ajudar
+                                a medir o uso do app.
                             </p>
                         </section>
 

@@ -8,7 +8,6 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from "react-i18next";
-import imgMemly from "../assets/img/mascote-memly.png";
 
 const MusicFlashcardFinder = () => {
   const { t } = useTranslation();

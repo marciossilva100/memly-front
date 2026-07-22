@@ -1,11 +1,9 @@
 import { useEffect, useState, useRef } from "react"
-import imgCoruja from "../assets/img/coruja.png"
 import { idiomas } from "../data/idiomas"
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura-v2.png"
 
-import imgMemly from "../assets/img/mascote-memly.png"
 import { Navigate, useNavigate } from "react-router-dom";
 
 // 🌍 Bandeiras

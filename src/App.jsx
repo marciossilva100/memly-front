@@ -31,7 +31,6 @@ import EnglishVideos from './pages/EnglishVideos'
 import MusicFlashcardFinder from './pages/MusicFlashcardFInder';
 import ConnectionStatus from './components/ConnectionStatus'; // Novo componente
 
-import imgMemly from "./assets/img/mascote-memly.png"
 import imgChapeuFormatura from "./assets/img/chapeu_formatura.png"
 import PremiumPlan from './components/PremiumModal';
 import Metricas from './pages/Metricas';

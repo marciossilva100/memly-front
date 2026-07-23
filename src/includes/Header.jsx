@@ -136,20 +136,10 @@ export default function Header({ titulo }) {
 
     const handleSelectLanguage = async (item) => {
         const idiomaAnterior = idioma;
-        const learningLanguageAnterior = user?.learning_language;
 
         setIdioma(item.sigla);
         setOpenSelect(false);
         setTrocandoIdioma(true);
-
-        // Atualiza o usuário já aqui (em vez de só depois do fetch terminar) para que
-        // o carregamento das categorias em Home.jsx (disparado por essa mudança) comece
-        // em paralelo com o salvamento da preferência, em vez de esperar um terminar
-        // pra começar o outro.
-        setUser(prev => ({
-            ...prev,
-            learning_language: item.sigla
-        }));
 
         try {
             const res = await fetch(`${API_URL}/controller/language.php`, {
@@ -167,14 +157,19 @@ export default function Header({ titulo }) {
             if (!res.ok) {
                 throw new Error(`Falha ao salvar idioma (status ${res.status})`);
             }
+
+            // Só atualiza o usuário (o que dispara o carregamento das categorias em
+            // Home.jsx) depois do backend confirmar -- ele é quem cadastra a
+            // categoria/frases padrão desse par de idiomas. Atualizar antes cria uma
+            // corrida onde a Home busca as categorias antes delas existirem no banco.
+            setUser(prev => ({
+                ...prev,
+                learning_language: item.sigla
+            }));
         } catch (error) {
             console.error('Erro ao salvar idioma:', error);
             // servidor não confirmou a troca (ex: sessão expirada) -> desfaz a troca otimista
             setIdioma(idiomaAnterior);
-            setUser(prev => ({
-                ...prev,
-                learning_language: learningLanguageAnterior
-            }));
         } finally {
             setTrocandoIdioma(false);
         }

@@ -11,6 +11,7 @@ import { QRCodeCanvas } from "qrcode.react";
 import axios from "axios";
 import { useTranslation, Trans } from "react-i18next";
 import { isNativePlatform, signInWithGoogleNative } from "../utils/googleNativeAuth";
+import { startGoogleRedirectLogin, consumeGoogleRedirectToken } from "../utils/googleRedirectAuth";
 
 export default function Login({ setTitulo }) {
     const { t } = useTranslation();
@@ -84,6 +85,15 @@ export default function Login({ setTitulo }) {
             window.removeEventListener("beforeinstallprompt", handler)
         }
 
+    }, [])
+
+    // Ao voltar do redirecionamento do Google (fluxo usado no PWA instalado),
+    // o access_token vem na hash da URL
+    useEffect(() => {
+        const accessToken = consumeGoogleRedirectToken();
+        if (accessToken) {
+            handleGoogleAccessToken(accessToken);
+        }
     }, [])
 
     async function instalarApp() {
@@ -161,6 +171,13 @@ export default function Login({ setTitulo }) {
                 console.error(error);
                 setErro(t("google_login_error"));
             }
+            return;
+        }
+
+        // PWA instalado (standalone): o popup do Google não consegue se
+        // comunicar de volta com o app, então usamos redirecionamento de página inteira
+        if (isStandalone) {
+            startGoogleRedirectLogin("/login");
             return;
         }
 

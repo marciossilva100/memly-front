@@ -1,0 +1,32 @@
+// Fluxo de login Google por redirecionamento de página inteira, usado quando
+// o app roda como PWA instalado (standalone). Nesse modo o fluxo de popup do
+// Google Identity Services (useGoogleLogin) não funciona: o popup completa o
+// login, mas a comunicação de volta via window.opener se perde no contexto
+// standalone do Android, deixando o usuário preso na tela de login.
+const GOOGLE_CLIENT_ID = "1055075063152-tkobce7c2j9eq1t4doi0419votjlemis.apps.googleusercontent.com";
+
+export function startGoogleRedirectLogin(redirectPath) {
+    const redirectUri = window.location.origin + redirectPath;
+
+    const params = new URLSearchParams({
+        client_id: GOOGLE_CLIENT_ID,
+        redirect_uri: redirectUri,
+        response_type: "token",
+        scope: "email profile",
+        include_granted_scopes: "true",
+        prompt: "select_account"
+    });
+
+    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+}
+
+export function consumeGoogleRedirectToken() {
+    if (!window.location.hash.includes("access_token")) return null;
+
+    const params = new URLSearchParams(window.location.hash.substring(1));
+    const accessToken = params.get("access_token");
+
+    window.history.replaceState(null, "", window.location.pathname + window.location.search);
+
+    return accessToken;
+}

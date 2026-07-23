@@ -10,6 +10,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 import { useAuth } from "../context/AuthContext";
 import { isNativePlatform, signInWithGoogleNative } from "../utils/googleNativeAuth";
+import { startGoogleRedirectLogin, consumeGoogleRedirectToken } from "../utils/googleRedirectAuth";
 
 export default function Cadastro({ setTitulo }) {
     const { t } = useTranslation();
@@ -29,10 +30,25 @@ export default function Cadastro({ setTitulo }) {
     })
 
     const [erro, setErro] = useState('')
+    const [isStandalone, setIsStandalone] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
         setTitulo(t("sign_up"))
+
+        const standalone = window.matchMedia('(display-mode: standalone)').matches ||
+            window.navigator.standalone === true ||
+            isNativePlatform();
+        setIsStandalone(standalone);
+    }, [])
+
+    // Ao voltar do redirecionamento do Google (fluxo usado no PWA instalado),
+    // o access_token vem na hash da URL
+    useEffect(() => {
+        const accessToken = consumeGoogleRedirectToken();
+        if (accessToken) {
+            handleGoogleAccessToken(accessToken);
+        }
     }, [])
 
     const handleChange = (e) => {
@@ -103,6 +119,13 @@ export default function Cadastro({ setTitulo }) {
                 console.error(error);
                 setErro(t("google_login_error"));
             }
+            return;
+        }
+
+        // PWA instalado (standalone): o popup do Google não consegue se
+        // comunicar de volta com o app, então usamos redirecionamento de página inteira
+        if (isStandalone) {
+            startGoogleRedirectLogin("/cadastrar");
             return;
         }
 

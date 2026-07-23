@@ -260,6 +260,8 @@
     "install_app_button": "Zaldemy uygulamasını yükle",
     "install_button_hint": "💡 Buton, uygulama yüklenebilir olduğunda görünecek",
     "continue_web_version": "Web sürümünde devam et",
+    "open_in_browser_title": "Yüklemek için başka bir tarayıcıda açın",
+    "open_in_browser_description": "Uygulama yüklemeyi desteklemeyen Instagram'ın yerleşik tarayıcısını kullanıyorsunuz. Ekranın köşesindeki menüye (⋮ veya •••) dokunun ve \"Tarayıcıda aç\" seçeneğini seçin.",
     "welcome": "Hoş geldin!",
     "login_to_continue": "Devam etmek için giriş yap",
     "forgot_password_question": "Şifreni mi unuttun?",

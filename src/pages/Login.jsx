@@ -22,6 +22,7 @@ export default function Login({ setTitulo }) {
     const [isIOS, setIsIOS] = useState(false);
     const [isStandalone, setIsStandalone] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
+    const [isInAppBrowser, setIsInAppBrowser] = useState(false);
     const { user, setUser } = useAuth();
     const appUrl = "https://zaldem.com"; // troque pelo seu domínio
     const API_URL = import.meta.env.VITE_API_URL;
@@ -66,6 +67,11 @@ export default function Login({ setTitulo }) {
         // Detectar se é mobile
         const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         setIsMobile(mobile);
+
+        // Detectar navegador interno de apps (Instagram, Facebook, TikTok, etc.)
+        // Esses webviews não implementam a API de instalação de PWA (beforeinstallprompt)
+        const inApp = /Instagram|FBAN|FBAV|FB_IAB|Line\/|MicroMessenger|TikTok|BytedanceWebview/i.test(navigator.userAgent);
+        setIsInAppBrowser(inApp);
 
         const handler = (e) => {
             e.preventDefault()
@@ -365,7 +371,25 @@ export default function Login({ setTitulo }) {
                             {t("install_for_full_experience")}
                         </p>
 
-                        {isIOS ? (
+                        {isInAppBrowser ? (
+                            // Navegadores internos de apps (Instagram, Facebook, TikTok, etc.)
+                            // não suportam a instalação de PWA - orientar a abrir no navegador padrão
+                            <div className="bg-gradient-to-br from-[#4cb8c4]/10 to-[#085078]/10 rounded-2xl p-6 border border-[#4cb8c4]/20">
+                                <div className="flex justify-center mb-4">
+                                    <div className="bg-[#4cb8c4] p-3 rounded-full">
+                                        <Globe className="w-8 h-8 text-white" />
+                                    </div>
+                                </div>
+
+                                <h3 className="text-lg font-semibold text-[#085078] mb-3">
+                                    {t("open_in_browser_title")}
+                                </h3>
+
+                                <p className="text-sm text-gray-600 text-left">
+                                    {t("open_in_browser_description")}
+                                </p>
+                            </div>
+                        ) : isIOS ? (
                             // Instruções para iPhone/iPad
                             <div className="bg-gradient-to-br from-[#4cb8c4]/10 to-[#085078]/10 rounded-2xl p-6 border border-[#4cb8c4]/20">
                                 <div className="flex justify-center mb-4">
@@ -427,7 +451,7 @@ export default function Login({ setTitulo }) {
                             </button>
                         )}
 
-                        {!isIOS && !installPrompt && (
+                        {!isIOS && !isInAppBrowser && !installPrompt && (
                             <p className="text-sm text-gray-500 mt-4">
                                 {t("install_button_hint")}
                             </p>

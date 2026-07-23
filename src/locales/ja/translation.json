@@ -260,6 +260,8 @@
     "install_app_button": "Zaldemyアプリをインストール",
     "install_button_hint": "💡 アプリがインストール可能になると、ボタンが表示されます",
     "continue_web_version": "ウェブ版で続ける",
+    "open_in_browser_title": "インストールするには別のブラウザで開いてください",
+    "open_in_browser_description": "Instagramの内蔵ブラウザを使用しているため、アプリをインストールできません。画面の隅にあるメニュー（⋮または•••）をタップし、「ブラウザで開く」を選択してください。",
     "welcome": "ようこそ！",
     "login_to_continue": "続けるにはログインしてください",
     "forgot_password_question": "パスワードをお忘れですか？",

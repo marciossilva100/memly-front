@@ -100,7 +100,7 @@ export default defineConfig(({ mode }) => {
         manifest: {
           id: "/",
           name: "Zaldemy",
-          short_name: "App",
+          short_name: "Zaldemy",
           start_url: "/",
           display: "standalone",
           background_color: "#ffffff",

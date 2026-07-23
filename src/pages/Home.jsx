@@ -453,7 +453,6 @@ export default function Home() {
                         px-6
                         mb-4
                         py-3
-                        shadow-lg shadow-[#4cb8c4]/30
                         rounded-full
                         bg-[#4cb8c4] hover:opacity-90
                         text-white

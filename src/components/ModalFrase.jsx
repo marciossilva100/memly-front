@@ -95,6 +95,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
         }
     }
 
+    // eslint-disable-next-line no-unused-vars -- mantido para quando o botão "sugerir tradução" (comentado abaixo) for reativado
     function verifyPlan(e) {
         if (user.plano === 1) {
             console.log("kk")
@@ -202,6 +203,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                                     outline-none"
                             ></textarea>
 
+                            {/* Comentado: modo premium ainda não implementado no sistema
                             {phrase?.length > 1 && (
                                 <div>
                                     <button type="button" className="flex text-sm bg-blue-500 text-white px-4 py-1 rounded-full" onClick={verifyPlan}>
@@ -213,6 +215,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                                     </button>
                                 </div>
                             )}
+                            */}
 
                             {errorTranslatedPhrase &&
                                 <span className="text-sm text-red-500">{errorTranslatedPhrase}</span>

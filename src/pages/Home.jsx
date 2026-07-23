@@ -12,7 +12,7 @@ import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 
 
-import { BookOpen, BarChart3, Settings, Play, Crown, Bot } from "lucide-react";
+import { BookOpen, BarChart3, Settings, Play, Crown, Bot, Plus } from "lucide-react";
 
 const AVATAR_COLORS = [
     'bg-emerald-500',
@@ -380,7 +380,7 @@ export default function Home() {
 
                             <div className="flex items-center gap-3 relative z-60 shrink-0">
                                 <button
-                                    className="shadow-md px-4 py-1 text-md  rounded-full bg-indigo-600 text-white hover:bg-indigo-700"
+                                    className="shadow-md px-4 py-1 text-md  rounded-full bg-indigo-500 text-white hover:bg-indigo-600"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setCategoriaId(item.id);
@@ -449,17 +449,19 @@ export default function Home() {
             <div className=" sticky  z-10 bottom-0 text-center w-full justify-items-center justify-center items-center pt-4 pb-16">
 
                 <button className="
+                        flex items-center justify-center gap-2
                         px-6
                         mb-4
                         py-3
-                        shadow-md
+                        shadow-lg shadow-indigo-500/30
                         rounded-full
-                        bg-gray-800/50 backdrop-blur-sm  border border-gray-700
+                        bg-indigo-500 hover:bg-indigo-600
                         text-white
                         font-medium
                        text-lg
                         transition
                         " onClick={() => setOpen(true)}>
+                    <Plus size={20} />
                     {t("add_category")}
                 </button>
 

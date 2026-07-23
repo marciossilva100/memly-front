@@ -14,6 +14,16 @@ import { useTranslation } from "react-i18next";
 
 import { BookOpen, BarChart3, Settings, Play, Crown, Bot } from "lucide-react";
 
+const AVATAR_COLORS = [
+    'bg-emerald-500',
+    'bg-blue-500',
+    'bg-purple-500',
+    'bg-pink-500',
+    'bg-orange-500',
+    'bg-teal-500',
+    'bg-indigo-500',
+    'bg-rose-500',
+];
 
 export default function Home() {
     const { user, setUser, setCategoriasLoading } = useAuth();
@@ -21,6 +31,7 @@ export default function Home() {
     const [openCategoriaEditar, setOpenCategoriaEditar] = useState(false);
     const [openTreino, setOpenTreino] = useState(false)
     const [categorias, setCategorias] = useState([]);
+    const [revisarPorCategoria, setRevisarPorCategoria] = useState({});
     const [openTreinoAdvinhar, setOpenTreinoAdvinhar] = useState(false)
     const [openTreinoIA, setOpenTreinoIA] = useState(false)
     const [openModalSucesso, setOpenModalSucesso] = useState(false)
@@ -151,6 +162,7 @@ export default function Home() {
                 }));
 
                 setCategorias(categoriasFormatadas);
+                carregarRevisarPorCategoria(categoriasFormatadas);
             })
             .catch((error) => {
                 console.error('Erro ao carregar categorias:', error);
@@ -158,6 +170,38 @@ export default function Home() {
             .finally(() => {
                 setCategoriasLoading(false)
             });
+    };
+
+    const carregarRevisarPorCategoria = (listaCategorias) => {
+        if (!listaCategorias.length) {
+            setRevisarPorCategoria({});
+            return;
+        }
+
+        Promise.all(
+            listaCategorias.map((cat) =>
+                fetch(`${API_URL}/controller/treino.php`, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    },
+                    body: JSON.stringify({
+                        action: 'training_stats',
+                        category_id: cat.id
+                    })
+                })
+                    .then(res => res.json())
+                    .then(data => ({ id: cat.id, revisar: data.data?.[3]?.total ?? 0 }))
+                    .catch(() => ({ id: cat.id, revisar: 0 }))
+            )
+        ).then((resultados) => {
+            const mapa = {};
+            resultados.forEach(({ id, revisar }) => {
+                mapa[id] = revisar;
+            });
+            setRevisarPorCategoria(mapa);
+        });
     };
 
 
@@ -218,6 +262,13 @@ export default function Home() {
 
         //if(length > 0)
         navigate(`/frases/${id}`)
+    }
+
+    function saudacaoPorHorario() {
+        const hora = new Date().getHours();
+        if (hora < 12) return t("good_morning");
+        if (hora < 18) return t("good_afternoon");
+        return t("good_evening");
     }
 
     function verifyPlan(e) {
@@ -284,27 +335,52 @@ export default function Home() {
     return (
         <div className="h-dvh flex flex-col max-w-7xl mx-auto  from-gray-900 to-gray-800 bg-gradient-to-br">
 
+            <div className="px-4 pt-4">
+                <p className="text-lg font-semibold text-white">
+                    {saudacaoPorHorario()}, {user?.name?.split(' ')[0]}! 👋
+                </p>
+                <p className="text-sm text-gray-400">
+                    {t("choose_category_subtitle")}
+                </p>
+            </div>
+
             <div className="lista-categoria flex-1 overflow-y-auto py-4 scrollbar-hide " id="lista-categoria">
                 <div className=" items-center justify-center px-4 ">
 
                     {/* Item */}
-                    {categorias.map((item) => (
-                        <div key={item.id} onClick={() => validar(item.quantidade, item.id)} className="flex bg-gray-800/50   border border-gray-700 items-center justify-between py-3 px-4  rounded-xl  shadow-lg mb-4 ">
-                            <div>
+                    {categorias.map((item, index) => {
+                        const paraRevisar = revisarPorCategoria[item.id] ?? 0;
+                        const progresso = item.quantidade > 0
+                            ? Math.min(100, Math.round((paraRevisar / item.quantidade) * 100))
+                            : 0;
 
-                                <p className="text-lg text-white mt-1 font-medium">
-                                    {item.categoria}
-                                </p>
-                                <div className="flex items-center gap-3">
-                                    <span className="text-xs py-0.5  rounded-full  text-gray-400 ">
-                                        {item.quantidade} {t("words")}
-                                    </span>
+                        return (
+                        <div key={item.id} onClick={() => validar(item.quantidade, item.id)} className="flex bg-gray-800/50   border border-gray-700 items-center justify-between py-3 px-4  rounded-xl  shadow-lg mb-4 ">
+                            <div className="flex items-center gap-3 min-w-0">
+                                <div className={`flex items-center justify-center w-11 h-11 shrink-0 rounded-full text-white font-semibold text-lg ${AVATAR_COLORS[index % AVATAR_COLORS.length]}`}>
+                                    {item.categoria?.charAt(0)?.toUpperCase()}
+                                </div>
+                                <div className="min-w-0">
+                                    <p className="text-lg text-white font-medium truncate">
+                                        {item.categoria}
+                                    </p>
+                                    <div className="flex items-center gap-1 text-xs text-gray-400">
+                                        <span>{item.quantidade} {t("words")}</span>
+                                        <span>•</span>
+                                        <span className="text-emerald-400">{paraRevisar} {t("to_review")}</span>
+                                    </div>
+                                    <div className="mt-1.5 h-1.5 w-32 max-w-full rounded-full bg-gray-700 overflow-hidden">
+                                        <div
+                                            className="h-full rounded-full bg-emerald-400 transition-all"
+                                            style={{ width: `${progresso}%` }}
+                                        />
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-3 relative z-60">
+                            <div className="flex items-center gap-3 relative z-60 shrink-0">
                                 <button
-                                    className="shadow-md px-4 py-1 text-md  rounded-full bg-blue-400 text-white hover:bg-slate-400"
+                                    className="shadow-md px-4 py-1 text-md  rounded-full bg-indigo-600 text-white hover:bg-indigo-700"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setCategoriaId(item.id);
@@ -362,7 +438,8 @@ export default function Home() {
                                 )}
                             </div>
                         </div>
-                    ))}
+                        );
+                    })}
 
                     {/* Item */}
 

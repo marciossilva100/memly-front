@@ -140,6 +140,7 @@
     "premium_year2": "Premium nell'Anno 2",
     "premium_year3": "Premium nell'Anno 3",
     "words": "parole",
+    "to_review": "da rivedere",
     "email": "Email",
     "password": "Password",
     "name": "Nome",
@@ -334,5 +335,9 @@
     "faq_title": "Domande frequenti",
     "delete_account": "Elimina account",
     "delete_account_confirm_message": "Sei sicuro di voler eliminare il tuo account? Questa azione non può essere annullata e tutti i tuoi dati verranno rimossi.",
-    "delete_account_error": "Non è stato possibile eliminare il tuo account. Riprova."
+    "delete_account_error": "Non è stato possibile eliminare il tuo account. Riprova.",
+    "good_morning": "Buongiorno",
+    "good_afternoon": "Buon pomeriggio",
+    "good_evening": "Buonasera",
+    "choose_category_subtitle": "Scegli una categoria da studiare"
 }

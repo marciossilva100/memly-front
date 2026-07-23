@@ -140,6 +140,7 @@
     "premium_year2": "2년차 프리미엄",
     "premium_year3": "3년차 프리미엄",
     "words": "단어",
+    "to_review": "복습 예정",
     "email": "이메일",
     "password": "비밀번호",
     "name": "이름",
@@ -334,5 +335,9 @@
     "faq_title": "자주 묻는 질문",
     "delete_account": "계정 삭제",
     "delete_account_confirm_message": "정말로 계정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없으며 모든 데이터가 삭제됩니다.",
-    "delete_account_error": "계정을 삭제할 수 없습니다. 다시 시도해 주세요."
+    "delete_account_error": "계정을 삭제할 수 없습니다. 다시 시도해 주세요.",
+    "good_morning": "좋은 아침이에요",
+    "good_afternoon": "안녕하세요",
+    "good_evening": "좋은 저녁이에요",
+    "choose_category_subtitle": "공부할 카테고리를 선택하세요"
 }

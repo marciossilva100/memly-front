@@ -140,6 +140,7 @@
     "premium_year2": "Premium en Année 2",
     "premium_year3": "Premium en Année 3",
     "words": "mots",
+    "to_review": "à réviser",
     "email": "E-mail",
     "password": "Mot de passe",
     "name": "Nom",
@@ -334,5 +335,9 @@
     "faq_title": "Questions fréquentes",
     "delete_account": "Supprimer le compte",
     "delete_account_confirm_message": "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible et toutes vos données seront supprimées.",
-    "delete_account_error": "Impossible de supprimer votre compte. Veuillez réessayer."
+    "delete_account_error": "Impossible de supprimer votre compte. Veuillez réessayer.",
+    "good_morning": "Bonjour",
+    "good_afternoon": "Bon après-midi",
+    "good_evening": "Bonsoir",
+    "choose_category_subtitle": "Choisissez une catégorie à étudier"
 }

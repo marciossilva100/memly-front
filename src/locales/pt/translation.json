@@ -141,6 +141,7 @@
     "premium_year2": "Premium no Ano 2",
     "premium_year3": "Premium no Ano 3",
     "words": "palavras",
+    "to_review": "para revisar",
     "email": "Email",
     "password": "Senha",
     "name": "Nome",
@@ -335,5 +336,9 @@
     "faq_title": "Perguntas frequentes",
     "delete_account": "Excluir conta",
     "delete_account_confirm_message": "Tem certeza que deseja excluir sua conta? Essa ação não pode ser desfeita e todos os seus dados serão removidos.",
-    "delete_account_error": "Não foi possível excluir sua conta. Tente novamente."
+    "delete_account_error": "Não foi possível excluir sua conta. Tente novamente.",
+    "good_morning": "Bom dia",
+    "good_afternoon": "Boa tarde",
+    "good_evening": "Boa noite",
+    "choose_category_subtitle": "Escolha uma categoria para estudar"
 }

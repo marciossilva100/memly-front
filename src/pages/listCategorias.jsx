@@ -13,6 +13,16 @@ import { useTranslation } from "react-i18next";
 
 import { BookOpen,Search,Filter,Loader2,Home,Settings,BarChart3,UserRound } from "lucide-react";
 
+const AVATAR_COLORS = [
+    'bg-emerald-500',
+    'bg-blue-500',
+    'bg-purple-500',
+    'bg-pink-500',
+    'bg-orange-500',
+    'bg-teal-500',
+    'bg-indigo-500',
+    'bg-rose-500',
+];
 
 export default function ListCategoria() {
     const { t } = useTranslation();
@@ -145,6 +155,15 @@ export default function ListCategoria() {
         navigate(`/frasesgeral/${id}`)
     }
 
+    const buscaNormalizada = textoBusca.trim().toLowerCase();
+
+    const categoriasFiltradas = buscaNormalizada
+        ? categorias.filter(item =>
+            item.categoria?.toLowerCase().includes(buscaNormalizada) ||
+            item.usuario?.toLowerCase().includes(buscaNormalizada)
+        )
+        : categorias;
+
 
     return (
         <div className="h-[calc(100dvh-64px)] flex flex-col max-w-7xl mx-auto  px-6 from-gray-900 to-gray-800 bg-gradient-to-br">
@@ -199,29 +218,33 @@ export default function ListCategoria() {
                 <div className=" items-center justify-center">
 
                     {/* Item */}
-                    {categorias.map((item) => (
+                    {categoriasFiltradas.map((item, index) => (
                         <div key={item.id} onClick={() => validar(item.quantidade, item.id)} className="flex bg-gray-800/50 backdrop-blur-sm items-center justify-between py-3 px-4  rounded-xl border border-gray-700 shadow-lg mb-4">
-                            <div>
-
-                                <p className="text-lg text-white mt-1 font-medium">
-                                    {item.categoria}
-                                </p>
-                                <div className="flex items-center gap-3">
-                                    <span className="text-xs py-0.5  rounded-full  text-gray-300 ">
-                                        {item.quantidade} {t("words")}
-                                    </span>
+                            <div className="flex items-center gap-3 min-w-0 flex-1">
+                                <div className={`flex items-center justify-center w-11 h-11 shrink-0 rounded-full text-white font-semibold text-lg ${AVATAR_COLORS[index % AVATAR_COLORS.length]}`}>
+                                    {item.categoria?.charAt(0)?.toUpperCase()}
                                 </div>
-                                {item.usuario && (
-                                    <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
-                                        <UserRound size={12} className="text-blue-400 shrink-0" />
-                                        <span>{t("shared_by")}</span>
-                                        <span className="text-yellow-500 font-medium">{item.usuario}</span>
+                                <div className="min-w-0">
+                                    <p className="text-lg text-white font-medium truncate">
+                                        {item.categoria}
                                     </p>
-                                )}
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-xs py-0.5  rounded-full  text-gray-300 ">
+                                            {item.quantidade} {t("words")}
+                                        </span>
+                                    </div>
+                                    {item.usuario && (
+                                        <p className="text-xs text-gray-400 mt-1 flex items-center gap-1 whitespace-nowrap">
+                                            <UserRound size={12} className="text-blue-400 shrink-0" />
+                                            <span>{t("shared_by")}</span>
+                                            <span className="text-yellow-500 font-medium">{item.usuario.split(' ')[0]}</span>
+                                        </p>
+                                    )}
+                                </div>
                             </div>
 
-                            <div className="flex items-center gap-3">
-                                <button className="shadow-md px-4 py-1 text-md font-medium rounded-full bg-blue-400 text-white hover:bg-slate-600 "
+                            <div className="flex items-center gap-3 shrink-0">
+                                <button className="shadow-md px-4 py-1 text-md font-medium rounded-full bg-emerald-500 text-white hover:bg-emerald-600 "
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         adicionar(item.id);

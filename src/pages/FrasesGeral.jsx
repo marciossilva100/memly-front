@@ -5,11 +5,13 @@ import { useAuth } from "../context/AuthContext";
 import PremiumModal from '../components/PremiumModal';
 import { useTranslation } from "react-i18next";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
+import { playAudio } from "../utils/audioPlayer";
 
 import {
     Trash,
     Search,
-    Filter
+    Filter,
+    Volume2
 } from "lucide-react";
 
 
@@ -53,22 +55,6 @@ const API_URL = import.meta.env.VITE_API_URL;
                 setLoading(false);
             });
     }
-
-    const playAudio = (text) => {
-
-        if (!text) return;
-
-        const url =
-            "/api/controller/treino.php?action=voice" +
-            "&text=" + encodeURIComponent(text) +
-            "&lang=" + encodeURIComponent(user.learning_language);
-
-        const audio = new Audio(url);
-        audio.playbackRate = 0.9;
-
-        audio.play().catch(() => { });
-
-    };
 
     const buscaNormalizada = textoBusca.trim().toLowerCase();
 
@@ -135,7 +121,11 @@ const API_URL = import.meta.env.VITE_API_URL;
                                 >
                                     <div>{item.texto_nativo}</div>
                                     <div>{item.texto_traduzido}</div>
-                                    <div />
+                                    <div className="flex justify-center">
+                                        <Volume2 size={18} className="text-blue-400" onClick={() => {
+                                            playAudio(item.texto_traduzido, user);
+                                        }} />
+                                    </div>
                                 </div>
                             );
                         })}

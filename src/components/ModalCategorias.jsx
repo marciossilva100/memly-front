@@ -1,10 +1,9 @@
 import { Dialog } from "@headlessui/react";
 import { useState, useEffect } from "react";
-import { FaList, FaPlus } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-import { HelpCircle } from 'lucide-react';
+import { HelpCircle, List, FolderPlus, ChevronRight } from 'lucide-react';
 import { containsProfanity } from '../utils/contentFilter';
 export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onSuccess,setOpenModalSucesso }) {
     const { t } = useTranslation();
@@ -131,28 +130,34 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
                         {t("add_category")}
                     </Dialog.Title>
                     {!yourCategory && (
-                        <div className="flex flex-col gap-4 mt-5">
-                            <div>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setOpen(false);
-                                        navigate('/listcategorias');
-                                    }}
-                                    className="no-underline hover:text-white visited:text-white flex items-center  gap-2 text-lg py-2 bg-gray-700/50 backdrop-blur-sm  border border-gray-700 px-8 rounded-full w-full text-white"
-                                >
-                                    <FaList className="me-2 " />
-                                    {t("existing_categories")}
-                                </button>
-                            </div>
+                        <div className="flex flex-col gap-3 mt-5">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setOpen(false);
+                                    navigate('/listcategorias');
+                                }}
+                                className="group flex items-center gap-3 text-left py-3 px-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl w-full text-white hover:bg-gray-700/60 hover:border-gray-600 transition"
+                            >
+                                <div className="flex items-center justify-center w-11 h-11 shrink-0 rounded-full bg-blue-500">
+                                    <List size={20} className="text-white" />
+                                </div>
+                                <span className="flex-1 text-lg font-medium">{t("existing_categories")}</span>
+                                <ChevronRight size={20} className="text-gray-500 group-hover:text-gray-300 transition shrink-0" />
+                            </button>
 
-
-                            <button className="flex items-center  gap-2 text-lg py-2 bg-gray-700/50 backdrop-blur-sm  border border-gray-700 px-8 rounded-full w-full text-white" onClick={(e) => {
-                                setYourCategory(true);
-
-                            }}>
-                                <FaPlus className="me-2" />
-                                {t("add_your_category")}
+                            <button
+                                type="button"
+                                className="group flex items-center gap-3 text-left py-3 px-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl w-full text-white hover:bg-gray-700/60 hover:border-gray-600 transition"
+                                onClick={() => {
+                                    setYourCategory(true);
+                                }}
+                            >
+                                <div className="flex items-center justify-center w-11 h-11 shrink-0 rounded-full bg-emerald-500">
+                                    <FolderPlus size={20} className="text-white" />
+                                </div>
+                                <span className="flex-1 text-lg font-medium">{t("add_your_category")}</span>
+                                <ChevronRight size={20} className="text-gray-500 group-hover:text-gray-300 transition shrink-0" />
                             </button>
                         </div>
                     )}

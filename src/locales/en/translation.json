@@ -141,6 +141,7 @@
     "premium_year2": "Premium in Year 2",
     "premium_year3": "Premium in Year 3",
     "words": "words",
+    "to_review": "to review",
     "email": "Email",
     "password": "Password",
     "name": "Name",
@@ -335,5 +336,9 @@
     "faq_title": "Frequently asked questions",
     "delete_account": "Delete account",
     "delete_account_confirm_message": "Are you sure you want to delete your account? This action cannot be undone and all your data will be removed.",
-    "delete_account_error": "We couldn't delete your account. Please try again."
+    "delete_account_error": "We couldn't delete your account. Please try again.",
+    "good_morning": "Good morning",
+    "good_afternoon": "Good afternoon",
+    "good_evening": "Good evening",
+    "choose_category_subtitle": "Choose a category to study"
 }

@@ -140,6 +140,7 @@
     "premium_year2": "Premium in jaar 2",
     "premium_year3": "Premium in jaar 3",
     "words": "woorden",
+    "to_review": "te herzien",
     "email": "E-mail",
     "password": "Wachtwoord",
     "name": "Naam",
@@ -334,5 +335,9 @@
     "faq_title": "Veelgestelde vragen",
     "delete_account": "Account verwijderen",
     "delete_account_confirm_message": "Weet je zeker dat je je account wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt en al je gegevens worden verwijderd.",
-    "delete_account_error": "We konden je account niet verwijderen. Probeer het opnieuw."
+    "delete_account_error": "We konden je account niet verwijderen. Probeer het opnieuw.",
+    "good_morning": "Goedemorgen",
+    "good_afternoon": "Goedemiddag",
+    "good_evening": "Goedenavond",
+    "choose_category_subtitle": "Kies een categorie om te studeren"
 }

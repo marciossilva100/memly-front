@@ -140,6 +140,7 @@
     "premium_year2": "2. Yılda Premium",
     "premium_year3": "3. Yılda Premium",
     "words": "kelimeler",
+    "to_review": "gözden geçirilecek",
     "email": "E-posta",
     "password": "Şifre",
     "name": "Ad",
@@ -334,5 +335,9 @@
     "faq_title": "Sıkça sorulan sorular",
     "delete_account": "Hesabı sil",
     "delete_account_confirm_message": "Hesabınızı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz ve tüm verileriniz kaldırılacaktır.",
-    "delete_account_error": "Hesabınız silinemedi. Lütfen tekrar deneyin."
+    "delete_account_error": "Hesabınız silinemedi. Lütfen tekrar deneyin.",
+    "good_morning": "Günaydın",
+    "good_afternoon": "İyi günler",
+    "good_evening": "İyi akşamlar",
+    "choose_category_subtitle": "Çalışmak için bir kategori seçin"
 }

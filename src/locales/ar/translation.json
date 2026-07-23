@@ -140,6 +140,7 @@
     "premium_year2": "بريميوم في السنة الثانية",
     "premium_year3": "بريميوم في السنة الثالثة",
     "words": "كلمات",
+    "to_review": "للمراجعة",
     "email": "البريد الإلكتروني",
     "password": "كلمة المرور",
     "name": "الاسم",
@@ -334,5 +335,9 @@
     "faq_title": "الأسئلة الشائعة",
     "delete_account": "حذف الحساب",
     "delete_account_confirm_message": "هل أنت متأكد أنك تريد حذف حسابك؟ لا يمكن التراجع عن هذا الإجراء وستتم إزالة جميع بياناتك.",
-    "delete_account_error": "تعذر حذف حسابك. حاول مرة أخرى."
+    "delete_account_error": "تعذر حذف حسابك. حاول مرة أخرى.",
+    "good_morning": "صباح الخير",
+    "good_afternoon": "طاب يومك",
+    "good_evening": "مساء الخير",
+    "choose_category_subtitle": "اختر فئة للدراسة"
 }

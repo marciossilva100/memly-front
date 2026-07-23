@@ -140,6 +140,7 @@
     "premium_year2": "2年目のプレミアム",
     "premium_year3": "3年目のプレミアム",
     "words": "単語",
+    "to_review": "復習予定",
     "email": "メールアドレス",
     "password": "パスワード",
     "name": "名前",
@@ -334,5 +335,9 @@
     "faq_title": "よくある質問",
     "delete_account": "アカウントを削除",
     "delete_account_confirm_message": "本当にアカウントを削除しますか？この操作は元に戻せず、すべてのデータが削除されます。",
-    "delete_account_error": "アカウントを削除できませんでした。もう一度お試しください。"
+    "delete_account_error": "アカウントを削除できませんでした。もう一度お試しください。",
+    "good_morning": "おはようございます",
+    "good_afternoon": "こんにちは",
+    "good_evening": "こんばんは",
+    "choose_category_subtitle": "学習するカテゴリーを選んでください"
 }

@@ -140,6 +140,7 @@
     "premium_year2": "第 2 年高级版",
     "premium_year3": "第 3 年高级版",
     "words": "单词",
+    "to_review": "待复习",
     "email": "邮箱",
     "password": "密码",
     "name": "姓名",
@@ -334,5 +335,9 @@
     "faq_title": "常见问题",
     "delete_account": "删除账号",
     "delete_account_confirm_message": "确定要删除您的账号吗？此操作无法撤销，您的所有数据都将被删除。",
-    "delete_account_error": "无法删除您的账号，请重试。"
+    "delete_account_error": "无法删除您的账号，请重试。",
+    "good_morning": "早上好",
+    "good_afternoon": "下午好",
+    "good_evening": "晚上好",
+    "choose_category_subtitle": "选择一个类别开始学习"
 }

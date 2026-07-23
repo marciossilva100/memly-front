@@ -140,6 +140,7 @@
     "premium_year2": "Premium im Jahr 2",
     "premium_year3": "Premium im Jahr 3",
     "words": "Wörter",
+    "to_review": "zu wiederholen",
     "email": "E-Mail",
     "password": "Passwort",
     "name": "Name",
@@ -334,5 +335,9 @@
     "faq_title": "Häufig gestellte Fragen",
     "delete_account": "Konto löschen",
     "delete_account_confirm_message": "Möchtest du dein Konto wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden und alle deine Daten werden entfernt.",
-    "delete_account_error": "Dein Konto konnte nicht gelöscht werden. Bitte versuche es erneut."
+    "delete_account_error": "Dein Konto konnte nicht gelöscht werden. Bitte versuche es erneut.",
+    "good_morning": "Guten Morgen",
+    "good_afternoon": "Guten Tag",
+    "good_evening": "Guten Abend",
+    "choose_category_subtitle": "Wähle eine Kategorie zum Lernen"
 }

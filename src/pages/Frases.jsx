@@ -6,11 +6,13 @@ import PremiumModal from '../components/PremiumModal';
 import ModalConfirm from '../components/ModalConfirm';
 import { useTranslation } from "react-i18next";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
+import { playAudio } from "../utils/audioPlayer";
 
 import {
     Trash,
     Search,
-    Filter
+    Filter,
+    Volume2
 } from "lucide-react";
 
 
@@ -57,22 +59,6 @@ export default function Frases() {
                 setLoading(false);
             });
     }
-
-    const playAudio = (text) => {
-
-        if (!text) return;
-
-        const url =
-            "/api/controller/treino.php?action=voice" +
-            "&text=" + encodeURIComponent(text) +
-            "&lang=" + encodeURIComponent(user.learning_language);
-
-        const audio = new Audio(url);
-        audio.playbackRate = 0.9;
-
-        audio.play().catch(() => { });
-
-    };
 
     async function deletePhrase(id) {
 
@@ -181,7 +167,11 @@ export default function Frases() {
                                 >
                                     <div>{item.texto_nativo}</div>
                                     <div>{item.texto_traduzido}</div>
-                                    <div className="flex justify-center">
+                                    <div className="flex items-center gap-3 justify-center">
+                                        <Volume2 size={18} className="text-blue-400" onClick={(e) => {
+                                            e.stopPropagation();
+                                            playAudio(item.texto_traduzido, user);
+                                        }} />
                                         <Trash size={18} className="text-red-400" onClick={(e) => {
                                             e.stopPropagation();
                                             setDeleteId(item.id);

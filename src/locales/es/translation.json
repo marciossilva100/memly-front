@@ -261,6 +261,8 @@
     "install_app_button": "Instalar aplicación Zaldemy",
     "install_button_hint": "💡 El botón aparecerá cuando la aplicación esté disponible para instalar",
     "continue_web_version": "Continuar en la versión web",
+    "open_in_browser_title": "Abre en otro navegador para instalar",
+    "open_in_browser_description": "Estás usando el navegador integrado de Instagram, que no permite instalar aplicaciones. Toca el menú (⋮ o •••) en la esquina de la pantalla y selecciona \"Abrir en el navegador\".",
     "welcome": "¡Bienvenido!",
     "login_to_continue": "Inicia sesión para continuar",
     "forgot_password_question": "¿Olvidaste la contraseña?",

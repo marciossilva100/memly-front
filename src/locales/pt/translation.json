@@ -251,6 +251,7 @@
     "android_step3": "No Android: Toque no menu do navegador e selecione <1>\"Instalar aplicativo\"</1> ou <1>\"Adicionar à tela inicial\"</1>",
     "after_install_hint": "Após instalar, o app funcionará como nativo e você poderá fazer login diretamente pelo celular",
     "continue_on_desktop": "Continuar no computador (não recomendado)",
+    "desktop_access_admin_only": "Acesso pelo computador disponível apenas para administradores. Baixe o app para continuar.",
     "install_our_app": "Instale nosso App",
     "install_for_full_experience": "Para uma experiência completa, instale o Zaldemy em seu dispositivo",
     "how_to_install_iphone": "Como instalar no iPhone/iPad",

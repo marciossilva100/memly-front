@@ -34,6 +34,7 @@ import ConnectionStatus from './components/ConnectionStatus'; // Novo componente
 import imgChapeuFormatura from "./assets/img/chapeu_formatura.png"
 import PremiumPlan from './components/PremiumModal';
 import Metricas from './pages/Metricas';
+import DashboardAdmin from './pages/DashboardAdmin';
 import Configuracoes from './pages/Configuracoes';
 import TermosDeUso from './pages/TermosDeUso';
 import PoliticaPrivacidade from './pages/PoliticaPrivacidade';
@@ -82,6 +83,7 @@ function Layout({ titulo, setTitulo }) {
   const rotasComHeader = new Set([
     '/home',
     '/metricas',
+    '/dashboard-admin',
     '/listcategorias'
   ])
 
@@ -240,6 +242,15 @@ function Layout({ titulo, setTitulo }) {
           element={
             <PrivateRoute>
               <Metricas />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/dashboard-admin"
+          element={
+            <PrivateRoute>
+              <DashboardAdmin />
             </PrivateRoute>
           }
         />

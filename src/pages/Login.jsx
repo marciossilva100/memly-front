@@ -12,6 +12,7 @@ import axios from "axios";
 import { useTranslation, Trans } from "react-i18next";
 import { isNativePlatform, signInWithGoogleNative } from "../utils/googleNativeAuth";
 import { startGoogleRedirectLogin, consumeGoogleRedirectToken } from "../utils/googleRedirectAuth";
+import { isAdminEmail } from "../utils/adminEmails";
 
 export default function Login({ setTitulo }) {
     const { t } = useTranslation();
@@ -23,6 +24,10 @@ export default function Login({ setTitulo }) {
     const [isIOS, setIsIOS] = useState(false);
     const [isStandalone, setIsStandalone] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
+    const [forceDesktop, setForceDesktop] = useState(false);
+    const [showAdminGate, setShowAdminGate] = useState(false);
+    const [adminGateEmail, setAdminGateEmail] = useState('');
+    const [adminGateErro, setAdminGateErro] = useState('');
     const [isInAppBrowser, setIsInAppBrowser] = useState(false);
     const { user, setUser } = useAuth();
     const appUrl = "https://zaldem.com"; // troque pelo seu domínio
@@ -269,7 +274,7 @@ export default function Login({ setTitulo }) {
     }
 
     // NOVA FUNCIONALIDADE: Se for acesso por desktop (não mobile), mostrar apenas QR Code
-    if (!isMobile) {
+    if (!isMobile && !forceDesktop) {
         const currentUrl = window.location.href;
 
         return (
@@ -344,18 +349,48 @@ export default function Login({ setTitulo }) {
                             </p>
                         </div>
 
-                        {/* Link para versão desktop (caso queira continuar mesmo assim) */}
+                        {/* Acesso pelo computador: restrito ao e-mail de administrador */}
                         <div className="mt-8">
-                            <button
-                                onClick={() => {
-                                    // Força mostrar login no desktop (caso o usuário insista)
-                                    // Isso é apenas um fallback, mas a recomendação é usar o celular
-                                    window.location.reload();
-                                }}
-                                className="text-[#41a9e3] hover:text-[#085078] transition-colors text-sm underline"
-                            >
-                                {t("continue_on_desktop")}
-                            </button>
+                            {!showAdminGate ? (
+                                <button
+                                    onClick={() => setShowAdminGate(true)}
+                                    className="text-[#41a9e3] hover:text-[#085078] transition-colors text-sm underline"
+                                >
+                                    {t("continue_on_desktop")}
+                                </button>
+                            ) : (
+                                <form
+                                    onSubmit={(e) => {
+                                        e.preventDefault();
+                                        if (isAdminEmail(adminGateEmail)) {
+                                            setForceDesktop(true);
+                                        } else {
+                                            setAdminGateErro(t("desktop_access_admin_only"));
+                                        }
+                                    }}
+                                    className="flex flex-col items-center gap-2"
+                                >
+                                    <input
+                                        type="email"
+                                        value={adminGateEmail}
+                                        onChange={(e) => {
+                                            setAdminGateEmail(e.target.value);
+                                            setAdminGateErro('');
+                                        }}
+                                        placeholder={t("email")}
+                                        className="w-full max-w-xs rounded-lg border border-[#4cb8c4]/30 bg-white/10 px-3 py-2 text-sm text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#41a9e3]"
+                                    />
+                                    {adminGateErro && (
+                                        <p className="text-xs text-red-400">{adminGateErro}</p>
+                                    )}
+                                    <button
+                                        type="submit"
+                                        className="text-[#41a9e3] hover:text-[#085078] transition-colors text-sm underline"
+                                    >
+                                        {t("confirm")}
+                                    </button>
+                                </form>
+                            )}
                         </div>
                     </div>
                 </div>

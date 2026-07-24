@@ -251,6 +251,7 @@
     "android_step3": "On Android: Tap the browser menu and select <1>\"Install app\"</1> or <1>\"Add to home screen\"</1>",
     "after_install_hint": "Once installed, the app will work like a native app and you'll be able to log in directly from your phone",
     "continue_on_desktop": "Continue on computer (not recommended)",
+    "desktop_access_admin_only": "Desktop access is only available for administrators. Download the app to continue.",
     "install_our_app": "Install our App",
     "install_for_full_experience": "For the full experience, install Zaldemy on your device",
     "how_to_install_iphone": "How to install on iPhone/iPad",

@@ -13,7 +13,6 @@ import {
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import imgZaldemy from "../assets/img/zaldemy.png";
-import imgHero from "../assets/img/hero-usuaria.jpg";
 
 const iconesRecursos = [Languages, Layers, Sparkles, Volume2, BarChart3, Share2];
 
@@ -110,41 +109,28 @@ export default function LandingPage() {
             </header>
 
             {/* HERO */}
-            <section className="max-w-6xl mx-auto px-5 pt-16 pb-20 grid md:grid-cols-2 gap-10 items-center">
-                <div>
-                    <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
-                        {t("landing_hero_title_1")}{" "}
-                        <span className="text-[#4cb8c4]">{t("landing_hero_title_2")}</span>
-                    </h1>
-                    <p className="text-gray-300 text-lg mt-5 max-w-md">
-                        {t("landing_hero_description")}
-                    </p>
+            <section className="max-w-3xl mx-auto px-5 pt-20 pb-24 text-center">
+                <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
+                    {t("landing_hero_title_1")}{" "}
+                    <span className="text-[#4cb8c4]">{t("landing_hero_title_2")}</span>
+                </h1>
+                <p className="text-gray-300 text-lg mt-5 max-w-xl mx-auto">
+                    {t("landing_hero_description")}
+                </p>
 
-                    <div className="flex flex-col sm:flex-row gap-3 mt-8">
-                        <Link
-                            to="/cadastrar"
-                            className="text-center bg-[#4cb8c4] text-white px-8 py-3 rounded-full text-lg font-semibold hover:brightness-110 transition"
-                        >
-                            {t("landing_hero_cta_primary")}
-                        </Link>
-                        <Link
-                            to="/login"
-                            className="text-center text-white px-8 py-3 rounded-full text-lg border border-gray-700 hover:bg-white/5 transition-colors"
-                        >
-                            {t("landing_hero_cta_secondary")}
-                        </Link>
-                    </div>
-                </div>
-
-                <div className="flex justify-center">
-                    <div className="relative w-64 md:w-96">
-                        <div className="absolute inset-0 rounded-3xl bg-[#4cb8c4]/20 blur-3xl" />
-                        <img
-                            src={imgHero}
-                            alt="Pessoa estudando com o Zaldemy"
-                            className="relative w-full rounded-3xl border border-gray-700 object-cover shadow-2xl"
-                        />
-                    </div>
+                <div className="flex flex-col sm:flex-row justify-center gap-3 mt-8">
+                    <Link
+                        to="/cadastrar"
+                        className="text-center bg-[#4cb8c4] text-white px-8 py-3 rounded-full text-lg font-semibold hover:brightness-110 transition"
+                    >
+                        {t("landing_hero_cta_primary")}
+                    </Link>
+                    <Link
+                        to="/login"
+                        className="text-center text-white px-8 py-3 rounded-full text-lg border border-gray-700 hover:bg-white/5 transition-colors"
+                    >
+                        {t("landing_hero_cta_secondary")}
+                    </Link>
                 </div>
             </section>
 

@@ -43,7 +43,7 @@ import Faq from './pages/Faq';
 import LandingPage from './pages/LandingPage';
 import DesktopBlockedNotice from './components/DesktopBlockedNotice';
 import InstallPwaNotice from './components/InstallPwaNotice';
-import { isNativePlatform, isMobileWeb, isStandaloneApp } from './utils/googleNativeAuth';
+import { isMobileWeb, isStandaloneApp } from './utils/googleNativeAuth';
 
 // Contexto de conexão
 import { ConnectionProvider, useConnection } from './context/ConnectionContext';
@@ -122,7 +122,7 @@ function Layout({ titulo, setTitulo }) {
       {mostrarHeader && <Header titulo={titulo} />}
 
       <Routes>
-        <Route path="/" element={isNativePlatform() ? <Login setTitulo={setTitulo} /> : <LandingPage />} />
+        <Route path="/" element={isStandaloneApp() ? <Login setTitulo={setTitulo} /> : <LandingPage />} />
         <Route path="/login" element={<MobileOnlyRoute><Login setTitulo={setTitulo} /></MobileOnlyRoute>} />
 
         <Route path="/cadastrar" element={<MobileOnlyRoute><Cadastro setTitulo={setTitulo} /></MobileOnlyRoute>} />

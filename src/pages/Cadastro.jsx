@@ -212,7 +212,7 @@ export default function Cadastro({ setTitulo }) {
     if (finish) return;
 
     return (
-        <div className="max-w-6xl mx-auto px-4 px-8 py-4 h-dvh flex items-center from-gray-900 to-gray-800 bg-gradient-to-br">
+        <div className="max-w-6xl mx-auto px-4 px-8 py-4 h-svh flex items-center from-gray-900 to-gray-800 bg-gradient-to-br">
             <div className="flex-1 justify-center overflow-y-auto scrollbar-hide">
                 <div className="w-full max-w-md text-center mt-4">
 

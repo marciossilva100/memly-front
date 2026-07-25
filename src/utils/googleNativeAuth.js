@@ -18,6 +18,10 @@ function ensureInitialized() {
 
 export const isNativePlatform = () => Capacitor.isNativePlatform();
 
+// Detecta navegador mobile (Android/iOS) acessando a versão web/PWA,
+// para diferenciar de um desktop (que não tem como instalar/usar o app).
+export const isMobileWeb = () => /Android|iPad|iPhone|iPod/i.test(navigator.userAgent);
+
 // Retorna o access_token do Google (mesmo formato que o backend já espera
 // de @react-oauth/google) usando o SDK nativo, ou lança em caso de erro/cancelamento.
 export async function signInWithGoogleNative() {

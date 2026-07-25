@@ -367,5 +367,8 @@
     "landing_footer_rights": "Alle rechten voorbehouden.",
     "contact_page_description": "Heb je een vraag, suggestie of probleem met Zaldemy? Neem contact met ons op:",
     "landing_app_description_ios": "Voeg Zaldemy direct vanuit Safari toe aan je beginscherm en ga verder waar je gebleven was.",
-    "landing_app_aptoide_cta": "Downloaden op Aptoide"
+    "landing_app_aptoide_cta": "Downloaden op Aptoide",
+    "desktop_only_title": "Open via je telefoon",
+    "desktop_only_message": "Zaldemy is gemaakt voor gebruik op je telefoon. Download de app via Aptoide (Android) of open zaldemy.com in de browser van je telefoon (Android of iPhone) om het als app te installeren.",
+    "desktop_only_back_button": "Terug naar de site"
 }

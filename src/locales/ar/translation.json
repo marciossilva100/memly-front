@@ -367,5 +367,8 @@
     "landing_footer_rights": "جميع الحقوق محفوظة.",
     "contact_page_description": "هل لديك سؤال أو اقتراح أو مشكلة بخصوص Zaldemy؟ تواصل معنا:",
     "landing_app_description_ios": "أضف Zaldemy إلى الشاشة الرئيسية مباشرة من Safari وواصل الدراسة من حيث توقفت.",
-    "landing_app_aptoide_cta": "تنزيل من Aptoide"
+    "landing_app_aptoide_cta": "تنزيل من Aptoide",
+    "desktop_only_title": "ادخل من هاتفك",
+    "desktop_only_message": "تم تصميم Zaldemy للاستخدام على الهاتف المحمول. حمّل التطبيق من Aptoide (أندرويد) أو افتح zaldemy.com من متصفح هاتفك (أندرويد أو آيفون) لتثبيته كتطبيق.",
+    "desktop_only_back_button": "العودة إلى الموقع"
 }

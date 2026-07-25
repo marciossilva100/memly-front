@@ -367,5 +367,8 @@
     "landing_footer_rights": "모든 권리 보유.",
     "contact_page_description": "Zaldemy에 대한 질문, 제안 또는 문제가 있으신가요? 문의해 주세요:",
     "landing_app_description_ios": "Safari에서 바로 Zaldemy를 홈 화면에 추가하고 멈췄던 곳부터 계속 학습하세요.",
-    "landing_app_aptoide_cta": "Aptoide에서 다운로드"
+    "landing_app_aptoide_cta": "Aptoide에서 다운로드",
+    "desktop_only_title": "휴대폰으로 접속해 주세요",
+    "desktop_only_message": "Zaldemy는 모바일 사용을 위해 만들어졌습니다. Aptoide(Android)에서 앱을 다운로드하거나, 휴대폰 브라우저에서 zaldemy.com에 접속해(Android 또는 iPhone) 앱으로 설치하세요.",
+    "desktop_only_back_button": "사이트로 돌아가기"
 }

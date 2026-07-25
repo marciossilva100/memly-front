@@ -369,5 +369,8 @@
     "landing_footer_rights": "All rights reserved.",
     "contact_page_description": "Have a question, suggestion, or issue with Zaldemy? Get in touch:",
     "landing_app_description_ios": "Add Zaldemy to your home screen right from Safari and keep studying wherever you left off.",
-    "landing_app_aptoide_cta": "Download on Aptoide"
+    "landing_app_aptoide_cta": "Download on Aptoide",
+    "desktop_only_title": "Access from your phone",
+    "desktop_only_message": "Zaldemy was built for mobile use. Download the app on Aptoide (Android) or open zaldemy.com from your phone's browser (Android or iPhone) to install it as an app.",
+    "desktop_only_back_button": "Back to the site"
 }

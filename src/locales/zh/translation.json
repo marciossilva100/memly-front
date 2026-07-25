@@ -367,5 +367,8 @@
     "landing_footer_rights": "版权所有。",
     "contact_page_description": "对Zaldemy有疑问、建议或遇到问题？联系我们：",
     "landing_app_description_ios": "直接通过Safari将Zaldemy添加到主屏幕，随时随地继续学习。",
-    "landing_app_aptoide_cta": "在Aptoide下载"
+    "landing_app_aptoide_cta": "在Aptoide下载",
+    "desktop_only_title": "请使用手机访问",
+    "desktop_only_message": "Zaldemy 专为手机设计。请在 Aptoide 下载应用（Android）,或在手机浏览器中打开 zaldemy.com（Android 或 iPhone）以将其安装为应用。",
+    "desktop_only_back_button": "返回网站"
 }

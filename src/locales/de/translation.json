@@ -367,5 +367,8 @@
     "landing_footer_rights": "Alle Rechte vorbehalten.",
     "contact_page_description": "Hast du eine Frage, einen Vorschlag oder ein Problem mit Zaldemy? Kontaktiere uns:",
     "landing_app_description_ios": "Füge Zaldemy direkt über Safari zu deinem Startbildschirm hinzu und mach genau da weiter, wo du aufgehört hast.",
-    "landing_app_aptoide_cta": "Auf Aptoide herunterladen"
+    "landing_app_aptoide_cta": "Auf Aptoide herunterladen",
+    "desktop_only_title": "Über dein Handy zugreifen",
+    "desktop_only_message": "Zaldemy wurde für die mobile Nutzung entwickelt. Lade die App auf Aptoide herunter (Android) oder öffne zaldemy.com im Browser deines Handys (Android oder iPhone), um sie als App zu installieren.",
+    "desktop_only_back_button": "Zurück zur Website"
 }

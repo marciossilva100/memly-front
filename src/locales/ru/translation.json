@@ -367,5 +367,8 @@
     "landing_footer_rights": "Все права защищены.",
     "contact_page_description": "Есть вопрос, предложение или проблема с Zaldemy? Свяжитесь с нами:",
     "landing_app_description_ios": "Добавьте Zaldemy на главный экран прямо из Safari и продолжайте учиться там, где остановились.",
-    "landing_app_aptoide_cta": "Скачать в Aptoide"
+    "landing_app_aptoide_cta": "Скачать в Aptoide",
+    "desktop_only_title": "Откройте с телефона",
+    "desktop_only_message": "Zaldemy создан для использования на телефоне. Скачайте приложение на Aptoide (Android) или откройте zaldemy.com в браузере телефона (Android или iPhone), чтобы установить его как приложение.",
+    "desktop_only_back_button": "Вернуться на сайт"
 }

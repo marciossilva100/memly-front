@@ -367,5 +367,8 @@
     "landing_footer_rights": "सर्वाधिकार सुरक्षित।",
     "contact_page_description": "Zaldemy को लेकर कोई सवाल, सुझाव या समस्या है? हमसे संपर्क करें:",
     "landing_app_description_ios": "Safari से सीधे Zaldemy को होम स्क्रीन पर जोड़ें और जहां छोड़ा था वहीं से पढ़ाई जारी रखें।",
-    "landing_app_aptoide_cta": "Aptoide पर डाउनलोड करें"
+    "landing_app_aptoide_cta": "Aptoide पर डाउनलोड करें",
+    "desktop_only_title": "अपने फ़ोन से एक्सेस करें",
+    "desktop_only_message": "Zaldemy मोबाइल पर उपयोग के लिए बनाया गया है। Aptoide (Android) से ऐप डाउनलोड करें या इसे ऐप के रूप में इंस्टॉल करने के लिए अपने फ़ोन के ब्राउज़र में zaldemy.com खोलें (Android या iPhone)।",
+    "desktop_only_back_button": "साइट पर वापस जाएं"
 }

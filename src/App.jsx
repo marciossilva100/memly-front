@@ -41,7 +41,8 @@ import PoliticaPrivacidade from './pages/PoliticaPrivacidade';
 import Contato from './pages/Contato';
 import Faq from './pages/Faq';
 import LandingPage from './pages/LandingPage';
-import { isNativePlatform } from './utils/googleNativeAuth';
+import DesktopBlockedNotice from './components/DesktopBlockedNotice';
+import { isNativePlatform, isMobileWeb } from './utils/googleNativeAuth';
 
 // Contexto de conexão
 import { ConnectionProvider, useConnection } from './context/ConnectionContext';
@@ -77,6 +78,15 @@ function PrivateRoute({ children }) {
   return children;
 }
 
+// Login/cadastro só fazem sentido no app nativo ou no navegador do celular
+// (onde dá pra instalar a PWA). No navegador desktop mostramos um aviso.
+function MobileOnlyRoute({ children }) {
+  if (!isNativePlatform() && !isMobileWeb()) {
+    return <DesktopBlockedNotice />;
+  }
+  return children;
+}
+
 function Layout({ titulo, setTitulo }) {
   const location = useLocation()
   const { user, loading } = useAuth()
@@ -108,9 +118,9 @@ function Layout({ titulo, setTitulo }) {
 
       <Routes>
         <Route path="/" element={isNativePlatform() ? <Login setTitulo={setTitulo} /> : <LandingPage />} />
-        <Route path="/login" element={<Login setTitulo={setTitulo} />} />
+        <Route path="/login" element={<MobileOnlyRoute><Login setTitulo={setTitulo} /></MobileOnlyRoute>} />
 
-        <Route path="/cadastrar" element={<Cadastro setTitulo={setTitulo} />} />
+        <Route path="/cadastrar" element={<MobileOnlyRoute><Cadastro setTitulo={setTitulo} /></MobileOnlyRoute>} />
         <Route path="/esquecisenha" element={<EsqueciSenha setTitulo={setTitulo} />} />
 
         <Route

@@ -372,5 +372,8 @@
     "desktop_only_message": "Zaldemy is gemaakt voor gebruik op je telefoon. Download de app via Aptoide (Android) of open zaldemy.com in de browser van je telefoon (Android of iPhone) om het als app te installeren.",
     "desktop_only_back_button": "Terug naar de site",
     "install_manual_android_title": "Zie je de installatieknop niet?",
-    "install_manual_android_steps": "Tik op het menu (⋮) bovenaan de browser en kies \"App installeren\" of \"Toevoegen aan startscherm\"."
+    "install_manual_android_steps": "Tik op het menu (⋮) bovenaan de browser en kies \"App installeren\" of \"Toevoegen aan startscherm\".",
+    "install_awaiting_confirmation": "Wachten op bevestiging...",
+    "install_installing": "Installeren...",
+    "install_installed": "Geïnstalleerd! Open Zaldemy vanaf je startscherm"
 }

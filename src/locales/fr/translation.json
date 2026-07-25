@@ -372,5 +372,8 @@
     "desktop_only_message": "Zaldemy a été conçu pour une utilisation mobile. Téléchargez l'application sur Aptoide (Android) ou ouvrez zaldemy.com depuis le navigateur de votre téléphone (Android ou iPhone) pour l'installer comme application.",
     "desktop_only_back_button": "Retour au site",
     "install_manual_android_title": "Le bouton d'installation n'est pas apparu ?",
-    "install_manual_android_steps": "Appuyez sur le menu (⋮) en haut du navigateur et choisissez \"Installer l'application\" ou \"Ajouter à l'écran d'accueil\"."
+    "install_manual_android_steps": "Appuyez sur le menu (⋮) en haut du navigateur et choisissez \"Installer l'application\" ou \"Ajouter à l'écran d'accueil\".",
+    "install_awaiting_confirmation": "En attente de confirmation...",
+    "install_installing": "Installation...",
+    "install_installed": "Installé ! Ouvrez Zaldemy depuis votre écran d'accueil"
 }

@@ -1,8 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation, Trans } from "react-i18next";
-import { Download, Smartphone, Share2, Globe } from "lucide-react";
+import { Download, Smartphone, Share2, Globe, Loader2, CheckCircle2 } from "lucide-react";
 import imgZaldemy from "../assets/img/zaldemy.png";
 import { getInstallPrompt, onInstallPromptChange, clearInstallPrompt } from "../utils/pwaInstallPrompt";
+
+// Aguarda o evento appinstalled (instalação de fato concluída) com um limite
+// de tempo, já que em alguns navegadores/versões ele pode nunca disparar.
+function waitForAppInstalled(timeoutMs) {
+    return new Promise((resolve) => {
+        const handle = () => {
+            window.removeEventListener("appinstalled", handle);
+            clearTimeout(timer);
+            resolve();
+        };
+        window.addEventListener("appinstalled", handle);
+        const timer = setTimeout(() => {
+            window.removeEventListener("appinstalled", handle);
+            resolve();
+        }, timeoutMs);
+    });
+}
 
 export default function InstallPwaNotice() {
     const { t } = useTranslation();
@@ -10,6 +27,9 @@ export default function InstallPwaNotice() {
     const [isIOS, setIsIOS] = useState(false);
     const [isInAppBrowser, setIsInAppBrowser] = useState(false);
     const [showManualFallback, setShowManualFallback] = useState(false);
+    // idle | awaiting | installing | installed
+    const [installStep, setInstallStep] = useState("idle");
+    const isMountedRef = useRef(true);
 
     useEffect(() => {
         const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -30,6 +50,7 @@ export default function InstallPwaNotice() {
         const timer = setTimeout(() => setShowManualFallback(true), 4000);
 
         return () => {
+            isMountedRef.current = false;
             unsubscribe();
             clearTimeout(timer);
         };
@@ -38,15 +59,22 @@ export default function InstallPwaNotice() {
     async function instalarApp() {
         if (!installPrompt) return;
 
+        setInstallStep("awaiting");
         installPrompt.prompt();
         const choice = await installPrompt.userChoice;
 
-        if (choice.outcome === "accepted") {
-            console.log("Usuário instalou o app");
+        if (choice.outcome !== "accepted") {
+            if (isMountedRef.current) setInstallStep("idle");
+            return;
         }
+
+        if (isMountedRef.current) setInstallStep("installing");
+
+        await waitForAppInstalled(8000);
 
         clearInstallPrompt();
         setInstallPrompt(null);
+        if (isMountedRef.current) setInstallStep("installed");
     }
 
     return (
@@ -136,22 +164,41 @@ export default function InstallPwaNotice() {
                         // Botão de instalação para Android/outros (com as cores da marca)
                         <>
                             <button
-                                onClick={installPrompt ? instalarApp : null}
-                                disabled={!installPrompt}
-                                className={`w-full bg-gradient-to-r from-[#4cb8c4] to-[#085078] text-white font-bold py-4 px-6 rounded-xl transition-all transform hover:scale-[1.02] shadow-xl hover:shadow-2xl flex items-center justify-center space-x-3 group ${!installPrompt ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                onClick={installPrompt && installStep === "idle" ? instalarApp : null}
+                                disabled={!installPrompt || installStep !== "idle"}
+                                className={`w-full font-bold py-4 px-6 rounded-xl transition-all transform shadow-xl flex items-center justify-center space-x-3 group ${installStep === "installed"
+                                    ? "bg-gradient-to-r from-green-500 to-green-600 text-white"
+                                    : "bg-gradient-to-r from-[#4cb8c4] to-[#085078] text-white hover:scale-[1.02] hover:shadow-2xl"
+                                    } ${!installPrompt || (installStep !== "idle" && installStep !== "installed") ? "opacity-50 cursor-not-allowed" : ""}`}
                             >
-                                <Download className="w-5 h-5 group-hover:animate-bounce" />
-                                <span>{t("install_app_button")}</span>
-                                <Smartphone className="w-5 h-5" />
+                                {installStep === "awaiting" || installStep === "installing" ? (
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                ) : installStep === "installed" ? (
+                                    <CheckCircle2 className="w-5 h-5" />
+                                ) : (
+                                    <Download className="w-5 h-5 group-hover:animate-bounce" />
+                                )}
+
+                                <span>
+                                    {installStep === "awaiting"
+                                        ? t("install_awaiting_confirmation")
+                                        : installStep === "installing"
+                                            ? t("install_installing")
+                                            : installStep === "installed"
+                                                ? t("install_installed")
+                                                : t("install_app_button")}
+                                </span>
+
+                                {installStep === "idle" && <Smartphone className="w-5 h-5" />}
                             </button>
 
-                            {!installPrompt && !showManualFallback && (
+                            {!installPrompt && installStep === "idle" && !showManualFallback && (
                                 <p className="text-sm text-gray-500 mt-4">
                                     {t("install_button_hint")}
                                 </p>
                             )}
 
-                            {!installPrompt && showManualFallback && (
+                            {!installPrompt && installStep === "idle" && showManualFallback && (
                                 <div className="mt-6 bg-gradient-to-br from-[#4cb8c4]/10 to-[#085078]/10 rounded-2xl p-6 border border-[#4cb8c4]/20 text-left">
                                     <h3 className="text-sm font-semibold text-[#085078] mb-3 text-center">
                                         {t("install_manual_android_title")}

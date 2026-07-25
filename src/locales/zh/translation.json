@@ -372,5 +372,8 @@
     "desktop_only_message": "Zaldemy 专为手机设计。请在 Aptoide 下载应用（Android）,或在手机浏览器中打开 zaldemy.com（Android 或 iPhone）以将其安装为应用。",
     "desktop_only_back_button": "返回网站",
     "install_manual_android_title": "没有看到安装按钮？",
-    "install_manual_android_steps": "点击浏览器顶部的菜单（⋮），选择“安装应用”或“添加到主屏幕”。"
+    "install_manual_android_steps": "点击浏览器顶部的菜单（⋮），选择“安装应用”或“添加到主屏幕”。",
+    "install_awaiting_confirmation": "等待确认…",
+    "install_installing": "正在安装…",
+    "install_installed": "安装完成！请从主屏幕打开 Zaldemy"
 }

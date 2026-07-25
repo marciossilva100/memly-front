@@ -372,5 +372,8 @@
     "desktop_only_message": "Zaldemy создан для использования на телефоне. Скачайте приложение на Aptoide (Android) или откройте zaldemy.com в браузере телефона (Android или iPhone), чтобы установить его как приложение.",
     "desktop_only_back_button": "Вернуться на сайт",
     "install_manual_android_title": "Кнопка установки не появилась?",
-    "install_manual_android_steps": "Нажмите на меню (⋮) вверху браузера и выберите «Установить приложение» или «Добавить на главный экран»."
+    "install_manual_android_steps": "Нажмите на меню (⋮) вверху браузера и выберите «Установить приложение» или «Добавить на главный экран».",
+    "install_awaiting_confirmation": "Ожидание подтверждения...",
+    "install_installing": "Установка...",
+    "install_installed": "Установлено! Откройте Zaldemy с главного экрана"
 }

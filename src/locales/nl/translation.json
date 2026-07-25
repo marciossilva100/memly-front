@@ -375,5 +375,7 @@
     "install_manual_android_steps": "Tik op het menu (⋮) bovenaan de browser en kies \"App installeren\" of \"Toevoegen aan startscherm\".",
     "install_awaiting_confirmation": "Wachten op bevestiging...",
     "install_installing": "Installeren...",
-    "install_installed": "Geïnstalleerd! Open Zaldemy vanaf je startscherm"
+    "install_installed": "Geïnstalleerd! Open Zaldemy vanaf je startscherm",
+    "pwa_already_installed_title": "Je hebt Zaldemy al geïnstalleerd!",
+    "pwa_already_installed_message": "Open de app via het Zaldemy-icoon op je startscherm om verder te gaan."
 }

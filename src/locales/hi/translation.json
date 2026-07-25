@@ -375,5 +375,7 @@
     "install_manual_android_steps": "ब्राउज़र के ऊपर मेनू (⋮) पर टैप करें और \"ऐप इंस्टॉल करें\" या \"होम स्क्रीन में जोड़ें\" चुनें।",
     "install_awaiting_confirmation": "पुष्टि की प्रतीक्षा है...",
     "install_installing": "इंस्टॉल हो रहा है...",
-    "install_installed": "इंस्टॉल हो गया! होम स्क्रीन से Zaldemy खोलें"
+    "install_installed": "इंस्टॉल हो गया! होम स्क्रीन से Zaldemy खोलें",
+    "pwa_already_installed_title": "आपने पहले ही Zaldemy इंस्टॉल कर लिया है!",
+    "pwa_already_installed_message": "जारी रखने के लिए अपने फ़ोन की होम स्क्रीन पर Zaldemy आइकन से खोलें।"
 }

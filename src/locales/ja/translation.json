@@ -375,5 +375,7 @@
     "install_manual_android_steps": "ブラウザ上部のメニュー（⋮）をタップし、「アプリをインストール」または「ホーム画面に追加」を選択してください。",
     "install_awaiting_confirmation": "確認待ちです...",
     "install_installing": "インストール中...",
-    "install_installed": "インストール完了！ホーム画面からZaldemyを開いてください"
+    "install_installed": "インストール完了！ホーム画面からZaldemyを開いてください",
+    "pwa_already_installed_title": "Zaldemyはすでにインストール済みです！",
+    "pwa_already_installed_message": "続けるには、ホーム画面のZaldemyアイコンから開いてください。"
 }

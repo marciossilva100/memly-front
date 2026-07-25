@@ -377,5 +377,7 @@
     "install_manual_android_steps": "Tap the menu (⋮) at the top of your browser and choose \"Install app\" or \"Add to Home screen\".",
     "install_awaiting_confirmation": "Waiting for confirmation...",
     "install_installing": "Installing...",
-    "install_installed": "Installed! Open Zaldemy from your home screen"
+    "install_installed": "Installed! Open Zaldemy from your home screen",
+    "pwa_already_installed_title": "You've already installed Zaldemy!",
+    "pwa_already_installed_message": "Open it from the Zaldemy icon on your phone's home screen to continue."
 }

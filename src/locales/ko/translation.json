@@ -375,5 +375,7 @@
     "install_manual_android_steps": "브라우저 상단의 메뉴(⋮)를 탭하고 \"앱 설치\" 또는 \"홈 화면에 추가\"를 선택하세요.",
     "install_awaiting_confirmation": "확인을 기다리는 중...",
     "install_installing": "설치 중...",
-    "install_installed": "설치 완료! 홈 화면에서 Zaldemy를 여세요"
+    "install_installed": "설치 완료! 홈 화면에서 Zaldemy를 여세요",
+    "pwa_already_installed_title": "이미 Zaldemy를 설치하셨네요!",
+    "pwa_already_installed_message": "계속하려면 휴대폰 홈 화면의 Zaldemy 아이콘에서 여세요."
 }

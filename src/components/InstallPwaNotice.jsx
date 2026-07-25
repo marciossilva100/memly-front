@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation, Trans } from "react-i18next";
 import { Download, Smartphone, Share2, Globe, Loader2, CheckCircle2 } from "lucide-react";
 import imgZaldemy from "../assets/img/zaldemy.png";
-import { getInstallPrompt, onInstallPromptChange, clearInstallPrompt } from "../utils/pwaInstallPrompt";
+import { getInstallPrompt, onInstallPromptChange, clearInstallPrompt, isPwaKnownInstalled } from "../utils/pwaInstallPrompt";
 
 // Aguarda o evento appinstalled (instalação de fato concluída) com um limite
 // de tempo, já que em alguns navegadores/versões ele pode nunca disparar.
@@ -24,6 +24,7 @@ function waitForAppInstalled(timeoutMs) {
 export default function InstallPwaNotice() {
     const { t } = useTranslation();
     const [installPrompt, setInstallPrompt] = useState(() => getInstallPrompt());
+    const [alreadyInstalled] = useState(() => isPwaKnownInstalled());
     const [isIOS, setIsIOS] = useState(false);
     const [isInAppBrowser, setIsInAppBrowser] = useState(false);
     const [showManualFallback, setShowManualFallback] = useState(false);
@@ -86,14 +87,25 @@ export default function InstallPwaNotice() {
                     </div>
 
                     <h2 className="text-[#41a9e3] text-2xl font-bold mb-4">
-                        {t("install_our_app")}
+                        {alreadyInstalled ? t("pwa_already_installed_title") : t("install_our_app")}
                     </h2>
 
                     <p className="text-white mb-8">
-                        {t("install_for_full_experience")}
+                        {alreadyInstalled ? t("pwa_already_installed_message") : t("install_for_full_experience")}
                     </p>
 
-                    {isInAppBrowser ? (
+                    {alreadyInstalled ? (
+                        // O navegador não tem como saber, numa aba comum, se o app já
+                        // foi instalado antes - só sabemos por um flag que a gente
+                        // mesmo guardou (ver isPwaKnownInstalled). Nesse caso, pedir
+                        // pra instalar de novo não faz sentido: só falta abrir pelo
+                        // ícone certo.
+                        <div className="flex justify-center">
+                            <div className="bg-[#4cb8c4] p-4 rounded-full">
+                                <Smartphone className="w-10 h-10 text-white" />
+                            </div>
+                        </div>
+                    ) : isInAppBrowser ? (
                         // Navegadores internos de apps (Instagram, Facebook, TikTok, etc.)
                         // não suportam a instalação de PWA - orientar a abrir no navegador padrão
                         <div className="bg-gradient-to-br from-[#4cb8c4]/10 to-[#085078]/10 rounded-2xl p-6 border border-[#4cb8c4]/20">

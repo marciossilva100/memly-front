@@ -375,5 +375,7 @@
     "install_manual_android_steps": "اضغط على القائمة (⋮) أعلى المتصفح واختر \"تثبيت التطبيق\" أو \"إضافة إلى الشاشة الرئيسية\".",
     "install_awaiting_confirmation": "في انتظار التأكيد...",
     "install_installing": "جارٍ التثبيت...",
-    "install_installed": "تم التثبيت! افتح Zaldemy من الشاشة الرئيسية"
+    "install_installed": "تم التثبيت! افتح Zaldemy من الشاشة الرئيسية",
+    "pwa_already_installed_title": "لقد قمت بالفعل بتثبيت Zaldemy!",
+    "pwa_already_installed_message": "افتح التطبيق من أيقونة Zaldemy على الشاشة الرئيسية لهاتفك للمتابعة."
 }

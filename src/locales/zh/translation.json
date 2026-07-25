@@ -375,5 +375,7 @@
     "install_manual_android_steps": "点击浏览器顶部的菜单（⋮），选择“安装应用”或“添加到主屏幕”。",
     "install_awaiting_confirmation": "等待确认…",
     "install_installing": "正在安装…",
-    "install_installed": "安装完成！请从主屏幕打开 Zaldemy"
+    "install_installed": "安装完成！请从主屏幕打开 Zaldemy",
+    "pwa_already_installed_title": "您已经安装了 Zaldemy！",
+    "pwa_already_installed_message": "请从手机主屏幕上的 Zaldemy 图标打开应用以继续。"
 }

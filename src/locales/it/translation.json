@@ -375,5 +375,7 @@
     "install_manual_android_steps": "Tocca il menu (⋮) in alto nel browser e scegli \"Installa app\" o \"Aggiungi a schermata Home\".",
     "install_awaiting_confirmation": "In attesa di conferma...",
     "install_installing": "Installazione in corso...",
-    "install_installed": "Installato! Apri Zaldemy dalla schermata Home"
+    "install_installed": "Installato! Apri Zaldemy dalla schermata Home",
+    "pwa_already_installed_title": "Hai già installato Zaldemy!",
+    "pwa_already_installed_message": "Aprila dall'icona di Zaldemy nella schermata Home del tuo cellulare per continuare."
 }

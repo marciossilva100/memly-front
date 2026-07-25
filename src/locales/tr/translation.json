@@ -375,5 +375,7 @@
     "install_manual_android_steps": "Tarayıcının üst kısmındaki menüye (⋮) dokun ve \"Uygulamayı yükle\" veya \"Ana ekrana ekle\" seçeneğini seç.",
     "install_awaiting_confirmation": "Onay bekleniyor...",
     "install_installing": "Yükleniyor...",
-    "install_installed": "Yüklendi! Zaldemy'yi ana ekranından aç"
+    "install_installed": "Yüklendi! Zaldemy'yi ana ekranından aç",
+    "pwa_already_installed_title": "Zaldemy'yi zaten yükledin!",
+    "pwa_already_installed_message": "Devam etmek için telefonunun ana ekranındaki Zaldemy simgesinden aç."
 }

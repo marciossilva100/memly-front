@@ -377,5 +377,7 @@
     "install_manual_android_steps": "Toque no menu (⋮) no canto superior do navegador e escolha \"Instalar aplicativo\" ou \"Adicionar à tela inicial\".",
     "install_awaiting_confirmation": "Aguardando confirmação...",
     "install_installing": "Instalando...",
-    "install_installed": "Instalado! Abra o Zaldemy pela tela inicial"
+    "install_installed": "Instalado! Abra o Zaldemy pela tela inicial",
+    "pwa_already_installed_title": "Você já instalou o Zaldemy!",
+    "pwa_already_installed_message": "Abra pelo ícone do Zaldemy na tela inicial do seu celular para continuar."
 }

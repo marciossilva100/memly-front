@@ -375,5 +375,7 @@
     "install_manual_android_steps": "Нажмите на меню (⋮) вверху браузера и выберите «Установить приложение» или «Добавить на главный экран».",
     "install_awaiting_confirmation": "Ожидание подтверждения...",
     "install_installing": "Установка...",
-    "install_installed": "Установлено! Откройте Zaldemy с главного экрана"
+    "install_installed": "Установлено! Откройте Zaldemy с главного экрана",
+    "pwa_already_installed_title": "Вы уже установили Zaldemy!",
+    "pwa_already_installed_message": "Откройте приложение через значок Zaldemy на главном экране телефона, чтобы продолжить."
 }

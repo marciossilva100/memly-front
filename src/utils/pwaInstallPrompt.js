@@ -20,6 +20,7 @@ window.addEventListener("beforeinstallprompt", (e) => {
 
 window.addEventListener("appinstalled", () => {
     deferredPrompt = null;
+    markPwaInstalled();
 });
 
 export function getInstallPrompt() {
@@ -36,4 +37,37 @@ export function onInstallPromptChange(callback) {
 
 export function clearInstallPrompt() {
     deferredPrompt = null;
+}
+
+// O navegador só sabe dizer "isso está rodando em modo instalado" (display-mode:
+// standalone) quando o app já foi ABERTO pelo ícone instalado - não existe uma
+// API pra perguntar "esse app já foi instalado?" enquanto ainda se está numa
+// aba comum do navegador. Pra contornar isso, guardamos um flag no localStorage
+// assim que detectamos uma instalação (pelo evento appinstalled, ou por já termos
+// visto o app rodando em standalone alguma vez), e usamos esse flag depois pra
+// não voltar a pedir instalação numa aba comum do navegador - só orientar a
+// abrir pelo ícone.
+const STORAGE_KEY = "zaldemy_pwa_installed";
+
+export function markPwaInstalled() {
+    try {
+        localStorage.setItem(STORAGE_KEY, "1");
+    } catch {
+        // localStorage indisponível (modo privado etc.) - segue sem persistir
+    }
+}
+
+export function isPwaKnownInstalled() {
+    try {
+        return localStorage.getItem(STORAGE_KEY) === "1";
+    } catch {
+        return false;
+    }
+}
+
+if (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true
+) {
+    markPwaInstalled();
 }

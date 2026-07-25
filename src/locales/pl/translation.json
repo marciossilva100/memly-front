@@ -375,5 +375,7 @@
     "install_manual_android_steps": "Stuknij menu (⋮) w górnej części przeglądarki i wybierz \"Zainstaluj aplikację\" lub \"Dodaj do ekranu głównego\".",
     "install_awaiting_confirmation": "Oczekiwanie na potwierdzenie...",
     "install_installing": "Instalowanie...",
-    "install_installed": "Zainstalowano! Otwórz Zaldemy z ekranu głównego"
+    "install_installed": "Zainstalowano! Otwórz Zaldemy z ekranu głównego",
+    "pwa_already_installed_title": "Masz już zainstalowany Zaldemy!",
+    "pwa_already_installed_message": "Otwórz aplikację z ikony Zaldemy na ekranie głównym telefonu, aby kontynuować."
 }

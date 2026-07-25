@@ -9,6 +9,7 @@ import {
     Smartphone,
     Menu,
     X,
+    Download,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -16,9 +17,22 @@ import imgZaldemy from "../assets/img/zaldemy.png";
 
 const iconesRecursos = [Languages, Layers, Sparkles, Volume2, BarChart3, Share2];
 
+// TODO: substituir pelo link real assim que o app for aprovado na Aptoide
+const APTOIDE_URL = "https://zaldemy.pt.aptoide.com/";
+
 export default function LandingPage() {
     const { t } = useTranslation();
     const [menuAberto, setMenuAberto] = useState(false);
+    const [plataforma, setPlataforma] = useState("outro"); // "ios" | "android" | "outro"
+
+    useEffect(() => {
+        const ua = navigator.userAgent;
+        if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) {
+            setPlataforma("ios");
+        } else if (/Android/i.test(ua)) {
+            setPlataforma("android");
+        }
+    }, []);
 
     // As telas internas do app usam overflow:hidden no body (rolagem própria,
     // tela única). A landing page é uma página longa de verdade, então
@@ -174,17 +188,37 @@ export default function LandingPage() {
                         <div>
                             <h3 className="text-xl font-semibold">{t("landing_app_title")}</h3>
                             <p className="text-gray-400 text-sm mt-1 max-w-md">
-                                {t("landing_app_description")}
+                                {plataforma === "ios"
+                                    ? t("landing_app_description_ios")
+                                    : t("landing_app_description")}
                             </p>
                         </div>
                     </div>
 
-                    <Link
-                        to="/cadastrar"
-                        className="shrink-0 bg-[#4cb8c4] text-white px-8 py-3 rounded-full text-lg font-semibold hover:brightness-110 transition"
-                    >
-                        {t("landing_app_cta")}
-                    </Link>
+                    <div className="shrink-0 flex flex-col sm:flex-row items-center gap-3">
+                        {plataforma === "android" && (
+                            <a
+                                href={APTOIDE_URL}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 bg-[#4cb8c4] text-white px-8 py-3 rounded-full text-lg font-semibold hover:brightness-110 transition"
+                            >
+                                <Download size={20} />
+                                {t("landing_app_aptoide_cta")}
+                            </a>
+                        )}
+
+                        <Link
+                            to="/cadastrar"
+                            className={
+                                plataforma === "android"
+                                    ? "text-white px-8 py-3 rounded-full text-lg border border-gray-700 hover:bg-white/5 transition-colors"
+                                    : "bg-[#4cb8c4] text-white px-8 py-3 rounded-full text-lg font-semibold hover:brightness-110 transition"
+                            }
+                        >
+                            {t("landing_app_cta")}
+                        </Link>
+                    </div>
                 </div>
             </section>
 

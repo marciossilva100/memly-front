@@ -365,5 +365,7 @@
     "landing_app_description": "直接在浏览器中安装Zaldemy，或下载Android应用，随时随地继续学习。",
     "landing_app_cta": "创建我的账号",
     "landing_footer_rights": "版权所有。",
-    "contact_page_description": "对Zaldemy有疑问、建议或遇到问题？联系我们："
+    "contact_page_description": "对Zaldemy有疑问、建议或遇到问题？联系我们：",
+    "landing_app_description_ios": "直接通过Safari将Zaldemy添加到主屏幕，随时随地继续学习。",
+    "landing_app_aptoide_cta": "在Aptoide下载"
 }

@@ -365,5 +365,7 @@
     "landing_app_description": "Installez Zaldemy directement depuis votre navigateur ou téléchargez l'application Android et continuez où vous en étiez.",
     "landing_app_cta": "Créer mon compte",
     "landing_footer_rights": "Tous droits réservés.",
-    "contact_page_description": "Une question, une suggestion ou un problème avec Zaldemy ? Contactez-nous :"
+    "contact_page_description": "Une question, une suggestion ou un problème avec Zaldemy ? Contactez-nous :",
+    "landing_app_description_ios": "Ajoutez Zaldemy à votre écran d'accueil directement depuis Safari et continuez où vous en étiez.",
+    "landing_app_aptoide_cta": "Télécharger sur Aptoide"
 }

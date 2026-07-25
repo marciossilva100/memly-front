@@ -365,5 +365,7 @@
     "landing_app_description": "Zaldemy'yi doğrudan tarayıcınızdan yükleyin veya Android uygulamasını indirin ve kaldığınız yerden çalışmaya devam edin.",
     "landing_app_cta": "Hesabımı oluştur",
     "landing_footer_rights": "Tüm hakları saklıdır.",
-    "contact_page_description": "Zaldemy hakkında bir sorunuz, öneriniz veya sorununuz mu var? Bize ulaşın:"
+    "contact_page_description": "Zaldemy hakkında bir sorunuz, öneriniz veya sorununuz mu var? Bize ulaşın:",
+    "landing_app_description_ios": "Zaldemy'yi doğrudan Safari üzerinden ana ekranınıza ekleyin ve kaldığınız yerden çalışmaya devam edin.",
+    "landing_app_aptoide_cta": "Aptoide'den indir"
 }

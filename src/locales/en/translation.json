@@ -367,5 +367,7 @@
     "landing_app_description": "Install Zaldemy right from your browser or download the Android app and keep studying wherever you left off.",
     "landing_app_cta": "Create my account",
     "landing_footer_rights": "All rights reserved.",
-    "contact_page_description": "Have a question, suggestion, or issue with Zaldemy? Get in touch:"
+    "contact_page_description": "Have a question, suggestion, or issue with Zaldemy? Get in touch:",
+    "landing_app_description_ios": "Add Zaldemy to your home screen right from Safari and keep studying wherever you left off.",
+    "landing_app_aptoide_cta": "Download on Aptoide"
 }

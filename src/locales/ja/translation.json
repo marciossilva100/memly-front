@@ -365,5 +365,7 @@
     "landing_app_description": "ブラウザから直接Zaldemyをインストールするか、Androidアプリをダウンロードして、続きから学習を再開しましょう。",
     "landing_app_cta": "アカウントを作成する",
     "landing_footer_rights": "全著作権所有。",
-    "contact_page_description": "Zaldemyについてご質問、ご提案、不具合などがありますか？お問い合わせください："
+    "contact_page_description": "Zaldemyについてご質問、ご提案、不具合などがありますか？お問い合わせください：",
+    "landing_app_description_ios": "Safariから直接Zaldemyをホーム画面に追加して、続きから学習を再開しましょう。",
+    "landing_app_aptoide_cta": "Aptoideでダウンロード"
 }

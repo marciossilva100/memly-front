@@ -10,7 +10,7 @@ import {
     Menu,
     X,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import imgZaldemy from "../assets/img/zaldemy.png";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png";
@@ -20,6 +20,17 @@ const iconesRecursos = [Languages, Layers, Sparkles, Volume2, BarChart3, Share2]
 export default function LandingPage() {
     const { t } = useTranslation();
     const [menuAberto, setMenuAberto] = useState(false);
+
+    // As telas internas do app usam overflow:hidden no body (rolagem própria,
+    // tela única). A landing page é uma página longa de verdade, então
+    // liberamos a rolagem do body só enquanto ela estiver montada.
+    useEffect(() => {
+        const original = document.body.style.overflow;
+        document.body.style.overflow = "auto";
+        return () => {
+            document.body.style.overflow = original;
+        };
+    }, []);
 
     const recursos = [1, 2, 3, 4, 5, 6].map((n, index) => ({
         icone: iconesRecursos[index],

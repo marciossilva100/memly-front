@@ -13,7 +13,7 @@ import {
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import imgZaldemy from "../assets/img/zaldemy.png";
-import imgChapeuFormatura from "../assets/img/chapeu_formatura.png";
+import imgHero from "../assets/img/hero-usuaria.jpg";
 
 const iconesRecursos = [Languages, Layers, Sparkles, Volume2, BarChart3, Share2];
 
@@ -137,15 +137,13 @@ export default function LandingPage() {
                 </div>
 
                 <div className="flex justify-center">
-                    <div className="relative w-64 h-64 md:w-80 md:h-80 flex items-center justify-center">
-                        <div className="absolute inset-0 rounded-full bg-[#4cb8c4]/15 blur-2xl" />
-                        <div className="relative w-full h-full rounded-full bg-gray-800/60 border border-gray-700 flex items-center justify-center p-14">
-                            <img
-                                src={imgChapeuFormatura}
-                                alt="Zaldemy"
-                                className="w-full h-full object-contain"
-                            />
-                        </div>
+                    <div className="relative w-64 md:w-96">
+                        <div className="absolute inset-0 rounded-3xl bg-[#4cb8c4]/20 blur-3xl" />
+                        <img
+                            src={imgHero}
+                            alt="Pessoa estudando com o Zaldemy"
+                            className="relative w-full rounded-3xl border border-gray-700 object-cover shadow-2xl"
+                        />
                     </div>
                 </div>
             </section>

@@ -370,5 +370,7 @@
     "landing_app_aptoide_cta": "Scarica su Aptoide",
     "desktop_only_title": "Accedi dal tuo cellulare",
     "desktop_only_message": "Zaldemy è pensato per l'uso da cellulare. Scarica l'app su Aptoide (Android) oppure apri zaldemy.com dal browser del tuo cellulare (Android o iPhone) per installarla come app.",
-    "desktop_only_back_button": "Torna al sito"
+    "desktop_only_back_button": "Torna al sito",
+    "install_manual_android_title": "Il pulsante di installazione non è comparso?",
+    "install_manual_android_steps": "Tocca il menu (⋮) in alto nel browser e scegli \"Installa app\" o \"Aggiungi a schermata Home\"."
 }

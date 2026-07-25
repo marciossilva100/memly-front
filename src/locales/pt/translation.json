@@ -372,5 +372,7 @@
     "landing_app_aptoide_cta": "Baixar na Aptoide",
     "desktop_only_title": "Acesse pelo celular",
     "desktop_only_message": "O Zaldemy foi feito para uso no celular. Baixe o app na Aptoide (Android) ou acesse zaldemy.com pelo navegador do seu celular (Android ou iPhone) para instalar como aplicativo.",
-    "desktop_only_back_button": "Voltar para o site"
+    "desktop_only_back_button": "Voltar para o site",
+    "install_manual_android_title": "Não apareceu o botão de instalar?",
+    "install_manual_android_steps": "Toque no menu (⋮) no canto superior do navegador e escolha \"Instalar aplicativo\" ou \"Adicionar à tela inicial\"."
 }

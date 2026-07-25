@@ -370,5 +370,7 @@
     "landing_app_aptoide_cta": "Aptoide'den indir",
     "desktop_only_title": "Telefonundan eriş",
     "desktop_only_message": "Zaldemy mobil kullanım için tasarlandı. Uygulamayı Aptoide'den (Android) indir veya bir uygulama olarak yüklemek için zaldemy.com'u telefonunun tarayıcısından (Android veya iPhone) aç.",
-    "desktop_only_back_button": "Siteye dön"
+    "desktop_only_back_button": "Siteye dön",
+    "install_manual_android_title": "Yükle düğmesi görünmedi mi?",
+    "install_manual_android_steps": "Tarayıcının üst kısmındaki menüye (⋮) dokun ve \"Uygulamayı yükle\" veya \"Ana ekrana ekle\" seçeneğini seç."
 }

@@ -370,5 +370,7 @@
     "landing_app_aptoide_cta": "Auf Aptoide herunterladen",
     "desktop_only_title": "Über dein Handy zugreifen",
     "desktop_only_message": "Zaldemy wurde für die mobile Nutzung entwickelt. Lade die App auf Aptoide herunter (Android) oder öffne zaldemy.com im Browser deines Handys (Android oder iPhone), um sie als App zu installieren.",
-    "desktop_only_back_button": "Zurück zur Website"
+    "desktop_only_back_button": "Zurück zur Website",
+    "install_manual_android_title": "Wird die Installationsschaltfläche nicht angezeigt?",
+    "install_manual_android_steps": "Tippe oben im Browser auf das Menü (⋮) und wähle \"App installieren\" oder \"Zum Startbildschirm hinzufügen\"."
 }

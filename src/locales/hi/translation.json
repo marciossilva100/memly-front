@@ -370,5 +370,7 @@
     "landing_app_aptoide_cta": "Aptoide पर डाउनलोड करें",
     "desktop_only_title": "अपने फ़ोन से एक्सेस करें",
     "desktop_only_message": "Zaldemy मोबाइल पर उपयोग के लिए बनाया गया है। Aptoide (Android) से ऐप डाउनलोड करें या इसे ऐप के रूप में इंस्टॉल करने के लिए अपने फ़ोन के ब्राउज़र में zaldemy.com खोलें (Android या iPhone)।",
-    "desktop_only_back_button": "साइट पर वापस जाएं"
+    "desktop_only_back_button": "साइट पर वापस जाएं",
+    "install_manual_android_title": "इंस्टॉल बटन नहीं दिखा?",
+    "install_manual_android_steps": "ब्राउज़र के ऊपर मेनू (⋮) पर टैप करें और \"ऐप इंस्टॉल करें\" या \"होम स्क्रीन में जोड़ें\" चुनें।"
 }

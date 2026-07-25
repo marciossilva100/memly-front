@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, Navigate } from "react-router-dom";
-import { Mail, Smartphone, Download, Share2, Globe } from "lucide-react";
+import { Mail, Download, Globe } from "lucide-react";
 import imgGoogle from '../assets/img/google.png'
 import imgFacebook from '../assets/img/logo-face.webp'
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
@@ -21,14 +21,12 @@ export default function Login({ setTitulo }) {
     const [finish, setFinish] = useState(false)
     const { checkAuth, syncAuth } = useAuth();
     const [installPrompt, setInstallPrompt] = useState(null);
-    const [isIOS, setIsIOS] = useState(false);
     const [isStandalone, setIsStandalone] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const [forceDesktop, setForceDesktop] = useState(false);
     const [showAdminGate, setShowAdminGate] = useState(false);
     const [adminGateEmail, setAdminGateEmail] = useState('');
     const [adminGateErro, setAdminGateErro] = useState('');
-    const [isInAppBrowser, setIsInAppBrowser] = useState(false);
     const { user, setUser } = useAuth();
     const appUrl = "https://zaldem.com"; // troque pelo seu domínio
     const API_URL = import.meta.env.VITE_API_URL;
@@ -60,10 +58,6 @@ export default function Login({ setTitulo }) {
     useEffect(() => {
         setTitulo(t("login"))
 
-        // Detectar se é iOS
-        const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        setIsIOS(ios);
-
         // Detectar se está rodando como app instalado (standalone) ou como app nativo (Capacitor)
         const standalone = window.matchMedia('(display-mode: standalone)').matches ||
             window.navigator.standalone === true ||
@@ -73,11 +67,6 @@ export default function Login({ setTitulo }) {
         // Detectar se é mobile
         const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         setIsMobile(mobile);
-
-        // Detectar navegador interno de apps (Instagram, Facebook, TikTok, etc.)
-        // Esses webviews não implementam a API de instalação de PWA (beforeinstallprompt)
-        const inApp = /Instagram|FBAN|FBAV|FB_IAB|Line\/|MicroMessenger|TikTok|BytedanceWebview/i.test(navigator.userAgent);
-        setIsInAppBrowser(inApp);
 
         const handler = (e) => {
             e.preventDefault()
@@ -396,132 +385,6 @@ export default function Login({ setTitulo }) {
                 </div>
             </div>
         );
-    }
-
-    // Se for mobile e não estiver instalado como app, mostrar apenas tela de instalação
-    if (isMobile && !isStandalone) {
-        return (
-            <div className="max-w-6xl mx-auto px-8 section-login py-4 h-svh flex items-center from-gray-900 to-gray-800 bg-gradient-to-br">
-                <div className="flex-1 justify-center overflow-y-auto scrollbar-hide ">
-                    <div className="w-full max-w-md text-center">
-
-                        {/* Logo */}
-                        <div className="flex justify-center mb-6">
-                            <img width={240} src={imgZaldemy} alt="Zaldemy" />
-                        </div>
-
-                        {/* Mascote */}
-                        {/* <div className="flex justify-center mb-6">
-                            <img width={150} src={imgMemly} alt="Memly - Mascote Zaldemy" className="animate-bounce" />
-                        </div> */}
-
-                        <h2 className="text-[#41a9e3] text-2xl font-bold mb-4">
-                            {t("install_our_app")}
-                        </h2>
-
-                        <p className="text-white mb-8">
-                            {t("install_for_full_experience")}
-                        </p>
-
-                        {isInAppBrowser ? (
-                            // Navegadores internos de apps (Instagram, Facebook, TikTok, etc.)
-                            // não suportam a instalação de PWA - orientar a abrir no navegador padrão
-                            <div className="bg-gradient-to-br from-[#4cb8c4]/10 to-[#085078]/10 rounded-2xl p-6 border border-[#4cb8c4]/20">
-                                <div className="flex justify-center mb-4">
-                                    <div className="bg-[#4cb8c4] p-3 rounded-full">
-                                        <Globe className="w-8 h-8 text-white" />
-                                    </div>
-                                </div>
-
-                                <h3 className="text-lg font-semibold text-[#085078] mb-3">
-                                    {t("open_in_browser_title")}
-                                </h3>
-
-                                <p className="text-sm text-gray-600 text-left">
-                                    {t("open_in_browser_description")}
-                                </p>
-                            </div>
-                        ) : isIOS ? (
-                            // Instruções para iPhone/iPad
-                            <div className="bg-gradient-to-br from-[#4cb8c4]/10 to-[#085078]/10 rounded-2xl p-6 border border-[#4cb8c4]/20">
-                                <div className="flex justify-center mb-4">
-                                    <div className="bg-[#4cb8c4] p-3 rounded-full">
-                                        <Share2 className="w-8 h-8 text-white" />
-                                    </div>
-                                </div>
-
-                                <h3 className="text-lg font-semibold text-[#085078] mb-3">
-                                    {t("how_to_install_iphone")}
-                                </h3>
-
-                                <div className="space-y-4 text-left">
-                                    <div className="flex items-start gap-3">
-                                        <div className="bg-[#4cb8c4]/20 rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                            <span className="text-[#085078] font-bold text-sm">1</span>
-                                        </div>
-                                        <p className="text-sm text-gray-600">
-                                            <Trans i18nKey="ios_step1_before" components={{ b: <span className="font-semibold" /> }} /> <Share2 className="w-4 h-4 inline text-[#4cb8c4]" /> {t("ios_step1_after")}
-                                        </p>
-                                    </div>
-
-                                    <div className="flex items-start gap-3">
-                                        <div className="bg-[#4cb8c4]/20 rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                            <span className="text-[#085078] font-bold text-sm">2</span>
-                                        </div>
-                                        <p className="text-sm text-gray-600">
-                                            <Trans i18nKey="ios_step2" components={{ 1: <span className="font-semibold" /> }} />
-                                        </p>
-                                    </div>
-
-                                    <div className="flex items-start gap-3">
-                                        <div className="bg-[#4cb8c4]/20 rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                            <span className="text-[#085078] font-bold text-sm">3</span>
-                                        </div>
-                                        <p className="text-sm text-gray-600">
-                                            <Trans i18nKey="ios_step3" components={{ 1: <span className="font-semibold" /> }} />
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="mt-6 p-3 bg-white/50 rounded-lg">
-                                    <p className="text-xs text-gray-500">
-                                        <Globe className="w-3 h-3 inline mr-1" />
-                                        {t("after_install_native")}
-                                    </p>
-                                </div>
-                            </div>
-                        ) : (
-                            // Botão de instalação para Android/outros (com as cores da marca)
-                            <button
-                                onClick={installPrompt ? instalarApp : null}
-                                disabled={!installPrompt}
-                                className={`w-full bg-gradient-to-r from-[#4cb8c4] to-[#085078] text-white font-bold py-4 px-6 rounded-xl transition-all transform hover:scale-[1.02] shadow-xl hover:shadow-2xl flex items-center justify-center space-x-3 group ${!installPrompt ? 'opacity-50 cursor-not-allowed' : ''}`}
-                            >
-                                <Download className="w-5 h-5 group-hover:animate-bounce" />
-                                <span>{t("install_app_button")}</span>
-                                <Smartphone className="w-5 h-5" />
-                            </button>
-                        )}
-
-                        {!isIOS && !isInAppBrowser && !installPrompt && (
-                            <p className="text-sm text-gray-500 mt-4">
-                                {t("install_button_hint")}
-                            </p>
-                        )}
-
-                        {/* Link para versão web */}
-                        <div className="mt-8">
-                            <button
-                                onClick={() => setIsStandalone(true)} // Força mostrar login
-                                className="text-[#41a9e3] hover:text-[#085078] transition-colors text-sm underline"
-                            >
-                                {t("continue_web_version")}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )
     }
 
     // Tela de login normal (para desktop ou quando já está instalado)

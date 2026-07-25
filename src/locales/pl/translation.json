@@ -370,5 +370,7 @@
     "landing_app_aptoide_cta": "Pobierz na Aptoide",
     "desktop_only_title": "Otwórz na telefonie",
     "desktop_only_message": "Zaldemy zostało stworzone do korzystania na telefonie. Pobierz aplikację z Aptoide (Android) lub otwórz zaldemy.com w przeglądarce telefonu (Android lub iPhone), aby zainstalować ją jako aplikację.",
-    "desktop_only_back_button": "Wróć do strony"
+    "desktop_only_back_button": "Wróć do strony",
+    "install_manual_android_title": "Nie widzisz przycisku instalacji?",
+    "install_manual_android_steps": "Stuknij menu (⋮) w górnej części przeglądarki i wybierz \"Zainstaluj aplikację\" lub \"Dodaj do ekranu głównego\"."
 }

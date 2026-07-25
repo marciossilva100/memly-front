@@ -42,7 +42,8 @@ import Contato from './pages/Contato';
 import Faq from './pages/Faq';
 import LandingPage from './pages/LandingPage';
 import DesktopBlockedNotice from './components/DesktopBlockedNotice';
-import { isNativePlatform, isMobileWeb } from './utils/googleNativeAuth';
+import InstallPwaNotice from './components/InstallPwaNotice';
+import { isNativePlatform, isMobileWeb, isStandaloneApp } from './utils/googleNativeAuth';
 
 // Contexto de conexão
 import { ConnectionProvider, useConnection } from './context/ConnectionContext';
@@ -78,13 +79,17 @@ function PrivateRoute({ children }) {
   return children;
 }
 
-// Login/cadastro só fazem sentido no app nativo ou no navegador do celular
-// (onde dá pra instalar a PWA). No navegador desktop mostramos um aviso.
+// Login/cadastro só ficam acessíveis no app instalado (nativo ou PWA em modo
+// standalone). No navegador desktop mostramos um aviso; no navegador do
+// celular (ainda não instalado), a tela de instalação da PWA.
 function MobileOnlyRoute({ children }) {
-  if (!isNativePlatform() && !isMobileWeb()) {
-    return <DesktopBlockedNotice />;
+  if (isStandaloneApp()) {
+    return children;
   }
-  return children;
+  if (isMobileWeb()) {
+    return <InstallPwaNotice />;
+  }
+  return <DesktopBlockedNotice />;
 }
 
 function Layout({ titulo, setTitulo }) {

@@ -370,5 +370,7 @@
     "landing_app_aptoide_cta": "Aptoideでダウンロード",
     "desktop_only_title": "スマートフォンからアクセスしてください",
     "desktop_only_message": "Zaldemyはスマートフォンでの利用を想定しています。Aptoide（Android）からアプリをダウンロードするか、スマートフォンのブラウザでzaldemy.comを開いてアプリとしてインストールしてください（Android・iPhone対応）。",
-    "desktop_only_back_button": "サイトに戻る"
+    "desktop_only_back_button": "サイトに戻る",
+    "install_manual_android_title": "インストールボタンが表示されませんか？",
+    "install_manual_android_steps": "ブラウザ上部のメニュー（⋮）をタップし、「アプリをインストール」または「ホーム画面に追加」を選択してください。"
 }

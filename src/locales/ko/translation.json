@@ -370,5 +370,7 @@
     "landing_app_aptoide_cta": "Aptoide에서 다운로드",
     "desktop_only_title": "휴대폰으로 접속해 주세요",
     "desktop_only_message": "Zaldemy는 모바일 사용을 위해 만들어졌습니다. Aptoide(Android)에서 앱을 다운로드하거나, 휴대폰 브라우저에서 zaldemy.com에 접속해(Android 또는 iPhone) 앱으로 설치하세요.",
-    "desktop_only_back_button": "사이트로 돌아가기"
+    "desktop_only_back_button": "사이트로 돌아가기",
+    "install_manual_android_title": "설치 버튼이 보이지 않나요?",
+    "install_manual_android_steps": "브라우저 상단의 메뉴(⋮)를 탭하고 \"앱 설치\" 또는 \"홈 화면에 추가\"를 선택하세요."
 }

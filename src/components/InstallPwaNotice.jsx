@@ -79,7 +79,7 @@ export default function InstallPwaNotice() {
 
     return (
         <div className="h-svh flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
-            <div className="flex-1 overflow-y-auto scrollbar-hide flex items-center justify-center px-8">
+            <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hide flex items-center justify-center px-8">
                 <div className="w-full max-w-md text-center py-10">
                     <div className="flex justify-center mb-6">
                         <img width={240} src={imgZaldemy} alt="Zaldemy" />
@@ -103,11 +103,11 @@ export default function InstallPwaNotice() {
                                 </div>
                             </div>
 
-                            <h3 className="text-lg font-semibold text-[#085078] mb-3">
+                            <h3 className="text-lg font-semibold text-[#4cb8c4] mb-3">
                                 {t("open_in_browser_title")}
                             </h3>
 
-                            <p className="text-sm text-gray-600 text-left">
+                            <p className="text-sm text-gray-300 text-left">
                                 {t("open_in_browser_description")}
                             </p>
                         </div>
@@ -120,41 +120,41 @@ export default function InstallPwaNotice() {
                                 </div>
                             </div>
 
-                            <h3 className="text-lg font-semibold text-[#085078] mb-3">
+                            <h3 className="text-lg font-semibold text-[#4cb8c4] mb-3">
                                 {t("how_to_install_iphone")}
                             </h3>
 
                             <div className="space-y-4 text-left">
                                 <div className="flex items-start gap-3">
                                     <div className="bg-[#4cb8c4]/20 rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                        <span className="text-[#085078] font-bold text-sm">1</span>
+                                        <span className="text-[#4cb8c4] font-bold text-sm">1</span>
                                     </div>
-                                    <p className="text-sm text-gray-600">
+                                    <p className="text-sm text-gray-300">
                                         <Trans i18nKey="ios_step1_before" components={{ b: <span className="font-semibold" /> }} /> <Share2 className="w-4 h-4 inline text-[#4cb8c4]" /> {t("ios_step1_after")}
                                     </p>
                                 </div>
 
                                 <div className="flex items-start gap-3">
                                     <div className="bg-[#4cb8c4]/20 rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                        <span className="text-[#085078] font-bold text-sm">2</span>
+                                        <span className="text-[#4cb8c4] font-bold text-sm">2</span>
                                     </div>
-                                    <p className="text-sm text-gray-600">
+                                    <p className="text-sm text-gray-300">
                                         <Trans i18nKey="ios_step2" components={{ 1: <span className="font-semibold" /> }} />
                                     </p>
                                 </div>
 
                                 <div className="flex items-start gap-3">
                                     <div className="bg-[#4cb8c4]/20 rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                        <span className="text-[#085078] font-bold text-sm">3</span>
+                                        <span className="text-[#4cb8c4] font-bold text-sm">3</span>
                                     </div>
-                                    <p className="text-sm text-gray-600">
+                                    <p className="text-sm text-gray-300">
                                         <Trans i18nKey="ios_step3" components={{ 1: <span className="font-semibold" /> }} />
                                     </p>
                                 </div>
                             </div>
 
                             <div className="mt-6 p-3 bg-white/50 rounded-lg">
-                                <p className="text-xs text-gray-500">
+                                <p className="text-xs text-gray-400">
                                     <Globe className="w-3 h-3 inline mr-1" />
                                     {t("after_install_native")}
                                 </p>
@@ -193,17 +193,17 @@ export default function InstallPwaNotice() {
                             </button>
 
                             {!installPrompt && installStep === "idle" && !showManualFallback && (
-                                <p className="text-sm text-gray-500 mt-4">
+                                <p className="text-sm text-gray-400 mt-4">
                                     {t("install_button_hint")}
                                 </p>
                             )}
 
                             {!installPrompt && installStep === "idle" && showManualFallback && (
                                 <div className="mt-6 bg-gradient-to-br from-[#4cb8c4]/10 to-[#085078]/10 rounded-2xl p-6 border border-[#4cb8c4]/20 text-left">
-                                    <h3 className="text-sm font-semibold text-[#085078] mb-3 text-center">
+                                    <h3 className="text-sm font-semibold text-[#4cb8c4] mb-3 text-center">
                                         {t("install_manual_android_title")}
                                     </h3>
-                                    <p className="text-sm text-gray-600">
+                                    <p className="text-sm text-gray-300">
                                         {t("install_manual_android_steps")}
                                     </p>
                                 </div>

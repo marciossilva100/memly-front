@@ -9,7 +9,7 @@ export default function DesktopBlockedNotice() {
 
     return (
         <div className="h-svh flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
-            <div className="flex-1 overflow-y-auto scrollbar-hide flex items-center justify-center px-8">
+            <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hide flex items-center justify-center px-8">
                 <div className="w-full max-w-md text-center py-10">
                     <div className="flex justify-center mb-4">
                         <img width={200} src={imgZaldemy} alt="Zaldemy" />

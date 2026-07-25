@@ -39,6 +39,8 @@ import TermosDeUso from './pages/TermosDeUso';
 import PoliticaPrivacidade from './pages/PoliticaPrivacidade';
 import Contato from './pages/Contato';
 import Faq from './pages/Faq';
+import LandingPage from './pages/LandingPage';
+import { isNativePlatform } from './utils/googleNativeAuth';
 
 // Contexto de conexão
 import { ConnectionProvider, useConnection } from './context/ConnectionContext';
@@ -103,7 +105,7 @@ function Layout({ titulo, setTitulo }) {
       {mostrarHeader && <Header titulo={titulo} />}
 
       <Routes>
-        <Route path="/" element={<Login setTitulo={setTitulo} />} />
+        <Route path="/" element={isNativePlatform() ? <Login setTitulo={setTitulo} /> : <LandingPage />} />
         <Route path="/login" element={<Login setTitulo={setTitulo} />} />
 
         <Route path="/cadastrar" element={<Cadastro setTitulo={setTitulo} />} />

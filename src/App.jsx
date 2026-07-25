@@ -79,6 +79,43 @@ function PrivateRoute({ children }) {
   return children;
 }
 
+// TODO: remover depois de confirmar a detecção de instalação da PWA em
+// dispositivos reais. Mostra num cantinho da tela o que o app está
+// enxergando (modo navegador vs. app instalado), pra facilitar diagnosticar
+// sem precisar adivinhar pelo que aparece na tela.
+function DebugStandaloneBadge() {
+  const [info, setInfo] = useState("");
+
+  useEffect(() => {
+    const displayModeStandalone = window.matchMedia('(display-mode: standalone)').matches;
+    const iosStandalone = window.navigator.standalone === true;
+    const native = isNativePlatform();
+    setInfo(`display-mode:${displayModeStandalone ? "standalone" : "browser"} iosStandalone:${iosStandalone} native:${native}`);
+  }, []);
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        bottom: 4,
+        right: 4,
+        zIndex: 99999,
+        fontSize: 10,
+        lineHeight: 1.3,
+        color: "rgba(255,255,255,0.7)",
+        background: "rgba(0,0,0,0.55)",
+        padding: "3px 6px",
+        borderRadius: 4,
+        pointerEvents: "none",
+        maxWidth: "90vw",
+        wordBreak: "break-all",
+      }}
+    >
+      {info}
+    </div>
+  );
+}
+
 // Login/cadastro só ficam acessíveis no app instalado (nativo ou PWA em modo
 // standalone). No navegador desktop mostramos um aviso; no navegador do
 // celular (ainda não instalado), a tela de instalação da PWA.
@@ -118,6 +155,8 @@ function Layout({ titulo, setTitulo }) {
     <>
       {/* Indicador de status de conexão */}
       <ConnectionStatus />
+
+      <DebugStandaloneBadge />
 
       {mostrarHeader && <Header titulo={titulo} />}
 

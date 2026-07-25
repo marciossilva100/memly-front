@@ -17,7 +17,8 @@ import imgZaldemy from "../assets/img/zaldemy.png";
 
 const iconesRecursos = [Languages, Layers, Sparkles, Volume2, BarChart3, Share2];
 
-// TODO: substituir pelo link real assim que o app for aprovado na Aptoide
+// TODO: trocar para true e colocar o link real assim que o app for aprovado na Aptoide
+const APTOIDE_DISPONIVEL = false;
 const APTOIDE_URL = "https://zaldemy.pt.aptoide.com/";
 
 export default function LandingPage() {
@@ -44,6 +45,8 @@ export default function LandingPage() {
             document.body.style.overflow = original;
         };
     }, []);
+
+    const mostrarAptoide = plataforma === "android" && APTOIDE_DISPONIVEL;
 
     const recursos = [1, 2, 3, 4, 5, 6].map((n, index) => ({
         icone: iconesRecursos[index],
@@ -196,7 +199,7 @@ export default function LandingPage() {
                     </div>
 
                     <div className="shrink-0 flex flex-col sm:flex-row items-center gap-3">
-                        {plataforma === "android" && (
+                        {mostrarAptoide && (
                             <a
                                 href={APTOIDE_URL}
                                 target="_blank"
@@ -211,7 +214,7 @@ export default function LandingPage() {
                         <Link
                             to="/cadastrar"
                             className={
-                                plataforma === "android"
+                                mostrarAptoide
                                     ? "text-white px-8 py-3 rounded-full text-lg border border-gray-700 hover:bg-white/5 transition-colors"
                                     : "bg-[#4cb8c4] text-white px-8 py-3 rounded-full text-lg font-semibold hover:brightness-110 transition"
                             }

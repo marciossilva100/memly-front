@@ -1,7 +1,9 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Mail } from "lucide-react";
 
 export default function Contato() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const email = "adm@zaldemy.com";
 
@@ -20,11 +22,11 @@ export default function Contato() {
                 <div className="max-w-2xl mx-auto text-white">
                     <div className="flex items-center gap-2 mb-1">
                         <Mail className="w-6 h-6 text-[#4cb8c4]" />
-                        <h1 className="text-2xl font-bold">Contato</h1>
+                        <h1 className="text-2xl font-bold">{t("contact")}</h1>
                     </div>
 
                     <p className="text-sm text-gray-300 mt-4">
-                        Tem alguma dúvida, sugestão ou problema com o Zaldemy? Fale com a gente:
+                        {t("contact_page_description")}
                     </p>
 
                     <a

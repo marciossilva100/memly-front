@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { useTranslation, Trans } from "react-i18next";
 import { Download, Smartphone, Share2, Globe } from "lucide-react";
 import imgZaldemy from "../assets/img/zaldemy.png";
+import { getInstallPrompt, onInstallPromptChange, clearInstallPrompt } from "../utils/pwaInstallPrompt";
 
 export default function InstallPwaNotice() {
     const { t } = useTranslation();
-    const [installPrompt, setInstallPrompt] = useState(null);
+    const [installPrompt, setInstallPrompt] = useState(() => getInstallPrompt());
     const [isIOS, setIsIOS] = useState(false);
     const [isInAppBrowser, setIsInAppBrowser] = useState(false);
     const [showManualFallback, setShowManualFallback] = useState(false);
@@ -17,11 +18,10 @@ export default function InstallPwaNotice() {
         const inApp = /Instagram|FBAN|FBAV|FB_IAB|Line\/|MicroMessenger|TikTok|BytedanceWebview/i.test(navigator.userAgent);
         setIsInAppBrowser(inApp);
 
-        const handler = (e) => {
-            e.preventDefault();
-            setInstallPrompt(e);
-        };
-        window.addEventListener("beforeinstallprompt", handler);
+        // O evento pode já ter sido capturado antes deste componente montar
+        // (ver src/utils/pwaInstallPrompt.js) - onInstallPromptChange cobre
+        // os dois casos: já capturado, ou capturado só a partir de agora.
+        const unsubscribe = onInstallPromptChange(setInstallPrompt);
 
         // O Chrome só dispara beforeinstallprompt quando decide, pela própria
         // heurística de engajamento, que o app "merece" ser instalável — o que
@@ -30,7 +30,7 @@ export default function InstallPwaNotice() {
         const timer = setTimeout(() => setShowManualFallback(true), 4000);
 
         return () => {
-            window.removeEventListener("beforeinstallprompt", handler);
+            unsubscribe();
             clearTimeout(timer);
         };
     }, []);
@@ -45,6 +45,7 @@ export default function InstallPwaNotice() {
             console.log("Usuário instalou o app");
         }
 
+        clearInstallPrompt();
         setInstallPrompt(null);
     }
 

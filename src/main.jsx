@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { SplashScreen } from '@capacitor/splash-screen'
+import './utils/pwaInstallPrompt'
 import './index.css'
 import './App.css'
 import './i18n'

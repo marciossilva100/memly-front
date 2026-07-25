@@ -13,6 +13,7 @@ import { useTranslation, Trans } from "react-i18next";
 import { isNativePlatform, signInWithGoogleNative } from "../utils/googleNativeAuth";
 import { startGoogleRedirectLogin, consumeGoogleRedirectToken } from "../utils/googleRedirectAuth";
 import { isAdminEmail } from "../utils/adminEmails";
+import { getInstallPrompt, onInstallPromptChange, clearInstallPrompt } from "../utils/pwaInstallPrompt";
 
 export default function Login({ setTitulo }) {
     const { t } = useTranslation();
@@ -20,7 +21,7 @@ export default function Login({ setTitulo }) {
     const [loading, setLoading] = useState(false);
     const [finish, setFinish] = useState(false)
     const { checkAuth, syncAuth } = useAuth();
-    const [installPrompt, setInstallPrompt] = useState(null);
+    const [installPrompt, setInstallPrompt] = useState(() => getInstallPrompt());
     const [isStandalone, setIsStandalone] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const [forceDesktop, setForceDesktop] = useState(false);
@@ -68,15 +69,10 @@ export default function Login({ setTitulo }) {
         const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         setIsMobile(mobile);
 
-        const handler = (e) => {
-            e.preventDefault()
-            setInstallPrompt(e)
-        }
-
-        window.addEventListener("beforeinstallprompt", handler)
+        const unsubscribe = onInstallPromptChange(setInstallPrompt)
 
         return () => {
-            window.removeEventListener("beforeinstallprompt", handler)
+            unsubscribe()
         }
 
     }, [])
@@ -101,6 +97,7 @@ export default function Login({ setTitulo }) {
             console.log("Usuário instalou o app")
         }
 
+        clearInstallPrompt()
         setInstallPrompt(null)
     }
 

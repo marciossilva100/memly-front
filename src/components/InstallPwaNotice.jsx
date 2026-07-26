@@ -165,8 +165,8 @@ export default function InstallPwaNotice() {
                                 </div>
                             </div>
 
-                            <div className="mt-6 p-3 bg-white/50 rounded-lg">
-                                <p className="text-xs text-gray-400">
+                            <div className="mt-6 p-3 bg-white/10 rounded-lg">
+                                <p className="text-xs text-gray-300">
                                     <Globe className="w-3 h-3 inline mr-1" />
                                     {t("after_install_native")}
                                 </p>

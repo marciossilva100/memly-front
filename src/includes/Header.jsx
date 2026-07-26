@@ -76,6 +76,11 @@ export default function Header({ titulo }) {
         (l) => l.sigla === user?.native_language
     );
 
+    // Não faz sentido aprender o mesmo idioma que já é o nativo
+    const idiomasParaAprender = languageList.filter(
+        (l) => l.sigla !== user?.native_language
+    );
+
     const selectRef = useRef(null);
 
     async function handleShareApp() {
@@ -240,7 +245,7 @@ export default function Header({ titulo }) {
                                     {/* Dropdown */}
                                     {openSelect && (
                                         <div className="absolute top-12 left-0 w-full from-gray-800 to-gray-800 bg-gradient-to-br border rounded-xl shadow-lg z-50 max-h-60 overflow-auto">
-                                            {languageList.map((item) => (
+                                            {idiomasParaAprender.map((item) => (
                                                 <div
                                                     key={item.id}
                                                     onClick={() => handleSelectLanguage(item)}

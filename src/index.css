@@ -142,6 +142,11 @@ html {
 .scrollbar-hide {
   -ms-overflow-style: none;  /* IE e Edge antigo */
   scrollbar-width: none;     /* Firefox */
+  /* Sem isso, iOS Safari pode não responder ao arrastar o dedo em divs com
+     overflow aninhados dentro de layouts flex/fixed - a rolagem existe
+     (dá pra confirmar via JS, scrollHeight > clientHeight), mas o toque
+     simplesmente não a aciona. */
+  -webkit-overflow-scrolling: touch;
 }
 
 .scrollbar-hide::-webkit-scrollbar {

@@ -275,17 +275,17 @@ export default function ListCategoria() {
                     <div className='flex  left-0   w-full justify-center py-2 '>
                         <button type="button" onClick={() => navigate('/home')}>
                             <div className=' p-3 flex justify-center items-center'>
-                                <Home width={38} height={38} className='text-green-400' />
+                                <Home width={38} height={38} className='text-[#4cb8c4]' />
                             </div>
                         </button>
                         <button type="button" onClick={() => navigate('/configuracoes')}>
                             <div className=' p-3 flex justify-center items-center'>
-                                <Settings width={38} height={38} className='text-purple-400' />
+                                <Settings width={38} height={38} className='text-[#4cb8c4]' />
                             </div>
                         </button>
                         <button type="button" onClick={() => navigate('/metricas')}>
                             <div className=' p-3 flex justify-center items-center'>
-                                <BarChart3 className='text-blue-400' width={38} height={38} />
+                                <BarChart3 className='text-[#4cb8c4]' width={38} height={38} />
 
                                 {/*  <BookOpen className='text-white' /> */}
                                 {/* <img src={imgEstatistica} alt="" width={40} /> */}

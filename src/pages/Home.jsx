@@ -471,7 +471,7 @@ export default function Home() {
                         <button type="button" onClick={() => navigate('/configuracoes')}>
                             <div className=' p-3 flex justify-center items-center'>
                                 {/*  <BookOpen className='text-white' /> */}
-                                <Settings width={38} height={38} className='text-purple-400' />
+                                <Settings width={38} height={38} className='text-[#4cb8c4]' />
                                 {/* <img src={imgSetting} alt="" width={40} /> */}
                             </div>
                         </button>
@@ -483,7 +483,7 @@ export default function Home() {
                         </button> */}
                         <button type="button" onClick={() => navigate('/metricas')}>
                             <div className=' p-3 flex justify-center items-center'>
-                                <BarChart3 className='text-blue-400' width={38} height={38} />
+                                <BarChart3 className='text-[#4cb8c4]' width={38} height={38} />
 
                                 {/*  <BookOpen className='text-white' /> */}
                                 {/* <img src={imgEstatistica} alt="" width={40} /> */}

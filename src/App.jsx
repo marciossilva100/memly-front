@@ -48,7 +48,6 @@ import { isMobileWeb, isStandaloneApp } from './utils/googleNativeAuth';
 // Contexto de conexão
 import { ConnectionProvider, useConnection } from './context/ConnectionContext';
 import { initAnalytics, trackPageView } from './utils/analytics';
-import { setAppVh } from './utils/setAppVh';
 
 function PrivateRoute({ children }) {
   const { t } = useTranslation();
@@ -113,16 +112,6 @@ function Layout({ titulo, setTitulo }) {
 
   useEffect(() => {
     trackPageView(location.pathname)
-  }, [location.pathname])
-
-  // A troca de rota é client-side (sem reload), mas a barra de endereço do
-  // Safari pode recolher/reaparecer sozinha ao navegar pra uma página mais
-  // curta - sem disparar nenhum evento de resize. Recalcula --app-vh depois
-  // de cada troca de rota (com um pequeno delay pra deixar a barra assentar)
-  // pra não ficar com uma medida de altura desatualizada.
-  useEffect(() => {
-    const timer = setTimeout(setAppVh, 100)
-    return () => clearTimeout(timer)
   }, [location.pathname])
 
   return (

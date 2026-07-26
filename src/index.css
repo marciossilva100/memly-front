@@ -108,14 +108,6 @@ html {
   overscroll-behavior: none;
 }
 
-/* Alternativa a h-svh/h-dvh para navegadores sem suporte a essas unidades
-   (Safari só ganhou suporte em meados de 2022) - --app-vh é calculado via JS
-   em src/utils/setAppVh.js a partir de window.innerHeight, então já nasce
-   descontando a barra de endereço, sem precisar da unidade CSS nova. */
-.h-app-svh {
-  height: 100vh;
-  height: calc(var(--app-vh, 1vh) * 100);
-}
 .center-vertical {
   min-height: 100vh;
   position: relative;

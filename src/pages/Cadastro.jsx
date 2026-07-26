@@ -11,10 +11,12 @@ import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 import { useAuth } from "../context/AuthContext";
 import { isNativePlatform, signInWithGoogleNative } from "../utils/googleNativeAuth";
 import { startGoogleRedirectLogin, consumeGoogleRedirectToken } from "../utils/googleRedirectAuth";
+import useEnableBodyScroll from "../hooks/useEnableBodyScroll";
 
 export default function Cadastro({ setTitulo }) {
     const { t } = useTranslation();
     const { syncAuth } = useAuth();
+    useEnableBodyScroll();
 
     const [loading, setLoading] = useState(false);
     const [finish, setFinish] = useState(false)
@@ -212,9 +214,8 @@ export default function Cadastro({ setTitulo }) {
     if (finish) return;
 
     return (
-        <div className="max-w-6xl mx-auto px-4 px-8 py-4 h-app-svh flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
-            <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hide flex flex-col">
-                <div className="w-full max-w-md text-center mt-4 m-auto">
+        <div className="max-w-6xl mx-auto px-4 px-8 py-4 min-h-screen flex flex-col items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
+                <div className="w-full max-w-md text-center mt-4">
 
                     <div className="flex justify-center mb-2">
                         <img width={200} src={imgZaldemy} alt="Login" />
@@ -354,7 +355,6 @@ export default function Cadastro({ setTitulo }) {
                     </p>
 
                 </div>
-            </div>
         </div>
     )
 }

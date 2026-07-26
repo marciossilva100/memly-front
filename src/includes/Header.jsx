@@ -196,7 +196,7 @@ export default function Header({ titulo }) {
             {mostrarSeletorIdioma ? (
                 <header className="from-gray-900 to-gray-800 bg-gradient-to-br">
                     <div className="w-full mx-auto px-4">
-                        <div className="flex h-16 ">
+                        <div className="flex h-16 items-center">
 
                             {/* MENU ☰ */}
                             <button

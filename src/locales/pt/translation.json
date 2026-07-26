@@ -379,5 +379,6 @@
     "install_installing": "Instalando...",
     "install_installed": "Instalado! Abra o Zaldemy pela tela inicial",
     "pwa_already_installed_title": "Você já instalou o Zaldemy!",
-    "pwa_already_installed_message": "Abra pelo ícone do Zaldemy na tela inicial do seu celular para continuar."
+    "pwa_already_installed_message": "Abra pelo ícone do Zaldemy na tela inicial do seu celular para continuar.",
+    "premium_feature_required": "Esse recurso é exclusivo do plano Premium."
 }

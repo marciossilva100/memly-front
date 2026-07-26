@@ -14,30 +14,33 @@ export const playAudio = async (text, user, ia = false, lang = null) => {
     }
     currentAudio = null;
 
-    // fluxo ElevenLabs (mantido)
-    // if (user.plano === 1 && user.id === 47 && !ia) {
-    if (user.plano === 1 && user.id === 47) {
+    // Voz natural (ElevenLabs) é exclusiva do plano premium, com limite diário
+    // controlado pelo backend. Se não vier áudio (não é premium, limite do dia
+    // atingido, ou qualquer erro), cai para a voz padrão abaixo em vez de ficar
+    // em silêncio.
+    if (user.plano === 1) {
         const url = await gerarAudio(text);
-        if (!url) return;
 
-        // uma chamada mais recente já assumiu o controle enquanto aguardávamos o áudio
-        if (myToken !== currentToken) {
-            URL.revokeObjectURL(url);
+        if (url) {
+            // uma chamada mais recente já assumiu o controle enquanto aguardávamos o áudio
+            if (myToken !== currentToken) {
+                URL.revokeObjectURL(url);
+                return;
+            }
+
+            const audio = new Audio(url);
+            currentAudio = audio;
+
+            audio.playbackRate = 0.9;
+            audio.play().catch(() => {});
+
+            audio.onended = () => {
+                URL.revokeObjectURL(url);
+                currentAudio = null;
+            };
+
             return;
         }
-
-        const audio = new Audio(url);
-        currentAudio = audio;
-
-        audio.playbackRate = 0.9;
-        audio.play().catch(() => {});
-
-        audio.onended = () => {
-            URL.revokeObjectURL(url);
-            currentAudio = null;
-        };
-
-        return;
     }
 
     try {
@@ -114,7 +117,8 @@ const gerarAudio = async (texto) => {
         const res = await fetch(`${API_URL}/controller/elevenlabs.php`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
             },
             body: JSON.stringify({
                 action: "stream_audio",

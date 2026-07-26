@@ -377,5 +377,6 @@
     "install_installing": "インストール中...",
     "install_installed": "インストール完了！ホーム画面からZaldemyを開いてください",
     "pwa_already_installed_title": "Zaldemyはすでにインストール済みです！",
-    "pwa_already_installed_message": "続けるには、ホーム画面のZaldemyアイコンから開いてください。"
+    "pwa_already_installed_message": "続けるには、ホーム画面のZaldemyアイコンから開いてください。",
+    "premium_feature_required": "この機能はプレミアムプラン限定です。"
 }

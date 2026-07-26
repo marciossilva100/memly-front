@@ -377,5 +377,6 @@
     "install_installing": "Wird installiert...",
     "install_installed": "Installiert! Öffne Zaldemy über den Startbildschirm",
     "pwa_already_installed_title": "Du hast Zaldemy bereits installiert!",
-    "pwa_already_installed_message": "Öffne die App über das Zaldemy-Symbol auf deinem Startbildschirm, um fortzufahren."
+    "pwa_already_installed_message": "Öffne die App über das Zaldemy-Symbol auf deinem Startbildschirm, um fortzufahren.",
+    "premium_feature_required": "Diese Funktion ist exklusiv für den Premium-Plan."
 }

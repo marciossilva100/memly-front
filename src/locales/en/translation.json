@@ -379,5 +379,6 @@
     "install_installing": "Installing...",
     "install_installed": "Installed! Open Zaldemy from your home screen",
     "pwa_already_installed_title": "You've already installed Zaldemy!",
-    "pwa_already_installed_message": "Open it from the Zaldemy icon on your phone's home screen to continue."
+    "pwa_already_installed_message": "Open it from the Zaldemy icon on your phone's home screen to continue.",
+    "premium_feature_required": "This feature is exclusive to the Premium plan."
 }

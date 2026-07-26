@@ -377,5 +377,6 @@
     "install_installing": "설치 중...",
     "install_installed": "설치 완료! 홈 화면에서 Zaldemy를 여세요",
     "pwa_already_installed_title": "이미 Zaldemy를 설치하셨네요!",
-    "pwa_already_installed_message": "계속하려면 휴대폰 홈 화면의 Zaldemy 아이콘에서 여세요."
+    "pwa_already_installed_message": "계속하려면 휴대폰 홈 화면의 Zaldemy 아이콘에서 여세요.",
+    "premium_feature_required": "이 기능은 프리미엄 플랜 전용입니다."
 }

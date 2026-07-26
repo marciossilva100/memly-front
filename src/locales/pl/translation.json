@@ -377,5 +377,6 @@
     "install_installing": "Instalowanie...",
     "install_installed": "Zainstalowano! Otwórz Zaldemy z ekranu głównego",
     "pwa_already_installed_title": "Masz już zainstalowany Zaldemy!",
-    "pwa_already_installed_message": "Otwórz aplikację z ikony Zaldemy na ekranie głównym telefonu, aby kontynuować."
+    "pwa_already_installed_message": "Otwórz aplikację z ikony Zaldemy na ekranie głównym telefonu, aby kontynuować.",
+    "premium_feature_required": "Ta funkcja jest dostępna wyłącznie w planie Premium."
 }

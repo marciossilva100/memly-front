@@ -377,5 +377,6 @@
     "install_installing": "Установка...",
     "install_installed": "Установлено! Откройте Zaldemy с главного экрана",
     "pwa_already_installed_title": "Вы уже установили Zaldemy!",
-    "pwa_already_installed_message": "Откройте приложение через значок Zaldemy на главном экране телефона, чтобы продолжить."
+    "pwa_already_installed_message": "Откройте приложение через значок Zaldemy на главном экране телефона, чтобы продолжить.",
+    "premium_feature_required": "Эта функция доступна только в плане Premium."
 }

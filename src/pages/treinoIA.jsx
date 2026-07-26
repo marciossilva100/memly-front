@@ -44,13 +44,20 @@ export default function TreinoIA() {
                 return res.json();
             })
             .then(data => {
-                if (!data.success) throw new Error(data.error || 'Erro desconhecido');
+                if (!data.success) {
+                    if (data.premium_necessario) {
+                        throw new Error(t("premium_feature_required"));
+                    }
+                    throw new Error(data.error || 'Erro desconhecido');
+                }
                 setTextoTraduzido(data.traduzido);
                 setTextoNativo(data.nativo);
             })
             .catch(err => {
                 console.error(err);
-                setError(t("could_not_generate_training"));
+                setError(err.message === t("premium_feature_required")
+                    ? err.message
+                    : t("could_not_generate_training"));
             })
             .finally(() => setLoading(false));
     }, []);

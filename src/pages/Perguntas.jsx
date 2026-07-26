@@ -18,6 +18,7 @@ export default function Perguntas() {
     const { user } = useAuth();
 
     // ✅ NOVOS STATES
+    const [premiumRequired, setPremiumRequired] = useState(false);
     const [limitReached, setLimitReached] = useState(false);
     const [totalToday, setTotalToday] = useState(0);
     const [isCorrect, setIsCorrect] = useState(false);
@@ -40,6 +41,11 @@ export default function Perguntas() {
             })
             .then(data => {
                 if (!data.success) {
+                    if (data.premium_necessario) {
+                        setPremiumRequired(true);
+                        setQuestion('');
+                        return;
+                    }
                     setError(data.error || 'Erro desconhecido');
                     setQuestion('');
                     return;
@@ -158,6 +164,23 @@ export default function Perguntas() {
                     alt={t("loading")}
                     className="w-28 animate-pulse"
                 />
+            </div>
+        );
+    }
+
+    if (premiumRequired) {
+        return (
+            <div className="min-h-[calc(100vh-70px)] flex flex-col items-center justify-center text-center p-6 ">
+                <h1 className="text-2xl font-semibold text-[#085078] mb-4">
+                    {t("premium_feature_required")}
+                </h1>
+
+                <button
+                    onClick={() => navigate(-1)}
+                    className="mt-6 px-6 py-3 rounded-full bg-[#4cb8c4] text-white"
+                >
+                    {t("back")}
+                </button>
             </div>
         );
     }

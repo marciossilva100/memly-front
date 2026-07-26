@@ -377,5 +377,6 @@
     "install_installing": "Installeren...",
     "install_installed": "Geïnstalleerd! Open Zaldemy vanaf je startscherm",
     "pwa_already_installed_title": "Je hebt Zaldemy al geïnstalleerd!",
-    "pwa_already_installed_message": "Open de app via het Zaldemy-icoon op je startscherm om verder te gaan."
+    "pwa_already_installed_message": "Open de app via het Zaldemy-icoon op je startscherm om verder te gaan.",
+    "premium_feature_required": "Deze functie is exclusief voor het Premium-abonnement."
 }

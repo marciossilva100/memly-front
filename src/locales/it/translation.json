@@ -377,5 +377,6 @@
     "install_installing": "Installazione in corso...",
     "install_installed": "Installato! Apri Zaldemy dalla schermata Home",
     "pwa_already_installed_title": "Hai già installato Zaldemy!",
-    "pwa_already_installed_message": "Aprila dall'icona di Zaldemy nella schermata Home del tuo cellulare per continuare."
+    "pwa_already_installed_message": "Aprila dall'icona di Zaldemy nella schermata Home del tuo cellulare per continuare.",
+    "premium_feature_required": "Questa funzione è esclusiva del piano Premium."
 }

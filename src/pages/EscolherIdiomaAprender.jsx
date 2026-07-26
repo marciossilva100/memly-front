@@ -43,6 +43,11 @@ export default function EscolherIdiomaAprender() {
     (l) => l.id == form.learning_language
   );
 
+  // Não faz sentido aprender o mesmo idioma que já é o nativo
+  const idiomasParaAprender = languageList.filter(
+    (l) => l.sigla !== user?.native_language
+  );
+
   useEffect(() => {
     if (user?.step > 1) {
       navigate("/referenciausuario", { replace: true });
@@ -221,7 +226,7 @@ export default function EscolherIdiomaAprender() {
               {/* DROPDOWN */}
               {openSelect && (
                 <div className="absolute top-14 left-0 w-full bg-gray-900 border border-blue-500 rounded-xl shadow-lg z-50 max-h-60 overflow-auto">
-                  {languageList.map((item) => (
+                  {idiomasParaAprender.map((item) => (
                     <div
                       key={item.id}
                       onClick={() => {

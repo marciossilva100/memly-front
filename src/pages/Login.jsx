@@ -264,7 +264,7 @@ export default function Login({ setTitulo }) {
         const currentUrl = window.location.href;
 
         return (
-            <div className="w-full mx-auto px-8 section-login py-4 h-svh flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
+            <div className="w-full mx-auto px-8 section-login py-4 h-app-svh flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
                 <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hide flex flex-col">
                     <div className="w-full max-w-md text-center m-auto">
                         {/* Logo */}
@@ -386,7 +386,7 @@ export default function Login({ setTitulo }) {
 
     // Tela de login normal (para desktop ou quando já está instalado)
     return (
-        <div className="max-w-6xl mx-auto px-8 section-login py-4 h-svh flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
+        <div className="max-w-6xl mx-auto px-8 section-login py-4 h-app-svh flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
             <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hide flex flex-col">
                 <div className="w-full max-w-md text-center m-auto">
 

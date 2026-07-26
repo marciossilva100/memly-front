@@ -8,7 +8,7 @@ export default function DesktopBlockedNotice() {
     const navigate = useNavigate();
 
     return (
-        <div className="h-svh flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
+        <div className="h-app-svh flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
             <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hide flex flex-col px-8">
                 <div className="w-full max-w-md text-center py-10 m-auto">
                     <div className="flex justify-center mb-4">

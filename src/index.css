@@ -217,6 +217,25 @@ input{
     transform: rotateY(180deg) translateZ(1px);
 }
 
+/* Guia da primeira categoria (Home) */
+@keyframes pulse-glow-ring {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(76, 184, 196, 0.55); }
+  50% { box-shadow: 0 0 0 14px rgba(76, 184, 196, 0); }
+}
+
+.animate-pulse-glow-ring {
+  animation: pulse-glow-ring 2s ease-in-out infinite;
+}
+
+@keyframes gentle-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-gentle-bounce {
+  animation: gentle-bounce 1.6s ease-in-out infinite;
+}
+
 
 
 

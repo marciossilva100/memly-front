@@ -3,6 +3,7 @@ import { idiomas } from "../data/idiomas"
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura-v2.png"
+import useEnableBodyScroll from "../hooks/useEnableBodyScroll";
 
 import { Navigate, useNavigate } from "react-router-dom";
 
@@ -29,6 +30,7 @@ const flags = {
 export default function EscolherIdiomaNativo() {
   const { t } = useTranslation();
   const { user, setUser, checkAuth } = useAuth();
+  useEnableBodyScroll();
   const [erro, setErro] = useState('')
   const [languageList, setLanguageList] = useState([])
   const [finishStep, setFinishStep] = useState(false)
@@ -164,9 +166,8 @@ export default function EscolherIdiomaNativo() {
   return (
     <div
       className="
-    
-        h-[100svh]
-        overflow-hidden
+
+        min-h-screen
         flex
         flex-col
         px-10

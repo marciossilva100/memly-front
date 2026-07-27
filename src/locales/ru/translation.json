@@ -30,6 +30,7 @@
     "premium_plan": "Премиум-план",
     "added_successfully": "Успешно добавлено",
     "add_category": "Добавить категорию",
+    "first_category_hint": "Нажмите здесь, чтобы создать первую категорию!",
     "metrics": "Показатели",
     "add_your_category": "Добавьте свою категорию",
     "existing_categories": "Существующие категории",

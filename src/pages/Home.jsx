@@ -26,8 +26,11 @@ const AVATAR_COLORS = [
 ];
 
 export default function Home() {
-    const { user, setUser, categoriasLoading, setCategoriasLoading } = useAuth();
+    const { user, setUser, setCategoriasLoading } = useAuth();
     const [open, setOpen] = useState(false);
+    const [mostrarGuiaCategoria, setMostrarGuiaCategoria] = useState(
+        () => localStorage.getItem("zaldemy_guia_add_categoria_pendente") === "1"
+    );
     const [openCategoriaEditar, setOpenCategoriaEditar] = useState(false);
     const [openTreino, setOpenTreino] = useState(false)
     const [categorias, setCategorias] = useState([]);
@@ -449,7 +452,7 @@ export default function Home() {
             <div className=" sticky  z-10 bottom-0 text-center w-full justify-items-center justify-center items-center pt-4 pb-16">
 
                 <div className="relative inline-block">
-                    {!categoriasLoading && categorias.length === 0 && (
+                    {mostrarGuiaCategoria && (
                         <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-52 z-20 pointer-events-none animate-gentle-bounce">
                             <div className="bg-[#4cb8c4] text-white text-sm font-medium px-4 py-2 rounded-xl shadow-lg text-center">
                                 {t("first_category_hint")}
@@ -469,8 +472,14 @@ export default function Home() {
                         font-medium
                        text-lg
                         transition
-                        ${!categoriasLoading && categorias.length === 0 ? "animate-pulse-glow-ring" : ""}
-                        `} onClick={() => setOpen(true)}>
+                        ${mostrarGuiaCategoria ? "animate-pulse-glow-ring" : ""}
+                        `} onClick={() => {
+                        setOpen(true);
+                        if (mostrarGuiaCategoria) {
+                            setMostrarGuiaCategoria(false);
+                            localStorage.removeItem("zaldemy_guia_add_categoria_pendente");
+                        }
+                    }}>
                         <Plus size={20} />
                         {t("add_category")}
                     </button>

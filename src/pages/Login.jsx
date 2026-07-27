@@ -1,18 +1,16 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, Navigate } from "react-router-dom";
-import { Mail, Download, Globe } from "lucide-react";
+import { Mail, Download } from "lucide-react";
 import imgGoogle from '../assets/img/google.png'
 import imgFacebook from '../assets/img/logo-face.webp'
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 import imgZaldemy from "../assets/img/zaldemy.png"
 import { useAuth } from "../context/AuthContext";
 import { useGoogleLogin } from '@react-oauth/google';
-import { QRCodeCanvas } from "qrcode.react";
 import axios from "axios";
-import { useTranslation, Trans } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { isNativePlatform, signInWithGoogleNative } from "../utils/googleNativeAuth";
 import { startGoogleRedirectLogin, consumeGoogleRedirectToken } from "../utils/googleRedirectAuth";
-import { isAdminEmail } from "../utils/adminEmails";
 import { getInstallPrompt, onInstallPromptChange, clearInstallPrompt } from "../utils/pwaInstallPrompt";
 import useEnableBodyScroll from "../hooks/useEnableBodyScroll";
 
@@ -26,10 +24,6 @@ export default function Login({ setTitulo }) {
     const [installPrompt, setInstallPrompt] = useState(() => getInstallPrompt());
     const [isStandalone, setIsStandalone] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
-    const [forceDesktop, setForceDesktop] = useState(false);
-    const [showAdminGate, setShowAdminGate] = useState(false);
-    const [adminGateEmail, setAdminGateEmail] = useState('');
-    const [adminGateErro, setAdminGateErro] = useState('');
     const { user, setUser } = useAuth();
     const appUrl = "https://zaldem.com"; // troque pelo seu domínio
     const API_URL = import.meta.env.VITE_API_URL;
@@ -261,130 +255,8 @@ export default function Login({ setTitulo }) {
         );
     }
 
-    // NOVA FUNCIONALIDADE: Se for acesso por desktop (não mobile), mostrar apenas QR Code
-    if (!isMobile && !forceDesktop) {
-        const currentUrl = window.location.href;
-
-        return (
-            <div className="w-full mx-auto px-8 section-login py-4 min-h-screen flex flex-col items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
-                <div className="w-full max-w-md text-center">
-                    {/* Logo */}
-                    <div className="flex justify-center mb-6">
-                        <img width={240} src={imgZaldemy} alt="Zaldemy" />
-                    </div>
-
-                    <h2 className="text-[#41a9e3] text-2xl font-bold mb-4">
-                        {t("access_from_phone")}
-                    </h2>
-
-                    <p className="text-white mb-6">
-                        {t("scan_qr_instructions")}
-                    </p>
-
-                    {/* QR Code */}
-                    <div className="bg-white p-4 rounded-2xl inline-block mb-6 shadow-xl">
-                        <QRCodeCanvas
-                            value={currentUrl}
-                            size={200}
-                            bgColor="#ffffff"
-                            fgColor="#085078"
-                            level="H"
-                            includeMargin={true}
-                        />
-                    </div>
-
-                    {/* Instruções */}
-                    <div className="bg-gradient-to-br from-[#4cb8c4]/10 to-[#085078]/10 rounded-2xl p-6 border border-[#4cb8c4]/20 text-left">
-                        <h3 className="text-lg font-semibold text-[#085078] mb-3 text-center">
-                            {t("how_to_install_mobile")}
-                        </h3>
-
-                        <div className="space-y-4">
-                            <div className="flex items-start gap-3">
-                                <div className="bg-[#4cb8c4]/20 rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                    <span className="text-[#085078] font-bold text-sm">1</span>
-                                </div>
-                                <p className="text-sm text-white">
-                                    {t("scan_qr_step")}
-                                </p>
-                            </div>
-
-                            <div className="flex items-start gap-3">
-                                <div className="bg-[#4cb8c4]/20 rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                    <span className="text-[#085078] font-bold text-sm">2</span>
-                                </div>
-                                <p className="text-sm text-white">
-                                    <Trans i18nKey="iphone_step2" components={{ 1: <span className="font-semibold" /> }} />
-                                </p>
-                            </div>
-
-                            <div className="flex items-start gap-3">
-                                <div className="bg-[#4cb8c4]/20 rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                    <span className="text-[#085078] font-bold text-sm">3</span>
-                                </div>
-                                <p className="text-sm text-white">
-                                    <Trans i18nKey="android_step3" components={{ 1: <span className="font-semibold" /> }} />
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="mt-6">
-                        <p className="text-xs text-gray-400">
-                            <Globe className="w-3 h-3 inline mr-1" />
-                            {t("after_install_hint")}
-                        </p>
-                    </div>
-
-                    {/* Acesso pelo computador: restrito ao e-mail de administrador */}
-                    <div className="mt-8">
-                        {!showAdminGate ? (
-                            <button
-                                onClick={() => setShowAdminGate(true)}
-                                className="text-[#41a9e3] hover:text-[#085078] transition-colors text-sm underline"
-                            >
-                                {t("continue_on_desktop")}
-                            </button>
-                        ) : (
-                            <form
-                                onSubmit={(e) => {
-                                    e.preventDefault();
-                                    if (isAdminEmail(adminGateEmail)) {
-                                        setForceDesktop(true);
-                                    } else {
-                                        setAdminGateErro(t("desktop_access_admin_only"));
-                                    }
-                                }}
-                                className="flex flex-col items-center gap-2"
-                            >
-                                <input
-                                    type="email"
-                                    value={adminGateEmail}
-                                    onChange={(e) => {
-                                        setAdminGateEmail(e.target.value);
-                                        setAdminGateErro('');
-                                    }}
-                                    placeholder={t("email")}
-                                    className="w-full max-w-xs rounded-lg border border-[#4cb8c4]/30 bg-white/10 px-3 py-2 text-sm text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#41a9e3]"
-                                />
-                                {adminGateErro && (
-                                    <p className="text-xs text-red-400">{adminGateErro}</p>
-                                )}
-                                <button
-                                    type="submit"
-                                    className="text-[#41a9e3] hover:text-[#085078] transition-colors text-sm underline"
-                                >
-                                    {t("confirm")}
-                                </button>
-                            </form>
-                        )}
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    // Tela de login normal (para desktop ou quando já está instalado)
+    // Tela de login normal (o acesso por desktop já é bloqueado antes disso,
+    // no MobileOnlyRoute do App.jsx)
     return (
         <div className="max-w-6xl mx-auto px-8 section-login py-4 min-h-screen flex flex-col items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
             <div className="w-full max-w-md text-center">

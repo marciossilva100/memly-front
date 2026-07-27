@@ -68,6 +68,21 @@ function PrivateRoute({ children }) {
   }
 
   if (!user) {
+    // Se existe um token salvo, o usuário provavelmente acabou de autenticar
+    // (login/cadastro) e o contexto ainda não terminou de carregar - mostra
+    // loading em vez de mandar pra tela de login, evitando a piscada da tela
+    // de login aparecendo por um instante antes do redirecionamento correto.
+    if (localStorage.getItem("token")) {
+      return (
+        <div className="flex h-screen items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
+          <img
+            src={imgChapeuFormatura}
+            alt={t("loading")}
+            className="w-28 animate-pulse"
+          />
+        </div>
+      );
+    }
     return <Navigate to="/login" replace />;
   }
 

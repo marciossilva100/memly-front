@@ -5,6 +5,8 @@ import instagramIcone from '../assets/img/instagram.png'
 import tiktokIcone from '../assets/img/tiktok.png'
 import googleIcone from '../assets/img/google.png'
 import linkedinIcone from '../assets/img/linkedin.png'
+import tandemIcone from '../assets/img/tandem.png'
+import speakyIcone from '../assets/img/speaky.png'
 import imgChapeuFormatura from "../assets/img/chapeu_formatura-v2.png"
 import { useAuth } from "../context/AuthContext";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -131,6 +133,22 @@ export default function ReferenciaUsuario({ setTitulo }) {
                     >
                         <img src={googleIcone} alt="Google" className="w-10 h-10 object-contain" />
                         <span className="text-md font-base text-white">Google</span>
+                    </button>
+
+                    <button
+                        onClick={() => enviarCanal('tandem')}
+                        className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-800/50 backdrop-blur-sm  border border-gray-700  hover:bg-white/5 transition"
+                    >
+                        <img src={tandemIcone} alt="Tandem" className="w-10 h-10 object-contain rounded-full" />
+                        <span className="text-md font-medium text-white">Tandem</span>
+                    </button>
+
+                    <button
+                        onClick={() => enviarCanal('speaky')}
+                        className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-800/50 backdrop-blur-sm  border border-gray-700  hover:bg-white/5 transition"
+                    >
+                        <img src={speakyIcone} alt="Speaky" className="w-10 h-10 object-contain rounded-full" />
+                        <span className="text-md font-medium text-white">Speaky</span>
                     </button>
 
                 </div>

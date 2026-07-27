@@ -280,9 +280,8 @@ export default function EscolherIdiomaNativo() {
             className="
           block
           w-full
-          bg-gray-800/50 backdrop-blur-sm  border border-gray-700
+          bg-[#4cb8c4]
           bottom-0
-          text-lg
           text-white
           font-medium
           py-3

@@ -87,7 +87,7 @@ export default function ReferenciaUsuario({ setTitulo }) {
 
                     <button
                         onClick={() => enviarCanal('playstore')}
-                        className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-800/50 backdrop-blur-sm  border border-gray-700  hover:bg-gray-50 transition"
+                        className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-800/50 backdrop-blur-sm  border border-gray-700  hover:bg-white/5 transition"
                     >
                         <img src={playstoreIcone} alt="Play Store" className="w-10 h-10 object-contain" />
                         <span className="text-md font-medium text-white">Play Store</span>
@@ -95,7 +95,7 @@ export default function ReferenciaUsuario({ setTitulo }) {
 
                     <button
                         onClick={() => enviarCanal('youtube')}
-                        className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-800/50 backdrop-blur-sm  border border-gray-700  hover:bg-gray-50 transition"
+                        className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-800/50 backdrop-blur-sm  border border-gray-700  hover:bg-white/5 transition"
                     >
                         <img src={youtubeIcone} alt="YouTube" className="w-10 h-10 object-contain" />
                         <span className="text-md font-medium text-white">YouTube</span>
@@ -103,7 +103,7 @@ export default function ReferenciaUsuario({ setTitulo }) {
 
                     <button
                         onClick={() => enviarCanal('instagram')}
-                        className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-800/50 backdrop-blur-sm  border border-gray-700  hover:bg-gray-50 transition"
+                        className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-800/50 backdrop-blur-sm  border border-gray-700  hover:bg-white/5 transition"
                     >
                         <img src={instagramIcone} alt="Instagram" className="w-10 h-10 object-contain" />
                         <span className="text-md font-medium text-white">Instagram</span>
@@ -111,7 +111,7 @@ export default function ReferenciaUsuario({ setTitulo }) {
 
                     <button
                         onClick={() => enviarCanal('linkedin')}
-                        className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-800/50 backdrop-blur-sm  border border-gray-700  hover:bg-gray-50 transition"
+                        className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-800/50 backdrop-blur-sm  border border-gray-700  hover:bg-white/5 transition"
                     >
                         <img src={linkedinIcone} alt="LinkedIn" className="w-10 h-10 object-contain" />
                         <span className="text-md font-medium text-white">LinkedIn</span>
@@ -119,7 +119,7 @@ export default function ReferenciaUsuario({ setTitulo }) {
 
                     <button
                         onClick={() => enviarCanal('tiktok')}
-                        className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-800/50 backdrop-blur-sm  border border-gray-700 hover:bg-gray-50 transition"
+                        className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-800/50 backdrop-blur-sm  border border-gray-700 hover:bg-white/5 transition"
                     >
                         <img src={tiktokIcone} alt="TikTok" className="w-10 h-10 object-contain" />
                         <span className="text-md font-medium text-white">TikTok</span>
@@ -127,7 +127,7 @@ export default function ReferenciaUsuario({ setTitulo }) {
 
                     <button
                         onClick={() => enviarCanal('google')}
-                        className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-800/50 backdrop-blur-sm  border border-gray-700  hover:bg-gray-50 transition"
+                        className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-800/50 backdrop-blur-sm  border border-gray-700  hover:bg-white/5 transition"
                     >
                         <img src={googleIcone} alt="Google" className="w-10 h-10 object-contain" />
                         <span className="text-md font-base text-white">Google</span>

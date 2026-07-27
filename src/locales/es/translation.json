@@ -379,5 +379,13 @@
     "install_installed": "¡Instalado! Abre Zaldemy desde tu pantalla de inicio",
     "pwa_already_installed_title": "¡Ya instalaste Zaldemy!",
     "pwa_already_installed_message": "Abre la app desde el ícono de Zaldemy en la pantalla de inicio de tu celular para continuar.",
-    "premium_feature_required": "Esta función es exclusiva del plan Premium."
+    "premium_feature_required": "Esta función es exclusiva del plan Premium.",
+    "onboarding_slide1_title": "📚 Crea tus propias tarjetas",
+    "onboarding_slide1_subtitle": "Aprende exactamente lo que necesitas.",
+    "onboarding_slide2_title": "🌍 Comparte y descubre categorías",
+    "onboarding_slide2_subtitle": "Aprende con el contenido creado por la comunidad.",
+    "onboarding_slide3_title": "🧠 Estudia cuando realmente importa",
+    "onboarding_slide3_subtitle": "La repetición espaciada te ayuda a recordar por más tiempo.",
+    "onboarding_skip": "Omitir",
+    "onboarding_start": "Comenzar"
 }

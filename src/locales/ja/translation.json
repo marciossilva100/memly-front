@@ -378,5 +378,13 @@
     "install_installed": "インストール完了！ホーム画面からZaldemyを開いてください",
     "pwa_already_installed_title": "Zaldemyはすでにインストール済みです！",
     "pwa_already_installed_message": "続けるには、ホーム画面のZaldemyアイコンから開いてください。",
-    "premium_feature_required": "この機能はプレミアムプラン限定です。"
+    "premium_feature_required": "この機能はプレミアムプラン限定です。",
+    "onboarding_slide1_title": "📚 自分だけのフラッシュカードを作成",
+    "onboarding_slide1_subtitle": "必要なことだけを学びましょう。",
+    "onboarding_slide2_title": "🌍 カテゴリーを共有・発見",
+    "onboarding_slide2_subtitle": "コミュニティが作成したコンテンツで学びましょう。",
+    "onboarding_slide3_title": "🧠 本当に大切なときに学習",
+    "onboarding_slide3_subtitle": "間隔反復であなたはより長く覚えられます。",
+    "onboarding_skip": "スキップ",
+    "onboarding_start": "始める"
 }

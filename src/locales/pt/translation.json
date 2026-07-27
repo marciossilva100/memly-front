@@ -380,5 +380,13 @@
     "install_installed": "Instalado! Abra o Zaldemy pela tela inicial",
     "pwa_already_installed_title": "Você já instalou o Zaldemy!",
     "pwa_already_installed_message": "Abra pelo ícone do Zaldemy na tela inicial do seu celular para continuar.",
-    "premium_feature_required": "Esse recurso é exclusivo do plano Premium."
+    "premium_feature_required": "Esse recurso é exclusivo do plano Premium.",
+    "onboarding_slide1_title": "📚 Crie seus próprios flashcards",
+    "onboarding_slide1_subtitle": "Aprenda exatamente o que você precisa.",
+    "onboarding_slide2_title": "🌍 Compartilhe e descubra categorias",
+    "onboarding_slide2_subtitle": "Aprenda com o conteúdo criado pela comunidade.",
+    "onboarding_slide3_title": "🧠 Estude quando realmente importa",
+    "onboarding_slide3_subtitle": "A repetição espaçada ajuda você a lembrar por mais tempo.",
+    "onboarding_skip": "Pular",
+    "onboarding_start": "Começar"
 }

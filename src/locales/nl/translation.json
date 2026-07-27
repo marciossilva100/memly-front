@@ -378,5 +378,13 @@
     "install_installed": "Geïnstalleerd! Open Zaldemy vanaf je startscherm",
     "pwa_already_installed_title": "Je hebt Zaldemy al geïnstalleerd!",
     "pwa_already_installed_message": "Open de app via het Zaldemy-icoon op je startscherm om verder te gaan.",
-    "premium_feature_required": "Deze functie is exclusief voor het Premium-abonnement."
+    "premium_feature_required": "Deze functie is exclusief voor het Premium-abonnement.",
+    "onboarding_slide1_title": "📚 Maak je eigen flashcards",
+    "onboarding_slide1_subtitle": "Leer precies wat je nodig hebt.",
+    "onboarding_slide2_title": "🌍 Deel en ontdek categorieën",
+    "onboarding_slide2_subtitle": "Leer met content gemaakt door de community.",
+    "onboarding_slide3_title": "🧠 Studeer wanneer het er echt toe doet",
+    "onboarding_slide3_subtitle": "Gespreide herhaling helpt je langer te onthouden.",
+    "onboarding_skip": "Overslaan",
+    "onboarding_start": "Beginnen"
 }

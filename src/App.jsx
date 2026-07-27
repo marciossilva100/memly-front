@@ -15,6 +15,7 @@ import ListCategoria from './pages/listCategorias';
 import EscolherIdiomaAprender from './pages/EscolherIdiomaAprender'
 import Header from './includes/Header'
 import ReferenciaUsuario from './pages/ReferenciaUsuário'
+import OnboardingTutorial from './pages/OnboardingTutorial'
 import Home from './pages/Home'
 import Frases from './pages/Frases'
 import Flashcards from './pages/Flashcards'
@@ -151,6 +152,15 @@ function Layout({ titulo, setTitulo }) {
           element={
             <PrivateRoute>
               <ReferenciaUsuario setTitulo={setTitulo} />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/onboarding-tutorial"
+          element={
+            <PrivateRoute>
+              <OnboardingTutorial />
             </PrivateRoute>
           }
         />

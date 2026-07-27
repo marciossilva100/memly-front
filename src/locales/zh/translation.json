@@ -378,5 +378,13 @@
     "install_installed": "安装完成！请从主屏幕打开 Zaldemy",
     "pwa_already_installed_title": "您已经安装了 Zaldemy！",
     "pwa_already_installed_message": "请从手机主屏幕上的 Zaldemy 图标打开应用以继续。",
-    "premium_feature_required": "此功能仅限高级版使用。"
+    "premium_feature_required": "此功能仅限高级版使用。",
+    "onboarding_slide1_title": "📚 创建你自己的抽认卡",
+    "onboarding_slide1_subtitle": "学习你真正需要的内容。",
+    "onboarding_slide2_title": "🌍 分享并发现分类",
+    "onboarding_slide2_subtitle": "学习社区创建的内容。",
+    "onboarding_slide3_title": "🧠 在真正重要的时候学习",
+    "onboarding_slide3_subtitle": "间隔重复帮助你记得更牢。",
+    "onboarding_skip": "跳过",
+    "onboarding_start": "开始"
 }

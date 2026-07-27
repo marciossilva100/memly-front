@@ -378,5 +378,13 @@
     "install_installed": "Installiert! Öffne Zaldemy über den Startbildschirm",
     "pwa_already_installed_title": "Du hast Zaldemy bereits installiert!",
     "pwa_already_installed_message": "Öffne die App über das Zaldemy-Symbol auf deinem Startbildschirm, um fortzufahren.",
-    "premium_feature_required": "Diese Funktion ist exklusiv für den Premium-Plan."
+    "premium_feature_required": "Diese Funktion ist exklusiv für den Premium-Plan.",
+    "onboarding_slide1_title": "📚 Erstelle deine eigenen Karteikarten",
+    "onboarding_slide1_subtitle": "Lerne genau das, was du brauchst.",
+    "onboarding_slide2_title": "🌍 Teile und entdecke Kategorien",
+    "onboarding_slide2_subtitle": "Lerne mit Inhalten aus der Community.",
+    "onboarding_slide3_title": "🧠 Lerne, wenn es wirklich zählt",
+    "onboarding_slide3_subtitle": "Verteiltes Wiederholen hilft dir, dich länger zu erinnern.",
+    "onboarding_skip": "Überspringen",
+    "onboarding_start": "Loslegen"
 }

@@ -378,5 +378,13 @@
     "install_installed": "Zainstalowano! Otwórz Zaldemy z ekranu głównego",
     "pwa_already_installed_title": "Masz już zainstalowany Zaldemy!",
     "pwa_already_installed_message": "Otwórz aplikację z ikony Zaldemy na ekranie głównym telefonu, aby kontynuować.",
-    "premium_feature_required": "Ta funkcja jest dostępna wyłącznie w planie Premium."
+    "premium_feature_required": "Ta funkcja jest dostępna wyłącznie w planie Premium.",
+    "onboarding_slide1_title": "📚 Twórz własne fiszki",
+    "onboarding_slide1_subtitle": "Ucz się dokładnie tego, czego potrzebujesz.",
+    "onboarding_slide2_title": "🌍 Udostępniaj i odkrywaj kategorie",
+    "onboarding_slide2_subtitle": "Ucz się z treści stworzonych przez społeczność.",
+    "onboarding_slide3_title": "🧠 Ucz się, gdy naprawdę się liczy",
+    "onboarding_slide3_subtitle": "Powtórki rozłożone w czasie pomagają zapamiętać na dłużej.",
+    "onboarding_skip": "Pomiń",
+    "onboarding_start": "Zacznij"
 }

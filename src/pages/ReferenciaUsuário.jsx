@@ -20,8 +20,10 @@ export default function ReferenciaUsuario({ setTitulo }) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (user?.step > 2) {
+        if (user?.step > 3) {
             navigate("/home", { replace: true });
+        } else if (user?.step === 3) {
+            navigate("/onboarding-tutorial", { replace: true });
         }
     }, [user]);
 
@@ -57,7 +59,7 @@ export default function ReferenciaUsuario({ setTitulo }) {
                     ...prev,
                     step: 3
                 }));
-                navigate("/home")
+                navigate("/onboarding-tutorial")
 
                 console.log(data)
             })

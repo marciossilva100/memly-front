@@ -378,5 +378,13 @@
     "install_installed": "설치 완료! 홈 화면에서 Zaldemy를 여세요",
     "pwa_already_installed_title": "이미 Zaldemy를 설치하셨네요!",
     "pwa_already_installed_message": "계속하려면 휴대폰 홈 화면의 Zaldemy 아이콘에서 여세요.",
-    "premium_feature_required": "이 기능은 프리미엄 플랜 전용입니다."
+    "premium_feature_required": "이 기능은 프리미엄 플랜 전용입니다.",
+    "onboarding_slide1_title": "📚 나만의 플래시카드 만들기",
+    "onboarding_slide1_subtitle": "필요한 것을 정확히 배우세요.",
+    "onboarding_slide2_title": "🌍 카테고리 공유하고 발견하기",
+    "onboarding_slide2_subtitle": "커뮤니티가 만든 콘텐츠로 배우세요.",
+    "onboarding_slide3_title": "🧠 정말 중요할 때 공부하기",
+    "onboarding_slide3_subtitle": "간격 반복 학습이 더 오래 기억하도록 도와줘요.",
+    "onboarding_skip": "건너뛰기",
+    "onboarding_start": "시작하기"
 }

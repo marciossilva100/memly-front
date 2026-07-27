@@ -378,5 +378,13 @@
     "install_installed": "تم التثبيت! افتح Zaldemy من الشاشة الرئيسية",
     "pwa_already_installed_title": "لقد قمت بالفعل بتثبيت Zaldemy!",
     "pwa_already_installed_message": "افتح التطبيق من أيقونة Zaldemy على الشاشة الرئيسية لهاتفك للمتابعة.",
-    "premium_feature_required": "هذه الميزة حصرية لخطة Premium."
+    "premium_feature_required": "هذه الميزة حصرية لخطة Premium.",
+    "onboarding_slide1_title": "📚 أنشئ بطاقاتك التعليمية الخاصة",
+    "onboarding_slide1_subtitle": "تعلّم بالضبط ما تحتاجه.",
+    "onboarding_slide2_title": "🌍 شارك واكتشف الفئات",
+    "onboarding_slide2_subtitle": "تعلّم من المحتوى الذي أنشأه المجتمع.",
+    "onboarding_slide3_title": "🧠 ادرس عندما يكون الأمر مهمًا حقًا",
+    "onboarding_slide3_subtitle": "التكرار المتباعد يساعدك على التذكر لفترة أطول.",
+    "onboarding_skip": "تخطي",
+    "onboarding_start": "ابدأ"
 }

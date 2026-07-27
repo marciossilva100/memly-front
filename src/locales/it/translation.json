@@ -378,5 +378,13 @@
     "install_installed": "Installato! Apri Zaldemy dalla schermata Home",
     "pwa_already_installed_title": "Hai già installato Zaldemy!",
     "pwa_already_installed_message": "Aprila dall'icona di Zaldemy nella schermata Home del tuo cellulare per continuare.",
-    "premium_feature_required": "Questa funzione è esclusiva del piano Premium."
+    "premium_feature_required": "Questa funzione è esclusiva del piano Premium.",
+    "onboarding_slide1_title": "📚 Crea le tue flashcard",
+    "onboarding_slide1_subtitle": "Impara esattamente ciò di cui hai bisogno.",
+    "onboarding_slide2_title": "🌍 Condividi e scopri categorie",
+    "onboarding_slide2_subtitle": "Impara con i contenuti creati dalla community.",
+    "onboarding_slide3_title": "🧠 Studia quando conta davvero",
+    "onboarding_slide3_subtitle": "La ripetizione dilazionata ti aiuta a ricordare più a lungo.",
+    "onboarding_skip": "Salta",
+    "onboarding_start": "Inizia"
 }

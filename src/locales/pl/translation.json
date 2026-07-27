@@ -379,6 +379,7 @@
     "install_installed": "Zainstalowano! Otwórz Zaldemy z ekranu głównego",
     "pwa_already_installed_title": "Masz już zainstalowany Zaldemy!",
     "pwa_already_installed_message": "Otwórz aplikację z ikony Zaldemy na ekranie głównym telefonu, aby kontynuować.",
+    "pwa_not_installed_anymore": "Nie masz już zainstalowanej ikony? Dotknij tutaj, aby zainstalować ponownie",
     "premium_feature_required": "Ta funkcja jest dostępna wyłącznie w planie Premium.",
     "onboarding_slide1_title": "📚 Twórz własne fiszki",
     "onboarding_slide1_subtitle": "Ucz się dokładnie tego, czego potrzebujesz.",

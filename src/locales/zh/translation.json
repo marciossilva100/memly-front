@@ -379,6 +379,7 @@
     "install_installed": "安装完成！请从主屏幕打开 Zaldemy",
     "pwa_already_installed_title": "您已经安装了 Zaldemy！",
     "pwa_already_installed_message": "请从手机主屏幕上的 Zaldemy 图标打开应用以继续。",
+    "pwa_not_installed_anymore": "图标已经不在了？点击这里重新安装",
     "premium_feature_required": "此功能仅限高级版使用。",
     "onboarding_slide1_title": "📚 创建你自己的抽认卡",
     "onboarding_slide1_subtitle": "学习你真正需要的内容。",

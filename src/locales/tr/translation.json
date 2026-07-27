@@ -379,6 +379,7 @@
     "install_installed": "Yüklendi! Zaldemy'yi ana ekranından aç",
     "pwa_already_installed_title": "Zaldemy'yi zaten yükledin!",
     "pwa_already_installed_message": "Devam etmek için telefonunun ana ekranındaki Zaldemy simgesinden aç.",
+    "pwa_not_installed_anymore": "Simge artık yüklü değil mi? Yeniden yüklemek için buraya dokun",
     "premium_feature_required": "Bu özellik yalnızca Premium plana özeldir.",
     "onboarding_slide1_title": "📚 Kendi kartlarını oluştur",
     "onboarding_slide1_subtitle": "Tam olarak ihtiyacın olanı öğren.",

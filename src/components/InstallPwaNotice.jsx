@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation, Trans } from "react-i18next";
 import { Download, Smartphone, Share2, Globe, Loader2, CheckCircle2 } from "lucide-react";
 import imgZaldemy from "../assets/img/zaldemy.png";
-import { getInstallPrompt, onInstallPromptChange, clearInstallPrompt, isPwaKnownInstalled } from "../utils/pwaInstallPrompt";
+import { getInstallPrompt, onInstallPromptChange, clearInstallPrompt, isPwaKnownInstalled, clearPwaInstalled } from "../utils/pwaInstallPrompt";
 import useEnableBodyScroll from "../hooks/useEnableBodyScroll";
 
 // Aguarda o evento appinstalled (instalação de fato concluída) com um limite
@@ -26,7 +26,17 @@ export default function InstallPwaNotice() {
     const { t } = useTranslation();
     useEnableBodyScroll();
     const [installPrompt, setInstallPrompt] = useState(() => getInstallPrompt());
-    const [alreadyInstalled] = useState(() => isPwaKnownInstalled());
+    const [installedFlag, setInstalledFlag] = useState(() => isPwaKnownInstalled());
+    // Se já existe um prompt de instalação disponível, o navegador está nos
+    // dizendo (pela própria heurística dele) que o app NÃO está instalado
+    // agora - isso tem prioridade sobre o flag antigo, que pode estar errado
+    // (ex: usuário desinstalou depois de ter instalado uma vez).
+    const alreadyInstalled = installedFlag && !installPrompt;
+
+    function tentarInstalarNovamente() {
+        clearPwaInstalled();
+        setInstalledFlag(false);
+    }
     const [isIOS, setIsIOS] = useState(false);
     const [isInAppBrowser, setIsInAppBrowser] = useState(false);
     const [showManualFallback, setShowManualFallback] = useState(false);
@@ -101,10 +111,18 @@ export default function InstallPwaNotice() {
                     // mesmo guardou (ver isPwaKnownInstalled). Nesse caso, pedir
                     // pra instalar de novo não faz sentido: só falta abrir pelo
                     // ícone certo.
-                    <div className="flex justify-center">
+                    <div className="flex flex-col items-center">
                         <div className="bg-[#4cb8c4] p-4 rounded-full">
                             <Smartphone className="w-10 h-10 text-white" />
                         </div>
+
+                        <button
+                            type="button"
+                            onClick={tentarInstalarNovamente}
+                            className="text-sm text-gray-400 hover:text-white transition-colors mt-6 underline"
+                        >
+                            {t("pwa_not_installed_anymore")}
+                        </button>
                     </div>
                 ) : isInAppBrowser ? (
                     // Navegadores internos de apps (Instagram, Facebook, TikTok, etc.)

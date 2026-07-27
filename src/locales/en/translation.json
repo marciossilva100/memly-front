@@ -381,6 +381,7 @@
     "install_installed": "Installed! Open Zaldemy from your home screen",
     "pwa_already_installed_title": "You've already installed Zaldemy!",
     "pwa_already_installed_message": "Open it from the Zaldemy icon on your phone's home screen to continue.",
+    "pwa_not_installed_anymore": "Don't have the icon installed anymore? Tap here to install again",
     "premium_feature_required": "This feature is exclusive to the Premium plan.",
     "onboarding_slide1_title": "📚 Create your own flashcards",
     "onboarding_slide1_subtitle": "Learn exactly what you need.",

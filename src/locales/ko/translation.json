@@ -379,6 +379,7 @@
     "install_installed": "설치 완료! 홈 화면에서 Zaldemy를 여세요",
     "pwa_already_installed_title": "이미 Zaldemy를 설치하셨네요!",
     "pwa_already_installed_message": "계속하려면 휴대폰 홈 화면의 Zaldemy 아이콘에서 여세요.",
+    "pwa_not_installed_anymore": "아이콘이 더 이상 없나요? 여기를 눌러 다시 설치하세요",
     "premium_feature_required": "이 기능은 프리미엄 플랜 전용입니다.",
     "onboarding_slide1_title": "📚 나만의 플래시카드 만들기",
     "onboarding_slide1_subtitle": "필요한 것을 정확히 배우세요.",

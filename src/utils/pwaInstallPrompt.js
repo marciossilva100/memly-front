@@ -15,6 +15,12 @@ const listeners = new Set();
 window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
     deferredPrompt = e;
+    // O Chrome só dispara esse evento quando NÃO considera o app instalado -
+    // se ele disparou de novo, o flag antigo de "já instalado" está errado
+    // (ex: usuário desinstalou depois de instalar uma vez) e precisa ser
+    // limpo, senão a tela de instalação fica travada pra sempre em "abra
+    // pelo ícone" sem nenhuma forma de reinstalar.
+    clearPwaInstalled();
     listeners.forEach((callback) => callback(e));
 });
 
@@ -62,6 +68,14 @@ export function isPwaKnownInstalled() {
         return localStorage.getItem(STORAGE_KEY) === "1";
     } catch {
         return false;
+    }
+}
+
+export function clearPwaInstalled() {
+    try {
+        localStorage.removeItem(STORAGE_KEY);
+    } catch {
+        // localStorage indisponível (modo privado etc.) - segue sem persistir
     }
 }
 

@@ -379,6 +379,7 @@
     "install_installed": "Installato! Apri Zaldemy dalla schermata Home",
     "pwa_already_installed_title": "Hai già installato Zaldemy!",
     "pwa_already_installed_message": "Aprila dall'icona di Zaldemy nella schermata Home del tuo cellulare per continuare.",
+    "pwa_not_installed_anymore": "Non hai più l'icona installata? Tocca qui per installare di nuovo",
     "premium_feature_required": "Questa funzione è esclusiva del piano Premium.",
     "onboarding_slide1_title": "📚 Crea le tue flashcard",
     "onboarding_slide1_subtitle": "Impara esattamente ciò di cui hai bisogno.",

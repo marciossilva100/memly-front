@@ -379,6 +379,7 @@
     "install_installed": "इंस्टॉल हो गया! होम स्क्रीन से Zaldemy खोलें",
     "pwa_already_installed_title": "आपने पहले ही Zaldemy इंस्टॉल कर लिया है!",
     "pwa_already_installed_message": "जारी रखने के लिए अपने फ़ोन की होम स्क्रीन पर Zaldemy आइकन से खोलें।",
+    "pwa_not_installed_anymore": "अब आइकन इंस्टॉल नहीं है? फिर से इंस्टॉल करने के लिए यहां टैप करें",
     "premium_feature_required": "यह सुविधा केवल प्रीमियम प्लान के लिए है।",
     "onboarding_slide1_title": "📚 अपने खुद के फ्लैशकार्ड बनाएं",
     "onboarding_slide1_subtitle": "वही सीखें जो आपको वाकई चाहिए।",

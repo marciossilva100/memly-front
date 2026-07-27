@@ -379,6 +379,7 @@
     "install_installed": "Installiert! Öffne Zaldemy über den Startbildschirm",
     "pwa_already_installed_title": "Du hast Zaldemy bereits installiert!",
     "pwa_already_installed_message": "Öffne die App über das Zaldemy-Symbol auf deinem Startbildschirm, um fortzufahren.",
+    "pwa_not_installed_anymore": "Hast du das Symbol nicht mehr installiert? Tippe hier, um es erneut zu installieren",
     "premium_feature_required": "Diese Funktion ist exklusiv für den Premium-Plan.",
     "onboarding_slide1_title": "📚 Erstelle deine eigenen Karteikarten",
     "onboarding_slide1_subtitle": "Lerne genau das, was du brauchst.",

@@ -99,6 +99,13 @@ function PrivateRoute({ children }) {
 // standalone). No navegador desktop mostramos um aviso; no navegador do
 // celular (ainda não instalado), a tela de instalação da PWA.
 function MobileOnlyRoute({ children }) {
+  // Em desenvolvimento local (npm run dev) libera o acesso via desktop pra
+  // permitir testar sem precisar de celular/PWA instalado - nunca afeta a
+  // build de produção (import.meta.env.DEV é sempre false lá).
+  if (import.meta.env.DEV) {
+    return children;
+  }
+
   if (isStandaloneApp()) {
     return children;
   }

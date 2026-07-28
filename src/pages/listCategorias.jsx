@@ -42,6 +42,7 @@ export default function ListCategoria() {
     const [hasMore, setHasMore] = useState(true);
     const [contador, setContador] = useState(0);
     const [textoBusca, setTextoBusca] = useState("")
+    const [categoriaSelecionada, setCategoriaSelecionada] = useState("")
     const API_URL = import.meta.env.VITE_API_URL;
 
     const navigate = useNavigate();
@@ -157,12 +158,19 @@ export default function ListCategoria() {
 
     const buscaNormalizada = textoBusca.trim().toLowerCase();
 
-    const categoriasFiltradas = buscaNormalizada
-        ? categorias.filter(item =>
-            item.categoria?.toLowerCase().includes(buscaNormalizada) ||
-            item.usuario?.toLowerCase().includes(buscaNormalizada)
-        )
-        : categorias;
+    const nomesCategoriasDisponiveis = [...new Set(
+        categorias.map(item => item.categoria).filter(Boolean)
+    )].sort((a, b) => a.localeCompare(b));
+
+    const categoriasFiltradas = categorias.filter(item => {
+        const combinaBusca = !buscaNormalizada
+            || item.categoria?.toLowerCase().includes(buscaNormalizada)
+            || item.usuario?.toLowerCase().includes(buscaNormalizada);
+
+        const combinaSelecao = !categoriaSelecionada || item.categoria === categoriaSelecionada;
+
+        return combinaBusca && combinaSelecao;
+    });
 
 
     return (
@@ -179,13 +187,13 @@ export default function ListCategoria() {
             </div> */}
 
             <div className="lista-categoria  flex-1 overflow-y-auto pb-[140px] scrollbar-hide mt-6" id="lista-categoria">
-                <div className="flex-1 flex flex-col">
+                <div className="sticky top-0 z-10 flex-1 flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br pb-4">
 
-                    <h1 className="text-base font-semibold text-white mb-8">
+                    <h1 className="text-xl font-semibold text-white mb-8">
                         {t("add_category")}
                     </h1>
 
-                    <div  className='mb-6'>
+                    <div  className='mb-4'>
                         <div className="flex items-center border rounded-md overflow-hidden ">
                             <span className="px-3 text-gray-500">
                                 <Search width={20} className='text-white' />
@@ -201,6 +209,19 @@ export default function ListCategoria() {
                                 }}
                             />
                         </div>
+                    </div>
+
+                    <div className='mb-2'>
+                        <select
+                            className="w-full px-3 py-2 outline-none border rounded-md text-white text-lg bg-gray-800/50 backdrop-blur-sm"
+                            value={categoriaSelecionada}
+                            onChange={(e) => setCategoriaSelecionada(e.target.value)}
+                        >
+                            <option value="" className="bg-gray-800">{t("all_categories")}</option>
+                            {nomesCategoriasDisponiveis.map((nome) => (
+                                <option key={nome} value={nome} className="bg-gray-800">{nome}</option>
+                            ))}
+                        </select>
                     </div>
 
                         {/* <div className="cursor-pointer flex justify-end mb-4">

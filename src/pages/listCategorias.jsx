@@ -11,7 +11,7 @@ import ModalIncorporarFrases from '../components/ModalIncorporarFrases'
 import { useTranslation } from "react-i18next";
 
 
-import { BookOpen,Search,Filter,Loader2,Home,Settings,BarChart3,UserRound,ChevronDown } from "lucide-react";
+import { BookOpen,Search,Filter,Loader2,Home,Settings,BarChart3,UserRound,ChevronDown,FolderPlus } from "lucide-react";
 
 const AVATAR_COLORS = [
     'bg-emerald-500',
@@ -185,9 +185,12 @@ export default function ListCategoria() {
                     <i className="bi bi-arrow-left text-2xl text-white"></i>
                 </div>
             </div> */}
-               <div className="sticky top-0 z-10 px-6 py-3">
+               <div className="sticky top-0 z-10 px-6 py-4">
 
-                    <h1 className="text-xl font-semibold text-white mb-8">
+                    <h1 className="flex items-center gap-3 text-xl font-semibold text-white mb-8">
+                        <span className="flex items-center justify-center w-9 h-9 shrink-0 rounded-xl bg-gradient-to-br from-[#4cb8c4]/20 to-[#085078]/20 text-[#4cb8c4]">
+                            <FolderPlus className="w-5 h-5" />
+                        </span>
                         {t("add_category")}
                     </h1>
 

@@ -185,35 +185,29 @@ export default function ListCategoria() {
                     <i className="bi bi-arrow-left text-2xl text-white"></i>
                 </div>
             </div> */}
-
-            <div className="lista-categoria  flex-1 overflow-y-auto pb-[140px] scrollbar-hide mt-6" id="lista-categoria">
-                <div className="sticky top-0 z-10 flex-1 flex flex-col pb-4 px-6 from-gray-900 to-gray-800 bg-gradient-to-br">
+               <div className="sticky top-0 z-10 px-6 py-3">
 
                     <h1 className="text-xl font-semibold text-white mb-8">
                         {t("add_category")}
                     </h1>
 
-                    <div  className='mb-4'>
-                        <div className="flex items-center border rounded-md overflow-hidden ">
-                            <span className="px-3 text-gray-500">
-                                <Search width={20} className='text-white' />
-                            </span>
+                    <div className="mb-3 flex items-center gap-2 rounded-xl border border-gray-700 bg-gray-800/50 backdrop-blur-sm px-4 py-3 shadow-lg transition focus-within:border-[#4cb8c4] focus-within:ring-2 focus-within:ring-[#4cb8c4]/30">
+                        <Search width={18} className='text-gray-400 shrink-0' />
 
-                            <input
-                                type="email"
-                                className="w-full px-3 py-2 outline-none text-white text-lg bg-gray-800/50 backdrop-blur-sm"
-                                placeholder={t("search")}
-                                value={textoBusca}
-                                onChange={(e) => {
-                                    setTextoBusca(e.target.value)
-                                }}
-                            />
-                        </div>
+                        <input
+                            type="text"
+                            className="w-full bg-transparent outline-none text-white text-base placeholder:text-gray-500"
+                            placeholder={t("search")}
+                            value={textoBusca}
+                            onChange={(e) => {
+                                setTextoBusca(e.target.value)
+                            }}
+                        />
                     </div>
 
                     <div className='mb-2 relative'>
                         <select
-                            className="w-full appearance-none px-3 py-2 pr-10 outline-none border rounded-md text-white text-lg bg-gray-800/50 backdrop-blur-sm"
+                            className="w-full appearance-none rounded-xl border border-gray-700 bg-gray-800/50 backdrop-blur-sm px-4 py-3 pr-10 text-base text-white shadow-lg outline-none transition focus:border-[#4cb8c4] focus:ring-2 focus:ring-[#4cb8c4]/30"
                             value={categoriaSelecionada}
                             onChange={(e) => setCategoriaSelecionada(e.target.value)}
                         >
@@ -222,7 +216,7 @@ export default function ListCategoria() {
                                 <option key={nome} value={nome} className="bg-gray-800">{nome}</option>
                             ))}
                         </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                        <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
                             <ChevronDown className="w-4 h-4 text-gray-400" />
                         </div>
                     </div>
@@ -239,7 +233,10 @@ export default function ListCategoria() {
             
                 </div>
 
-                <div className="px-6 items-center justify-center mt-4">
+            <div className="lista-categoria  flex-1 overflow-y-auto pb-[140px] scrollbar-hide " id="lista-categoria">
+             
+
+                <div className="px-6 items-center justify-center">
 
                     {/* Item */}
                     {categoriasFiltradas.map((item, index) => (

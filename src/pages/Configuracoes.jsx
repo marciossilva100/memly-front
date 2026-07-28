@@ -271,7 +271,7 @@ export default function Configuracoes() {
                         </button>
                         <button type="button" onClick={() => navigate('/metricas')}>
                             <div className=' p-3 flex justify-center items-center'>
-                                <BarChart3 className='text-[#4cb8c4]' width={38} height={38} />
+                                <BarChart3 className='text-amber-400' width={38} height={38} />
 
                                 {/*  <BookOpen className='text-white' /> */}
                                 {/* <img src={imgEstatistica} alt="" width={40} /> */}

@@ -452,7 +452,7 @@ export default function Home() {
             <div className="relative sticky  z-10 bottom-0 text-center w-full justify-items-center justify-center items-center pt-4 pb-16">
 
                 {mostrarGuiaCategoria && (
-                    <div className="fixed bottom-32 left-1/2 -translate-x-1/2 w-52 max-w-[85vw] z-20 pointer-events-none">
+                    <div className="fixed bottom-40 left-1/2 -translate-x-1/2 w-52 max-w-[85vw] z-20 pointer-events-none">
                         <div className="animate-gentle-bounce">
                             <div className="bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-xl shadow-lg text-center">
                                 {t("first_category_hint")}

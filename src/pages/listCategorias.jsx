@@ -174,7 +174,7 @@ export default function ListCategoria() {
 
 
     return (
-        <div className="h-[calc(100dvh-64px)] flex flex-col max-w-7xl mx-auto  px-6 from-gray-900 to-gray-800 bg-gradient-to-br">
+        <div className="h-[calc(100dvh-64px)] flex flex-col max-w-7xl mx-auto   from-gray-900 to-gray-800 bg-gradient-to-br">
 
             {/* HEADER */}
             {/* <div className="relative  mb-4 text-left mt-4">
@@ -187,7 +187,7 @@ export default function ListCategoria() {
             </div> */}
 
             <div className="lista-categoria  flex-1 overflow-y-auto pb-[140px] scrollbar-hide mt-6" id="lista-categoria">
-                <div className="sticky top-0 z-10 flex-1 flex flex-col -mx-6 px-6 from-gray-900 to-gray-800 bg-gradient-to-br">
+                <div className="sticky top-0 z-10 flex-1 flex flex-col pb-4 px-6 from-gray-900 to-gray-800 bg-gradient-to-br">
 
                     <h1 className="text-xl font-semibold text-white mb-8">
                         {t("add_category")}
@@ -239,7 +239,7 @@ export default function ListCategoria() {
             
                 </div>
 
-                <div className=" items-center justify-center">
+                <div className="px-6 items-center justify-center mt-4">
 
                     {/* Item */}
                     {categoriasFiltradas.map((item, index) => (

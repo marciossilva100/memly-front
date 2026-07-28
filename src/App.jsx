@@ -101,8 +101,10 @@ function PrivateRoute({ children }) {
 function MobileOnlyRoute({ children }) {
   // Em desenvolvimento local (npm run dev) libera o acesso via desktop pra
   // permitir testar sem precisar de celular/PWA instalado - nunca afeta a
-  // build de produção (import.meta.env.DEV é sempre false lá).
-  if (import.meta.env.DEV) {
+  // build de produção (import.meta.env.DEV é sempre false lá), e não vale
+  // pelo celular (ex: acessando o localhost pela mesma rede), que deve
+  // continuar vendo o fluxo normal de instalação do PWA.
+  if (import.meta.env.DEV && !isMobileWeb()) {
     return children;
   }
 

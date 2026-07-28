@@ -11,7 +11,7 @@ import ModalIncorporarFrases from '../components/ModalIncorporarFrases'
 import { useTranslation } from "react-i18next";
 
 
-import { BookOpen,Search,Filter,Loader2,Home,Settings,BarChart3,UserRound } from "lucide-react";
+import { BookOpen,Search,Filter,Loader2,Home,Settings,BarChart3,UserRound,ChevronDown } from "lucide-react";
 
 const AVATAR_COLORS = [
     'bg-emerald-500',
@@ -187,7 +187,7 @@ export default function ListCategoria() {
             </div> */}
 
             <div className="lista-categoria  flex-1 overflow-y-auto pb-[140px] scrollbar-hide mt-6" id="lista-categoria">
-                <div className="sticky top-0 z-10 flex-1 flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br pb-4">
+                <div className="sticky top-0 z-10 flex-1 flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
 
                     <h1 className="text-xl font-semibold text-white mb-8">
                         {t("add_category")}
@@ -211,9 +211,9 @@ export default function ListCategoria() {
                         </div>
                     </div>
 
-                    <div className='mb-2'>
+                    <div className='mb-2 relative'>
                         <select
-                            className="w-full px-3 py-2 outline-none border rounded-md text-white text-lg bg-gray-800/50 backdrop-blur-sm"
+                            className="w-full appearance-none px-3 py-2 pr-10 outline-none border rounded-md text-white text-lg bg-gray-800/50 backdrop-blur-sm"
                             value={categoriaSelecionada}
                             onChange={(e) => setCategoriaSelecionada(e.target.value)}
                         >
@@ -222,6 +222,9 @@ export default function ListCategoria() {
                                 <option key={nome} value={nome} className="bg-gray-800">{nome}</option>
                             ))}
                         </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                            <ChevronDown className="w-4 h-4 text-gray-400" />
+                        </div>
                     </div>
 
                         {/* <div className="cursor-pointer flex justify-end mb-4">

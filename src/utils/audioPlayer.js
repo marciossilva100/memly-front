@@ -14,11 +14,12 @@ export const playAudio = async (text, user, ia = false, lang = null) => {
     }
     currentAudio = null;
 
-    // Voz natural (ElevenLabs) é exclusiva do plano premium, com limite diário
-    // controlado pelo backend. Se não vier áudio (não é premium, limite do dia
-    // atingido, ou qualquer erro), cai para a voz padrão abaixo em vez de ficar
+    // Voz natural (ElevenLabs): liberada pro plano premium (1, limite diário)
+    // e, como amostra grátis, pro plano limitado (3, limite vitalício) -
+    // ambos controlados pelo backend. Se não vier áudio (sem acesso, limite
+    // atingido, ou qualquer erro), cai pra voz padrão abaixo em vez de ficar
     // em silêncio.
-    if (user.plano === 1) {
+    if (user.plano === 1 || user.plano === 3) {
         const url = await gerarAudio(text);
 
         if (url) {

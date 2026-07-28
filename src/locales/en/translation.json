@@ -390,5 +390,7 @@
     "onboarding_slide3_title": "🧠 Study when it really matters",
     "onboarding_slide3_subtitle": "Spaced repetition helps you remember for longer.",
     "onboarding_skip": "Skip",
-    "onboarding_start": "Get started"
+    "onboarding_start": "Get started",
+    "premium_reason_audio": "You've used your 10 free natural-voice pronunciations. Go premium for unlimited access.",
+    "premium_reason_categorias": "You've reached your plan's 5-category limit. Go premium to create unlimited categories."
 }

@@ -10,6 +10,7 @@ import PremiumModal from '../components/PremiumModal'
 import ModalConfirm from '../components/ModalConfirm';
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
+import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 
 
 import { BookOpen, BarChart3, Settings, Play, Crown, Bot, Plus } from "lucide-react";
@@ -45,6 +46,7 @@ export default function Home() {
     const [frase, openFrase] = useState('')
     const [error, setError] = useState('')
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+    const [motivoPremium, setMotivoPremium] = useState(null);
     const [menuOpenId, setMenuOpenId] = useState(null);
     const [recarregar, setRecarregar] = useState(false)
     const [modalConfirm, setOpenModalConfirm] = useState(false)
@@ -279,10 +281,16 @@ export default function Home() {
             setOpenTreinoIA(true)
             return
         }
+        setMotivoPremium(null)
         setIsPremiumModalOpen(true)
         // navigate('/premiumplan');
 
     }
+
+    usePremiumLimitListener((motivo) => {
+        setMotivoPremium(motivo);
+        setIsPremiumModalOpen(true);
+    });
 
     async function translateString(phrase) {
         try {
@@ -538,6 +546,11 @@ export default function Home() {
                 }}
                 setOpenModalSucesso={setOpenModalSucesso}
                 onSuccess={carregarCategorias}
+                onOpenPremium={() => {
+                    setOpen(false);
+                    setMotivoPremium("categorias");
+                    setIsPremiumModalOpen(true);
+                }}
             />
             <ModalCategoriasEditar
                 open={openCategoriaEditar}
@@ -562,6 +575,7 @@ export default function Home() {
                 onOpenPremium={() => {
                     setOpenTreino(false);
                     setOpenTreinoAdvinhar(false);
+                    setMotivoPremium(null);
                     setIsPremiumModalOpen(true);
                 }}
 
@@ -582,7 +596,7 @@ export default function Home() {
             <ModalTreinoAdvinhar categoriaId={categoriaId} setOpenTreinoAdvinhar={setOpenTreinoAdvinhar} openTreinoAdvinhar={openTreinoAdvinhar} />
             <ModalIA setOpenTreinoIA={setOpenTreinoIA} openTreinoIA={openTreinoIA} />
             <ModalSucesso msg={msgModalSucesso} openModalSucesso={openModalSucesso} setOpenModalSucesso={setOpenModalSucesso} />
-            <PremiumModal isOpen={isPremiumModalOpen} setIsPremiumModalOpen={setIsPremiumModalOpen} onClose={() => setIsPremiumModalOpen(false)} />
+            <PremiumModal isOpen={isPremiumModalOpen} setIsPremiumModalOpen={setIsPremiumModalOpen} onClose={() => { setIsPremiumModalOpen(false); setMotivoPremium(null); }} motivo={motivoPremium} />
             <ModalConfirm setOpenModalConfirm={setOpenModalConfirm} openModalConfirm={modalConfirm} msg={msgModalConfirm} onConfirm={confirmarExclusao} />
         </div>
     )

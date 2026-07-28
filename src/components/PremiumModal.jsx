@@ -24,7 +24,7 @@ import {
   X
 } from 'lucide-react';
 
-const PremiumModal = ({ isOpen, onClose, setOpenFrase }) => {
+const PremiumModal = ({ isOpen, onClose, setOpenFrase, motivo }) => {
   const { t } = useTranslation();
   const premiumFeatures = [
     {
@@ -94,6 +94,14 @@ const PremiumModal = ({ isOpen, onClose, setOpenFrase }) => {
 
             {/* Main Content */}
             <div className="px-2 py-8">
+
+              {motivo && (
+                <div className="mx-2 mb-6 bg-amber-50 border border-amber-200 text-amber-800 text-sm font-medium rounded-xl p-3 text-center">
+                  {motivo === "audio" ? t("premium_reason_audio") : null}
+                  {motivo === "categorias" ? t("premium_reason_categorias") : null}
+                </div>
+              )}
+
               {/* Cabeçalho da seção Premium */}
               <div className="text-center mb-8">
 
@@ -137,7 +145,7 @@ const PremiumModal = ({ isOpen, onClose, setOpenFrase }) => {
                     <div className="flex flex-col lg:flex-row items-center justify-between gap-4 mb-6">
                       <div className="text-center lg:text-left">
                         <div className="flex items-center justify-center lg:justify-start mb-1">
-                          <span className="text-5xl font-bold text-gray-900">US$ 5</span>
+                          <span className="text-5xl font-bold text-gray-900">US$ 4,90</span>
                           <span className="text-gray-500 ml-2">{t("per_month")}</span>
                         </div>
                         <div className="flex items-center space-x-2">
@@ -273,31 +281,6 @@ const PremiumModal = ({ isOpen, onClose, setOpenFrase }) => {
                 </div>
               </div>
 
-              {/* Seção de projeções */}
-              <div className="mt-8 text-center">
-                <div className="inline-flex items-center gap-2 bg-white/60 backdrop-blur-sm px-5 py-2 rounded-full border border-[#4cb8c4]/20">
-                  <span className="text-[#085078] font-bold text-sm">6.000+</span>
-                  <span className="text-gray-600 text-xs">{t("active_students")}</span>
-                  <span className="w-1 h-1 bg-[#4cb8c4] rounded-full"></span>
-                  <span className="text-[#4cb8c4] font-bold text-sm">★★★★★</span>
-                  <span className="text-gray-500 text-xs">(4.8)</span>
-                </div>
-
-                <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl mx-auto">
-                  <div className="bg-white/50 backdrop-blur-sm rounded-xl p-3 border border-[#4cb8c4]/20">
-                    <p className="text-xl font-bold text-[#085078]">105</p>
-                    <p className="text-xs text-gray-600">{t("premium_year1")}</p>
-                  </div>
-                  <div className="bg-white/50 backdrop-blur-sm rounded-xl p-3 border border-[#4cb8c4]/20">
-                    <p className="text-xl font-bold text-[#085078]">750</p>
-                    <p className="text-xs text-gray-600">{t("premium_year2")}</p>
-                  </div>
-                  <div className="bg-white/50 backdrop-blur-sm rounded-xl p-3 border border-[#4cb8c4]/20">
-                    <p className="text-xl font-bold text-[#085078]">2.8k</p>
-                    <p className="text-xs text-gray-600">{t("premium_year3")}</p>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

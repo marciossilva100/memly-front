@@ -388,5 +388,7 @@
     "onboarding_slide3_title": "🧠 在真正重要的时候学习",
     "onboarding_slide3_subtitle": "间隔重复帮助你记得更牢。",
     "onboarding_skip": "跳过",
-    "onboarding_start": "开始"
+    "onboarding_start": "开始",
+    "premium_reason_audio": "你已用完10次免费的自然语音发音。升级高级版即可无限使用。",
+    "premium_reason_categorias": "你已达到该计划5个分类的上限。升级高级版即可创建无限分类。"
 }

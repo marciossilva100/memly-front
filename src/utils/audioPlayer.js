@@ -1,3 +1,5 @@
+import { dispatchPremiumLimitHit } from "../hooks/usePremiumLimitListener";
+
 let currentAudio = null;
 let currentToken = 0;
 
@@ -111,6 +113,11 @@ export const playAudio = async (text, user, ia = false, lang = null) => {
     }
 };
 
+// Só avisa (abrindo o PremiumModal) uma única vez na vida do usuário quando
+// a cota vitalícia do plano limitado esgota - depois disso, cai sempre
+// silenciosamente pro áudio padrão, sem repetir o aviso a cada tentativa.
+const AVISO_LIMITE_AUDIO_KEY = "zaldemy_aviso_limite_audio_ia";
+
 const gerarAudio = async (texto) => {
     const API_URL = import.meta.env.VITE_API_URL;
 
@@ -136,6 +143,17 @@ const gerarAudio = async (texto) => {
         if (!contentType || !contentType.includes("audio")) {
             const text = await res.text();
             console.error("Resposta não é áudio:", text);
+
+            try {
+                const data = JSON.parse(text);
+                if (data.limite_atingido && !localStorage.getItem(AVISO_LIMITE_AUDIO_KEY)) {
+                    localStorage.setItem(AVISO_LIMITE_AUDIO_KEY, "1");
+                    dispatchPremiumLimitHit("audio");
+                }
+            } catch {
+                // resposta não era JSON - segue pro fallback normal abaixo
+            }
+
             throw new Error("API não retornou áudio");
         }
 

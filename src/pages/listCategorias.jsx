@@ -9,6 +9,7 @@ import PremiumModal from '../components/PremiumModal'
 import { useAuth } from "../context/AuthContext";
 import ModalIncorporarFrases from '../components/ModalIncorporarFrases'
 import { useTranslation } from "react-i18next";
+import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 
 
 import { BookOpen,Search,Filter,Loader2,Home,Settings,BarChart3,UserRound } from "lucide-react";
@@ -37,6 +38,7 @@ export default function ListCategoria() {
     const [msgModalSucesso, setMsgModalSucesso] = useState('')
     const [frase, openFrase] = useState('')
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+    const [motivoPremium, setMotivoPremium] = useState(null);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
@@ -45,6 +47,11 @@ export default function ListCategoria() {
     const API_URL = import.meta.env.VITE_API_URL;
 
     const navigate = useNavigate();
+
+    usePremiumLimitListener((motivo) => {
+        setMotivoPremium(motivo);
+        setIsPremiumModalOpen(true);
+    });
 
     const carregarCategorias = async (pageAtual = 1, reset = false) => {
         if (!reset && (loading || !hasMore)) return;
@@ -106,7 +113,8 @@ export default function ListCategoria() {
             .then(res => res.json())
             .then(data => {
                 if (data.limite_atingido) {
-                    alert(data.message);
+                    setMotivoPremium("categorias");
+                    setIsPremiumModalOpen(true);
                     return;
                 }
 
@@ -271,7 +279,21 @@ export default function ListCategoria() {
 
             <ModalIA setOpenTreinoIA={setOpenTreinoIA} openTreinoIA={openTreinoIA} />
             <ModalSucesso msg={msgModalSucesso} openModalSucesso={openModalSucesso} setOpenModalSucesso={setOpenModalSucesso} />
-            <ModalIncorporarFrases openIncorporar={openIncorporar} setOpenIncorporar={setOpenIncorporar} />
+            <ModalIncorporarFrases
+                openIncorporar={openIncorporar}
+                setOpenIncorporar={setOpenIncorporar}
+                onOpenPremium={() => {
+                    setOpenIncorporar(false);
+                    setMotivoPremium("categorias");
+                    setIsPremiumModalOpen(true);
+                }}
+            />
+            <PremiumModal
+                isOpen={isPremiumModalOpen}
+                setIsPremiumModalOpen={setIsPremiumModalOpen}
+                onClose={() => { setIsPremiumModalOpen(false); setMotivoPremium(null); }}
+                motivo={motivoPremium}
+            />
 
             <div className="sticky inset-x-0 bottom-0 z-10 text-center w-full justify-items-center justify-center items-center   ">
 

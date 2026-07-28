@@ -7,6 +7,7 @@ import ModalConfirm from '../components/ModalConfirm';
 import { useTranslation } from "react-i18next";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 import { playAudio } from "../utils/audioPlayer";
+import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 
 import {
     Trash,
@@ -27,10 +28,16 @@ export default function Frases() {
     const [openFrase, setOpenFrase] = useState(false)
     const [fraseEditando, setFraseEditando] = useState(null)
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+    const [motivoPremium, setMotivoPremium] = useState(null);
     const [openModalConfirm, setOpenModalConfirm] = useState(false);
     const [deleteId, setDeleteId] = useState(0);
     const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
+
+    usePremiumLimitListener((motivo) => {
+        setMotivoPremium(motivo);
+        setIsPremiumModalOpen(true);
+    });
 
     useEffect(() => {
 
@@ -209,15 +216,17 @@ export default function Frases() {
             <ModalFrase openPhrase={openFrase} setOpenPhrase={setOpenFrase} category={id} listPhrase={listPhrase}
                 phraseToEdit={fraseEditando}
                 onOpenPremium={() => {
+                    setMotivoPremium(null);
                     setIsPremiumModalOpen(true);
                     setOpenFrase(false);
                 }} />
             <PremiumModal isOpen={isPremiumModalOpen} setIsPremiumModalOpen={setIsPremiumModalOpen}
                 onClose={() => {
                     setIsPremiumModalOpen(false);
+                    setMotivoPremium(null);
                     setOpenFrase(true)
                 }
-                } setOpenPhrase={setOpenFrase} />
+                } setOpenPhrase={setOpenFrase} motivo={motivoPremium} />
             <ModalConfirm
                 openModalConfirm={openModalConfirm}
                 setOpenModalConfirm={setOpenModalConfirm}

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import { HelpCircle, List, FolderPlus, ChevronRight } from 'lucide-react';
 import { containsProfanity } from '../utils/contentFilter';
-export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onSuccess,setOpenModalSucesso }) {
+export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onSuccess, setOpenModalSucesso, onOpenPremium }) {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const [categoria, setCategoria] = useState()
@@ -59,6 +59,10 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
             const data = await res.json();
 
             if (!data.success) {
+                if (data.limite_atingido) {
+                    onOpenPremium?.();
+                    return;
+                }
                 setError(data.message);
                 return;
             }

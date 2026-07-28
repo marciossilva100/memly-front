@@ -187,7 +187,7 @@ export default function ListCategoria() {
             </div> */}
 
             <div className="lista-categoria  flex-1 overflow-y-auto pb-[140px] scrollbar-hide mt-6" id="lista-categoria">
-                <div className="sticky top-0 z-10 flex-1 flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
+                <div className="sticky top-0 z-10 flex-1 flex flex-col -mx-6 px-6 from-gray-900 to-gray-800 bg-gradient-to-br">
 
                     <h1 className="text-xl font-semibold text-white mb-8">
                         {t("add_category")}

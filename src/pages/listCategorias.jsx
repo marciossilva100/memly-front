@@ -105,6 +105,11 @@ export default function ListCategoria() {
         })
             .then(res => res.json())
             .then(data => {
+                if (data.limite_atingido) {
+                    alert(data.message);
+                    return;
+                }
+
                 if (data.message === 'Categoria já existe')
                     setOpenIncorporar(true)
 

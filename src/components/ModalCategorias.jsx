@@ -126,7 +126,10 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
             {/* Container */}
             <div className="fixed inset-0 flex items-center justify-center px-4 backdrop-blur-[2px]">
                 <Dialog.Panel className="w-full max-w-md rounded-2xl px-6 py-8 shadow-xl from-gray-900 to-gray-800 bg-gradient-to-br">
-                    <Dialog.Title className="text-xl font-semibold mb-3 text-white  mb-8">
+                    <Dialog.Title className="flex items-center gap-3 text-xl font-semibold mb-3 text-white  mb-8">
+                        <span className="flex items-center justify-center w-9 h-9 shrink-0 rounded-xl bg-gradient-to-br from-[#4cb8c4]/20 to-[#085078]/20 text-[#4cb8c4]">
+                            <FolderPlus className="w-5 h-5" />
+                        </span>
                         {t("add_category")}
                     </Dialog.Title>
                     {!yourCategory && (

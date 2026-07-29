@@ -14,8 +14,13 @@ import {
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import imgZaldemy from "../assets/img/zaldemy.png";
+import imgSlideCategorias from "../assets/img/landing-screenshot-categorias.png";
+import imgSlideDigitar from "../assets/img/landing-screenshot-digitar.png";
+import imgSlideCorreto from "../assets/img/landing-screenshot-correto.png";
 
 const iconesRecursos = [Languages, Layers, Sparkles, Volume2, BarChart3, Share2];
+
+const slidesApp = [imgSlideCategorias, imgSlideDigitar, imgSlideCorreto];
 
 // TODO: trocar para true e colocar o link real assim que o app for aprovado na Aptoide
 const APTOIDE_DISPONIVEL = false;
@@ -25,6 +30,14 @@ export default function LandingPage() {
     const { t } = useTranslation();
     const [menuAberto, setMenuAberto] = useState(false);
     const [plataforma, setPlataforma] = useState("outro"); // "ios" | "android" | "outro"
+    const [slideAtual, setSlideAtual] = useState(0);
+
+    useEffect(() => {
+        const intervalo = setInterval(() => {
+            setSlideAtual((atual) => (atual + 1) % slidesApp.length);
+        }, 3500);
+        return () => clearInterval(intervalo);
+    }, []);
 
     useEffect(() => {
         const ua = navigator.userAgent;
@@ -126,28 +139,64 @@ export default function LandingPage() {
             </header>
 
             {/* HERO */}
-            <section className="max-w-3xl mx-auto px-5 pt-20 pb-24 text-center">
-                <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
-                    {t("landing_hero_title_1")}{" "}
-                    <span className="text-[#4cb8c4]">{t("landing_hero_title_2")}</span>
-                </h1>
-                <p className="text-gray-300 text-lg mt-5 max-w-xl mx-auto">
-                    {t("landing_hero_description")}
-                </p>
+            <section className="max-w-6xl mx-auto px-5 pt-20 pb-24">
+                <div className="flex flex-col-reverse md:flex-row items-center gap-10 md:gap-16">
 
-                <div className="flex flex-col sm:flex-row justify-center gap-3 mt-8">
-                    <Link
-                        to="/cadastrar"
-                        className="text-center bg-[#4cb8c4] text-white px-8 py-3 rounded-full text-lg font-semibold hover:brightness-110 transition"
-                    >
-                        {t("landing_hero_cta_primary")}
-                    </Link>
-                    <Link
-                        to="/login"
-                        className="text-center text-white px-8 py-3 rounded-full text-lg border border-gray-700 hover:bg-white/5 transition-colors"
-                    >
-                        {t("landing_hero_cta_secondary")}
-                    </Link>
+                    {/* TEXTO */}
+                    <div className="flex-1 text-center md:text-left">
+                        <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
+                            {t("landing_hero_title_1")}{" "}
+                            <span className="text-[#4cb8c4]">{t("landing_hero_title_2")}</span>
+                        </h1>
+                        <p className="text-gray-300 text-lg mt-5 max-w-xl mx-auto md:mx-0">
+                            {t("landing_hero_description")}
+                        </p>
+
+                        <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-3 mt-8">
+                            <Link
+                                to="/cadastrar"
+                                className="text-center bg-[#4cb8c4] text-white px-8 py-3 rounded-full text-lg font-semibold hover:brightness-110 transition"
+                            >
+                                {t("landing_hero_cta_primary")}
+                            </Link>
+                            <Link
+                                to="/login"
+                                className="text-center text-white px-8 py-3 rounded-full text-lg border border-gray-700 hover:bg-white/5 transition-colors"
+                            >
+                                {t("landing_hero_cta_secondary")}
+                            </Link>
+                        </div>
+                    </div>
+
+                    {/* SLIDE DAS TELAS DO APP */}
+                    <div className="w-40 sm:w-56 md:w-72 shrink-0">
+                        <div className="relative aspect-[894/1930] rounded-[2rem] overflow-hidden shadow-2xl shadow-black/40 ring-1 ring-white/10">
+                            {slidesApp.map((src, index) => (
+                                <img
+                                    key={src}
+                                    src={src}
+                                    alt=""
+                                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                                        index === slideAtual ? "opacity-100" : "opacity-0"
+                                    }`}
+                                />
+                            ))}
+                        </div>
+
+                        <div className="flex justify-center gap-2 mt-4">
+                            {slidesApp.map((_, index) => (
+                                <button
+                                    key={index}
+                                    type="button"
+                                    aria-label={`Slide ${index + 1}`}
+                                    onClick={() => setSlideAtual(index)}
+                                    className={`h-2 rounded-full transition-all ${
+                                        index === slideAtual ? "w-6 bg-[#4cb8c4]" : "w-2 bg-gray-600"
+                                    }`}
+                                />
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </section>
 

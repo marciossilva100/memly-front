@@ -345,7 +345,7 @@
     "landing_signup_button": "Kostenloses Konto erstellen",
     "landing_hero_title_1": "Lerne Sprachen",
     "landing_hero_title_2": "auf deine Art",
-    "landing_hero_description": "Zaldemy ist die Sprachlern-App, mit der du eigene Kategorien und Sätze erstellst, mit echtem Audio übst und sogar KI-gestütztes Training nutzt, um auf deine Art zu lernen.",
+    "landing_hero_description": "Zaldemy ist die Sprachlern-App, mit der du deine eigenen Kategorien und Sätze erstellst, mit echtem Audio übst und auf deine Weise lernst.",
     "landing_hero_cta_primary": "Jetzt kostenlos starten",
     "landing_hero_cta_secondary": "Ich habe bereits ein Konto",
     "landing_features_title": "Alles, was du zum Lernen brauchst",
@@ -354,8 +354,8 @@
     "landing_feature1_desc": "Wähle deine Muttersprache und die Sprache, die du lernen möchtest. Du kannst deine Lernsprache jederzeit ändern.",
     "landing_feature2_title": "Deine eigenen Kategorien und Sätze",
     "landing_feature2_desc": "Erstelle deine eigenen Satzkategorien, organisiert auf deine Art, mit Fokus auf den Wortschatz, der dir wirklich wichtig ist.",
-    "landing_feature3_title": "KI-gestütztes Training",
-    "landing_feature3_desc": "Übe Konversation und erhalte KI-generierte Sätze, um deinen Wortschatz auf natürliche Weise zu erweitern.",
+    "landing_feature3_title": "Abstandswiederholung",
+    "landing_feature3_desc": "Gemerkte Sätze tauchen genau zum richtigen Zeitpunkt wieder auf, damit der Wortschatz wirklich im Gedächtnis bleibt.",
     "landing_feature4_title": "Aussprache mit Audio",
     "landing_feature4_desc": "Jeder Satz hat automatisch generiertes Audio, sowohl in deiner Muttersprache als auch in der Sprache, die du lernst.",
     "landing_feature5_title": "Verfolge deinen Fortschritt",
@@ -389,5 +389,6 @@
     "onboarding_slide3_subtitle": "Verteiltes Wiederholen hilft dir, dich länger zu erinnern.",
     "onboarding_skip": "Überspringen",
     "onboarding_start": "Loslegen",
-    "all_categories": "Alle Kategorien"
+    "all_categories": "Alle Kategorien",
+    "landing_hero_install_hint": "Tippe auf „Jetzt starten“ und installiere die App in Sekunden auf deinem Handy — schnell und kostenlos."
 }

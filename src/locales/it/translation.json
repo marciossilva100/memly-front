@@ -345,7 +345,7 @@
     "landing_signup_button": "Crea account gratuito",
     "landing_hero_title_1": "Impara le lingue",
     "landing_hero_title_2": "a modo tuo",
-    "landing_hero_description": "Zaldemy è l'app per imparare le lingue in cui crei le tue categorie e frasi, ti eserciti con audio reale e usufruisci persino di un allenamento con intelligenza artificiale per praticare a modo tuo.",
+    "landing_hero_description": "Zaldemy è l'app per imparare le lingue dove crei le tue categorie e frasi, ti eserciti con audio reale e studi a modo tuo.",
     "landing_hero_cta_primary": "Inizia ora, è gratis",
     "landing_hero_cta_secondary": "Ho già un account",
     "landing_features_title": "Tutto quello che ti serve per imparare",
@@ -354,8 +354,8 @@
     "landing_feature1_desc": "Scegli la tua lingua madre e la lingua che vuoi imparare. Puoi cambiare la lingua di apprendimento quando vuoi.",
     "landing_feature2_title": "Le tue categorie e frasi",
     "landing_feature2_desc": "Crea le tue categorie di frasi, organizzate a modo tuo, incentrate sul vocabolario che conta davvero per te.",
-    "landing_feature3_title": "Allenamento con Intelligenza Artificiale",
-    "landing_feature3_desc": "Pratica la conversazione e ricevi frasi generate dall'IA per ampliare il tuo vocabolario in modo naturale.",
+    "landing_feature3_title": "Ripetizione dilazionata",
+    "landing_feature3_desc": "Le frasi memorizzate ritornano al momento giusto, assicurando che il vocabolario resti davvero impresso nella memoria.",
     "landing_feature4_title": "Pronuncia con audio",
     "landing_feature4_desc": "Ogni frase ha un audio generato automaticamente, nella tua lingua madre e in quella che stai imparando.",
     "landing_feature5_title": "Monitora i tuoi progressi",
@@ -389,5 +389,6 @@
     "onboarding_slide3_subtitle": "La ripetizione dilazionata ti aiuta a ricordare più a lungo.",
     "onboarding_skip": "Salta",
     "onboarding_start": "Inizia",
-    "all_categories": "Tutte le categorie"
+    "all_categories": "Tutte le categorie",
+    "landing_hero_install_hint": "Tocca \"Inizia ora\" e installa l'app sul tuo telefono in pochi secondi — veloce e gratis."
 }

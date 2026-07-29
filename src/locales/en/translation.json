@@ -347,7 +347,7 @@
     "landing_signup_button": "Create free account",
     "landing_hero_title_1": "Learn languages",
     "landing_hero_title_2": "your way",
-    "landing_hero_description": "Zaldemy is the language-learning app where you build your own categories and phrases, practice with real audio, and even get AI-powered training to study your way.",
+    "landing_hero_description": "Zaldemy is the language-learning app where you build your own categories and phrases, practice with real audio, and study your way.",
     "landing_hero_cta_primary": "Start now, it's free",
     "landing_hero_cta_secondary": "I already have an account",
     "landing_features_title": "Everything you need to learn",
@@ -356,8 +356,8 @@
     "landing_feature1_desc": "Choose your native language and the language you want to learn. You can change your learning language whenever you want.",
     "landing_feature2_title": "Your own categories and phrases",
     "landing_feature2_desc": "Create your own phrase categories, organized your way, focused on the vocabulary that really matters to you.",
-    "landing_feature3_title": "AI-powered training",
-    "landing_feature3_desc": "Practice conversation and get AI-generated phrases to expand your vocabulary naturally.",
+    "landing_feature3_title": "Spaced repetition",
+    "landing_feature3_desc": "Memorized phrases come back at just the right time, making sure the vocabulary really sticks in your memory.",
     "landing_feature4_title": "Audio pronunciation",
     "landing_feature4_desc": "Every phrase has automatically generated audio, in both your native language and the one you're learning.",
     "landing_feature5_title": "Track your progress",
@@ -391,5 +391,6 @@
     "onboarding_slide3_subtitle": "Spaced repetition helps you remember for longer.",
     "onboarding_skip": "Skip",
     "onboarding_start": "Get started",
-    "all_categories": "All categories"
+    "all_categories": "All categories",
+    "landing_hero_install_hint": "Tap \"Get started\" and install the app on your phone in seconds — it's quick and free."
 }

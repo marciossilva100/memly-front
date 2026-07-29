@@ -345,7 +345,7 @@
     "landing_signup_button": "Załóż darmowe konto",
     "landing_hero_title_1": "Ucz się języków",
     "landing_hero_title_2": "na swój sposób",
-    "landing_hero_description": "Zaldemy to aplikacja do nauki języków, w której tworzysz własne kategorie i zdania, ćwiczysz z prawdziwym dźwiękiem, a nawet korzystasz z treningu z AI, aby uczyć się na swój sposób.",
+    "landing_hero_description": "Zaldemy to aplikacja do nauki języków, w której tworzysz własne kategorie i zdania, ćwiczysz z prawdziwym audio i uczysz się na swój sposób.",
     "landing_hero_cta_primary": "Zacznij teraz, za darmo",
     "landing_hero_cta_secondary": "Mam już konto",
     "landing_features_title": "Wszystko, czego potrzebujesz do nauki",
@@ -354,8 +354,8 @@
     "landing_feature1_desc": "Wybierz swój język ojczysty i język, którego chcesz się uczyć. Możesz zmienić język nauki w dowolnym momencie.",
     "landing_feature2_title": "Twoje własne kategorie i zdania",
     "landing_feature2_desc": "Twórz własne kategorie zdań, zorganizowane na swój sposób, skupione na słownictwie, które naprawdę ma dla Ciebie znaczenie.",
-    "landing_feature3_title": "Trening z sztuczną inteligencją",
-    "landing_feature3_desc": "Ćwicz konwersacje i otrzymuj zdania generowane przez AI, aby naturalnie poszerzać swoje słownictwo.",
+    "landing_feature3_title": "Powtórki w odstępach",
+    "landing_feature3_desc": "Zapamiętane zdania wracają dokładnie w odpowiednim momencie, dzięki czemu słownictwo naprawdę zapada w pamięć.",
     "landing_feature4_title": "Wymowa z dźwiękiem",
     "landing_feature4_desc": "Każde zdanie ma automatycznie wygenerowany dźwięk, zarówno w Twoim języku ojczystym, jak i w języku, którego się uczysz.",
     "landing_feature5_title": "Śledź swoje postępy",
@@ -389,5 +389,6 @@
     "onboarding_slide3_subtitle": "Powtórki rozłożone w czasie pomagają zapamiętać na dłużej.",
     "onboarding_skip": "Pomiń",
     "onboarding_start": "Zacznij",
-    "all_categories": "Wszystkie kategorie"
+    "all_categories": "Wszystkie kategorie",
+    "landing_hero_install_hint": "Dotknij \"Zacznij teraz\" i zainstaluj aplikację na telefonie w kilka sekund — szybko i za darmo."
 }

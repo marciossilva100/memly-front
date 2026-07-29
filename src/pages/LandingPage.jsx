@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import {
     Languages,
-    Sparkles,
+    RotateCcw,
     Layers,
     Volume2,
     BarChart3,
@@ -18,7 +18,7 @@ import imgSlideCategorias from "../assets/img/landing-screenshot-categorias.png"
 import imgSlideDigitar from "../assets/img/landing-screenshot-digitar.png";
 import imgSlideCorreto from "../assets/img/landing-screenshot-correto.png";
 
-const iconesRecursos = [Languages, Layers, Sparkles, Volume2, BarChart3, Share2];
+const iconesRecursos = [Languages, Layers, RotateCcw, Volume2, BarChart3, Share2];
 
 const slidesApp = [imgSlideCategorias, imgSlideDigitar, imgSlideCorreto];
 
@@ -140,7 +140,7 @@ export default function LandingPage() {
 
             {/* HERO */}
             <section className="max-w-6xl mx-auto px-5 pt-20 pb-24">
-                <div className="flex flex-col-reverse md:flex-row items-center gap-10 md:gap-16">
+                <div className="flex flex-col md:flex-row items-center gap-10 md:gap-16">
 
                     {/* TEXTO */}
                     <div className="flex-1 text-center md:text-left">
@@ -152,7 +152,12 @@ export default function LandingPage() {
                             {t("landing_hero_description")}
                         </p>
 
-                        <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-3 mt-8">
+                        <div className="inline-flex items-center gap-2 bg-[#4cb8c4]/10 text-[#4cb8c4] px-4 py-2 rounded-full mt-6 border border-[#4cb8c4]/30 font-medium text-sm">
+                            <Download size={16} className="shrink-0" />
+                            {t("landing_hero_install_hint")}
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-3 mt-6">
                             <Link
                                 to="/cadastrar"
                                 className="text-center bg-[#4cb8c4] text-white px-8 py-3 rounded-full text-lg font-semibold hover:brightness-110 transition"
@@ -169,14 +174,14 @@ export default function LandingPage() {
                     </div>
 
                     {/* SLIDE DAS TELAS DO APP */}
-                    <div className="w-40 sm:w-56 md:w-72 shrink-0">
-                        <div className="relative aspect-[894/1930] rounded-[2rem] overflow-hidden shadow-2xl shadow-black/40 ring-1 ring-white/10">
+                    <div className="w-48 sm:w-56 md:w-72 shrink-0">
+                        <div className="relative aspect-[894/1930] drop-shadow-2xl">
                             {slidesApp.map((src, index) => (
                                 <img
                                     key={src}
                                     src={src}
                                     alt=""
-                                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                                    className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-700 ${
                                         index === slideAtual ? "opacity-100" : "opacity-0"
                                     }`}
                                 />

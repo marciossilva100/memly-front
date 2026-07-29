@@ -345,7 +345,7 @@
     "landing_signup_button": "Ücretsiz hesap oluştur",
     "landing_hero_title_1": "Dilleri kendi",
     "landing_hero_title_2": "yönteminle öğren",
-    "landing_hero_description": "Zaldemy, kendi kategorilerinizi ve cümlelerinizi oluşturduğunuz, gerçek seslerle pratik yaptığınız ve kendi yönteminizle çalışmak için yapay zeka destekli antrenmandan bile yararlandığınız dil öğrenme uygulamasıdır.",
+    "landing_hero_description": "Zaldemy, kendi kategorilerini ve cümlelerini oluşturduğun, gerçek sesle pratik yaptığın ve kendi tarzında çalıştığın dil öğrenme uygulamasıdır.",
     "landing_hero_cta_primary": "Şimdi başla, ücretsiz",
     "landing_hero_cta_secondary": "Zaten hesabım var",
     "landing_features_title": "Öğrenmek için ihtiyacınız olan her şey",
@@ -354,8 +354,8 @@
     "landing_feature1_desc": "Ana dilinizi ve öğrenmek istediğiniz dili seçin. Öğrenme dilinizi istediğiniz zaman değiştirebilirsiniz.",
     "landing_feature2_title": "Kendi kategorileriniz ve cümleleriniz",
     "landing_feature2_desc": "Sizin için gerçekten önemli olan kelime dağarcığına odaklanan, kendi yönteminizle düzenlenmiş cümle kategorileri oluşturun.",
-    "landing_feature3_title": "Yapay Zeka ile antrenman",
-    "landing_feature3_desc": "Konuşma pratiği yapın ve kelime dağarcığınızı doğal bir şekilde genişletmek için yapay zeka tarafından üretilen cümleler alın.",
+    "landing_feature3_title": "Aralıklı tekrar",
+    "landing_feature3_desc": "Ezberlenen cümleler tam doğru zamanda tekrar karşına çıkar, böylece kelime dağarcığın gerçekten kalıcı olur.",
     "landing_feature4_title": "Sesli telaffuz",
     "landing_feature4_desc": "Her cümlenin hem ana dilinizde hem de öğrendiğiniz dilde otomatik olarak oluşturulmuş sesi vardır.",
     "landing_feature5_title": "İlerlemenizi takip edin",
@@ -389,5 +389,6 @@
     "onboarding_slide3_subtitle": "Aralıklı tekrar, daha uzun süre hatırlamana yardımcı olur.",
     "onboarding_skip": "Atla",
     "onboarding_start": "Başla",
-    "all_categories": "Tüm kategoriler"
+    "all_categories": "Tüm kategoriler",
+    "landing_hero_install_hint": "\"Hemen başla\"ya dokun ve uygulamayı saniyeler içinde telefonuna yükle — hızlı ve ücretsiz."
 }

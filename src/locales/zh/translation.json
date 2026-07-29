@@ -345,7 +345,7 @@
     "landing_signup_button": "免费创建账号",
     "landing_hero_title_1": "用你自己的方式",
     "landing_hero_title_2": "学习语言",
-    "landing_hero_description": "Zaldemy是一款语言学习应用，你可以创建自己的分类和例句，用真实音频练习，还能借助人工智能训练，以你自己的方式学习。",
+    "landing_hero_description": "Zaldemy 是一款语言学习应用，你可以创建自己的分类和短语，用真人语音练习，按自己的节奏学习。",
     "landing_hero_cta_primary": "立即开始，完全免费",
     "landing_hero_cta_secondary": "我已经有账号了",
     "landing_features_title": "学习所需的一切",
@@ -354,8 +354,8 @@
     "landing_feature1_desc": "选择你的母语和想学习的语言。你可以随时更改正在学习的语言。",
     "landing_feature2_title": "属于你的分类和例句",
     "landing_feature2_desc": "创建你自己的例句分类，按你的方式组织，专注于对你真正重要的词汇。",
-    "landing_feature3_title": "人工智能训练",
-    "landing_feature3_desc": "练习对话，获取AI生成的例句，自然地扩展你的词汇量。",
+    "landing_feature3_title": "间隔重复",
+    "landing_feature3_desc": "已记住的短语会在恰当的时间再次出现，确保词汇真正牢记在心。",
     "landing_feature4_title": "带音频发音",
     "landing_feature4_desc": "每个例句都会自动生成发音音频，包括母语和正在学习的语言。",
     "landing_feature5_title": "跟踪你的进度",
@@ -389,5 +389,6 @@
     "onboarding_slide3_subtitle": "间隔重复帮助你记得更牢。",
     "onboarding_skip": "跳过",
     "onboarding_start": "开始",
-    "all_categories": "所有分类"
+    "all_categories": "所有分类",
+    "landing_hero_install_hint": "点击“立即开始”，几秒钟内即可在手机上安装该应用——快速且免费。"
 }

@@ -345,7 +345,7 @@
     "landing_signup_button": "Gratis account aanmaken",
     "landing_hero_title_1": "Leer talen",
     "landing_hero_title_2": "op jouw manier",
-    "landing_hero_description": "Zaldemy is de taal-leerapp waarmee je je eigen categorieën en zinnen maakt, oefent met echte audio en zelfs AI-training gebruikt om op jouw manier te leren.",
+    "landing_hero_description": "Zaldemy is de taalleer-app waarmee je je eigen categorieën en zinnen maakt, oefent met echte audio en op jouw manier studeert.",
     "landing_hero_cta_primary": "Begin nu, het is gratis",
     "landing_hero_cta_secondary": "Ik heb al een account",
     "landing_features_title": "Alles wat je nodig hebt om te leren",
@@ -354,8 +354,8 @@
     "landing_feature1_desc": "Kies je moedertaal en de taal die je wilt leren. Je kunt je leertaal op elk moment wijzigen.",
     "landing_feature2_title": "Jouw eigen categorieën en zinnen",
     "landing_feature2_desc": "Maak je eigen zinnencategorieën, op jouw manier georganiseerd, gericht op de woordenschat die voor jou echt telt.",
-    "landing_feature3_title": "AI-training",
-    "landing_feature3_desc": "Oefen conversatie en ontvang door AI gegenereerde zinnen om je woordenschat op natuurlijke wijze uit te breiden.",
+    "landing_feature3_title": "Gespreide herhaling",
+    "landing_feature3_desc": "Onthouden zinnen komen precies op het juiste moment weer terug, zodat de woordenschat echt blijft hangen.",
     "landing_feature4_title": "Uitspraak met audio",
     "landing_feature4_desc": "Elke zin heeft automatisch gegenereerde audio, zowel in je moedertaal als in de taal die je leert.",
     "landing_feature5_title": "Volg je voortgang",
@@ -389,5 +389,6 @@
     "onboarding_slide3_subtitle": "Gespreide herhaling helpt je langer te onthouden.",
     "onboarding_skip": "Overslaan",
     "onboarding_start": "Beginnen",
-    "all_categories": "Alle categorieën"
+    "all_categories": "Alle categorieën",
+    "landing_hero_install_hint": "Tik op \"Nu beginnen\" en installeer de app in enkele seconden op je telefoon — snel en gratis."
 }

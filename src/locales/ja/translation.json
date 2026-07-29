@@ -345,7 +345,7 @@
     "landing_signup_button": "無料でアカウント作成",
     "landing_hero_title_1": "自分のペースで",
     "landing_hero_title_2": "言語を学ぼう",
-    "landing_hero_description": "Zaldemyは、自分だけのカテゴリーとフレーズを作り、実際の音声で練習し、さらにAIトレーニングも活用して自分のやり方で学べる語学学習アプリです。",
+    "landing_hero_description": "Zaldemyは、自分だけのカテゴリーとフレーズを作り、本物の音声で練習し、自分のペースで学べる語学学習アプリです。",
     "landing_hero_cta_primary": "今すぐ無料で始める",
     "landing_hero_cta_secondary": "すでにアカウントをお持ちの方",
     "landing_features_title": "学習に必要なすべてがここに",
@@ -354,8 +354,8 @@
     "landing_feature1_desc": "母国語と学習したい言語を選びましょう。学習言語はいつでも変更できます。",
     "landing_feature2_title": "自分だけのカテゴリーとフレーズ",
     "landing_feature2_desc": "自分にとって本当に大切な語彙に焦点を当てた、自分だけのフレーズカテゴリーを作成できます。",
-    "landing_feature3_title": "AIトレーニング",
-    "landing_feature3_desc": "会話練習をして、AIが生成したフレーズで自然に語彙を増やしましょう。",
+    "landing_feature3_title": "間隔反復",
+    "landing_feature3_desc": "覚えたフレーズはちょうど良いタイミングで再登場し、語彙が本当に記憶に定着するようにします。",
     "landing_feature4_title": "音声付き発音",
     "landing_feature4_desc": "すべてのフレーズに、母国語と学習言語の両方で自動生成された音声が付いています。",
     "landing_feature5_title": "進捗を確認",
@@ -389,5 +389,6 @@
     "onboarding_slide3_subtitle": "間隔反復であなたはより長く覚えられます。",
     "onboarding_skip": "スキップ",
     "onboarding_start": "始める",
-    "all_categories": "すべてのカテゴリー"
+    "all_categories": "すべてのカテゴリー",
+    "landing_hero_install_hint": "「今すぐ始める」をタップして、数秒でスマホにアプリをインストール — 早くて無料です。"
 }

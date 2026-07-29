@@ -346,7 +346,7 @@
     "landing_signup_button": "Crear cuenta gratis",
     "landing_hero_title_1": "Aprende idiomas",
     "landing_hero_title_2": "a tu manera",
-    "landing_hero_description": "Zaldemy es la app de aprendizaje de idiomas donde armas tus propias categorías y frases, practicas con audio real y además cuentas con inteligencia artificial para practicar a tu manera.",
+    "landing_hero_description": "Zaldemy es la app de aprendizaje de idiomas donde armas tus propias categorías y frases, practicas con audio real y estudias a tu manera.",
     "landing_hero_cta_primary": "Empezar ahora, es gratis",
     "landing_hero_cta_secondary": "Ya tengo una cuenta",
     "landing_features_title": "Todo lo que necesitas para aprender",
@@ -355,8 +355,8 @@
     "landing_feature1_desc": "Elige tu idioma nativo y el idioma que quieres aprender. Puedes cambiar el idioma de aprendizaje cuando quieras.",
     "landing_feature2_title": "Tus propias categorías y frases",
     "landing_feature2_desc": "Crea tus propias categorías de frases, organizadas a tu manera, enfocadas en el vocabulario que realmente te importa.",
-    "landing_feature3_title": "Entrenamiento con Inteligencia Artificial",
-    "landing_feature3_desc": "Practica conversación y recibe frases generadas por IA para ampliar tu vocabulario de forma natural.",
+    "landing_feature3_title": "Repetición espaciada",
+    "landing_feature3_desc": "Las frases memorizadas vuelven a aparecer en el momento justo, para que el vocabulario quede grabado de verdad en tu memoria.",
     "landing_feature4_title": "Pronunciación con audio",
     "landing_feature4_desc": "Cada frase tiene audio generado automáticamente, en tu idioma nativo y en el idioma que estás aprendiendo.",
     "landing_feature5_title": "Sigue tu progreso",
@@ -391,5 +391,7 @@
     "onboarding_skip": "Omitir",
     "onboarding_start": "Comenzar",
     "premium_reason_audio": "Ya usaste tus 10 pronunciaciones gratis con voz natural. Hazte premium para acceso ilimitado.",
-    "premium_reason_categorias": "Alcanzaste el límite de 5 categorías de tu plan. Hazte premium para crear categorías ilimitadas."
+    "premium_reason_categorias": "Alcanzaste el límite de 5 categorías de tu plan. Hazte premium para crear categorías ilimitadas.",
+    "all_categories": "Todas las categorías",
+    "landing_hero_install_hint": "Toca en \"Empezar ahora\" e instala la app en tu celular en segundos — es rápido y gratis."
 }

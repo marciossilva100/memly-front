@@ -345,7 +345,7 @@
     "landing_signup_button": "무료 계정 만들기",
     "landing_hero_title_1": "나만의 방식으로",
     "landing_hero_title_2": "언어를 배우세요",
-    "landing_hero_description": "Zaldemy는 나만의 카테고리와 문장을 만들고, 실제 오디오로 연습하며, AI 학습까지 활용해 나만의 방식으로 공부할 수 있는 언어 학습 앱입니다.",
+    "landing_hero_description": "Zaldemy는 나만의 카테고리와 문장을 만들고, 실제 음성으로 연습하며, 나만의 방식으로 공부할 수 있는 언어 학습 앱입니다.",
     "landing_hero_cta_primary": "지금 무료로 시작하기",
     "landing_hero_cta_secondary": "이미 계정이 있어요",
     "landing_features_title": "학습에 필요한 모든 것",
@@ -354,8 +354,8 @@
     "landing_feature1_desc": "모국어와 배우고 싶은 언어를 선택하세요. 학습 언어는 언제든지 변경할 수 있습니다.",
     "landing_feature2_title": "나만의 카테고리와 문장",
     "landing_feature2_desc": "나에게 정말 중요한 어휘에 집중해서, 나만의 방식으로 정리된 문장 카테고리를 만들어보세요.",
-    "landing_feature3_title": "AI 학습",
-    "landing_feature3_desc": "대화 연습을 하고 AI가 생성한 문장으로 자연스럽게 어휘를 늘려보세요.",
+    "landing_feature3_title": "간격 반복 학습",
+    "landing_feature3_desc": "암기한 문장이 딱 알맞은 시점에 다시 나타나서, 어휘가 진짜로 기억에 남도록 도와줍니다.",
     "landing_feature4_title": "오디오 발음",
     "landing_feature4_desc": "모든 문장에는 모국어와 학습 언어 모두에서 자동으로 생성된 오디오가 제공됩니다.",
     "landing_feature5_title": "진행 상황을 확인하세요",
@@ -390,5 +390,7 @@
     "onboarding_skip": "건너뛰기",
     "onboarding_start": "시작하기",
     "premium_reason_audio": "무료 자연 음성 발음 10회를 모두 사용했습니다. 무제한 이용을 위해 프리미엄으로 전환하세요.",
-    "premium_reason_categorias": "플랜의 카테고리 한도(5개)에 도달했습니다. 무제한 카테고리를 만들려면 프리미엄으로 전환하세요."
+    "premium_reason_categorias": "플랜의 카테고리 한도(5개)에 도달했습니다. 무제한 카테고리를 만들려면 프리미엄으로 전환하세요.",
+    "all_categories": "모든 카테고리",
+    "landing_hero_install_hint": "\"지금 시작하기\"를 탭하고 몇 초 만에 휴대폰에 앱을 설치하세요 — 빠르고 무료입니다."
 }

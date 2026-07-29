@@ -345,7 +345,7 @@
     "landing_signup_button": "Créer un compte gratuit",
     "landing_hero_title_1": "Apprenez les langues",
     "landing_hero_title_2": "à votre façon",
-    "landing_hero_description": "Zaldemy est l'application d'apprentissage des langues où vous créez vos propres catégories et phrases, pratiquez avec de l'audio réel et bénéficiez même d'un entraînement par IA pour pratiquer à votre façon.",
+    "landing_hero_description": "Zaldemy est l'appli d'apprentissage des langues où vous créez vos propres catégories et phrases, pratiquez avec de l'audio réel et étudiez à votre façon.",
     "landing_hero_cta_primary": "Commencer maintenant, c'est gratuit",
     "landing_hero_cta_secondary": "J'ai déjà un compte",
     "landing_features_title": "Tout ce dont vous avez besoin pour apprendre",
@@ -354,8 +354,8 @@
     "landing_feature1_desc": "Choisissez votre langue maternelle et la langue que vous voulez apprendre. Vous pouvez changer de langue d'apprentissage à tout moment.",
     "landing_feature2_title": "Vos propres catégories et phrases",
     "landing_feature2_desc": "Créez vos propres catégories de phrases, organisées à votre façon, centrées sur le vocabulaire qui compte vraiment pour vous.",
-    "landing_feature3_title": "Entraînement par Intelligence Artificielle",
-    "landing_feature3_desc": "Pratiquez la conversation et recevez des phrases générées par IA pour enrichir votre vocabulaire naturellement.",
+    "landing_feature3_title": "Répétition espacée",
+    "landing_feature3_desc": "Les phrases mémorisées reviennent au bon moment, pour que le vocabulaire reste vraiment gravé dans votre mémoire.",
     "landing_feature4_title": "Prononciation audio",
     "landing_feature4_desc": "Chaque phrase dispose d'un audio généré automatiquement, dans votre langue maternelle et dans la langue que vous apprenez.",
     "landing_feature5_title": "Suivez votre progression",
@@ -390,5 +390,7 @@
     "onboarding_skip": "Passer",
     "onboarding_start": "Commencer",
     "premium_reason_audio": "Vous avez utilisé vos 10 prononciations gratuites en voix naturelle. Passez premium pour un accès illimité.",
-    "premium_reason_categorias": "Vous avez atteint la limite de 5 catégories de votre forfait. Passez premium pour créer des catégories illimitées."
+    "premium_reason_categorias": "Vous avez atteint la limite de 5 catégories de votre forfait. Passez premium pour créer des catégories illimitées.",
+    "all_categories": "Toutes les catégories",
+    "landing_hero_install_hint": "Appuyez sur « Commencer » et installez l'appli sur votre téléphone en quelques secondes — rapide et gratuit."
 }

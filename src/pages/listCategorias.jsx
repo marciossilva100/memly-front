@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 
 
-import { BookOpen,Search,Filter,Loader2,Home,Settings,BarChart3,UserRound } from "lucide-react";
+import { BookOpen,Search,Filter,Loader2,Home,Settings,BarChart3,UserRound,ChevronDown,FolderPlus } from "lucide-react";
 
 const AVATAR_COLORS = [
     'bg-emerald-500',
@@ -44,6 +44,7 @@ export default function ListCategoria() {
     const [hasMore, setHasMore] = useState(true);
     const [contador, setContador] = useState(0);
     const [textoBusca, setTextoBusca] = useState("")
+    const [categoriaSelecionada, setCategoriaSelecionada] = useState("")
     const API_URL = import.meta.env.VITE_API_URL;
 
     const navigate = useNavigate();
@@ -170,16 +171,23 @@ export default function ListCategoria() {
 
     const buscaNormalizada = textoBusca.trim().toLowerCase();
 
-    const categoriasFiltradas = buscaNormalizada
-        ? categorias.filter(item =>
-            item.categoria?.toLowerCase().includes(buscaNormalizada) ||
-            item.usuario?.toLowerCase().includes(buscaNormalizada)
-        )
-        : categorias;
+    const nomesCategoriasDisponiveis = [...new Set(
+        categorias.map(item => item.categoria).filter(Boolean)
+    )].sort((a, b) => a.localeCompare(b));
+
+    const categoriasFiltradas = categorias.filter(item => {
+        const combinaBusca = !buscaNormalizada
+            || item.categoria?.toLowerCase().includes(buscaNormalizada)
+            || item.usuario?.toLowerCase().includes(buscaNormalizada);
+
+        const combinaSelecao = !categoriaSelecionada || item.categoria === categoriaSelecionada;
+
+        return combinaBusca && combinaSelecao;
+    });
 
 
     return (
-        <div className="h-[calc(100dvh-64px)] flex flex-col max-w-7xl mx-auto  px-6 from-gray-900 to-gray-800 bg-gradient-to-br">
+        <div className="h-[calc(100dvh-64px)] flex flex-col max-w-7xl mx-auto   from-gray-900 to-gray-800 bg-gradient-to-br">
 
             {/* HEADER */}
             {/* <div className="relative  mb-4 text-left mt-4">
@@ -190,29 +198,42 @@ export default function ListCategoria() {
                     <i className="bi bi-arrow-left text-2xl text-white"></i>
                 </div>
             </div> */}
+               <div className="sticky top-0 z-10 px-6 py-4">
 
-            <div className="lista-categoria  flex-1 overflow-y-auto pb-[140px] scrollbar-hide mt-6" id="lista-categoria">
-                <div className="flex-1 flex flex-col">
-
-                    <h1 className="text-base font-semibold text-white mb-8">
+                    <h1 className="flex items-center gap-3 text-xl font-semibold text-white mb-8">
+                        <span className="flex items-center justify-center w-9 h-9 shrink-0 rounded-xl bg-gradient-to-br from-[#4cb8c4]/20 to-[#085078]/20 text-[#4cb8c4]">
+                            <FolderPlus className="w-5 h-5" />
+                        </span>
                         {t("add_category")}
                     </h1>
 
-                    <div  className='mb-6'>
-                        <div className="flex items-center border rounded-md overflow-hidden ">
-                            <span className="px-3 text-gray-500">
-                                <Search width={20} className='text-white' />
-                            </span>
+                    <div className="mb-3 flex items-center gap-2 rounded-xl border border-gray-700 bg-gray-800/50 backdrop-blur-sm px-4 py-3 shadow-lg transition focus-within:border-[#4cb8c4] focus-within:ring-2 focus-within:ring-[#4cb8c4]/30">
+                        <Search width={18} className='text-gray-400 shrink-0' />
 
-                            <input
-                                type="email"
-                                className="w-full px-3 py-2 outline-none text-white text-lg bg-gray-800/50 backdrop-blur-sm"
-                                placeholder={t("search")}
-                                value={textoBusca}
-                                onChange={(e) => {
-                                    setTextoBusca(e.target.value)
-                                }}
-                            />
+                        <input
+                            type="text"
+                            className="w-full bg-transparent outline-none text-white text-base placeholder:text-gray-500"
+                            placeholder={t("search")}
+                            value={textoBusca}
+                            onChange={(e) => {
+                                setTextoBusca(e.target.value)
+                            }}
+                        />
+                    </div>
+
+                    <div className='mb-2 relative'>
+                        <select
+                            className="w-full appearance-none rounded-xl border border-gray-700 bg-gray-800/50 backdrop-blur-sm px-4 py-3 pr-10 text-base text-white shadow-lg outline-none transition focus:border-[#4cb8c4] focus:ring-2 focus:ring-[#4cb8c4]/30"
+                            value={categoriaSelecionada}
+                            onChange={(e) => setCategoriaSelecionada(e.target.value)}
+                        >
+                            <option value="" className="bg-gray-800">{t("all_categories")}</option>
+                            {nomesCategoriasDisponiveis.map((nome) => (
+                                <option key={nome} value={nome} className="bg-gray-800">{nome}</option>
+                            ))}
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+                            <ChevronDown className="w-4 h-4 text-gray-400" />
                         </div>
                     </div>
 
@@ -228,7 +249,10 @@ export default function ListCategoria() {
             
                 </div>
 
-                <div className=" items-center justify-center">
+            <div className="lista-categoria  flex-1 overflow-y-auto pb-[140px] scrollbar-hide " id="lista-categoria">
+             
+
+                <div className="px-6 items-center justify-center">
 
                     {/* Item */}
                     {categoriasFiltradas.map((item, index) => (
@@ -307,12 +331,12 @@ export default function ListCategoria() {
                         </button>
                         <button type="button" onClick={() => navigate('/configuracoes')}>
                             <div className=' p-3 flex justify-center items-center'>
-                                <Settings width={38} height={38} className='text-[#4cb8c4]' />
+                                <Settings width={38} height={38} className='text-violet-400' />
                             </div>
                         </button>
                         <button type="button" onClick={() => navigate('/metricas')}>
                             <div className=' p-3 flex justify-center items-center'>
-                                <BarChart3 className='text-[#4cb8c4]' width={38} height={38} />
+                                <BarChart3 className='text-amber-400' width={38} height={38} />
 
                                 {/*  <BookOpen className='text-white' /> */}
                                 {/* <img src={imgEstatistica} alt="" width={40} /> */}

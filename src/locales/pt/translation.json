@@ -347,7 +347,7 @@
     "landing_signup_button": "Criar conta grátis",
     "landing_hero_title_1": "Aprenda idiomas do",
     "landing_hero_title_2": "seu jeito",
-    "landing_hero_description": "O Zaldemy é o app de aprendizado de idiomas onde você monta suas próprias categorias e frases, treina com áudio real e ainda conta com inteligência artificial pra praticar do seu jeito.",
+    "landing_hero_description": "O Zaldemy é o app de aprendizado de idiomas onde você monta suas próprias categorias e frases, treina com áudio real e pratica do seu jeito.",
     "landing_hero_cta_primary": "Começar agora, é grátis",
     "landing_hero_cta_secondary": "Já tenho conta",
     "landing_features_title": "Tudo que você precisa pra aprender",
@@ -356,8 +356,8 @@
     "landing_feature1_desc": "Escolha seu idioma nativo e o idioma que quer aprender. Você pode trocar de idioma de aprendizado quando quiser.",
     "landing_feature2_title": "Categorias e frases suas",
     "landing_feature2_desc": "Crie suas próprias categorias de frases, organizadas do seu jeito, focadas no vocabulário que realmente importa pra você.",
-    "landing_feature3_title": "Treino com Inteligência Artificial",
-    "landing_feature3_desc": "Pratique conversação e receba frases geradas por IA para expandir seu vocabulário de forma natural.",
+    "landing_feature3_title": "Repetição espaçada",
+    "landing_feature3_desc": "Frases memorizadas voltam a aparecer no momento certo, garantindo que o vocabulário fique na memória de verdade.",
     "landing_feature4_title": "Pronúncia com áudio",
     "landing_feature4_desc": "Cada frase tem áudio gerado automaticamente, no seu idioma nativo e no idioma que você está aprendendo.",
     "landing_feature5_title": "Acompanhe seu progresso",
@@ -392,5 +392,7 @@
     "onboarding_skip": "Pular",
     "onboarding_start": "Começar",
     "premium_reason_audio": "Você usou suas 10 pronúncias grátis com voz natural. Vire premium para ter acesso ilimitado.",
-    "premium_reason_categorias": "Você atingiu o limite de 5 categorias do seu plano. Vire premium para criar categorias ilimitadas."
+    "premium_reason_categorias": "Você atingiu o limite de 5 categorias do seu plano. Vire premium para criar categorias ilimitadas.",
+    "all_categories": "Todas as categorias",
+    "landing_hero_install_hint": "Toque em \"Começar agora\" e instale o app no seu celular em segundos — é rápido e gratuito."
 }

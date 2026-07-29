@@ -191,6 +191,28 @@ export default function InstallPwaNotice() {
                             </p>
                         </div>
                     </div>
+                ) : !installPrompt && installStep === "idle" && showManualFallback ? (
+                    // O Chrome só oferece o botão automático quando a própria heurística
+                    // dele decide - em muitos navegadores/dispositivos (comum em Android
+                    // sem Google Play Services, ex: vários aparelhos vendidos na China)
+                    // esse evento nunca dispara. Nesse caso, depois de esperar um pouco,
+                    // mostramos direto o passo a passo manual como o caminho principal -
+                    // um botão permanentemente desabilitado ali em cima só parece quebrado.
+                    <div className="bg-gradient-to-br from-[#4cb8c4]/10 to-[#085078]/10 rounded-2xl p-6 border border-[#4cb8c4]/20">
+                        <div className="flex justify-center mb-4">
+                            <div className="bg-[#4cb8c4] p-3 rounded-full">
+                                <Download className="w-8 h-8 text-white" />
+                            </div>
+                        </div>
+
+                        <h3 className="text-lg font-semibold text-[#4cb8c4] mb-3 text-center">
+                            {t("install_manual_android_title")}
+                        </h3>
+
+                        <p className="text-sm text-gray-300 text-left">
+                            {t("install_manual_android_steps")}
+                        </p>
+                    </div>
                 ) : (
                     // Botão de instalação para Android/outros (com as cores da marca)
                     <>
@@ -227,17 +249,6 @@ export default function InstallPwaNotice() {
                             <p className="text-sm text-gray-400 mt-4">
                                 {t("install_button_hint")}
                             </p>
-                        )}
-
-                        {!installPrompt && installStep === "idle" && showManualFallback && (
-                            <div className="mt-6 bg-gradient-to-br from-[#4cb8c4]/10 to-[#085078]/10 rounded-2xl p-6 border border-[#4cb8c4]/20 text-left">
-                                <h3 className="text-sm font-semibold text-[#4cb8c4] mb-3 text-center">
-                                    {t("install_manual_android_title")}
-                                </h3>
-                                <p className="text-sm text-gray-300">
-                                    {t("install_manual_android_steps")}
-                                </p>
-                            </div>
                         )}
                     </>
                 )}

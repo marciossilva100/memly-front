@@ -306,13 +306,13 @@ export default function Configuracoes() {
                     </div>
 
                     <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 mb-3">
-                        <div className="flex items-center gap-3 mb-4">
-                            <Volume2 className="w-5 h-5 text-[#4cb8c4]" />
-                            <span className="text-white text-base">{t("voice_type")}</span>
-                        </div>
-
-                        {isPremium ? (
+                        {isPremium && (
                             <>
+                                <div className="flex items-center gap-3 mb-4">
+                                    <Volume2 className="w-5 h-5 text-[#4cb8c4]" />
+                                    <span className="text-white text-base">{t("voice_type")}</span>
+                                </div>
+
                                 <div className="space-y-1.5">
                                     {VOZES_TTS.map((voz) => {
                                         const selecionada = vozTts === voz.valor;
@@ -346,11 +346,9 @@ export default function Configuracoes() {
                                     <p className="text-red-400 text-xs mt-3">{erroVoz}</p>
                                 )}
                             </>
-                        ) : (
-                            <p className="text-gray-500 text-xs">{t("voice_type_premium_only")}</p>
                         )}
 
-                        <div className="mt-4 pt-4 border-t border-gray-700">
+                        <div className={isPremium ? "mt-4 pt-4 border-t border-gray-700" : ""}>
                             <span className="text-gray-400 text-xs mb-2 block">{t("voice_speed")}</span>
                             <div className="grid grid-cols-4 gap-2">
                                 {VELOCIDADES_TTS.map((velocidade) => {

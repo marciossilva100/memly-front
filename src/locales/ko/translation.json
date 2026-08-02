@@ -396,6 +396,5 @@
     "voice_type": "음성 종류",
     "voice_female": "여성",
     "voice_male": "남성",
-    "voice_speed": "속도",
-    "voice_type_premium_only": "프리미엄 플랜에서만 이용 가능합니다."
+    "voice_speed": "속도"
 }

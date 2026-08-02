@@ -396,6 +396,5 @@
     "voice_type": "Ses türü",
     "voice_female": "Kadın",
     "voice_male": "Erkek",
-    "voice_speed": "Hız",
-    "voice_type_premium_only": "Yalnızca Premium planda kullanılabilir."
+    "voice_speed": "Hız"
 }

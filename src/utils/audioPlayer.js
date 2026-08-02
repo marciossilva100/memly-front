@@ -18,27 +18,32 @@ export const playAudio = async (text, user, ia = false, lang = null) => {
 
     // Voz natural (ElevenLabs): liberada pro plano premium (1, limite diário)
     // e, como amostra grátis, pro plano limitado (3, limite vitalício) -
-    // ambos controlados pelo backend. Se não vier áudio (sem acesso, limite
-    // atingido, ou qualquer erro), cai pra voz padrão abaixo em vez de ficar
-    // em silêncio.
+    // ambos controlados pelo backend. Se der erro genérico (rede, API fora),
+    // cai pra voz padrão abaixo. Mas se o motivo for limite atingido, não
+    // reproduz nada - só mostra o modal premium.
     if (user.plano === 1 || user.plano === 3) {
-        const url = await gerarAudio(text);
+        const resultado = await gerarAudio(text);
 
-        if (url) {
+        if (resultado?.limiteAtingido) {
+            dispatchPremiumLimitHit("audio");
+            return;
+        }
+
+        if (resultado?.url) {
             // uma chamada mais recente já assumiu o controle enquanto aguardávamos o áudio
             if (myToken !== currentToken) {
-                URL.revokeObjectURL(url);
+                URL.revokeObjectURL(resultado.url);
                 return;
             }
 
-            const audio = new Audio(url);
+            const audio = new Audio(resultado.url);
             currentAudio = audio;
 
             audio.playbackRate = 0.9;
             audio.play().catch(() => {});
 
             audio.onended = () => {
-                URL.revokeObjectURL(url);
+                URL.revokeObjectURL(resultado.url);
                 currentAudio = null;
             };
 
@@ -117,11 +122,8 @@ export const playAudio = async (text, user, ia = false, lang = null) => {
     }
 };
 
-// Só avisa (abrindo o PremiumModal) uma única vez na vida do usuário quando
-// a cota vitalícia do plano limitado esgota - depois disso, cai sempre
-// silenciosamente pro áudio padrão, sem repetir o aviso a cada tentativa.
-const AVISO_LIMITE_AUDIO_KEY = "zaldemy_aviso_limite_audio_ia";
-
+// Retorna { limiteAtingido: true }, { url } ou null (erro genérico - cai
+// pro fallback de voz padrão).
 const gerarAudio = async (texto) => {
     const API_URL = import.meta.env.VITE_API_URL;
 
@@ -150,9 +152,8 @@ const gerarAudio = async (texto) => {
 
             try {
                 const data = JSON.parse(text);
-                if (data.limite_atingido && !localStorage.getItem(AVISO_LIMITE_AUDIO_KEY)) {
-                    localStorage.setItem(AVISO_LIMITE_AUDIO_KEY, "1");
-                    dispatchPremiumLimitHit("audio");
+                if (data.limite_atingido) {
+                    return { limiteAtingido: true };
                 }
             } catch {
                 // resposta não era JSON - segue pro fallback normal abaixo
@@ -167,7 +168,7 @@ const gerarAudio = async (texto) => {
             throw new Error("Áudio vazio");
         }
 
-        return URL.createObjectURL(blob);
+        return { url: URL.createObjectURL(blob) };
 
     } catch (err) {
         console.error("Erro ao gerar áudio:", err);

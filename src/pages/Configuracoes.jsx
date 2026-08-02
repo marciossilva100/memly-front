@@ -9,8 +9,19 @@ const QUANTIDADE_FRASES_MIN = 1;
 const QUANTIDADE_FRASES_MAX = 8;
 
 const VOZES_TTS = [
-    { valor: "feminina", emoji: "👩", label_key: "voice_female" },
-    { valor: "masculina", emoji: "👨", label_key: "voice_male" },
+    { valor: "alloy", emoji: "🧑" },
+    { valor: "ash", emoji: "👨" },
+    { valor: "ballad", emoji: "👩" },
+    { valor: "cedar", emoji: "🧔" },
+    { valor: "coral", emoji: "👩‍🦰" },
+    { valor: "echo", emoji: "👨‍🦰" },
+    { valor: "fable", emoji: "🧑‍🦱" },
+    { valor: "marin", emoji: "👩‍🦱" },
+    { valor: "nova", emoji: "👩‍🦳" },
+    { valor: "onyx", emoji: "👨‍🦲" },
+    { valor: "sage", emoji: "🧓" },
+    { valor: "shimmer", emoji: "👱‍♀️" },
+    { valor: "verse", emoji: "👱‍♂️" },
 ];
 
 function ItemMenu({ icone: Icone, titulo, onClick, cor = "text-gray-300" }) {
@@ -41,7 +52,7 @@ export default function Configuracoes() {
     const [mensagemQuantidade, setMensagemQuantidade] = useState('');
     const [erroQuantidade, setErroQuantidade] = useState('');
 
-    const [vozTts, setVozTts] = useState('feminina');
+    const [vozTts, setVozTts] = useState('nova');
     const [salvandoVoz, setSalvandoVoz] = useState(false);
     const [erroVoz, setErroVoz] = useState('');
 
@@ -105,7 +116,7 @@ export default function Configuracoes() {
 
                 if (data.success) {
                     setQuantidadeFrases(String(data.quantidade_frases_aprender));
-                    setVozTts(data.voz_tts || 'feminina');
+                    setVozTts(data.voz_tts || 'nova');
                 }
             } catch (error) {
                 console.error('Erro ao carregar configurações:', error);
@@ -265,7 +276,7 @@ export default function Configuracoes() {
                             <span className="text-white text-base">{t("voice_type")}</span>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1.5">
                             {VOZES_TTS.map((voz) => {
                                 const selecionada = vozTts === voz.valor;
                                 return (
@@ -274,21 +285,21 @@ export default function Configuracoes() {
                                         type="button"
                                         disabled={salvandoVoz}
                                         onClick={() => handleSelecionarVoz(voz.valor)}
-                                        className={`relative flex flex-col items-center gap-2 rounded-xl border p-4 transition-colors disabled:opacity-60 ${
+                                        className={`w-full flex items-center gap-3 rounded-lg border px-3 py-2 transition-colors disabled:opacity-60 ${
                                             selecionada
                                                 ? "border-[#4cb8c4] bg-[#4cb8c4]/10"
                                                 : "border-gray-700 bg-gray-900/40 hover:bg-gray-700/40"
                                         }`}
                                     >
-                                        {selecionada && (
-                                            <span className="absolute top-2 right-2 bg-[#4cb8c4] rounded-full p-0.5">
-                                                <Check className="w-3 h-3 text-gray-900" />
-                                            </span>
-                                        )}
-                                        <span className="text-4xl leading-none">{voz.emoji}</span>
-                                        <span className={`text-sm font-medium ${selecionada ? "text-[#4cb8c4]" : "text-gray-300"}`}>
-                                            {t(voz.label_key)}
+                                        <span className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-800 text-lg leading-none shrink-0">
+                                            {voz.emoji}
                                         </span>
+                                        <span className={`flex-1 text-left text-sm font-medium capitalize ${selecionada ? "text-[#4cb8c4]" : "text-gray-300"}`}>
+                                            {voz.valor}
+                                        </span>
+                                        {selecionada && (
+                                            <Check className="w-4 h-4 text-[#4cb8c4] shrink-0" />
+                                        )}
                                     </button>
                                 );
                             })}

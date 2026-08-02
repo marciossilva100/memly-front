@@ -24,7 +24,7 @@ import {
   X
 } from 'lucide-react';
 
-const PremiumModal = ({ isOpen, onClose, setOpenFrase, motivo }) => {
+const PremiumModal = ({ isOpen, onClose, motivo }) => {
   const { t } = useTranslation();
   const premiumFeatures = [
     {
@@ -66,10 +66,7 @@ const PremiumModal = ({ isOpen, onClose, setOpenFrase, motivo }) => {
       {/* Overlay com blur */}
       <div
         className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
-        onClick={() => {
-          onClose();
-          setOpenFrase(true);
-        }}
+        onClick={onClose}
       />
 
       {/* Container do Modal */}
@@ -79,10 +76,7 @@ const PremiumModal = ({ isOpen, onClose, setOpenFrase, motivo }) => {
 
           {/* Botão de fechar */}
           <button
-            onClick={() => {
-              onClose();
-              setOpenFrase(true);
-            }}
+            onClick={onClose}
             className="fixed top-3 right-3 z-10 bg-white/90 hover:bg-white text-gray-500 hover:text-gray-700 rounded-full p-2 shadow-lg transition-all hover:scale-110 border border-gray-200"
           >
             <X className="w-5 h-5" />

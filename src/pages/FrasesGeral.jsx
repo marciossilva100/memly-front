@@ -166,7 +166,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                     setIsPremiumModalOpen(true);
                     setOpenFrase(false);
                 }} />
-            <PremiumModal isOpen={isPremiumModalOpen} setIsPremiumModalOpen={setIsPremiumModalOpen} onClose={() => { setIsPremiumModalOpen(false); setMotivoPremium(null); }} setOpenPhrase={setOpenFrase} motivo={motivoPremium} />
+            <PremiumModal isOpen={isPremiumModalOpen} setIsPremiumModalOpen={setIsPremiumModalOpen} onClose={() => { setIsPremiumModalOpen(false); setMotivoPremium(null); }} motivo={motivoPremium} />
 
         </div>
     );

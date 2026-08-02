@@ -224,9 +224,8 @@ export default function Frases() {
                 onClose={() => {
                     setIsPremiumModalOpen(false);
                     setMotivoPremium(null);
-                    setOpenFrase(true)
                 }
-                } setOpenPhrase={setOpenFrase} motivo={motivoPremium} />
+                } motivo={motivoPremium} />
             <ModalConfirm
                 openModalConfirm={openModalConfirm}
                 setOpenModalConfirm={setOpenModalConfirm}

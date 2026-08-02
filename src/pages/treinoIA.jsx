@@ -197,84 +197,20 @@ export default function TreinoIA() {
                 </h1>
 
                 {!resultado && (
-                    <>
-                        <div className="relative rounded-2xl border border-gray-700 bg-gradient-to-br from-[#233245] to-[#0d1425] p-6 shadow-md">
-                            <div className="w-10 h-10 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 flex items-center justify-center mb-4">
-                                <BookOpenText className="w-5 h-5 text-[#4cb8c4]" />
-                            </div>
-                            <p className="text-xl text-white leading-relaxed">{frase}</p>
-
-                            <button
-                                onClick={() => playAudio(frase, user, true)}
-                                className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors"
-                            >
-                                <Volume2 className="w-3.5 h-3.5" />
-                                {t("listen")}
-                            </button>
+                    <div className="relative rounded-2xl border border-gray-700 bg-gradient-to-br from-[#233245] to-[#0d1425] p-6 shadow-md">
+                        <div className="w-10 h-10 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 flex items-center justify-center mb-4">
+                            <BookOpenText className="w-5 h-5 text-[#4cb8c4]" />
                         </div>
+                        <p className="text-xl text-white leading-relaxed">{frase}</p>
 
-                        <div className="mt-10 flex flex-col items-center gap-4">
-                            {!audioUrl && !gravando && (
-                                <button
-                                    onClick={iniciarGravacao}
-                                    className="relative w-24 h-24 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] flex items-center justify-center shadow-lg shadow-[#4cb8c4]/20 transition"
-                                >
-                                    <Mic className="w-9 h-9 text-white" />
-                                </button>
-                            )}
-
-                            {gravando && (
-                                <button
-                                    onClick={pararGravacao}
-                                    className="relative w-24 h-24 rounded-full bg-red-600 flex items-center justify-center shadow-lg"
-                                >
-                                    <span className="absolute inset-0 rounded-full bg-red-500 animate-ping opacity-75"></span>
-                                    <Square className="w-8 h-8 text-white relative z-10" />
-                                </button>
-                            )}
-
-                            {gravando && (
-                                <p className="text-red-400 text-sm font-medium">{t("recording_in_progress")}</p>
-                            )}
-
-                            {!gravando && !audioUrl && (
-                                <p className="text-gray-500 text-xs text-center max-w-[220px]">{t("tap_mic_to_read")}</p>
-                            )}
-
-                            {audioUrl && !gravando && (
-                                <div className="w-full flex flex-col items-center gap-3">
-                                    <audio controls src={audioUrl} className="w-full rounded-lg" />
-
-                                    <div className="flex gap-3 w-full">
-                                        <button
-                                            onClick={limpar}
-                                            className="flex-1 px-4 py-2.5 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white text-sm flex items-center justify-center gap-2 hover:bg-gray-700/50 transition-colors"
-                                        >
-                                            <RotateCcw className="w-4 h-4" />
-                                            {t("re_record")}
-                                        </button>
-
-                                        <button
-                                            onClick={enviarResposta}
-                                            disabled={enviando}
-                                            className="flex-1 px-4 py-2.5 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] disabled:opacity-50 text-white text-sm font-medium flex items-center justify-center gap-2 transition-colors"
-                                        >
-                                            <Send className="w-4 h-4" />
-                                            {enviando ? t("sending") : t("send")}
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-
-                            {erroGravacao && (
-                                <p className="text-red-400 text-xs text-center">{erroGravacao}</p>
-                            )}
-
-                            {error && (
-                                <p className="text-red-400 text-xs text-center">{error}</p>
-                            )}
-                        </div>
-                    </>
+                        <button
+                            onClick={() => playAudio(frase, user, true)}
+                            className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors"
+                        >
+                            <Volume2 className="w-3.5 h-3.5" />
+                            {t("listen")}
+                        </button>
+                    </div>
                 )}
 
                 {resultado && (
@@ -314,6 +250,70 @@ export default function TreinoIA() {
                     </div>
                 )}
             </div>
+
+            {!resultado && (
+                <div className="sticky bottom-0 py-4 flex flex-col items-center gap-4 from-gray-900 to-gray-800 bg-gradient-to-br">
+                    {!audioUrl && !gravando && (
+                        <button
+                            onClick={iniciarGravacao}
+                            className="relative w-24 h-24 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] flex items-center justify-center shadow-lg shadow-[#4cb8c4]/20 transition"
+                        >
+                            <Mic className="w-9 h-9 text-white" />
+                        </button>
+                    )}
+
+                    {gravando && (
+                        <button
+                            onClick={pararGravacao}
+                            className="relative w-24 h-24 rounded-full bg-red-600 flex items-center justify-center shadow-lg"
+                        >
+                            <span className="absolute inset-0 rounded-full bg-red-500 animate-ping opacity-75"></span>
+                            <Square className="w-8 h-8 text-white relative z-10" />
+                        </button>
+                    )}
+
+                    {gravando && (
+                        <p className="text-red-400 text-sm font-medium">{t("recording_in_progress")}</p>
+                    )}
+
+                    {!gravando && !audioUrl && (
+                        <p className="text-gray-500 text-xs text-center max-w-[220px]">{t("tap_mic_to_read")}</p>
+                    )}
+
+                    {audioUrl && !gravando && (
+                        <div className="w-full flex flex-col items-center gap-3">
+                            <audio controls src={audioUrl} className="w-full rounded-lg" />
+
+                            <div className="flex gap-3 w-full">
+                                <button
+                                    onClick={limpar}
+                                    className="flex-1 px-4 py-2.5 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white text-sm flex items-center justify-center gap-2 hover:bg-gray-700/50 transition-colors"
+                                >
+                                    <RotateCcw className="w-4 h-4" />
+                                    {t("re_record")}
+                                </button>
+
+                                <button
+                                    onClick={enviarResposta}
+                                    disabled={enviando}
+                                    className="flex-1 px-4 py-2.5 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] disabled:opacity-50 text-white text-sm font-medium flex items-center justify-center gap-2 transition-colors"
+                                >
+                                    <Send className="w-4 h-4" />
+                                    {enviando ? t("sending") : t("send")}
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {erroGravacao && (
+                        <p className="text-red-400 text-xs text-center">{erroGravacao}</p>
+                    )}
+
+                    {error && (
+                        <p className="text-red-400 text-xs text-center">{error}</p>
+                    )}
+                </div>
+            )}
         </div>
     );
 }

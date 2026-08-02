@@ -397,5 +397,6 @@
     "landing_hero_install_hint": "Toque em \"Começar agora\" e instale o app no seu celular em segundos — é rápido e gratuito.",
     "voice_type": "Tipo de voz",
     "voice_female": "Feminina",
-    "voice_male": "Masculina"
+    "voice_male": "Masculina",
+    "voice_speed": "Velocidade"
 }

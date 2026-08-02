@@ -395,5 +395,6 @@
     "landing_hero_install_hint": "Tik op \"Nu beginnen\" en installeer de app in enkele seconden op je telefoon — snel en gratis.",
     "voice_type": "Stemtype",
     "voice_female": "Vrouwelijk",
-    "voice_male": "Mannelijk"
+    "voice_male": "Mannelijk",
+    "voice_speed": "Snelheid"
 }

@@ -9,20 +9,13 @@ const QUANTIDADE_FRASES_MIN = 1;
 const QUANTIDADE_FRASES_MAX = 8;
 
 const VOZES_TTS = [
-    { valor: "alloy", emoji: "🧑" },
-    { valor: "ash", emoji: "👨" },
-    { valor: "ballad", emoji: "👩" },
-    { valor: "cedar", emoji: "🧔" },
-    { valor: "coral", emoji: "👩‍🦰" },
-    { valor: "echo", emoji: "👨‍🦰" },
-    { valor: "fable", emoji: "🧑‍🦱" },
-    { valor: "marin", emoji: "👩‍🦱" },
-    { valor: "nova", emoji: "👩‍🦳" },
-    { valor: "onyx", emoji: "👨‍🦲" },
-    { valor: "sage", emoji: "🧓" },
-    { valor: "shimmer", emoji: "👱‍♀️" },
-    { valor: "verse", emoji: "👱‍♂️" },
+    { valor: "coral", emoji: "👩", nome: "Emma" },
+    { valor: "nova", emoji: "👩", nome: "Sophia" },
+    { valor: "onyx", emoji: "👨", nome: "David" },
+    { valor: "ash", emoji: "👨", nome: "Michael" },
 ];
+
+const VELOCIDADES_TTS = [0.75, 1.00, 1.25, 1.50];
 
 function ItemMenu({ icone: Icone, titulo, onClick, cor = "text-gray-300" }) {
     return (
@@ -55,6 +48,10 @@ export default function Configuracoes() {
     const [vozTts, setVozTts] = useState('nova');
     const [salvandoVoz, setSalvandoVoz] = useState(false);
     const [erroVoz, setErroVoz] = useState('');
+
+    const [velocidadeTts, setVelocidadeTts] = useState(1.00);
+    const [salvandoVelocidade, setSalvandoVelocidade] = useState(false);
+    const [erroVelocidade, setErroVelocidade] = useState('');
 
     const [openModalExcluirConta, setOpenModalExcluirConta] = useState(false);
     const [excluindoConta, setExcluindoConta] = useState(false);
@@ -117,6 +114,7 @@ export default function Configuracoes() {
                 if (data.success) {
                     setQuantidadeFrases(String(data.quantidade_frases_aprender));
                     setVozTts(data.voz_tts || 'nova');
+                    setVelocidadeTts(data.velocidade_tts ?? 1.00);
                 }
             } catch (error) {
                 console.error('Erro ao carregar configurações:', error);
@@ -201,6 +199,39 @@ export default function Configuracoes() {
             setErroVoz(t("server_connection_error"));
         } finally {
             setSalvandoVoz(false);
+        }
+    }
+
+    async function handleSelecionarVelocidade(velocidade) {
+        if (velocidade === velocidadeTts || salvandoVelocidade) return;
+
+        const velocidadeAnterior = velocidadeTts;
+        setVelocidadeTts(velocidade);
+        setErroVelocidade('');
+        setSalvandoVelocidade(true);
+
+        try {
+            const res = await fetch(`${API_URL}/controller/configuracoes.php`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({ action: 'atualizar_velocidade_tts', velocidade_tts: velocidade })
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                setVelocidadeTts(velocidadeAnterior);
+                setErroVelocidade(data.message || t("unexpected_error"));
+            }
+        } catch (error) {
+            console.error('Erro ao salvar velocidade:', error);
+            setVelocidadeTts(velocidadeAnterior);
+            setErroVelocidade(t("server_connection_error"));
+        } finally {
+            setSalvandoVelocidade(false);
         }
     }
 
@@ -294,8 +325,8 @@ export default function Configuracoes() {
                                         <span className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-800 text-lg leading-none shrink-0">
                                             {voz.emoji}
                                         </span>
-                                        <span className={`flex-1 text-left text-sm font-medium capitalize ${selecionada ? "text-[#4cb8c4]" : "text-gray-300"}`}>
-                                            {voz.valor}
+                                        <span className={`flex-1 text-left text-sm font-medium ${selecionada ? "text-[#4cb8c4]" : "text-gray-300"}`}>
+                                            {voz.nome}
                                         </span>
                                         {selecionada && (
                                             <Check className="w-4 h-4 text-[#4cb8c4] shrink-0" />
@@ -308,6 +339,33 @@ export default function Configuracoes() {
                         {erroVoz && (
                             <p className="text-red-400 text-xs mt-3">{erroVoz}</p>
                         )}
+
+                        <div className="mt-4 pt-4 border-t border-gray-700">
+                            <span className="text-gray-400 text-xs mb-2 block">{t("voice_speed")}</span>
+                            <div className="grid grid-cols-4 gap-2">
+                                {VELOCIDADES_TTS.map((velocidade) => {
+                                    const selecionada = velocidadeTts === velocidade;
+                                    return (
+                                        <button
+                                            key={velocidade}
+                                            type="button"
+                                            disabled={salvandoVelocidade}
+                                            onClick={() => handleSelecionarVelocidade(velocidade)}
+                                            className={`rounded-lg border py-1.5 text-sm font-medium transition-colors disabled:opacity-60 ${
+                                                selecionada
+                                                    ? "border-[#4cb8c4] bg-[#4cb8c4]/10 text-[#4cb8c4]"
+                                                    : "border-gray-700 bg-gray-900/40 text-gray-300 hover:bg-gray-700/40"
+                                            }`}
+                                        >
+                                            {velocidade}x
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                            {erroVelocidade && (
+                                <p className="text-red-400 text-xs mt-2">{erroVelocidade}</p>
+                            )}
+                        </div>
                     </div>
 
                     <div className="space-y-3">

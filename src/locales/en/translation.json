@@ -397,5 +397,6 @@
     "landing_hero_install_hint": "Tap \"Get started\" and install the app on your phone in seconds — it's quick and free.",
     "voice_type": "Voice type",
     "voice_female": "Female",
-    "voice_male": "Male"
+    "voice_male": "Male",
+    "voice_speed": "Speed"
 }

@@ -395,5 +395,6 @@
     "landing_hero_install_hint": "اضغط على \"ابدأ الآن\" وثبّت التطبيق على هاتفك خلال ثوانٍ — سريع ومجاني.",
     "voice_type": "نوع الصوت",
     "voice_female": "أنثى",
-    "voice_male": "ذكر"
+    "voice_male": "ذكر",
+    "voice_speed": "السرعة"
 }

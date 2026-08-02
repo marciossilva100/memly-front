@@ -395,5 +395,6 @@
     "landing_hero_install_hint": "「今すぐ始める」をタップして、数秒でスマホにアプリをインストール — 早くて無料です。",
     "voice_type": "音声の種類",
     "voice_female": "女性",
-    "voice_male": "男性"
+    "voice_male": "男性",
+    "voice_speed": "速度"
 }

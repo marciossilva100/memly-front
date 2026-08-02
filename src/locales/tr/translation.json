@@ -395,5 +395,6 @@
     "landing_hero_install_hint": "\"Hemen başla\"ya dokun ve uygulamayı saniyeler içinde telefonuna yükle — hızlı ve ücretsiz.",
     "voice_type": "Ses türü",
     "voice_female": "Kadın",
-    "voice_male": "Erkek"
+    "voice_male": "Erkek",
+    "voice_speed": "Hız"
 }

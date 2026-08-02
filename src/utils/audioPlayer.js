@@ -128,7 +128,7 @@ const gerarAudio = async (texto) => {
     const API_URL = import.meta.env.VITE_API_URL;
 
     try {
-        const res = await fetch(`${API_URL}/controller/elevenlabs.php`, {
+        const res = await fetch(`${API_URL}/controller/tts.php`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

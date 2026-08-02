@@ -396,5 +396,6 @@
     "voice_type": "Ses türü",
     "voice_female": "Kadın",
     "voice_male": "Erkek",
-    "voice_speed": "Anlatım hızı"
+    "voice_speed": "Anlatım hızı",
+    "continue_without_premium_voice": "Premium ses olmadan devam et"
 }

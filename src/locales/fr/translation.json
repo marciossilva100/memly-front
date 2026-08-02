@@ -396,5 +396,6 @@
     "voice_type": "Type de voix",
     "voice_female": "Féminine",
     "voice_male": "Masculine",
-    "voice_speed": "Vitesse de narration"
+    "voice_speed": "Vitesse de narration",
+    "continue_without_premium_voice": "Continuer sans voix premium"
 }

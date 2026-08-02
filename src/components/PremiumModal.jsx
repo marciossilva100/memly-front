@@ -271,6 +271,16 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
                         {t("money_back_guarantee")}
                       </div>
                     </div>
+
+                    {/* Saída discreta - fecha sem assinar */}
+                    <div className="text-center mt-4">
+                      <button
+                        onClick={onClose}
+                        className="text-xs text-gray-400 hover:text-gray-600 underline underline-offset-2 transition-colors"
+                      >
+                        {t("continue_without_premium_voice")}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

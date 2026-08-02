@@ -396,5 +396,6 @@
     "voice_type": "Stemtype",
     "voice_female": "Vrouwelijk",
     "voice_male": "Mannelijk",
-    "voice_speed": "Vertelsnelheid"
+    "voice_speed": "Vertelsnelheid",
+    "continue_without_premium_voice": "Doorgaan zonder premiumstem"
 }

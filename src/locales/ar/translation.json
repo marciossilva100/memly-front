@@ -396,5 +396,6 @@
     "voice_type": "نوع الصوت",
     "voice_female": "أنثى",
     "voice_male": "ذكر",
-    "voice_speed": "سرعة السرد"
+    "voice_speed": "سرعة السرد",
+    "continue_without_premium_voice": "المتابعة بدون الصوت المميز"
 }

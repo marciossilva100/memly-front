@@ -33,7 +33,7 @@ export default function AudioPreviewPlayer({ src }) {
                     ? <Pause className="w-5 h-5 text-white" />
                     : <Play className="w-5 h-5 text-white ml-0.5" />}
             </button>
-            <span className="text-gray-300 text-base">
+            <span className="text-gray-300 text-lg">
                 {tocando ? t("playing_audio") : t("listen_recording")}
             </span>
             <audio

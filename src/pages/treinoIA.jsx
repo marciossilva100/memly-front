@@ -288,18 +288,18 @@ export default function TreinoIA() {
                             <div className="flex gap-3 w-full">
                                 <button
                                     onClick={limpar}
-                                    className="flex-1 px-4 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white text-base flex items-center justify-center gap-2 hover:bg-gray-700/50 transition-colors"
+                                    className="flex-1 px-4 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white text-lg font-medium flex items-center justify-center gap-2 hover:bg-gray-700/50 transition-colors"
                                 >
-                                    <RotateCcw className="w-4 h-4" />
+                                    <RotateCcw className="w-5 h-5" />
                                     {t("re_record")}
                                 </button>
 
                                 <button
                                     onClick={enviarResposta}
                                     disabled={enviando}
-                                    className="flex-1 px-4 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] disabled:opacity-50 text-white text-base font-medium flex items-center justify-center gap-2 transition-colors"
+                                    className="flex-1 px-4 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] disabled:opacity-50 text-white text-lg font-medium flex items-center justify-center gap-2 transition-colors"
                                 >
-                                    <Send className="w-4 h-4" />
+                                    <Send className="w-5 h-5" />
                                     {enviando ? t("sending") : t("send")}
                                 </button>
                             </div>

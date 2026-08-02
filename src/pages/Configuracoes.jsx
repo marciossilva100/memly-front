@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
-import { FileText, Shield, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2, Volume2, Check, Gauge } from "lucide-react";
+import { FileText, Shield, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2, Volume2, Check, Gauge, Bot } from "lucide-react";
 import ModalConfirm from "../components/ModalConfirm";
+import ModalIA from "../components/ModalIA";
+import PremiumModal from "../components/PremiumModal";
 
 const QUANTIDADE_FRASES_MIN = 1;
 const QUANTIDADE_FRASES_MAX = 8;
@@ -39,6 +41,19 @@ export default function Configuracoes() {
     const { logout, user } = useAuth();
     const isPremium = user?.plano === 1;
     const API_URL = import.meta.env.VITE_API_URL;
+
+    const [openTreinoIA, setOpenTreinoIA] = useState(false);
+    const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+    const [motivoPremium, setMotivoPremium] = useState(null);
+
+    function verifyPlan() {
+        if (user?.plano === 1 || user?.plano === 3) {
+            setOpenTreinoIA(true);
+            return;
+        }
+        setMotivoPremium(null);
+        setIsPremiumModalOpen(true);
+    }
 
     const [quantidadeFrases, setQuantidadeFrases] = useState('');
     const [loadingQuantidade, setLoadingQuantidade] = useState(false);
@@ -426,23 +441,27 @@ export default function Configuracoes() {
 
 
                 <div className=" w-full ">
-                    <div className='flex  left-0   w-full justify-center py-2 '>
-                        <button type="button" onClick={() => navigate('/home')}>
-                            <div className=' p-3 flex justify-center items-center'>
-                                <Home width={38} height={38} className='text-[#4cb8c4]' />
-                            </div>
+                    <div className='flex  left-0   w-full justify-around py-2 '>
+                        <button type="button" onClick={() => navigate('/home')} className="flex flex-col items-center gap-1">
+                            <Home width={26} height={26} className='text-violet-400' />
+                            <span className="text-xs text-gray-400">{t("home")}</span>
                         </button>
-                        <button type="button" onClick={() => navigate('/metricas')}>
-                            <div className=' p-3 flex justify-center items-center'>
-                                <BarChart3 className='text-amber-400' width={38} height={38} />
 
-                                {/*  <BookOpen className='text-white' /> */}
-                                {/* <img src={imgEstatistica} alt="" width={40} /> */}
-                            </div>
+                        <button type="button" onClick={() => navigate('/metricas')} className="flex flex-col items-center gap-1">
+                            <BarChart3 width={26} height={26} className='text-green-400' />
+                            <span className="text-xs text-gray-400">{t("statistics")}</span>
+                        </button>
+
+                        <button type="button" onClick={verifyPlan} className="flex flex-col items-center gap-1">
+                            <Bot width={26} height={26} className="text-amber-400" />
+                            <span className="text-xs text-gray-400">{t("explore")}</span>
                         </button>
                     </div>
                 </div>
             </div>
+
+            <ModalIA setOpenTreinoIA={setOpenTreinoIA} openTreinoIA={openTreinoIA} />
+            <PremiumModal isOpen={isPremiumModalOpen} setIsPremiumModalOpen={setIsPremiumModalOpen} onClose={() => { setIsPremiumModalOpen(false); setMotivoPremium(null); }} motivo={motivoPremium} />
         </div>
     );
 }

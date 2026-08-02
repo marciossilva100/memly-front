@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import ModalCategorias from '../components/ModalCategorias';
 import ModalSucesso from '../components/ModalSucesso';
+import ModalIA from '../components/ModalIA';
+import PremiumModal from '../components/PremiumModal';
 
 import {
     AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer,
@@ -24,10 +26,10 @@ import {
     PieChart as PieChartIcon,
     BarChart3,
     Layers,
-    Settings,
     Home,
     Flame,
-    Zap
+    Zap,
+    Bot
 } from 'lucide-react';
 
 export default function Metricas() {
@@ -39,7 +41,20 @@ export default function Metricas() {
     const [loading, setLoading] = useState(false);
     const [loadingFrases, setLoadingFrases] = useState(false);
     const [periodo, setPeriodo] = useState('30d');
+    const [openTreinoIA, setOpenTreinoIA] = useState(false);
+    const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+    const [motivoPremium, setMotivoPremium] = useState(null);
 const API_URL = import.meta.env.VITE_API_URL;
+
+    function verifyPlan() {
+        if (user?.plano === 1 || user?.plano === 3) {
+            setOpenTreinoIA(true);
+            return;
+        }
+        setMotivoPremium(null);
+        setIsPremiumModalOpen(true);
+    }
+
     // Estados para controlar os dropdowns
     const [dropdownsAbertos, setDropdownsAbertos] = useState({
         resumo: true, // Começa aberto pra mostrar o básico
@@ -567,20 +582,28 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 
                 <div className=" w-full ">
-                    <div className='flex  left-0   w-full justify-center py-2 '>
-                        <button type="button" onClick={() => navigate('/home')}>
-                            <div className=' p-3 flex justify-center items-center'>
-                                <Home width={38} height={38} className='text-green-400' />
-                            </div>
+                    <div className='flex  left-0   w-full justify-around py-2 '>
+                        <button type="button" onClick={() => navigate('/home')} className="flex flex-col items-center gap-1">
+                            <Home width={26} height={26} className='text-violet-400' />
+                            <span className="text-xs text-gray-400">{t("home")}</span>
                         </button>
-                        <button type="button" onClick={() => navigate('/configuracoes')}>
-                            <div className=' p-3 flex justify-center items-center'>
-                                <Settings width={38} height={38} className='text-purple-400' />
-                            </div>
+
+                        <button type="button" className="flex flex-col items-center gap-1">
+                            <BarChart3 width={26} height={26} className='text-green-400' />
+                            <span className="text-xs text-green-400">{t("statistics")}</span>
+                            <span className="w-1 h-1 rounded-full bg-green-400" />
+                        </button>
+
+                        <button type="button" onClick={verifyPlan} className="flex flex-col items-center gap-1">
+                            <Bot width={26} height={26} className="text-amber-400" />
+                            <span className="text-xs text-gray-400">{t("explore")}</span>
                         </button>
                     </div>
                 </div>
             </div>
+
+            <ModalIA setOpenTreinoIA={setOpenTreinoIA} openTreinoIA={openTreinoIA} />
+            <PremiumModal isOpen={isPremiumModalOpen} setIsPremiumModalOpen={setIsPremiumModalOpen} onClose={() => { setIsPremiumModalOpen(false); setMotivoPremium(null); }} motivo={motivoPremium} />
 
             <ModalCategorias
                 setOpen={setOpen}

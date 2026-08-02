@@ -13,26 +13,7 @@ import { useTranslation } from "react-i18next";
 import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 
 
-import { BookOpen, BarChart3, Bot, Plus, Menu, Globe, ChevronDown, Home as HomeIcon, CheckCircle2, Flame } from "lucide-react";
-
-// Mesmo mapa de bandeiras usado em EscolherIdiomaAprender.jsx/EscolherIdiomaNativo.jsx
-const FLAGS = {
-    pt: "https://flagcdn.com/w40/br.png",
-    en: "https://flagcdn.com/w40/us.png",
-    es: "https://flagcdn.com/w40/es.png",
-    fr: "https://flagcdn.com/w40/fr.png",
-    de: "https://flagcdn.com/w40/de.png",
-    it: "https://flagcdn.com/w40/it.png",
-    zh: "https://flagcdn.com/w40/cn.png",
-    ja: "https://flagcdn.com/w40/jp.png",
-    ru: "https://flagcdn.com/w40/ru.png",
-    ar: "https://flagcdn.com/w40/sa.png",
-    hi: "https://flagcdn.com/w40/in.png",
-    ko: "https://flagcdn.com/w40/kr.png",
-    nl: "https://flagcdn.com/w40/nl.png",
-    tr: "https://flagcdn.com/w40/tr.png",
-    pl: "https://flagcdn.com/w40/pl.png",
-};
+import { BookOpen, BarChart3, Bot, Plus, Home as HomeIcon, CheckCircle2, Flame } from "lucide-react";
 
 const AVATAR_COLORS = [
     'bg-emerald-500',
@@ -73,7 +54,6 @@ export default function Home() {
     const [deleteId, setDeleteId] = useState(0)
     const [streak, setStreak] = useState(0)
     const [totalAprendidas, setTotalAprendidas] = useState(0)
-    const [idiomasLista, setIdiomasLista] = useState([])
     const { t } = useTranslation();
     const API_URL = import.meta.env.VITE_API_URL;
 
@@ -132,21 +112,6 @@ export default function Home() {
 
     }, []);
 
-    // Lista de idiomas (nome + sigla) pra exibir o nome do idioma nativo/de
-    // aprendizagem no cabeçalho - mesma fonte usada em EscolherIdiomaAprender.
-    useEffect(() => {
-        fetch(`${API_URL}/controller/language.php`, {
-            method: 'POST',
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            },
-            body: JSON.stringify({ action: 'list_languages_learning' })
-        })
-            .then(res => res.json())
-            .then(data => setIdiomasLista(Array.isArray(data) ? data : []))
-            .catch(() => setIdiomasLista([]));
-    }, []);
-
     useEffect(() => {
         if (!user) return;
 
@@ -162,10 +127,6 @@ export default function Home() {
             .then(data => setStreak(data?.streak ?? 0))
             .catch(() => setStreak(0));
     }, [user?.native_language, user?.learning_language, user?.id]);
-
-    function nomeIdioma(sigla) {
-        return idiomasLista.find((l) => l.sigla === sigla)?.idioma ?? sigla ?? '';
-    }
 
     const carregarCategorias = () => {
         const nativeLanguage = user?.native_language ?? user?.nativeLanguage ?? user?.idioma_nativo ?? user?.idiomaNativo ?? null;
@@ -414,29 +375,6 @@ export default function Home() {
 
     return (
         <div className="h-dvh flex flex-col max-w-7xl mx-auto  from-gray-900 to-gray-800 bg-gradient-to-br">
-
-            <div className="flex items-center justify-between gap-3 px-4 pt-4">
-                <button
-                    type="button"
-                    onClick={() => navigate('/configuracoes')}
-                    className="text-white shrink-0"
-                >
-                    <Menu size={24} />
-                </button>
-
-                <div className="flex items-center gap-1.5 text-white min-w-0">
-                    <span className="font-medium truncate">{nomeIdioma(user?.native_language)}</span>
-                    <Globe size={16} className="text-gray-400 shrink-0" />
-                </div>
-
-                <div className="flex items-center gap-1.5 pl-1.5 pr-3 py-1 rounded-full bg-gray-800/70 border border-gray-700 shrink-0">
-                    {FLAGS[user?.learning_language] && (
-                        <img src={FLAGS[user.learning_language]} alt="" className="w-6 h-6 rounded-full object-cover" />
-                    )}
-                    <span className="text-white text-sm font-medium">{nomeIdioma(user?.learning_language)}</span>
-                    <ChevronDown size={14} className="text-gray-400" />
-                </div>
-            </div>
 
             <div className="px-4 pt-4">
                 <p className="text-lg font-semibold text-white">

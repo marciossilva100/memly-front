@@ -526,12 +526,11 @@ export default function Home() {
                                 
                             </div>
                         </a>*/}
-                        {/*<button onClick={(e) => { verifyPlan() }}>
+                        <button type="button" onClick={() => verifyPlan()}>
                             <div className=' p-3 flex justify-center items-center'>
                                 <Bot width={38} height={38} className="text-yellow-500" />
-                               
                             </div>
-                        </button>*/}
+                        </button>
                     </div>
                 </div>
 

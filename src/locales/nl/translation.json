@@ -392,5 +392,8 @@
     "premium_reason_audio": "Je hebt je 10 gratis natuurlijke-stem uitspraken gebruikt. Ga premium voor onbeperkte toegang.",
     "premium_reason_categorias": "Je hebt de limiet van 5 categorieën van je plan bereikt. Ga premium om onbeperkt categorieën te maken.",
     "all_categories": "Alle categorieën",
-    "landing_hero_install_hint": "Tik op \"Nu beginnen\" en installeer de app in enkele seconden op je telefoon — snel en gratis."
+    "landing_hero_install_hint": "Tik op \"Nu beginnen\" en installeer de app in enkele seconden op je telefoon — snel en gratis.",
+    "voice_type": "Stemtype",
+    "voice_female": "Vrouwelijk",
+    "voice_male": "Mannelijk"
 }

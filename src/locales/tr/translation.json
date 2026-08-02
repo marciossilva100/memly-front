@@ -392,5 +392,8 @@
     "premium_reason_audio": "10 ücretsiz doğal ses telaffuzunu kullandın. Sınırsız erişim için premium'a geç.",
     "premium_reason_categorias": "Planının 5 kategori sınırına ulaştın. Sınırsız kategori oluşturmak için premium'a geç.",
     "all_categories": "Tüm kategoriler",
-    "landing_hero_install_hint": "\"Hemen başla\"ya dokun ve uygulamayı saniyeler içinde telefonuna yükle — hızlı ve ücretsiz."
+    "landing_hero_install_hint": "\"Hemen başla\"ya dokun ve uygulamayı saniyeler içinde telefonuna yükle — hızlı ve ücretsiz.",
+    "voice_type": "Ses türü",
+    "voice_female": "Kadın",
+    "voice_male": "Erkek"
 }

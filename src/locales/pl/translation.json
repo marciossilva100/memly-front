@@ -392,5 +392,8 @@
     "premium_reason_audio": "Wykorzystałeś swoje 10 darmowych wymów z naturalnym głosem. Przejdź na premium, aby uzyskać nieograniczony dostęp.",
     "premium_reason_categorias": "Osiągnąłeś limit 5 kategorii swojego planu. Przejdź na premium, aby tworzyć nieograniczoną liczbę kategorii.",
     "all_categories": "Wszystkie kategorie",
-    "landing_hero_install_hint": "Dotknij \"Zacznij teraz\" i zainstaluj aplikację na telefonie w kilka sekund — szybko i za darmo."
+    "landing_hero_install_hint": "Dotknij \"Zacznij teraz\" i zainstaluj aplikację na telefonie w kilka sekund — szybko i za darmo.",
+    "voice_type": "Typ głosu",
+    "voice_female": "Żeński",
+    "voice_male": "Męski"
 }

@@ -393,5 +393,8 @@
     "premium_reason_audio": "Ya usaste tus 10 pronunciaciones gratis con voz natural. Hazte premium para acceso ilimitado.",
     "premium_reason_categorias": "Alcanzaste el límite de 5 categorías de tu plan. Hazte premium para crear categorías ilimitadas.",
     "all_categories": "Todas las categorías",
-    "landing_hero_install_hint": "Toca en \"Empezar ahora\" e instala la app en tu celular en segundos — es rápido y gratis."
+    "landing_hero_install_hint": "Toca en \"Empezar ahora\" e instala la app en tu celular en segundos — es rápido y gratis.",
+    "voice_type": "Tipo de voz",
+    "voice_female": "Femenina",
+    "voice_male": "Masculina"
 }

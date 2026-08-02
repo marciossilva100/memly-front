@@ -392,5 +392,8 @@
     "premium_reason_audio": "你已用完10次免费的自然语音发音。升级高级版即可无限使用。",
     "premium_reason_categorias": "你已达到该计划5个分类的上限。升级高级版即可创建无限分类。",
     "all_categories": "所有分类",
-    "landing_hero_install_hint": "点击“立即开始”，几秒钟内即可在手机上安装该应用——快速且免费。"
+    "landing_hero_install_hint": "点击“立即开始”，几秒钟内即可在手机上安装该应用——快速且免费。",
+    "voice_type": "语音类型",
+    "voice_female": "女声",
+    "voice_male": "男声"
 }

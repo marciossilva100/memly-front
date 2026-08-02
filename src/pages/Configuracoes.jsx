@@ -2,11 +2,16 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
-import { FileText, Shield, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2 } from "lucide-react";
+import { FileText, Shield, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2, Volume2, Check } from "lucide-react";
 import ModalConfirm from "../components/ModalConfirm";
 
 const QUANTIDADE_FRASES_MIN = 1;
 const QUANTIDADE_FRASES_MAX = 8;
+
+const VOZES_TTS = [
+    { valor: "feminina", emoji: "👩", label_key: "voice_female" },
+    { valor: "masculina", emoji: "👨", label_key: "voice_male" },
+];
 
 function ItemMenu({ icone: Icone, titulo, onClick, cor = "text-gray-300" }) {
     return (
@@ -35,6 +40,10 @@ export default function Configuracoes() {
     const [salvandoQuantidade, setSalvandoQuantidade] = useState(false);
     const [mensagemQuantidade, setMensagemQuantidade] = useState('');
     const [erroQuantidade, setErroQuantidade] = useState('');
+
+    const [vozTts, setVozTts] = useState('feminina');
+    const [salvandoVoz, setSalvandoVoz] = useState(false);
+    const [erroVoz, setErroVoz] = useState('');
 
     const [openModalExcluirConta, setOpenModalExcluirConta] = useState(false);
     const [excluindoConta, setExcluindoConta] = useState(false);
@@ -96,6 +105,7 @@ export default function Configuracoes() {
 
                 if (data.success) {
                     setQuantidadeFrases(String(data.quantidade_frases_aprender));
+                    setVozTts(data.voz_tts || 'feminina');
                 }
             } catch (error) {
                 console.error('Erro ao carregar configurações:', error);
@@ -147,6 +157,39 @@ export default function Configuracoes() {
             setErroQuantidade(t("server_connection_error"));
         } finally {
             setSalvandoQuantidade(false);
+        }
+    }
+
+    async function handleSelecionarVoz(voz) {
+        if (voz === vozTts || salvandoVoz) return;
+
+        const vozAnterior = vozTts;
+        setVozTts(voz);
+        setErroVoz('');
+        setSalvandoVoz(true);
+
+        try {
+            const res = await fetch(`${API_URL}/controller/configuracoes.php`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({ action: 'atualizar_voz_tts', voz_tts: voz })
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                setVozTts(vozAnterior);
+                setErroVoz(data.message || t("unexpected_error"));
+            }
+        } catch (error) {
+            console.error('Erro ao salvar voz:', error);
+            setVozTts(vozAnterior);
+            setErroVoz(t("server_connection_error"));
+        } finally {
+            setSalvandoVoz(false);
         }
     }
 
@@ -213,6 +256,46 @@ export default function Configuracoes() {
                         )}
                         {mensagemQuantidade && (
                             <p className="text-green-400 text-xs mt-2">{mensagemQuantidade}</p>
+                        )}
+                    </div>
+
+                    <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 mb-3">
+                        <div className="flex items-center gap-3 mb-4">
+                            <Volume2 className="w-5 h-5 text-[#4cb8c4]" />
+                            <span className="text-white text-base">{t("voice_type")}</span>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3">
+                            {VOZES_TTS.map((voz) => {
+                                const selecionada = vozTts === voz.valor;
+                                return (
+                                    <button
+                                        key={voz.valor}
+                                        type="button"
+                                        disabled={salvandoVoz}
+                                        onClick={() => handleSelecionarVoz(voz.valor)}
+                                        className={`relative flex flex-col items-center gap-2 rounded-xl border p-4 transition-colors disabled:opacity-60 ${
+                                            selecionada
+                                                ? "border-[#4cb8c4] bg-[#4cb8c4]/10"
+                                                : "border-gray-700 bg-gray-900/40 hover:bg-gray-700/40"
+                                        }`}
+                                    >
+                                        {selecionada && (
+                                            <span className="absolute top-2 right-2 bg-[#4cb8c4] rounded-full p-0.5">
+                                                <Check className="w-3 h-3 text-gray-900" />
+                                            </span>
+                                        )}
+                                        <span className="text-4xl leading-none">{voz.emoji}</span>
+                                        <span className={`text-sm font-medium ${selecionada ? "text-[#4cb8c4]" : "text-gray-300"}`}>
+                                            {t(voz.label_key)}
+                                        </span>
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        {erroVoz && (
+                            <p className="text-red-400 text-xs mt-3">{erroVoz}</p>
                         )}
                     </div>
 

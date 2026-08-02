@@ -392,5 +392,8 @@
     "premium_reason_audio": "Du hast deine 10 kostenlosen Aussprachen mit natürlicher Stimme aufgebraucht. Werde Premium-Mitglied für unbegrenzten Zugang.",
     "premium_reason_categorias": "Du hast das Limit von 5 Kategorien deines Plans erreicht. Werde Premium-Mitglied für unbegrenzte Kategorien.",
     "all_categories": "Alle Kategorien",
-    "landing_hero_install_hint": "Tippe auf „Jetzt starten“ und installiere die App in Sekunden auf deinem Handy — schnell und kostenlos."
+    "landing_hero_install_hint": "Tippe auf „Jetzt starten“ und installiere die App in Sekunden auf deinem Handy — schnell und kostenlos.",
+    "voice_type": "Stimmtyp",
+    "voice_female": "Weiblich",
+    "voice_male": "Männlich"
 }

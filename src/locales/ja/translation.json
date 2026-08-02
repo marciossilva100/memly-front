@@ -409,5 +409,6 @@
     "answer_history_empty": "まだ質問に回答していません。",
     "view_history": "履歴",
     "tap_mic_to_answer": "マイクをタップして声で答えてください",
-    "feedback_label": "フィードバック"
+    "feedback_label": "フィードバック",
+    "tap_mic_to_read": "マイクをタップして文章を声に出して読んでください"
 }

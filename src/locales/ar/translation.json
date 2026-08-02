@@ -409,5 +409,6 @@
     "answer_history_empty": "لم تُجب على أي سؤال بعد.",
     "view_history": "السجل",
     "tap_mic_to_answer": "اضغط على الميكروفون للإجابة بصوت عالٍ",
-    "feedback_label": "الملاحظات"
+    "feedback_label": "الملاحظات",
+    "tap_mic_to_read": "اضغط على الميكروفون واقرأ الجملة بصوت عالٍ"
 }

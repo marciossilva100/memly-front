@@ -409,5 +409,6 @@
     "answer_history_empty": "Non hai ancora risposto a nessuna domanda.",
     "view_history": "Cronologia",
     "tap_mic_to_answer": "Tocca il microfono per rispondere ad alta voce",
-    "feedback_label": "Feedback"
+    "feedback_label": "Feedback",
+    "tap_mic_to_read": "Tocca il microfono e leggi la frase ad alta voce"
 }

@@ -409,5 +409,6 @@
     "answer_history_empty": "你还没有回答任何问题。",
     "view_history": "历史",
     "tap_mic_to_answer": "点击麦克风大声回答",
-    "feedback_label": "反馈"
+    "feedback_label": "反馈",
+    "tap_mic_to_read": "点击麦克风并大声朗读句子"
 }

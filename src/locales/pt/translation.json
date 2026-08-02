@@ -411,5 +411,6 @@
     "answer_history_empty": "Você ainda não respondeu nenhuma pergunta.",
     "view_history": "Histórico",
     "tap_mic_to_answer": "Toque no microfone para responder em voz alta",
-    "feedback_label": "Feedback"
+    "feedback_label": "Feedback",
+    "tap_mic_to_read": "Toque no microfone e leia a frase em voz alta"
 }

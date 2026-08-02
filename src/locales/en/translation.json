@@ -411,5 +411,6 @@
     "answer_history_empty": "You haven't answered any questions yet.",
     "view_history": "History",
     "tap_mic_to_answer": "Tap the microphone to answer out loud",
-    "feedback_label": "Feedback"
+    "feedback_label": "Feedback",
+    "tap_mic_to_read": "Tap the microphone and read the phrase out loud"
 }

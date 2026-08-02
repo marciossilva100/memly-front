@@ -409,5 +409,6 @@
     "answer_history_empty": "Nie odpowiedziałeś jeszcze na żadne pytanie.",
     "view_history": "Historia",
     "tap_mic_to_answer": "Dotknij mikrofonu, aby odpowiedzieć na głos",
-    "feedback_label": "Informacja zwrotna"
+    "feedback_label": "Informacja zwrotna",
+    "tap_mic_to_read": "Dotknij mikrofonu i przeczytaj zdanie na głos"
 }

@@ -409,5 +409,6 @@
     "answer_history_empty": "Henüz hiçbir soruyu yanıtlamadınız.",
     "view_history": "Geçmiş",
     "tap_mic_to_answer": "Sesli yanıtlamak için mikrofona dokunun",
-    "feedback_label": "Geri bildirim"
+    "feedback_label": "Geri bildirim",
+    "tap_mic_to_read": "Mikrofona dokunun ve cümleyi sesli okuyun"
 }

@@ -409,5 +409,6 @@
     "answer_history_empty": "Je hebt nog geen vragen beantwoord.",
     "view_history": "Geschiedenis",
     "tap_mic_to_answer": "Tik op de microfoon om hardop te antwoorden",
-    "feedback_label": "Feedback"
+    "feedback_label": "Feedback",
+    "tap_mic_to_read": "Tik op de microfoon en lees de zin hardop voor"
 }

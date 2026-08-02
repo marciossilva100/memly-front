@@ -23,6 +23,7 @@ import Emparelhar from './pages/Emparelhar'
 import TreinoIA from './pages/treinoIA'
 import Perguntas from './pages/Perguntas'
 import HistoricoPerguntas from './pages/HistoricoPerguntas'
+import HistoricoFraseDoDia from './pages/HistoricoFraseDoDia'
 import DigitarTexto from './pages/DigitarTexto'
 import LeituraDigital from './pages/LeituraDigital'
 import BookDetails from "./pages/BookDetails";
@@ -231,6 +232,15 @@ function Layout({ titulo, setTitulo }) {
           element={
             <PrivateRoute>
               <TreinoIA />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/treinoia/historico"
+          element={
+            <PrivateRoute>
+              <HistoricoFraseDoDia />
             </PrivateRoute>
           }
         />

@@ -396,5 +396,6 @@
     "voice_type": "نوع الصوت",
     "voice_female": "أنثى",
     "voice_male": "ذكر",
-    "voice_speed": "السرعة"
+    "voice_speed": "السرعة",
+    "voice_type_premium_only": "متاح فقط في الخطة المميزة."
 }

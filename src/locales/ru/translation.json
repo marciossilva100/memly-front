@@ -396,5 +396,6 @@
     "voice_type": "Тип голоса",
     "voice_female": "Женский",
     "voice_male": "Мужской",
-    "voice_speed": "Скорость"
+    "voice_speed": "Скорость",
+    "voice_type_premium_only": "Доступно только в тарифе Premium."
 }

@@ -87,7 +87,11 @@ export const playAudio = async (text, user, ia = false, lang = null) => {
             const audio = new Audio(urlAudio);
             currentAudio = audio;
 
-            audio.playbackRate = 1.0;
+            // A voz padrão (LibreTranslate) não tem parâmetro de velocidade
+            // na API, então aplicamos no player - disponível em qualquer
+            // plano, diferente da escolha de voz (só premium).
+            const velocidadePreferida = parseFloat(localStorage.getItem('zaldemy_velocidade_tts'));
+            audio.playbackRate = Number.isFinite(velocidadePreferida) ? velocidadePreferida : 1.0;
 
             await audio.play().catch(err => {
                 console.error("ERRO PLAY:", err);

@@ -36,7 +36,8 @@ function ItemMenu({ icone: Icone, titulo, onClick, cor = "text-gray-300" }) {
 export default function Configuracoes() {
     const navigate = useNavigate();
     const { t } = useTranslation();
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
+    const isPremium = user?.plano === 1;
     const API_URL = import.meta.env.VITE_API_URL;
 
     const [quantidadeFrases, setQuantidadeFrases] = useState('');
@@ -115,6 +116,7 @@ export default function Configuracoes() {
                     setQuantidadeFrases(String(data.quantidade_frases_aprender));
                     setVozTts(data.voz_tts || 'nova');
                     setVelocidadeTts(data.velocidade_tts ?? 1.00);
+                    localStorage.setItem('zaldemy_velocidade_tts', String(data.velocidade_tts ?? 1.00));
                 }
             } catch (error) {
                 console.error('Erro ao carregar configurações:', error);
@@ -225,6 +227,8 @@ export default function Configuracoes() {
             if (!data.success) {
                 setVelocidadeTts(velocidadeAnterior);
                 setErroVelocidade(data.message || t("unexpected_error"));
+            } else {
+                localStorage.setItem('zaldemy_velocidade_tts', String(velocidade));
             }
         } catch (error) {
             console.error('Erro ao salvar velocidade:', error);
@@ -307,37 +311,43 @@ export default function Configuracoes() {
                             <span className="text-white text-base">{t("voice_type")}</span>
                         </div>
 
-                        <div className="space-y-1.5">
-                            {VOZES_TTS.map((voz) => {
-                                const selecionada = vozTts === voz.valor;
-                                return (
-                                    <button
-                                        key={voz.valor}
-                                        type="button"
-                                        disabled={salvandoVoz}
-                                        onClick={() => handleSelecionarVoz(voz.valor)}
-                                        className={`w-full flex items-center gap-3 rounded-lg border px-3 py-2 transition-colors disabled:opacity-60 ${
-                                            selecionada
-                                                ? "border-[#4cb8c4] bg-[#4cb8c4]/10"
-                                                : "border-gray-700 bg-gray-900/40 hover:bg-gray-700/40"
-                                        }`}
-                                    >
-                                        <span className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-800 text-lg leading-none shrink-0">
-                                            {voz.emoji}
-                                        </span>
-                                        <span className={`flex-1 text-left text-sm font-medium ${selecionada ? "text-[#4cb8c4]" : "text-gray-300"}`}>
-                                            {voz.nome}
-                                        </span>
-                                        {selecionada && (
-                                            <Check className="w-4 h-4 text-[#4cb8c4] shrink-0" />
-                                        )}
-                                    </button>
-                                );
-                            })}
-                        </div>
+                        {isPremium ? (
+                            <>
+                                <div className="space-y-1.5">
+                                    {VOZES_TTS.map((voz) => {
+                                        const selecionada = vozTts === voz.valor;
+                                        return (
+                                            <button
+                                                key={voz.valor}
+                                                type="button"
+                                                disabled={salvandoVoz}
+                                                onClick={() => handleSelecionarVoz(voz.valor)}
+                                                className={`w-full flex items-center gap-3 rounded-lg border px-3 py-2 transition-colors disabled:opacity-60 ${
+                                                    selecionada
+                                                        ? "border-[#4cb8c4] bg-[#4cb8c4]/10"
+                                                        : "border-gray-700 bg-gray-900/40 hover:bg-gray-700/40"
+                                                }`}
+                                            >
+                                                <span className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-800 text-lg leading-none shrink-0">
+                                                    {voz.emoji}
+                                                </span>
+                                                <span className={`flex-1 text-left text-sm font-medium ${selecionada ? "text-[#4cb8c4]" : "text-gray-300"}`}>
+                                                    {voz.nome}
+                                                </span>
+                                                {selecionada && (
+                                                    <Check className="w-4 h-4 text-[#4cb8c4] shrink-0" />
+                                                )}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
 
-                        {erroVoz && (
-                            <p className="text-red-400 text-xs mt-3">{erroVoz}</p>
+                                {erroVoz && (
+                                    <p className="text-red-400 text-xs mt-3">{erroVoz}</p>
+                                )}
+                            </>
+                        ) : (
+                            <p className="text-gray-500 text-xs">{t("voice_type_premium_only")}</p>
                         )}
 
                         <div className="mt-4 pt-4 border-t border-gray-700">

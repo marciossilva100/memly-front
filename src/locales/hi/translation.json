@@ -396,5 +396,6 @@
     "voice_type": "आवाज़ का प्रकार",
     "voice_female": "महिला",
     "voice_male": "पुरुष",
-    "voice_speed": "गति"
+    "voice_speed": "गति",
+    "voice_type_premium_only": "केवल प्रीमियम प्लान में उपलब्ध है।"
 }

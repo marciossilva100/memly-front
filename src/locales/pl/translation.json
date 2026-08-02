@@ -396,5 +396,6 @@
     "voice_type": "Typ głosu",
     "voice_female": "Żeński",
     "voice_male": "Męski",
-    "voice_speed": "Prędkość"
+    "voice_speed": "Prędkość",
+    "voice_type_premium_only": "Dostępne tylko w planie Premium."
 }

@@ -412,5 +412,11 @@
     "feedback_label": "Geri bildirim",
     "tap_mic_to_read": "Mikrofona dokunun ve cümleyi sesli okuyun",
     "listen_recording": "Kaydı dinle",
-    "playing_audio": "Oynatılıyor..."
+    "playing_audio": "Oynatılıyor...",
+    "statistics": "İstatistikler",
+    "explore": "Keşfet",
+    "active": "Aktif",
+    "learned": "Öğrenilen",
+    "days": "gün",
+    "streak": "Seri"
 }

@@ -412,5 +412,11 @@
     "feedback_label": "Feedback",
     "tap_mic_to_read": "Tocca il microfono e leggi la frase ad alta voce",
     "listen_recording": "Ascolta la registrazione",
-    "playing_audio": "Riproduzione in corso..."
+    "playing_audio": "Riproduzione in corso...",
+    "statistics": "Statistiche",
+    "explore": "Esplora",
+    "active": "Attive",
+    "learned": "Apprese",
+    "days": "giorni",
+    "streak": "Serie"
 }

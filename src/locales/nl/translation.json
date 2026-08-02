@@ -412,5 +412,11 @@
     "feedback_label": "Feedback",
     "tap_mic_to_read": "Tik op de microfoon en lees de zin hardop voor",
     "listen_recording": "Opname beluisteren",
-    "playing_audio": "Wordt afgespeeld..."
+    "playing_audio": "Wordt afgespeeld...",
+    "statistics": "Statistieken",
+    "explore": "Verkennen",
+    "active": "Actief",
+    "learned": "Geleerd",
+    "days": "dagen",
+    "streak": "Reeks"
 }

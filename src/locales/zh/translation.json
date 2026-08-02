@@ -412,5 +412,11 @@
     "feedback_label": "反馈",
     "tap_mic_to_read": "点击麦克风并大声朗读句子",
     "listen_recording": "播放录音",
-    "playing_audio": "播放中..."
+    "playing_audio": "播放中...",
+    "statistics": "统计",
+    "explore": "探索",
+    "active": "活跃",
+    "learned": "已学习",
+    "days": "天",
+    "streak": "连续天数"
 }

@@ -412,5 +412,11 @@
     "feedback_label": "피드백",
     "tap_mic_to_read": "마이크를 눌러 문장을 소리 내어 읽으세요",
     "listen_recording": "녹음 듣기",
-    "playing_audio": "재생 중..."
+    "playing_audio": "재생 중...",
+    "statistics": "통계",
+    "explore": "탐색",
+    "active": "활성",
+    "learned": "학습됨",
+    "days": "일",
+    "streak": "연속 기록"
 }

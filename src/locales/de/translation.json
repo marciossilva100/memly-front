@@ -412,5 +412,11 @@
     "feedback_label": "Feedback",
     "tap_mic_to_read": "Tippe auf das Mikrofon und lies den Satz laut vor",
     "listen_recording": "Aufnahme anhören",
-    "playing_audio": "Wird abgespielt..."
+    "playing_audio": "Wird abgespielt...",
+    "statistics": "Statistiken",
+    "explore": "Entdecken",
+    "active": "Aktiv",
+    "learned": "Gelernt",
+    "days": "Tage",
+    "streak": "Serie"
 }

@@ -412,5 +412,11 @@
     "feedback_label": "Обратная связь",
     "tap_mic_to_read": "Нажмите на микрофон и прочитайте фразу вслух",
     "listen_recording": "Прослушать запись",
-    "playing_audio": "Воспроизведение..."
+    "playing_audio": "Воспроизведение...",
+    "statistics": "Статистика",
+    "explore": "Обзор",
+    "active": "Активные",
+    "learned": "Изучено",
+    "days": "дней",
+    "streak": "Серия"
 }

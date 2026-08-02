@@ -13,7 +13,26 @@ import { useTranslation } from "react-i18next";
 import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 
 
-import { BookOpen, BarChart3, Settings, Play, Crown, Bot, Plus } from "lucide-react";
+import { BookOpen, BarChart3, Bot, Plus, Menu, Globe, ChevronDown, Home as HomeIcon, CheckCircle2, Flame } from "lucide-react";
+
+// Mesmo mapa de bandeiras usado em EscolherIdiomaAprender.jsx/EscolherIdiomaNativo.jsx
+const FLAGS = {
+    pt: "https://flagcdn.com/w40/br.png",
+    en: "https://flagcdn.com/w40/us.png",
+    es: "https://flagcdn.com/w40/es.png",
+    fr: "https://flagcdn.com/w40/fr.png",
+    de: "https://flagcdn.com/w40/de.png",
+    it: "https://flagcdn.com/w40/it.png",
+    zh: "https://flagcdn.com/w40/cn.png",
+    ja: "https://flagcdn.com/w40/jp.png",
+    ru: "https://flagcdn.com/w40/ru.png",
+    ar: "https://flagcdn.com/w40/sa.png",
+    hi: "https://flagcdn.com/w40/in.png",
+    ko: "https://flagcdn.com/w40/kr.png",
+    nl: "https://flagcdn.com/w40/nl.png",
+    tr: "https://flagcdn.com/w40/tr.png",
+    pl: "https://flagcdn.com/w40/pl.png",
+};
 
 const AVATAR_COLORS = [
     'bg-emerald-500',
@@ -52,6 +71,9 @@ export default function Home() {
     const [modalConfirm, setOpenModalConfirm] = useState(false)
     const [msgModalConfirm, setMsgModalConfirm] = useState('')
     const [deleteId, setDeleteId] = useState(0)
+    const [streak, setStreak] = useState(0)
+    const [totalAprendidas, setTotalAprendidas] = useState(0)
+    const [idiomasLista, setIdiomasLista] = useState([])
     const { t } = useTranslation();
     const API_URL = import.meta.env.VITE_API_URL;
 
@@ -110,6 +132,40 @@ export default function Home() {
 
     }, []);
 
+    // Lista de idiomas (nome + sigla) pra exibir o nome do idioma nativo/de
+    // aprendizagem no cabeçalho - mesma fonte usada em EscolherIdiomaAprender.
+    useEffect(() => {
+        fetch(`${API_URL}/controller/language.php`, {
+            method: 'POST',
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({ action: 'list_languages_learning' })
+        })
+            .then(res => res.json())
+            .then(data => setIdiomasLista(Array.isArray(data) ? data : []))
+            .catch(() => setIdiomasLista([]));
+    }, []);
+
+    useEffect(() => {
+        if (!user) return;
+
+        fetch(`${API_URL}/controller/metricas.php`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({ action: 'streak' })
+        })
+            .then(res => res.json())
+            .then(data => setStreak(data?.streak ?? 0))
+            .catch(() => setStreak(0));
+    }, [user?.native_language, user?.learning_language, user?.id]);
+
+    function nomeIdioma(sigla) {
+        return idiomasLista.find((l) => l.sigla === sigla)?.idioma ?? sigla ?? '';
+    }
 
     const carregarCategorias = () => {
         const nativeLanguage = user?.native_language ?? user?.nativeLanguage ?? user?.idioma_nativo ?? user?.idiomaNativo ?? null;
@@ -180,6 +236,7 @@ export default function Home() {
     const carregarRevisarPorCategoria = (listaCategorias) => {
         if (!listaCategorias.length) {
             setRevisarPorCategoria({});
+            setTotalAprendidas(0);
             return;
         }
 
@@ -197,15 +254,24 @@ export default function Home() {
                     })
                 })
                     .then(res => res.json())
-                    .then(data => ({ id: cat.id, revisar: data.data?.[3]?.total ?? 0 }))
-                    .catch(() => ({ id: cat.id, revisar: 0 }))
+                    // data.data é indexado pelos 4 estágios do treino, em ordem:
+                    // [0]=não conheço [1]=memorizando [2]=em treino [3]=memorizado
+                    .then(data => ({
+                        id: cat.id,
+                        revisar: data.data?.[2]?.total ?? 0,
+                        aprendidas: data.data?.[3]?.total ?? 0
+                    }))
+                    .catch(() => ({ id: cat.id, revisar: 0, aprendidas: 0 }))
             )
         ).then((resultados) => {
             const mapa = {};
-            resultados.forEach(({ id, revisar }) => {
+            let somaAprendidas = 0;
+            resultados.forEach(({ id, revisar, aprendidas }) => {
                 mapa[id] = revisar;
+                somaAprendidas += aprendidas;
             });
             setRevisarPorCategoria(mapa);
+            setTotalAprendidas(somaAprendidas);
         });
     };
 
@@ -349,6 +415,29 @@ export default function Home() {
     return (
         <div className="h-dvh flex flex-col max-w-7xl mx-auto  from-gray-900 to-gray-800 bg-gradient-to-br">
 
+            <div className="flex items-center justify-between gap-3 px-4 pt-4">
+                <button
+                    type="button"
+                    onClick={() => navigate('/configuracoes')}
+                    className="text-white shrink-0"
+                >
+                    <Menu size={24} />
+                </button>
+
+                <div className="flex items-center gap-1.5 text-white min-w-0">
+                    <span className="font-medium truncate">{nomeIdioma(user?.native_language)}</span>
+                    <Globe size={16} className="text-gray-400 shrink-0" />
+                </div>
+
+                <div className="flex items-center gap-1.5 pl-1.5 pr-3 py-1 rounded-full bg-gray-800/70 border border-gray-700 shrink-0">
+                    {FLAGS[user?.learning_language] && (
+                        <img src={FLAGS[user.learning_language]} alt="" className="w-6 h-6 rounded-full object-cover" />
+                    )}
+                    <span className="text-white text-sm font-medium">{nomeIdioma(user?.learning_language)}</span>
+                    <ChevronDown size={14} className="text-gray-400" />
+                </div>
+            </div>
+
             <div className="px-4 pt-4">
                 <p className="text-lg font-semibold text-white">
                     {saudacaoPorHorario()}, {user?.name?.split(' ')[0]}! 👋
@@ -356,6 +445,29 @@ export default function Home() {
                 <p className="text-sm text-gray-400">
                     {t("choose_category_subtitle")}
                 </p>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3 px-4 pt-4">
+                <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-3">
+                    <BookOpen className="text-emerald-400 mb-1" size={20} />
+                    <p className="text-xs text-gray-400">{t("categories")}</p>
+                    <p className="text-xl font-bold text-white">{categorias.length}</p>
+                    <p className="text-xs text-gray-400">{t("active")}</p>
+                </div>
+
+                <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-3">
+                    <CheckCircle2 className="text-purple-400 mb-1" size={20} />
+                    <p className="text-xs text-gray-400">{t("words")}</p>
+                    <p className="text-xl font-bold text-white">{totalAprendidas}</p>
+                    <p className="text-xs text-gray-400">{t("learned")}</p>
+                </div>
+
+                <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-3">
+                    <Flame className="text-orange-400 mb-1" size={20} />
+                    <p className="text-xs text-gray-400">{t("streak")}</p>
+                    <p className="text-xl font-bold text-white">{streak}</p>
+                    <p className="text-xs text-gray-400">{t("days")}</p>
+                </div>
             </div>
 
             <div className="lista-categoria flex-1 overflow-y-auto py-4 scrollbar-hide mt-4" id="lista-categoria">
@@ -473,14 +585,14 @@ export default function Home() {
                     </div>
                 )}
 
-                <div className="relative inline-block">
+                <div className="relative inline-block w-full px-4">
                     <button className={`
                         flex items-center justify-center gap-2
-                        px-6
+                        w-full
                         mb-4
                         py-3
                         rounded-full
-                        bg-[#4cb8c4] hover:opacity-90
+                        bg-gradient-to-r from-blue-500 to-emerald-500 hover:opacity-90
                         text-white
                         font-medium
                        text-lg
@@ -499,40 +611,21 @@ export default function Home() {
                 </div>
 
                 <div className=" w-full ">
-                    <div className='flex  left-0   w-full justify-center py-2 '>
-                        {/*  <a href="/leituradigital"> <div className='bg-blue-400 rounded-full p-3 flex justify-center items-center'> */}
-
-                        <button type="button" onClick={() => navigate('/configuracoes')}>
-                            <div className=' p-3 flex justify-center items-center'>
-                                {/*  <BookOpen className='text-white' /> */}
-                                <Settings width={38} height={38} className='text-violet-400' />
-                                {/* <img src={imgSetting} alt="" width={40} /> */}
-                            </div>
+                    <div className='flex  left-0   w-full justify-around py-2 '>
+                        <button type="button" className="flex flex-col items-center gap-1">
+                            <HomeIcon width={26} height={26} className='text-violet-400' />
+                            <span className="text-xs text-violet-400">{t("home")}</span>
+                            <span className="w-1 h-1 rounded-full bg-violet-400" />
                         </button>
-                        {/* <button type="button" onClick={() => navigate('/leituradigital')} >
-                            <div className=' p-3 flex justify-center items-center'>
-                                <BookOpen width={38} height={38} className='text-green-600' />
 
-                            </div>
-                        </button> */}
-                        <button type="button" onClick={() => navigate('/metricas')}>
-                            <div className=' p-3 flex justify-center items-center'>
-                                <BarChart3 className='text-amber-400' width={38} height={38} />
-
-                                {/*  <BookOpen className='text-white' /> */}
-                                {/* <img src={imgEstatistica} alt="" width={40} /> */}
-                            </div>
+                        <button type="button" onClick={() => navigate('/metricas')} className="flex flex-col items-center gap-1">
+                            <BarChart3 className='text-green-400' width={26} height={26} />
+                            <span className="text-xs text-gray-400">{t("statistics")}</span>
                         </button>
-                        {/*<a href="/videos">
-                            <div className=' p-3 flex justify-center items-center'>
-                                <Play className='text-red-500 ' width={38} height={38} />
-                                
-                            </div>
-                        </a>*/}
-                        <button type="button" onClick={() => verifyPlan()}>
-                            <div className=' p-3 flex justify-center items-center'>
-                                <Bot width={38} height={38} className="text-yellow-500" />
-                            </div>
+
+                        <button type="button" onClick={() => verifyPlan()} className="flex flex-col items-center gap-1">
+                            <Bot width={26} height={26} className="text-amber-400" />
+                            <span className="text-xs text-gray-400">{t("explore")}</span>
                         </button>
                     </div>
                 </div>

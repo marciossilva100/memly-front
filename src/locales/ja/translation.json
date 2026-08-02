@@ -412,5 +412,11 @@
     "feedback_label": "フィードバック",
     "tap_mic_to_read": "マイクをタップして文章を声に出して読んでください",
     "listen_recording": "録音を再生",
-    "playing_audio": "再生中..."
+    "playing_audio": "再生中...",
+    "statistics": "統計",
+    "explore": "探索",
+    "active": "アクティブ",
+    "learned": "習得済み",
+    "days": "日",
+    "streak": "連続記録"
 }

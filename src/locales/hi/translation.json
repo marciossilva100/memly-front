@@ -412,5 +412,11 @@
     "feedback_label": "प्रतिक्रिया",
     "tap_mic_to_read": "माइक्रोफ़ोन दबाएं और वाक्य को जोर से पढ़ें",
     "listen_recording": "रिकॉर्डिंग सुनें",
-    "playing_audio": "चल रहा है..."
+    "playing_audio": "चल रहा है...",
+    "statistics": "आँकड़े",
+    "explore": "अन्वेषण करें",
+    "active": "सक्रिय",
+    "learned": "सीखे गए",
+    "days": "दिन",
+    "streak": "लगातार दिन"
 }

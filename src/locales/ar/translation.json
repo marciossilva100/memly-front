@@ -412,5 +412,11 @@
     "feedback_label": "الملاحظات",
     "tap_mic_to_read": "اضغط على الميكروفون واقرأ الجملة بصوت عالٍ",
     "listen_recording": "استمع إلى التسجيل",
-    "playing_audio": "جارٍ التشغيل..."
+    "playing_audio": "جارٍ التشغيل...",
+    "statistics": "الإحصائيات",
+    "explore": "استكشاف",
+    "active": "نشطة",
+    "learned": "تم تعلمها",
+    "days": "أيام",
+    "streak": "التتابع"
 }

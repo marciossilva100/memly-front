@@ -178,7 +178,7 @@
     "invalid_or_expired_link": "Link non valido o scaduto.",
     "reset_link_sent": "Link inviato!",
     "reset_link_sent_hint": "Se quell'email esiste nella nostra banca dati, riceverai un link per reimpostare la password.",
-    "sending": "Invio...",
+    "sending": "Invio in corso...",
     "password_reset_success": "Password reimpostata con successo!",
     "choose_new_password": "Scegli la tua nuova password",
     "go_to_login": "Vai al login",
@@ -397,5 +397,12 @@
     "voice_female": "Femminile",
     "voice_male": "Maschile",
     "voice_speed": "Velocità della narrazione",
-    "continue_without_premium_voice": "Continua senza voce premium"
+    "continue_without_premium_voice": "Continua senza voce premium",
+    "daily_phrase_title": "Frase del giorno",
+    "recording_in_progress": "Registrazione in corso...",
+    "re_record": "Registra di nuovo",
+    "transcription_label": "Cosa hai detto",
+    "grammar_label": "Grammatica",
+    "pronunciation_label": "Pronuncia",
+    "fluency_label": "Scioltezza"
 }

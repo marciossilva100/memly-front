@@ -178,7 +178,7 @@
     "invalid_or_expired_link": "Lien invalide ou expiré.",
     "reset_link_sent": "Lien envoyé !",
     "reset_link_sent_hint": "Si cet email existe dans notre base, vous recevrez un lien pour réinitialiser votre mot de passe.",
-    "sending": "Envoi...",
+    "sending": "Envoi en cours...",
     "password_reset_success": "Mot de passe réinitialisé avec succès !",
     "choose_new_password": "Choisissez votre nouveau mot de passe",
     "go_to_login": "Aller à la connexion",
@@ -397,5 +397,12 @@
     "voice_female": "Féminine",
     "voice_male": "Masculine",
     "voice_speed": "Vitesse de narration",
-    "continue_without_premium_voice": "Continuer sans voix premium"
+    "continue_without_premium_voice": "Continuer sans voix premium",
+    "daily_phrase_title": "Phrase du jour",
+    "recording_in_progress": "Enregistrement...",
+    "re_record": "Réenregistrer",
+    "transcription_label": "Ce que vous avez dit",
+    "grammar_label": "Grammaire",
+    "pronunciation_label": "Prononciation",
+    "fluency_label": "Fluidité"
 }

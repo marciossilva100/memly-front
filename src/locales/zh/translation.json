@@ -397,5 +397,12 @@
     "voice_female": "女声",
     "voice_male": "男声",
     "voice_speed": "朗读速度",
-    "continue_without_premium_voice": "不使用高级语音继续"
+    "continue_without_premium_voice": "不使用高级语音继续",
+    "daily_phrase_title": "每日一句",
+    "recording_in_progress": "录音中...",
+    "re_record": "重新录音",
+    "transcription_label": "你说的话",
+    "grammar_label": "语法",
+    "pronunciation_label": "发音",
+    "fluency_label": "流利度"
 }

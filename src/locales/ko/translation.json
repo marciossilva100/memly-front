@@ -397,5 +397,12 @@
     "voice_female": "여성",
     "voice_male": "남성",
     "voice_speed": "낭독 속도",
-    "continue_without_premium_voice": "프리미엄 음성 없이 계속하기"
+    "continue_without_premium_voice": "프리미엄 음성 없이 계속하기",
+    "daily_phrase_title": "오늘의 문장",
+    "recording_in_progress": "녹음 중...",
+    "re_record": "다시 녹음",
+    "transcription_label": "당신이 말한 것",
+    "grammar_label": "문법",
+    "pronunciation_label": "발음",
+    "fluency_label": "유창성"
 }

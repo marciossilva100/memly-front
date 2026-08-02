@@ -397,5 +397,12 @@
     "voice_female": "Kadın",
     "voice_male": "Erkek",
     "voice_speed": "Anlatım hızı",
-    "continue_without_premium_voice": "Premium ses olmadan devam et"
+    "continue_without_premium_voice": "Premium ses olmadan devam et",
+    "daily_phrase_title": "Günün cümlesi",
+    "recording_in_progress": "Kaydediliyor...",
+    "re_record": "Tekrar kaydet",
+    "transcription_label": "Söylediğiniz",
+    "grammar_label": "Dil bilgisi",
+    "pronunciation_label": "Telaffuz",
+    "fluency_label": "Akıcılık"
 }

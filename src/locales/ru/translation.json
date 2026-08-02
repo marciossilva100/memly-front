@@ -397,5 +397,12 @@
     "voice_female": "Женский",
     "voice_male": "Мужской",
     "voice_speed": "Скорость озвучивания",
-    "continue_without_premium_voice": "Продолжить без премиум-голоса"
+    "continue_without_premium_voice": "Продолжить без премиум-голоса",
+    "daily_phrase_title": "Фраза дня",
+    "recording_in_progress": "Идёт запись...",
+    "re_record": "Записать снова",
+    "transcription_label": "Что вы сказали",
+    "grammar_label": "Грамматика",
+    "pronunciation_label": "Произношение",
+    "fluency_label": "Беглость"
 }

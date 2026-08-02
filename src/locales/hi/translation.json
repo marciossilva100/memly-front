@@ -397,5 +397,12 @@
     "voice_female": "महिला",
     "voice_male": "पुरुष",
     "voice_speed": "वर्णन की गति",
-    "continue_without_premium_voice": "प्रीमियम आवाज़ के बिना जारी रखें"
+    "continue_without_premium_voice": "प्रीमियम आवाज़ के बिना जारी रखें",
+    "daily_phrase_title": "आज का वाक्य",
+    "recording_in_progress": "रिकॉर्डिंग हो रही है...",
+    "re_record": "फिर से रिकॉर्ड करें",
+    "transcription_label": "आपने जो कहा",
+    "grammar_label": "व्याकरण",
+    "pronunciation_label": "उच्चारण",
+    "fluency_label": "प्रवाह"
 }

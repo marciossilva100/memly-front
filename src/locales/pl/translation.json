@@ -397,5 +397,12 @@
     "voice_female": "Żeński",
     "voice_male": "Męski",
     "voice_speed": "Prędkość narracji",
-    "continue_without_premium_voice": "Kontynuuj bez głosu premium"
+    "continue_without_premium_voice": "Kontynuuj bez głosu premium",
+    "daily_phrase_title": "Zdanie dnia",
+    "recording_in_progress": "Nagrywanie...",
+    "re_record": "Nagraj ponownie",
+    "transcription_label": "Co powiedziałeś",
+    "grammar_label": "Gramatyka",
+    "pronunciation_label": "Wymowa",
+    "fluency_label": "Płynność"
 }

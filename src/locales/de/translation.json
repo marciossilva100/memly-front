@@ -397,5 +397,12 @@
     "voice_female": "Weiblich",
     "voice_male": "Männlich",
     "voice_speed": "Erzähltempo",
-    "continue_without_premium_voice": "Ohne Premium-Stimme fortfahren"
+    "continue_without_premium_voice": "Ohne Premium-Stimme fortfahren",
+    "daily_phrase_title": "Satz des Tages",
+    "recording_in_progress": "Aufnahme läuft...",
+    "re_record": "Erneut aufnehmen",
+    "transcription_label": "Was du gesagt hast",
+    "grammar_label": "Grammatik",
+    "pronunciation_label": "Aussprache",
+    "fluency_label": "Sprachfluss"
 }

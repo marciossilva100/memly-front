@@ -398,5 +398,12 @@
     "voice_female": "Femenina",
     "voice_male": "Masculina",
     "voice_speed": "Velocidad de la narración",
-    "continue_without_premium_voice": "Continuar sin voz premium"
+    "continue_without_premium_voice": "Continuar sin voz premium",
+    "daily_phrase_title": "Frase del día",
+    "recording_in_progress": "Grabando...",
+    "re_record": "Grabar de nuevo",
+    "transcription_label": "Lo que dijiste",
+    "grammar_label": "Gramática",
+    "pronunciation_label": "Pronunciación",
+    "fluency_label": "Fluidez"
 }

@@ -397,5 +397,12 @@
     "voice_female": "أنثى",
     "voice_male": "ذكر",
     "voice_speed": "سرعة السرد",
-    "continue_without_premium_voice": "المتابعة بدون الصوت المميز"
+    "continue_without_premium_voice": "المتابعة بدون الصوت المميز",
+    "daily_phrase_title": "جملة اليوم",
+    "recording_in_progress": "جارٍ التسجيل...",
+    "re_record": "إعادة التسجيل",
+    "transcription_label": "ما قلته",
+    "grammar_label": "القواعد",
+    "pronunciation_label": "النطق",
+    "fluency_label": "الطلاقة"
 }

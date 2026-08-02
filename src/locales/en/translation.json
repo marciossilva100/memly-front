@@ -399,5 +399,12 @@
     "voice_female": "Female",
     "voice_male": "Male",
     "voice_speed": "Narration speed",
-    "continue_without_premium_voice": "Continue without premium voice"
+    "continue_without_premium_voice": "Continue without premium voice",
+    "daily_phrase_title": "Phrase of the day",
+    "recording_in_progress": "Recording...",
+    "re_record": "Record again",
+    "transcription_label": "What you said",
+    "grammar_label": "Grammar",
+    "pronunciation_label": "Pronunciation",
+    "fluency_label": "Fluency"
 }

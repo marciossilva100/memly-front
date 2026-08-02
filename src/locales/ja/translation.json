@@ -410,5 +410,7 @@
     "view_history": "履歴",
     "tap_mic_to_answer": "マイクをタップして声で答えてください",
     "feedback_label": "フィードバック",
-    "tap_mic_to_read": "マイクをタップして文章を声に出して読んでください"
+    "tap_mic_to_read": "マイクをタップして文章を声に出して読んでください",
+    "listen_recording": "録音を再生",
+    "playing_audio": "再生中..."
 }

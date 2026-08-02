@@ -412,5 +412,7 @@
     "view_history": "History",
     "tap_mic_to_answer": "Tap the microphone to answer out loud",
     "feedback_label": "Feedback",
-    "tap_mic_to_read": "Tap the microphone and read the phrase out loud"
+    "tap_mic_to_read": "Tap the microphone and read the phrase out loud",
+    "listen_recording": "Listen to recording",
+    "playing_audio": "Playing..."
 }

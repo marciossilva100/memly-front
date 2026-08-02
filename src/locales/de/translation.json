@@ -410,5 +410,7 @@
     "view_history": "Verlauf",
     "tap_mic_to_answer": "Tippe auf das Mikrofon, um laut zu antworten",
     "feedback_label": "Feedback",
-    "tap_mic_to_read": "Tippe auf das Mikrofon und lies den Satz laut vor"
+    "tap_mic_to_read": "Tippe auf das Mikrofon und lies den Satz laut vor",
+    "listen_recording": "Aufnahme anhören",
+    "playing_audio": "Wird abgespielt..."
 }

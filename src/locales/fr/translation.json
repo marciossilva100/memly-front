@@ -410,5 +410,7 @@
     "view_history": "Historique",
     "tap_mic_to_answer": "Appuyez sur le micro pour répondre à voix haute",
     "feedback_label": "Retour",
-    "tap_mic_to_read": "Appuyez sur le micro et lisez la phrase à voix haute"
+    "tap_mic_to_read": "Appuyez sur le micro et lisez la phrase à voix haute",
+    "listen_recording": "Écouter l'enregistrement",
+    "playing_audio": "Lecture en cours..."
 }

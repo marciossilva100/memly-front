@@ -410,5 +410,7 @@
     "view_history": "历史",
     "tap_mic_to_answer": "点击麦克风大声回答",
     "feedback_label": "反馈",
-    "tap_mic_to_read": "点击麦克风并大声朗读句子"
+    "tap_mic_to_read": "点击麦克风并大声朗读句子",
+    "listen_recording": "播放录音",
+    "playing_audio": "播放中..."
 }

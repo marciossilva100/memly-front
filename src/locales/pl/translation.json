@@ -410,5 +410,7 @@
     "view_history": "Historia",
     "tap_mic_to_answer": "Dotknij mikrofonu, aby odpowiedzieć na głos",
     "feedback_label": "Informacja zwrotna",
-    "tap_mic_to_read": "Dotknij mikrofonu i przeczytaj zdanie na głos"
+    "tap_mic_to_read": "Dotknij mikrofonu i przeczytaj zdanie na głos",
+    "listen_recording": "Odsłuchaj nagranie",
+    "playing_audio": "Odtwarzanie..."
 }

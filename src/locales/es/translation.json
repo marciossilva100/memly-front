@@ -411,5 +411,7 @@
     "view_history": "Historial",
     "tap_mic_to_answer": "Toca el micrófono para responder en voz alta",
     "feedback_label": "Comentarios",
-    "tap_mic_to_read": "Toca el micrófono y lee la frase en voz alta"
+    "tap_mic_to_read": "Toca el micrófono y lee la frase en voz alta",
+    "listen_recording": "Escuchar grabación",
+    "playing_audio": "Reproduciendo..."
 }

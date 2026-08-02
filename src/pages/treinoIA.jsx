@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { playAudio } from "../utils/audioPlayer";
 import useAudioRecorder from "../hooks/useAudioRecorder";
+import AudioPreviewPlayer from "../components/AudioPreviewPlayer";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
 function corNota(nota) {
@@ -252,7 +253,7 @@ export default function TreinoIA() {
             </div>
 
             {!resultado && (
-                <div className="sticky bottom-0 py-4 flex flex-col items-center gap-4 from-gray-900 to-gray-800 bg-gradient-to-br">
+                <div className="sticky bottom-0 py-4 flex flex-col items-center gap-4 ">
                     {!audioUrl && !gravando && (
                         <button
                             onClick={iniciarGravacao}
@@ -282,7 +283,7 @@ export default function TreinoIA() {
 
                     {audioUrl && !gravando && (
                         <div className="w-full flex flex-col items-center gap-3">
-                            <audio controls src={audioUrl} className="w-full rounded-lg" />
+                            <AudioPreviewPlayer src={audioUrl} />
 
                             <div className="flex gap-3 w-full">
                                 <button

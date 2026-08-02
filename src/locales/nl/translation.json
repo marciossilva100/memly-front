@@ -410,5 +410,7 @@
     "view_history": "Geschiedenis",
     "tap_mic_to_answer": "Tik op de microfoon om hardop te antwoorden",
     "feedback_label": "Feedback",
-    "tap_mic_to_read": "Tik op de microfoon en lees de zin hardop voor"
+    "tap_mic_to_read": "Tik op de microfoon en lees de zin hardop voor",
+    "listen_recording": "Opname beluisteren",
+    "playing_audio": "Wordt afgespeeld..."
 }

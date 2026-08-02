@@ -5,6 +5,7 @@ import { playAudio } from "../utils/audioPlayer";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import useAudioRecorder from "../hooks/useAudioRecorder";
+import AudioPreviewPlayer from "../components/AudioPreviewPlayer";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
 function corNota(nota) {
@@ -281,7 +282,7 @@ export default function Perguntas() {
 
                             {audioUrl && !gravando && (
                                 <div className="w-full flex flex-col items-center gap-3">
-                                    <audio controls src={audioUrl} className="w-full rounded-lg" />
+                                    <AudioPreviewPlayer src={audioUrl} />
 
                                     <div className="flex gap-3 w-full">
                                         <button

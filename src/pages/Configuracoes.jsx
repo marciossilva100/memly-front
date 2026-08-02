@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
-import { FileText, Shield, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2, Volume2, Check } from "lucide-react";
+import { FileText, Shield, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2, Volume2, Check, Gauge } from "lucide-react";
 import ModalConfirm from "../components/ModalConfirm";
 
 const QUANTIDADE_FRASES_MIN = 1;
@@ -349,7 +349,10 @@ export default function Configuracoes() {
                         )}
 
                         <div className={isPremium ? "mt-4 pt-4 border-t border-gray-700" : ""}>
-                            <span className="text-gray-400 text-xs mb-2 block">{t("voice_speed")}</span>
+                            <div className="flex items-center gap-2 mb-2">
+                                <Gauge className="w-4 h-4 text-[#4cb8c4]" />
+                                <span className="text-gray-300 text-sm">{t("voice_speed")}</span>
+                            </div>
                             <div className="grid grid-cols-4 gap-2">
                                 {VELOCIDADES_TTS.map((velocidade) => {
                                     const selecionada = velocidadeTts === velocidade;

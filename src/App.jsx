@@ -22,6 +22,7 @@ import Flashcards from './pages/Flashcards'
 import Emparelhar from './pages/Emparelhar'
 import TreinoIA from './pages/treinoIA'
 import Perguntas from './pages/Perguntas'
+import HistoricoPerguntas from './pages/HistoricoPerguntas'
 import DigitarTexto from './pages/DigitarTexto'
 import LeituraDigital from './pages/LeituraDigital'
 import BookDetails from "./pages/BookDetails";
@@ -239,6 +240,15 @@ function Layout({ titulo, setTitulo }) {
           element={
             <PrivateRoute>
               <Perguntas />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/perguntasia/historico"
+          element={
+            <PrivateRoute>
+              <HistoricoPerguntas />
             </PrivateRoute>
           }
         />

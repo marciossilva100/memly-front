@@ -404,5 +404,10 @@
     "transcription_label": "Wat je zei",
     "grammar_label": "Grammatica",
     "pronunciation_label": "Uitspraak",
-    "fluency_label": "Vloeiendheid"
+    "fluency_label": "Vloeiendheid",
+    "answer_history_title": "Antwoordgeschiedenis",
+    "answer_history_empty": "Je hebt nog geen vragen beantwoord.",
+    "view_history": "Geschiedenis",
+    "tap_mic_to_answer": "Tik op de microfoon om hardop te antwoorden",
+    "feedback_label": "Feedback"
 }

@@ -404,5 +404,10 @@
     "transcription_label": "Co powiedziałeś",
     "grammar_label": "Gramatyka",
     "pronunciation_label": "Wymowa",
-    "fluency_label": "Płynność"
+    "fluency_label": "Płynność",
+    "answer_history_title": "Historia odpowiedzi",
+    "answer_history_empty": "Nie odpowiedziałeś jeszcze na żadne pytanie.",
+    "view_history": "Historia",
+    "tap_mic_to_answer": "Dotknij mikrofonu, aby odpowiedzieć na głos",
+    "feedback_label": "Informacja zwrotna"
 }

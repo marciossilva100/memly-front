@@ -404,5 +404,10 @@
     "transcription_label": "Was du gesagt hast",
     "grammar_label": "Grammatik",
     "pronunciation_label": "Aussprache",
-    "fluency_label": "Sprachfluss"
+    "fluency_label": "Sprachfluss",
+    "answer_history_title": "Antwortverlauf",
+    "answer_history_empty": "Du hast noch keine Fragen beantwortet.",
+    "view_history": "Verlauf",
+    "tap_mic_to_answer": "Tippe auf das Mikrofon, um laut zu antworten",
+    "feedback_label": "Feedback"
 }

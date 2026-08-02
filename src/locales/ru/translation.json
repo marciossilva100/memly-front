@@ -404,5 +404,10 @@
     "transcription_label": "Что вы сказали",
     "grammar_label": "Грамматика",
     "pronunciation_label": "Произношение",
-    "fluency_label": "Беглость"
+    "fluency_label": "Беглость",
+    "answer_history_title": "История ответов",
+    "answer_history_empty": "Вы ещё не ответили ни на один вопрос.",
+    "view_history": "История",
+    "tap_mic_to_answer": "Нажмите на микрофон, чтобы ответить вслух",
+    "feedback_label": "Обратная связь"
 }

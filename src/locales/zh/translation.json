@@ -404,5 +404,10 @@
     "transcription_label": "你说的话",
     "grammar_label": "语法",
     "pronunciation_label": "发音",
-    "fluency_label": "流利度"
+    "fluency_label": "流利度",
+    "answer_history_title": "回答历史",
+    "answer_history_empty": "你还没有回答任何问题。",
+    "view_history": "历史",
+    "tap_mic_to_answer": "点击麦克风大声回答",
+    "feedback_label": "反馈"
 }

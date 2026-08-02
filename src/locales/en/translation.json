@@ -406,5 +406,10 @@
     "transcription_label": "What you said",
     "grammar_label": "Grammar",
     "pronunciation_label": "Pronunciation",
-    "fluency_label": "Fluency"
+    "fluency_label": "Fluency",
+    "answer_history_title": "Answer history",
+    "answer_history_empty": "You haven't answered any questions yet.",
+    "view_history": "History",
+    "tap_mic_to_answer": "Tap the microphone to answer out loud",
+    "feedback_label": "Feedback"
 }

@@ -404,5 +404,10 @@
     "transcription_label": "Söylediğiniz",
     "grammar_label": "Dil bilgisi",
     "pronunciation_label": "Telaffuz",
-    "fluency_label": "Akıcılık"
+    "fluency_label": "Akıcılık",
+    "answer_history_title": "Cevap geçmişi",
+    "answer_history_empty": "Henüz hiçbir soruyu yanıtlamadınız.",
+    "view_history": "Geçmiş",
+    "tap_mic_to_answer": "Sesli yanıtlamak için mikrofona dokunun",
+    "feedback_label": "Geri bildirim"
 }

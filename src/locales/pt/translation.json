@@ -406,5 +406,10 @@
     "transcription_label": "O que você disse",
     "grammar_label": "Gramática",
     "pronunciation_label": "Pronúncia",
-    "fluency_label": "Fluência"
+    "fluency_label": "Fluência",
+    "answer_history_title": "Histórico de respostas",
+    "answer_history_empty": "Você ainda não respondeu nenhuma pergunta.",
+    "view_history": "Histórico",
+    "tap_mic_to_answer": "Toque no microfone para responder em voz alta",
+    "feedback_label": "Feedback"
 }

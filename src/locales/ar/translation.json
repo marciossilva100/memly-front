@@ -404,5 +404,10 @@
     "transcription_label": "ما قلته",
     "grammar_label": "القواعد",
     "pronunciation_label": "النطق",
-    "fluency_label": "الطلاقة"
+    "fluency_label": "الطلاقة",
+    "answer_history_title": "سجل الإجابات",
+    "answer_history_empty": "لم تُجب على أي سؤال بعد.",
+    "view_history": "السجل",
+    "tap_mic_to_answer": "اضغط على الميكروفون للإجابة بصوت عالٍ",
+    "feedback_label": "الملاحظات"
 }

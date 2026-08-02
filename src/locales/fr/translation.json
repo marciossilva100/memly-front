@@ -404,5 +404,10 @@
     "transcription_label": "Ce que vous avez dit",
     "grammar_label": "Grammaire",
     "pronunciation_label": "Prononciation",
-    "fluency_label": "Fluidité"
+    "fluency_label": "Fluidité",
+    "answer_history_title": "Historique des réponses",
+    "answer_history_empty": "Vous n'avez encore répondu à aucune question.",
+    "view_history": "Historique",
+    "tap_mic_to_answer": "Appuyez sur le micro pour répondre à voix haute",
+    "feedback_label": "Retour"
 }

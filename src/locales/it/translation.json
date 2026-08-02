@@ -404,5 +404,10 @@
     "transcription_label": "Cosa hai detto",
     "grammar_label": "Grammatica",
     "pronunciation_label": "Pronuncia",
-    "fluency_label": "Scioltezza"
+    "fluency_label": "Scioltezza",
+    "answer_history_title": "Cronologia delle risposte",
+    "answer_history_empty": "Non hai ancora risposto a nessuna domanda.",
+    "view_history": "Cronologia",
+    "tap_mic_to_answer": "Tocca il microfono per rispondere ad alta voce",
+    "feedback_label": "Feedback"
 }

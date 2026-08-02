@@ -404,5 +404,10 @@
     "transcription_label": "あなたが言ったこと",
     "grammar_label": "文法",
     "pronunciation_label": "発音",
-    "fluency_label": "流暢さ"
+    "fluency_label": "流暢さ",
+    "answer_history_title": "回答履歴",
+    "answer_history_empty": "まだ質問に回答していません。",
+    "view_history": "履歴",
+    "tap_mic_to_answer": "マイクをタップして声で答えてください",
+    "feedback_label": "フィードバック"
 }

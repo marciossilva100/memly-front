@@ -404,5 +404,10 @@
     "transcription_label": "आपने जो कहा",
     "grammar_label": "व्याकरण",
     "pronunciation_label": "उच्चारण",
-    "fluency_label": "प्रवाह"
+    "fluency_label": "प्रवाह",
+    "answer_history_title": "उत्तर इतिहास",
+    "answer_history_empty": "आपने अभी तक कोई प्रश्न उत्तर नहीं दिया है।",
+    "view_history": "इतिहास",
+    "tap_mic_to_answer": "जोर से उत्तर देने के लिए माइक्रोफ़ोन दबाएं",
+    "feedback_label": "प्रतिक्रिया"
 }

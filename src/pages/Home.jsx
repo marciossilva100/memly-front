@@ -277,7 +277,10 @@ export default function Home() {
     }
 
     function verifyPlan(e) {
-        if (user.plano === 1) {
+        // Limitado também tem acesso (amostra vitalícia) tanto na Frase do
+        // Dia quanto nas Perguntas - quem barra de verdade quando a cota
+        // acaba são os próprios endpoints (fraseDoDia.php/DailyQuestionController.php).
+        if (user.plano === 1 || user.plano === 3) {
             setOpenTreinoIA(true)
             return
         }

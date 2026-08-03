@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { Volume2, Mic, Square, RotateCcw, History, Send, BookOpenText } from "lucide-react";
+import { Volume2, Mic, Square, RotateCcw, History, Send, BookOpenText, Ban, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { playAudio } from "../utils/audioPlayer";
 import useAudioRecorder from "../hooks/useAudioRecorder";
 import AudioPreviewPlayer from "../components/AudioPreviewPlayer";
+import PremiumModal from "../components/PremiumModal";
+import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
 function corNota(nota) {
@@ -19,11 +21,17 @@ export default function TreinoIA() {
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [audioVazio, setAudioVazio] = useState(false);
+    const [fraseEncerrada, setFraseEncerrada] = useState(false);
     const [premiumRequired, setPremiumRequired] = useState(false);
     const [limitReached, setLimitReached] = useState(false);
+    const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+    const [motivoPremium, setMotivoPremium] = useState(null);
 
     const [fraseId, setFraseId] = useState(null);
     const [frase, setFrase] = useState('');
+    const [fraseTraducao, setFraseTraducao] = useState('');
+    const [flipped, setFlipped] = useState(false);
     const [enviando, setEnviando] = useState(false);
     const [resultado, setResultado] = useState(null);
 
@@ -34,6 +42,11 @@ export default function TreinoIA() {
 
     const { gravando, audioBlob, audioUrl, erro: erroGravacao, iniciarGravacao, pararGravacao, limpar } = useAudioRecorder();
 
+    usePremiumLimitListener((motivo) => {
+        setMotivoPremium(motivo);
+        setIsPremiumModalOpen(true);
+    });
+
     useEffect(() => {
         if (jaBuscou.current) return;
         jaBuscou.current = true;
@@ -43,6 +56,7 @@ export default function TreinoIA() {
     function buscarFraseDoDia() {
         setLoading(true);
         setError(null);
+        setFlipped(false);
 
         fetch(`${API_URL}/controller/fraseDoDia.php`, {
             method: 'POST',
@@ -57,10 +71,16 @@ export default function TreinoIA() {
                 if (!data.success) {
                     if (data.premium_necessario) {
                         setPremiumRequired(true);
+                        setMotivoPremium("limite_gratuito");
+                        setIsPremiumModalOpen(true);
                         return;
                     }
                     if (data.limite_atingido) {
                         setLimitReached(true);
+                        if (user?.plano === 3) {
+                            setMotivoPremium("limite_gratuito");
+                            setIsPremiumModalOpen(true);
+                        }
                         return;
                     }
                     setError(data.message || t("unexpected_error"));
@@ -69,6 +89,7 @@ export default function TreinoIA() {
 
                 setFraseId(data.id);
                 setFrase(data.frase);
+                setFraseTraducao(data.traducao || '');
             })
             .catch(err => {
                 console.error(err);
@@ -101,6 +122,12 @@ export default function TreinoIA() {
 
             if (!data.success) {
                 setError(data.message || t("unexpected_error"));
+                if (data.audio_vazio) {
+                    setAudioVazio(true);
+                }
+                if (data.pode_tentar_novamente === false) {
+                    setFraseEncerrada(true);
+                }
                 return;
             }
 
@@ -127,32 +154,49 @@ export default function TreinoIA() {
 
     if (premiumRequired) {
         return (
-            <div className="min-h-[calc(100vh-70px)] flex flex-col items-center justify-center text-center p-6 from-gray-900 to-gray-800 bg-gradient-to-br">
-                <h1 className="text-2xl font-semibold text-[#4cb8c4] mb-4">
-                    {t("premium_feature_required")}
-                </h1>
-                <button
-                    onClick={() => navigate(-1)}
-                    className="mt-6 px-6 py-3 rounded-full bg-[#4cb8c4] text-white"
-                >
-                    {t("back")}
-                </button>
+            <div className="h-screen from-gray-900 to-gray-800 bg-gradient-to-br">
+                <PremiumModal
+                    isOpen={isPremiumModalOpen}
+                    setIsPremiumModalOpen={setIsPremiumModalOpen}
+                    onClose={() => navigate('/home')}
+                    motivo={motivoPremium}
+                />
             </div>
         );
     }
 
     if (limitReached) {
+        const limiteVitalicio = user?.plano === 3;
+
+        if (limiteVitalicio) {
+            return (
+                <div className="h-screen from-gray-900 to-gray-800 bg-gradient-to-br">
+                    <PremiumModal
+                        isOpen={isPremiumModalOpen}
+                        setIsPremiumModalOpen={setIsPremiumModalOpen}
+                        onClose={() => navigate('/home')}
+                        motivo={motivoPremium}
+                    />
+                </div>
+            );
+        }
+
         return (
             <div className="h-screen flex flex-col items-center justify-center text-center p-6 from-gray-900 to-gray-800 bg-gradient-to-br">
-                <h1 className="text-2xl font-semibold text-red-400 mb-4">
+                <div className="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center mb-5">
+                    <Ban className="w-8 h-8 text-red-400" />
+                </div>
+
+                <h1 className="text-xl font-semibold text-white mb-2">
                     {t("daily_limit_reached")}
                 </h1>
-                <p className="text-white mt-2">
+                <p className="text-gray-400 text-sm max-w-xs">
                     {t("come_back_tomorrow")}
                 </p>
+
                 <button
                     onClick={() => navigate(-1)}
-                    className="mt-6 px-6 py-3 rounded-full bg-[#4cb8c4] text-white"
+                    className="mt-8 px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors"
                 >
                     {t("back")}
                 </button>
@@ -162,13 +206,21 @@ export default function TreinoIA() {
 
     if (error && !frase) {
         return (
-            <div className="min-h-[calc(100vh-70px)] flex flex-col items-center justify-center text-center p-6 from-gray-900 to-gray-800 bg-gradient-to-br">
-                <h1 className="text-xl font-semibold text-yellow-400 mb-4">
-                    {error}
+            <div className="h-screen flex flex-col items-center justify-center text-center p-6 from-gray-900 to-gray-800 bg-gradient-to-br">
+                <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mb-5">
+                    <AlertCircle className="w-8 h-8 text-amber-400" />
+                </div>
+
+                <h1 className="text-xl font-semibold text-white mb-2">
+                    {t("insufficient_content")}
                 </h1>
+                <p className="text-gray-400 text-sm max-w-xs">
+                    {t("add_more_phrases_hint")}
+                </p>
+
                 <button
                     onClick={() => navigate(-1)}
-                    className="mt-6 px-6 py-3 rounded-full bg-[#4cb8c4] text-white"
+                    className="mt-8 px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors"
                 >
                     {t("back")}
                 </button>
@@ -198,25 +250,64 @@ export default function TreinoIA() {
                 </h1>
 
                 {!resultado && (
-                    <div className="relative rounded-2xl border border-gray-700 bg-gradient-to-br from-[#233245] to-[#0d1425] p-6 shadow-md">
-                        <div className="w-10 h-10 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 flex items-center justify-center mb-4">
-                            <BookOpenText className="w-5 h-5 text-[#4cb8c4]" />
-                        </div>
-                        <p className="text-xl text-white leading-relaxed">{frase}</p>
+                    <>
+                        <div className="perspective flex justify-center h-[460px]">
+                            <div className="flashcard w-full h-full">
+                                <div
+                                    className={`card w-full h-full ${flipped ? "flip" : ""}`}
+                                    onClick={() => setFlipped(!flipped)}
+                                    style={{ cursor: "pointer" }}
+                                >
+                                    <div className="card-front rounded-2xl border border-gray-700 bg-gradient-to-br from-[#233245] to-[#0d1425] px-6 py-9 shadow-md flex flex-col items-center gap-3">
+                                        <div className="w-10 h-10 shrink-0 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 flex items-center justify-center">
+                                            <BookOpenText className="w-5 h-5 text-[#4cb8c4]" />
+                                        </div>
 
-                        <button
-                            onClick={() => playAudio(frase, user, true)}
-                            className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors"
-                        >
-                            <Volume2 className="w-3.5 h-3.5" />
-                            {t("listen")}
-                        </button>
-                    </div>
+                                        <div className="flex-1 flex items-center min-h-0">
+                                            <p className="text-xl text-white leading-relaxed text-center">{frase}</p>
+                                        </div>
+
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                playAudio(frase, user, true);
+                                            }}
+                                            className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors"
+                                        >
+                                            <Volume2 className="w-3.5 h-3.5" />
+                                            {t("listen")}
+                                        </button>
+                                    </div>
+
+                                    <div className="card-back rounded-2xl border border-gray-700 bg-gradient-to-br from-[#0d1425] to-[#233245] px-6 py-9 shadow-md flex flex-col items-center gap-3">
+                                        <div className="flex-1 flex items-center min-h-0">
+                                            <p className="text-xl text-white leading-relaxed text-center">{fraseTraducao}</p>
+                                        </div>
+
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                // Tradução é sempre no idioma nativo - voz gratuita sempre, mesmo padrão do
+                                                // lado da frente do flashcard em DigitarTexto.jsx.
+                                                playAudio(fraseTraducao, user, false, user?.native_language, true);
+                                            }}
+                                            className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-700/50 border border-gray-600 text-gray-300 text-xs hover:bg-gray-700 transition-colors"
+                                        >
+                                            <Volume2 className="w-3.5 h-3.5" />
+                                            {t("listen")}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p className="text-center text-gray-500 text-xs mt-2">{t("tap_card_to_flip")}</p>
+                    </>
                 )}
 
                 {resultado && (
                     <div className="flex flex-col gap-3">
-                        <div className="flex flex-col items-center py-2">
+                        <div className="flex flex-col items-center py-2 gap-1">
+                            <p className="text-gray-500 text-xs uppercase tracking-wide">{t("grade_label")}</p>
                             <span className={`text-4xl font-bold px-5 py-2 rounded-2xl border ${corNota(resultado.nota)}`}>
                                 {resultado.nota}<span className="text-lg opacity-70">/10</span>
                             </span>
@@ -252,11 +343,11 @@ export default function TreinoIA() {
                 )}
             </div>
 
-            {!resultado && (
+            {!resultado && !flipped && (
                 <div className="sticky bottom-0 py-4 flex flex-col items-center gap-4 ">
                     {!audioUrl && !gravando && (
                         <button
-                            onClick={() => { setError(null); iniciarGravacao(); }}
+                            onClick={() => { setError(null); setAudioVazio(false); iniciarGravacao(); }}
                             className="relative w-24 h-24 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] flex items-center justify-center shadow-lg shadow-[#4cb8c4]/20 transition"
                         >
                             <Mic className="w-9 h-9 text-white" />
@@ -281,22 +372,24 @@ export default function TreinoIA() {
                         <p className="text-gray-500 text-xs text-center max-w-[220px]">{t("tap_mic_to_read")}</p>
                     )}
 
-                    {audioUrl && !gravando && (
+                    {audioUrl && !gravando && !fraseEncerrada && (
                         <div className="w-full flex flex-col items-center gap-3">
                             <AudioPreviewPlayer src={audioUrl} />
 
                             <div className="flex flex-col gap-3 w-full">
-                                <button
-                                    onClick={enviarResposta}
-                                    disabled={enviando}
-                                    className="w-full px-4 py-2.5 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] disabled:opacity-50 text-white text-lg font-medium flex items-center justify-center gap-2 transition-colors"
-                                >
-                                    <Send className="w-4 h-4" />
-                                    {enviando ? t("sending") : t("send")}
-                                </button>
+                                {!audioVazio && (
+                                    <button
+                                        onClick={enviarResposta}
+                                        disabled={enviando}
+                                        className="w-full px-4 py-2.5 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] disabled:opacity-50 text-white text-lg font-medium flex items-center justify-center gap-2 transition-colors"
+                                    >
+                                        <Send className="w-4 h-4" />
+                                        {enviando ? t("sending") : t("send")}
+                                    </button>
+                                )}
 
                                 <button
-                                    onClick={() => { setError(null); limpar(); }}
+                                    onClick={() => { setError(null); setAudioVazio(false); limpar(); }}
                                     className="w-full px-4 py-2.5 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white text-lg font-medium flex items-center justify-center gap-2 hover:bg-gray-700/50 transition-colors"
                                 >
                                     <RotateCcw className="w-4 h-4" />
@@ -304,6 +397,15 @@ export default function TreinoIA() {
                                 </button>
                             </div>
                         </div>
+                    )}
+
+                    {fraseEncerrada && (
+                        <button
+                            onClick={() => navigate(-1)}
+                            className="w-full px-4 py-2.5 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white text-lg font-medium transition-colors"
+                        >
+                            {t("back")}
+                        </button>
                     )}
 
                     {erroGravacao && (
@@ -315,6 +417,13 @@ export default function TreinoIA() {
                     )}
                 </div>
             )}
+
+            <PremiumModal
+                isOpen={isPremiumModalOpen}
+                setIsPremiumModalOpen={setIsPremiumModalOpen}
+                onClose={() => { setIsPremiumModalOpen(false); setMotivoPremium(null); }}
+                motivo={motivoPremium}
+            />
         </div>
     );
 }

@@ -372,14 +372,14 @@ export default function Flashcards() {
         <div className="h-dvh justify-center pt-8 h-20">
 
           {/* Card com efeito 3D corrigido */}
-          <div className="perspective flex justify-center h-[300px]">
+          <div className="perspective flex justify-center h-[380px]">
             <div className="flashcard w-full h-full">
               <div
                 className={`card w-full h-full ${isFlipped ? "flip" : ""}`}
                 onClick={flipCard}
                 style={{ cursor: "pointer" }}
               >
-                <div className="card-front shadow-[0_10px_40px_rgba(0,0,0,0.08)] text-center p-8 bg-[linear-gradient(to_right,#233245,#0d1425)] rounded-lg">
+                <div className="card-front shadow-[0_10px_40px_rgba(0,0,0,0.08)] text-center px-8 py-10 bg-[linear-gradient(to_right,#233245,#0d1425)] rounded-lg">
                   <span className="text-2xl">
                     {frases[index].texto_nativo}
                   </span>
@@ -388,7 +388,7 @@ export default function Flashcards() {
                   </div>
                 </div>
 
-                <div className="card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] text-center p-8 rounded-lg bg-[linear-gradient(to_right,#0d1425,#233245)]">
+                <div className="card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] text-center px-8 py-10 rounded-lg bg-[linear-gradient(to_right,#0d1425,#233245)]">
                   <span className="text-2xl text-white">
                     {hasBeenFlipped ? frases[index].texto_traduzido : ""}
                   </span>

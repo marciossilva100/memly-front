@@ -3,7 +3,13 @@ import { dispatchPremiumLimitHit } from "../hooks/usePremiumLimitListener";
 let currentAudio = null;
 let currentToken = 0;
 
-export const playAudio = async (text, user, ia = false, lang = null) => {
+// Depois que o modal premium por limite de áudio já apareceu uma vez nesta
+// sessão do app, novas tentativas de reprodução caem direto pra voz padrão
+// (free) em vez de interromper de novo com o modal - evita ficar repetindo
+// o aviso a cada frase enquanto o usuário continua praticando.
+let avisoLimiteAudioExibido = false;
+
+export const playAudio = async (text, user, ia = false, lang = null, forcarVozPadrao = false) => {
     const API_URL = import.meta.env.VITE_API_URL;
     if (!text) return;
 
@@ -21,15 +27,19 @@ export const playAudio = async (text, user, ia = false, lang = null) => {
     // ambos controlados pelo backend. Se der erro genérico (rede, API fora),
     // cai pra voz padrão abaixo. Mas se o motivo for limite atingido, não
     // reproduz nada - só mostra o modal premium.
-    if (user.plano === 1 || user.plano === 3) {
+    // forcarVozPadrao ignora o plano e usa sempre a voz gratuita (ex: frente
+    // do flashcard em DigitarTexto.jsx, que não deve gastar cota de voz premium).
+    if (!forcarVozPadrao && (user.plano === 1 || user.plano === 3)) {
         const resultado = await gerarAudio(text);
 
         if (resultado?.limiteAtingido) {
-            dispatchPremiumLimitHit("audio");
-            return;
-        }
-
-        if (resultado?.url) {
+            if (!avisoLimiteAudioExibido) {
+                avisoLimiteAudioExibido = true;
+                dispatchPremiumLimitHit("audio");
+                return;
+            }
+            // Modal já foi exibido antes nesta sessão - segue pro fallback de voz padrão abaixo.
+        } else if (resultado?.url) {
             // uma chamada mais recente já assumiu o controle enquanto aguardávamos o áudio
             if (myToken !== currentToken) {
                 URL.revokeObjectURL(resultado.url);

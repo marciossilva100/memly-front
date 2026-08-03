@@ -160,12 +160,18 @@ export default function DigitarTexto() {
 
     }, [id, mode]);
 
-    // toca o áudio do texto nativo automaticamente quando a frente do card é exibida
+    // Toca o áudio do texto nativo automaticamente quando a frente do card é
+    // exibida - só se o usuário ligou essa opção em Configurações (padrão é
+    // desligado, precisa clicar no botão "Ouvir"). O áudio da frente sempre
+    // usa a voz gratuita (forcarVozPadrao), mesmo pra quem é premium/limitado.
     useEffect(() => {
 
         if (!frases.length || isFlipped || nativeAudioPlayed) return;
 
-        playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language);
+        const autoplayFrente = localStorage.getItem('zaldemy_autoplay_frente') === '1';
+        if (!autoplayFrente) return;
+
+        playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, true);
         setNativeAudioPlayed(true);
 
     }, [index, frases, isFlipped, nativeAudioPlayed, user]);
@@ -429,7 +435,7 @@ export default function DigitarTexto() {
 
                     <button
                         onClick={() => navigate("/home")}
-                        className="px-6 py-3 bg-blue-600 text-white hover:bg-blue-700 transition rounded-full"
+                        className="px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors"
                     >
                         {t("back_to_home")}
                     </button>
@@ -492,11 +498,11 @@ export default function DigitarTexto() {
                 )}
 
                 <div className="flex h-[40%]">
-                    <div className="perspective flashcard justify-center flex">
+                    <div className="perspective flashcard justify-center flex w-full h-full">
 
                         <div
                             onClick={toggleCard}
-                            className={`card card-digitar-texto ${isFlipped ? "flip" : ""} `}
+                            className={`card card-digitar-texto h-full ${isFlipped ? "flip" : ""} `}
                         >
 
                             <div className="rounded-lg card-front bg-[linear-gradient(to_right,#233245,#0d1425)] shadow-[0_10px_40px_rgba(0,0,0,0.08)] px-5 py-4 text-center">
@@ -532,9 +538,9 @@ export default function DigitarTexto() {
                     <div className="text-center flex justify-center mt-5">
                         <button onClick={(e) => {
                             e.preventDefault();
-                            playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language);
-                        }} className="px-4 py-2 rounded-md bg-slate-500 text-white text-sm transition flex">
-                            <Volume className="w-5 h-5" />
+                            playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, true);
+                        }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors">
+                            <Volume className="w-4 h-4" />
                             {t("listen")}
                         </button>
                     </div>
@@ -547,8 +553,8 @@ export default function DigitarTexto() {
                             <button onClick={(e) => {
                                 e.preventDefault();
                                 playAudio(frases[index].texto_traduzido, user);
-                            }} className="px-4 py-2 rounded-md bg-slate-600 text-white text-sm transition flex">
-                                <Volume className="w-5 h-5" />
+                            }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-700/50 border border-gray-600 text-gray-300 text-xs hover:bg-gray-700 transition-colors">
+                                <Volume className="w-4 h-4" />
                                 {t("listen")}
                             </button>
                         </div>
@@ -620,8 +626,8 @@ export default function DigitarTexto() {
                             <button onClick={(e) => {
                                 e.preventDefault();
                                 playAudio(frases[index].texto_traduzido, user);
-                            }} className="px-4 py-2 rounded-md bg-slate-600 text-white text-sm transition flex">
-                                <Volume className="w-5 h-5" />
+                            }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-700/50 border border-gray-600 text-gray-300 text-xs hover:bg-gray-700 transition-colors">
+                                <Volume className="w-4 h-4" />
                                 {t("listen")}
                             </button>
                         </div>
@@ -656,13 +662,13 @@ export default function DigitarTexto() {
                                 onClick={(e) => {
                                     handleSubmit(e, true);
                                 }}
-                                className="w-full  text-white text-lg  py-3 rounded-full shadow-lg  bg-gray-700/60 backdrop-blur-sm  border border-gray-700"
+                                className="w-full px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white font-medium text-lg hover:bg-gray-700/50 transition-colors"
                             >
                                 {t("dont_remember")}
                             </button>
                             <button
                                 onClick={repeatCard}
-                                className="w-full  text-white text-lg  py-3 rounded-full shadow-lg bg-gray-800/50 backdrop-blur-sm  border border-gray-700"
+                                className="w-full px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium text-lg transition-colors"
                             >
                                 {t("try_again")}
                             </button>
@@ -683,7 +689,7 @@ export default function DigitarTexto() {
 
                                 <button
                                     onClick={nextCard}
-                                    className="shadow-md w-full bg-gray-800/50 backdrop-blur-sm  border border-gray-700 text-white font-medium py-3 rounded-full transition text-lg"
+                                    className="w-full px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium text-lg transition-colors"
                                 >
                                     {t("next")}
                                 </button>
@@ -707,14 +713,14 @@ export default function DigitarTexto() {
                             handleSubmit(e, true);
                         }}
 
-                        className="w-full  text-white text-lg  py-3 rounded-full shadow-lg  bg-gray-700/60 backdrop-blur-sm  border border-gray-700"
+                        className="w-full px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white font-medium text-lg hover:bg-gray-700/50 transition-colors"
                     >
                         {t("dont_remember")}
                     </button>
                     <button
                         type="submit"
                         form="respostaForm"
-                        className="flex justify-center shadow-md w-full  text-white font-medium py-3 rounded-full text-lg bg-green-500/50 backdrop-blur-sm  border border-gray-700"
+                        className="w-full px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium text-lg flex items-center justify-center transition-colors"
                     >
                         {t("answer_button")}
                     </button>

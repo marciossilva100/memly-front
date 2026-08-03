@@ -22,7 +22,7 @@ export default function PoliticaPrivacidade() {
                         <Shield className="w-6 h-6 text-green-400" />
                         <h1 className="text-2xl font-bold">Política de Privacidade</h1>
                     </div>
-                    <p className="text-sm text-gray-400 mb-6">Última atualização: julho de 2026</p>
+                    <p className="text-sm text-gray-400 mb-6">Última atualização: agosto de 2026</p>
 
                     <div className="space-y-5 text-sm leading-relaxed text-gray-200">
                         <section>
@@ -42,8 +42,12 @@ export default function PoliticaPrivacidade() {
                                 <li>Conteúdo que você cria: categorias e frases cadastradas ou importadas;</li>
                                 <li>Dados de uso e progresso: respostas de treino, taxa de acerto, sequência de dias
                                     de estudo (streak) e histórico de atividade no app;</li>
+                                <li>Áudio da sua voz, quando você grava uma resposta nos exercícios de IA (Perguntas
+                                    e Frase do Dia). O áudio é enviado para transcrição em texto e descartado logo em
+                                    seguida - não guardamos o arquivo de áudio, apenas o texto transcrito e a
+                                    correção gerada;</li>
                                 <li>Informações técnicas básicas de acesso, como token de sessão armazenado no
-                                    dispositivo.</li>
+                                    dispositivo, endereço IP, tipo de dispositivo/navegador e data/hora de login;</li>
                             </ul>
                         </section>
 
@@ -54,7 +58,10 @@ export default function PoliticaPrivacidade() {
                                 <li>Criar e manter sua conta e autenticar seu acesso;</li>
                                 <li>Personalizar seu aprendizado (idiomas, categorias, métricas de desempenho);</li>
                                 <li>Gerar áudio das frases e sugerir traduções durante o treino;</li>
+                                <li>Transcrever e corrigir suas respostas faladas nos exercícios de IA (Perguntas e
+                                    Frase do Dia), gerando nota e feedback sobre gramática, pronúncia e fluência;</li>
                                 <li>Exibir seu progresso e estatísticas na tela de Métricas;</li>
+                                <li>Manter um histórico de acessos à sua conta, por segurança;</li>
                                 <li>Enviar comunicações importantes sobre sua conta ou o serviço;</li>
                                 <li>Melhorar a qualidade e a segurança do app.</li>
                             </ul>
@@ -69,6 +76,9 @@ export default function PoliticaPrivacidade() {
                             <ul className="list-disc list-inside mt-1 space-y-1">
                                 <li>Google, para autenticação via login social;</li>
                                 <li>Serviço de síntese de voz, para gerar o áudio das frases praticadas;</li>
+                                <li>Serviço de transcrição e inteligência artificial, para converter em texto sua
+                                    resposta falada nos exercícios de IA e gerar a correção (nota e feedback) - o
+                                    áudio enviado não é retido por nós após a transcrição;</li>
                                 <li>Serviço de tradução automática, para sugestões de tradução;</li>
                                 <li>YouTube e Open Library, para buscar vídeos e livros usados nas práticas de
                                     leitura e escuta (nesse caso, apenas o termo de busca é enviado, sem dados

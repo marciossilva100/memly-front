@@ -1,21 +1,29 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from 'react';
-import ModalFrase from "../components/ModalFrase";
 import { useAuth } from "../context/AuthContext";
 import PremiumModal from '../components/PremiumModal';
+import ModalIA from '../components/ModalIA';
 import { useTranslation } from "react-i18next";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 import { playAudio } from "../utils/audioPlayer";
 import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 
 import {
-    Trash,
     Search,
-    Filter,
-    Volume2
+    Volume2,
+    Globe,
+    Home,
+    Settings,
+    BarChart3,
+    Bot,
+    Crown
 } from "lucide-react";
 
 
+// Categoria compartilhada por outro usuário - só visualização e escuta do
+// áudio, sem opção de adicionar/editar frases (elas não pertencem a quem
+// está vendo). Pra copiar a categoria pra própria lista, o fluxo é
+// "Incorporar" em /listcategorias, não daqui.
 export default function FrasesGeral() {
     const { t } = useTranslation();
     const { id } = useParams();
@@ -24,16 +32,25 @@ export default function FrasesGeral() {
     const [frases, setFrases] = useState([]);
     const [loading, setLoading] = useState(false);
     const [textoBusca, setTextoBusca] = useState("")
-    const [openFrase, setOpenFrase] = useState(false)
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
     const [motivoPremium, setMotivoPremium] = useState(null);
-const API_URL = import.meta.env.VITE_API_URL;
+    const [openTreinoIA, setOpenTreinoIA] = useState(false);
+    const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
 
     usePremiumLimitListener((motivo) => {
         setMotivoPremium(motivo);
         setIsPremiumModalOpen(true);
     });
+
+    function verifyPlan() {
+        if (user?.plano === 1 || user?.plano === 3) {
+            setOpenTreinoIA(true);
+            return;
+        }
+        setMotivoPremium(null);
+        setIsPremiumModalOpen(true);
+    }
 
     useEffect(() => {
 
@@ -86,86 +103,92 @@ const API_URL = import.meta.env.VITE_API_URL;
 
     return (
 
-        <div className="px-5 h-dvh flex flex-col bg-gray-900 ">
-            <div className="relative mb-4 mt-4">
+        <div className="px-5 h-dvh flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
+            <div className="flex items-center gap-3 mb-4 mt-4">
                 <div
-                    className="left-0  cursor-pointer"
+                    className="cursor-pointer"
                     onClick={() => navigate(-1)}
                 >
                     <i className="bi bi-arrow-left text-2xl text-white"></i>
                 </div>
-            </div>
-            <div className={`mt-4 `}>
-                <div className="flex items-center border rounded-md overflow-hidden ">
-                    <span className="px-3 text-gray-500">
-                        <Search width={20} />
-                    </span>
 
-                    <input
-                        type="email"
-                        className="w-full px-3 py-2 outline-none text-lg text-white !bg-transparent"
-                        placeholder={t("search")}
-                        value={textoBusca}
-                        onChange={(e) => setTextoBusca(e.target.value)}
-                    />
+                <div className="flex items-center gap-2 min-w-0">
+                    <span className="flex items-center justify-center w-9 h-9 shrink-0 rounded-xl bg-gradient-to-br from-[#4cb8c4]/20 to-[#085078]/20 text-[#4cb8c4]">
+                        <Globe className="w-5 h-5" />
+                    </span>
+                    <div className="min-w-0">
+                        <h1 className="text-lg font-semibold text-white leading-tight truncate">{t("phrases")}</h1>
+                        <p className="text-xs text-gray-400">{frases.length}</p>
+                    </div>
                 </div>
             </div>
-            {frases.length > 0 && (
-                <div className="cursor-pointer flex justify-end mb-4">
-                    <Filter className="text-white mt-2" size={18} />
-                </div>
-            )}
-            <div className="overflow-auto scrollbar-hide">
+
+            <div className="flex items-center gap-2 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden px-3">
+                <Search className="text-gray-500 shrink-0" width={18} />
+
+                <input
+                    type="text"
+                    className="w-full py-2.5 outline-none text-base text-white !bg-transparent placeholder:text-gray-500"
+                    placeholder={t("search")}
+                    value={textoBusca}
+                    onChange={(e) => setTextoBusca(e.target.value)}
+                />
+            </div>
+
+            <div className="flex-1 overflow-auto scrollbar-hide mt-4">
 
                 <div className="flex-1 flex flex-col">
 
-                    <div className="flex-1 overflow-y-auto scrollbar-hide pb-24">
+                    <div className="flex-1 overflow-y-auto scrollbar-hide pb-6 space-y-2">
 
-                        {frasesFiltradas.map((item, index) => {
-                            const isLast = index === frasesFiltradas.length - 1;
-                            return (
-                                <div key={item.id} className={`text-lg grid grid-cols-[1fr_1fr_auto] gap-4 items-center py-3 overflow text-white ${!isLast ? 'border-b-2' : ''}`}
-                                >
-                                    <div>{item.texto_nativo}</div>
-                                    <div>{item.texto_traduzido}</div>
-                                    <div className="flex justify-center">
-                                        <Volume2 size={18} className="text-blue-400" onClick={() => {
-                                            playAudio(item.texto_traduzido, user);
-                                        }} />
-                                    </div>
+                        {frasesFiltradas.length === 0 && (
+                            <div className="text-center py-10 text-gray-400 text-sm">
+                                {t("no_phrase_found")}
+                            </div>
+                        )}
+
+                        {frasesFiltradas.map((item) => (
+                            <div key={item.id}
+                                className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-3 flex items-center justify-between gap-3"
+                            >
+                                <div className="min-w-0 flex-1">
+                                    <p className="text-white truncate">{item.texto_nativo}</p>
+                                    <p className="text-[#4cb8c4] text-sm truncate mt-0.5">{item.texto_traduzido}</p>
                                 </div>
-                            );
-                        })}
+                                <Volume2 size={18} className="text-blue-400 shrink-0" onClick={() => {
+                                    playAudio(item.texto_traduzido, user);
+                                }} />
+                            </div>
+                        ))}
 
                     </div>
                 </div>
+            </div>
 
-                <div className="fixed bottom-0 left-0 w-full justify-center items-center py-4  w-full px-6 bg-gray-900">
-                    <button className="
-                    px-6
-                    py-3
-                    w-full
-                    rounded-full
-                      bg-gray-800/50   border border-gray-700
-                    text-white
-                    text-lg
-                    hover:bg-blue-600
-                    transition
-                    "
-                        onClick={() => {
-                            setOpenFrase(true);
-                        }}>
-                        {t("add")}
+            <div className="w-full">
+                <div className='flex left-0 w-full justify-around py-2'>
+                    <button type="button" onClick={() => navigate('/home')} className="flex flex-col items-center gap-1">
+                        <Home width={26} height={26} className='text-violet-400' />
+                    </button>
+
+                    <button type="button" onClick={() => navigate('/configuracoes')} className="flex flex-col items-center gap-1">
+                        <Settings width={26} height={26} className='text-blue-400' />
+                    </button>
+
+                    <button type="button" onClick={() => navigate('/metricas')} className="flex flex-col items-center gap-1">
+                        <BarChart3 width={26} height={26} className='text-green-400' />
+                    </button>
+
+                    <button type="button" onClick={verifyPlan} className="relative flex flex-col items-center gap-1">
+                        <Bot width={26} height={26} className="text-amber-400" />
+                        {user?.plano !== 1 && user?.plano !== 3 && (
+                            <Crown className="absolute -top-1 -right-1 w-3 h-3 text-yellow-400" />
+                        )}
                     </button>
                 </div>
             </div>
 
-            <ModalFrase openPhrase={openFrase} setOpenPhrase={setOpenFrase} category={id} listPhrase={listPhrase}
-                onOpenPremium={() => {
-                    setMotivoPremium(null);
-                    setIsPremiumModalOpen(true);
-                    setOpenFrase(false);
-                }} />
+            <ModalIA setOpenTreinoIA={setOpenTreinoIA} openTreinoIA={openTreinoIA} />
             <PremiumModal isOpen={isPremiumModalOpen} setIsPremiumModalOpen={setIsPremiumModalOpen} onClose={() => { setIsPremiumModalOpen(false); setMotivoPremium(null); }} motivo={motivoPremium} />
 
         </div>

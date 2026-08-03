@@ -13,6 +13,9 @@ import EsqueciSenha from './pages/EsqueciSenha'
 import EscolherIdiomaNativo from './pages/EscolherIdiomaNativo'
 import ListCategoria from './pages/listCategorias';
 import EscolherIdiomaAprender from './pages/EscolherIdiomaAprender'
+import EscolherNivel from './pages/EscolherNivel'
+import AssinaturaSucesso from './pages/AssinaturaSucesso'
+import AssinaturaCancelada from './pages/AssinaturaCancelada'
 import Header from './includes/Header'
 import ReferenciaUsuario from './pages/ReferenciaUsuário'
 import OnboardingTutorial from './pages/OnboardingTutorial'
@@ -24,6 +27,7 @@ import TreinoIA from './pages/treinoIA'
 import Perguntas from './pages/Perguntas'
 import HistoricoPerguntas from './pages/HistoricoPerguntas'
 import HistoricoFraseDoDia from './pages/HistoricoFraseDoDia'
+import HistoricoAcessos from './pages/HistoricoAcessos'
 import DigitarTexto from './pages/DigitarTexto'
 import LeituraDigital from './pages/LeituraDigital'
 import BookDetails from "./pages/BookDetails";
@@ -174,6 +178,15 @@ function Layout({ titulo, setTitulo }) {
         />
 
         <Route
+          path="/escolhernivel"
+          element={
+            <PrivateRoute>
+              <EscolherNivel user={user} />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
           path="/referenciausuario"
           element={
             <PrivateRoute>
@@ -196,6 +209,24 @@ function Layout({ titulo, setTitulo }) {
           element={
             <PrivateRoute>
               <Home setTitulo={setTitulo} />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/assinatura/sucesso"
+          element={
+            <PrivateRoute>
+              <AssinaturaSucesso />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/assinatura/cancelado"
+          element={
+            <PrivateRoute>
+              <AssinaturaCancelada />
             </PrivateRoute>
           }
         />
@@ -259,6 +290,15 @@ function Layout({ titulo, setTitulo }) {
           element={
             <PrivateRoute>
               <HistoricoPerguntas />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/configuracoes/acessos"
+          element={
+            <PrivateRoute>
+              <HistoricoAcessos />
             </PrivateRoute>
           }
         />

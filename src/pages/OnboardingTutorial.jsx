@@ -7,6 +7,7 @@ import { useAuth } from "../context/AuthContext";
 
 const slides = [
     { emoji: "📚", titleKey: "onboarding_slide1_title", subtitleKey: "onboarding_slide1_subtitle" },
+    { emoji: "🤖", titleKey: "onboarding_slide_ai_title", subtitleKey: "onboarding_slide_ai_subtitle" },
     { emoji: "🌍", titleKey: "onboarding_slide2_title", subtitleKey: "onboarding_slide2_subtitle" },
     { emoji: "🧠", titleKey: "onboarding_slide3_title", subtitleKey: "onboarding_slide3_subtitle" },
 ];

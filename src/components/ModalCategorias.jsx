@@ -2,21 +2,24 @@ import { Dialog } from "@headlessui/react";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-import { HelpCircle, List, FolderPlus, ChevronRight } from 'lucide-react';
+import { HelpCircle, List, FolderPlus, ChevronRight, Sparkles, Crown } from 'lucide-react';
 import { containsProfanity } from '../utils/contentFilter';
 export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onSuccess, setOpenModalSucesso, onOpenPremium }) {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const { user } = useAuth();
     const [categoria, setCategoria] = useState()
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
-    const [yourCategory, setYourCategory] = useState(false)
+    const [modo, setModo] = useState('inicial') // 'inicial' | 'manual' | 'ia'
     const [categoriaPublica, setCategoriaPublica] = useState(1)
     const API_URL = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
-        setYourCategory(false)
+        setModo('inicial')
+        setCategoria('')
         if (open) {
             setError('');
         }
@@ -60,7 +63,7 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
 
             if (!data.success) {
                 if (data.limite_atingido) {
-                    onOpenPremium?.();
+                    onOpenPremium?.("categorias");
                     return;
                 }
                 setError(data.message);
@@ -80,6 +83,66 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
             setLoading(false)
         }
     }
+
+    const handleSubmitIA = async (e) => {
+        e.preventDefault()
+
+        if (loading) return;
+
+        if (!categoria) {
+            setError(t("enter_category"))
+            return
+        }
+
+        if (containsProfanity(categoria)) {
+            setError(t("inappropriate_content_error"))
+            return
+        }
+
+        setLoading(true);
+
+        try {
+            const res = await fetch(`${API_URL}/controller/categoriaIA.php`, {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({
+                    action: 'criar',
+                    categoria: categoria,
+                    categoria_publica: categoriaPublica
+                })
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                if (data.limite_atingido || data.premium_necessario) {
+                    // Fecha o formulário de vez - senão o usuário só descarta o
+                    // PremiumModal e volta pro mesmo form pra tentar de novo,
+                    // mesmo já sem nenhuma amostra grátis disponível.
+                    setOpen(false);
+                    onOpenPremium?.("limite_gratuito");
+                    return;
+                }
+                setError(data.message);
+                return;
+            }
+
+            setError('')
+            onSuccess?.();
+            onOpenModalSucesso(t("ai_category_success", { count: data.inseridas }))
+            setTimeout(() => {
+                setOpenModalSucesso(false);
+            }, 2500);
+
+        } catch (error) {
+            setError(error?.message || t("unexpected_error"))
+        } finally {
+            setLoading(false)
+        }
+    }
+
     function ToggleItem({ label, helpText, defaultChecked = true }) {
         const [showTooltip, setShowTooltip] = useState(false);
 
@@ -136,7 +199,7 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
                         </span>
                         {t("add_category")}
                     </Dialog.Title>
-                    {!yourCategory && (
+                    {modo === 'inicial' && (
                         <div className="flex flex-col gap-3 mt-5">
                             <button
                                 type="button"
@@ -157,7 +220,7 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
                                 type="button"
                                 className="group flex items-center gap-3 text-left py-3 px-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl w-full text-white hover:bg-gray-700/60 hover:border-gray-600 transition"
                                 onClick={() => {
-                                    setYourCategory(true);
+                                    setModo('manual');
                                 }}
                             >
                                 <div className="flex items-center justify-center w-11 h-11 shrink-0 rounded-full bg-emerald-500">
@@ -166,10 +229,40 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
                                 <span className="flex-1 text-lg font-medium">{t("add_your_category")}</span>
                                 <ChevronRight size={20} className="text-gray-500 group-hover:text-gray-300 transition shrink-0" />
                             </button>
+
+                            <button
+                                type="button"
+                                className="group flex items-center gap-3 text-left py-3 px-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl w-full text-white hover:bg-gray-700/60 hover:border-gray-600 transition"
+                                onClick={() => {
+                                    // Free nunca tem acesso, nem pra tentar - mesmo padrão do
+                                    // botão Explorar (verifyPlan): nem abre o formulário,
+                                    // já manda direto pro PremiumModal.
+                                    if (user?.plano !== 1 && user?.plano !== 3) {
+                                        setOpen(false);
+                                        onOpenPremium?.("limite_gratuito");
+                                        return;
+                                    }
+                                    setModo('ia');
+                                }}
+                            >
+                                <div className="flex items-center justify-center w-11 h-11 shrink-0 rounded-full bg-gradient-to-br from-[#4cb8c4] to-[#085078]">
+                                    <Sparkles size={20} className="text-white" />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-lg font-medium leading-tight flex items-center gap-1.5">
+                                        {t("create_category_with_ai")}
+                                        {user?.plano !== 1 && user?.plano !== 3 && (
+                                            <Crown size={14} className="text-yellow-400" />
+                                        )}
+                                    </p>
+                                    <p className="text-gray-400 text-xs mt-0.5">{t("create_category_with_ai_desc")}</p>
+                                </div>
+                                <ChevronRight size={20} className="text-gray-500 group-hover:text-gray-300 transition shrink-0" />
+                            </button>
                         </div>
                     )}
 
-                    {yourCategory && (
+                    {modo === 'manual' && (
                         <form action="" onSubmit={handleSubmit}>
                             <div>
                                 <input
@@ -194,6 +287,7 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
 
                             <div className="mt-6 flex justify-end gap-2">
                                 <button
+                                    type="button"
                                     onClick={() => setOpen(false)}
                                     className="text-lg text-white me-3"
                                 >
@@ -202,6 +296,51 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
 
                                 <button type="submit" disabled={loading} className="bg-[#4cb8c4] text-white px-4 py-2 rounded-full text-lg ">
                                     {t("save")}
+                                </button>
+                            </div>
+                        </form>
+                    )}
+
+                    {modo === 'ia' && (
+                        <form action="" onSubmit={handleSubmitIA}>
+                            <div>
+                                <input
+                                    onChange={(e) => setCategoria(e.target.value)}
+                                    type="text"
+                                    placeholder={t("ai_category_topic_placeholder")}
+                                    disabled={loading}
+                                    className="text-white bg-gray-800/50 backdrop-blur-sm w-full rounded-xl border border-slate-300 px-4 py-2 text-lg
+                                    focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20
+                                    outline-none disabled:opacity-50"
+                                />
+                                {error &&
+                                    <span className="text-sm text-red-500">{error}</span>
+                                }
+                                <div className="space-y-3">
+
+                                    <ToggleItem
+                                        label={t("share_category")}
+                                        helpText={t("share_category_description")}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="mt-6 flex justify-end gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setOpen(false)}
+                                    className="text-lg text-white me-3"
+                                >
+                                    {t("cancel")}
+                                </button>
+
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="flex items-center gap-2 bg-gradient-to-r from-[#4cb8c4] to-[#085078] disabled:opacity-50 text-white px-4 py-2 rounded-full text-lg"
+                                >
+                                    <Sparkles size={18} className={loading ? "animate-pulse" : ""} />
+                                    {loading ? t("generating_category_ai") : t("generate_with_ai")}
                                 </button>
                             </div>
                         </form>

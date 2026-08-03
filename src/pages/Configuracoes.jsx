@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
-import { FileText, Shield, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2, Volume2, Check, Gauge, Bot } from "lucide-react";
+import { FileText, Shield, ShieldCheck, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2, Volume2, Check, Gauge, Bot, Crown, Play } from "lucide-react";
 import ModalConfirm from "../components/ModalConfirm";
 import ModalIA from "../components/ModalIA";
 import PremiumModal from "../components/PremiumModal";
@@ -68,6 +68,20 @@ export default function Configuracoes() {
     const [velocidadeTts, setVelocidadeTts] = useState(1.00);
     const [salvandoVelocidade, setSalvandoVelocidade] = useState(false);
     const [erroVelocidade, setErroVelocidade] = useState('');
+
+    // Preferência só do dispositivo (não precisa sincronizar entre aparelhos,
+    // mesmo padrão de armazenamento já usado pra velocidade de fallback em
+    // src/utils/audioPlayer.js) - controla se a frente do flashcard em
+    // DigitarTexto.jsx toca o áudio sozinha ou só quando o usuário clicar.
+    const [autoplayFrente, setAutoplayFrente] = useState(
+        () => localStorage.getItem('zaldemy_autoplay_frente') === '1'
+    );
+
+    function handleToggleAutoplayFrente() {
+        const novoValor = !autoplayFrente;
+        setAutoplayFrente(novoValor);
+        localStorage.setItem('zaldemy_autoplay_frente', novoValor ? '1' : '0');
+    }
 
     const [openModalExcluirConta, setOpenModalExcluirConta] = useState(false);
     const [excluindoConta, setExcluindoConta] = useState(false);
@@ -272,41 +286,43 @@ export default function Configuracoes() {
                         <h1 className="text-2xl font-bold text-white">{t("settings")}</h1>
                     </div>
 
-                    <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 mb-3">
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="flex items-center gap-3">
-                                <BookOpen className="w-5 h-5 text-green-400" />
-                                <span className="text-white text-base">{t("phrases_per_learning_session")}</span>
+                    <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-3 mb-3">
+                        <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                                <BookOpen className="w-4 h-4 text-green-400" />
+                                <span className="text-white text-sm">{t("phrases_per_learning_session")}</span>
                             </div>
-                            <span className="text-green-400 text-2xl font-bold min-w-[3rem] text-right">
+                            <span className="text-green-400 text-lg font-bold min-w-[2rem] text-right">
                                 {Number(quantidadeFrases) || QUANTIDADE_FRASES_MIN}
                             </span>
                         </div>
 
-                        <form onSubmit={handleSalvarQuantidade}>
-                            <input
-                                type="range"
-                                min={QUANTIDADE_FRASES_MIN}
-                                max={QUANTIDADE_FRASES_MAX}
-                                disabled={loadingQuantidade}
-                                value={Number(quantidadeFrases) || QUANTIDADE_FRASES_MIN}
-                                onChange={(e) => {
-                                    setQuantidadeFrases(e.target.value);
-                                    setErroQuantidade('');
-                                    setMensagemQuantidade('');
-                                }}
-                                className="w-full accent-green-400 cursor-pointer"
-                            />
+                        <form onSubmit={handleSalvarQuantidade} className="flex items-center gap-3">
+                            <div className="flex-1">
+                                <input
+                                    type="range"
+                                    min={QUANTIDADE_FRASES_MIN}
+                                    max={QUANTIDADE_FRASES_MAX}
+                                    disabled={loadingQuantidade}
+                                    value={Number(quantidadeFrases) || QUANTIDADE_FRASES_MIN}
+                                    onChange={(e) => {
+                                        setQuantidadeFrases(e.target.value);
+                                        setErroQuantidade('');
+                                        setMensagemQuantidade('');
+                                    }}
+                                    className="w-full accent-green-400 cursor-pointer"
+                                />
 
-                            <div className="flex justify-between text-xs text-gray-500 mt-1 mb-4">
-                                <span>{QUANTIDADE_FRASES_MIN}</span>
-                                <span>{QUANTIDADE_FRASES_MAX}</span>
+                                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>{QUANTIDADE_FRASES_MIN}</span>
+                                    <span>{QUANTIDADE_FRASES_MAX}</span>
+                                </div>
                             </div>
 
                             <button
                                 type="submit"
                                 disabled={salvandoQuantidade || loadingQuantidade}
-                                className="w-full bg-[#4cb8c4] disabled:opacity-50 text-white px-4 py-2 rounded-full text-sm font-medium"
+                                className="shrink-0 bg-[#4cb8c4] disabled:opacity-50 text-white px-4 py-1.5 rounded-full text-sm font-medium"
                             >
                                 {salvandoQuantidade ? t("saving") : t("save")}
                             </button>
@@ -392,6 +408,28 @@ export default function Configuracoes() {
                                 <p className="text-red-400 text-xs mt-2">{erroVelocidade}</p>
                             )}
                         </div>
+
+                        <div className="mt-4 pt-4 border-t border-gray-700 flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-2">
+                                <Play className="w-4 h-4 text-[#4cb8c4]" />
+                                <span className="text-gray-300 text-sm">{t("autoplay_front_card")}</span>
+                            </div>
+                            <button
+                                type="button"
+                                role="switch"
+                                aria-checked={autoplayFrente}
+                                onClick={handleToggleAutoplayFrente}
+                                className={`relative inline-flex h-5 w-10 shrink-0 items-center rounded-full transition-colors ${
+                                    autoplayFrente ? "bg-[#4cb8c4]" : "bg-gray-700"
+                                }`}
+                            >
+                                <span
+                                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                                        autoplayFrente ? "translate-x-5" : "translate-x-0.5"
+                                    }`}
+                                />
+                            </button>
+                        </div>
                     </div>
 
                     <div className="space-y-3">
@@ -407,6 +445,13 @@ export default function Configuracoes() {
                             titulo={t("privacy_policy")}
                             cor="text-purple-400"
                             onClick={() => navigate("/politicaprivacidade")}
+                        />
+
+                        <ItemMenu
+                            icone={ShieldCheck}
+                            titulo={t("access_history_title")}
+                            cor="text-[#4cb8c4]"
+                            onClick={() => navigate("/configuracoes/acessos")}
                         />
 
                         <ItemMenu
@@ -444,17 +489,22 @@ export default function Configuracoes() {
                     <div className='flex  left-0   w-full justify-around py-2 '>
                         <button type="button" onClick={() => navigate('/home')} className="flex flex-col items-center gap-1">
                             <Home width={26} height={26} className='text-violet-400' />
-                            <span className="text-xs text-gray-400">{t("home")}</span>
+                        </button>
+
+                        <button type="button" className="flex flex-col items-center gap-1">
+                            <Settings width={26} height={26} className='text-blue-400' />
+                            <span className="w-1 h-1 rounded-full bg-blue-400" />
                         </button>
 
                         <button type="button" onClick={() => navigate('/metricas')} className="flex flex-col items-center gap-1">
                             <BarChart3 width={26} height={26} className='text-green-400' />
-                            <span className="text-xs text-gray-400">{t("statistics")}</span>
                         </button>
 
-                        <button type="button" onClick={verifyPlan} className="flex flex-col items-center gap-1">
+                        <button type="button" onClick={verifyPlan} className="relative flex flex-col items-center gap-1">
                             <Bot width={26} height={26} className="text-amber-400" />
-                            <span className="text-xs text-gray-400">{t("explore")}</span>
+                            {user?.plano !== 1 && user?.plano !== 3 && (
+                                <Crown className="absolute -top-1 -right-1 w-3 h-3 text-yellow-400" />
+                            )}
                         </button>
                     </div>
                 </div>

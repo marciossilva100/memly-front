@@ -1,8 +1,11 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 // Hook compartilhado de gravação de áudio (Frase do Dia e Perguntas).
 // Usa MediaRecorder + getUserMedia - não existia nada parecido no projeto
 // antes disso.
+
+const DURACAO_MAXIMA_MS = 60000; // 60s - evita gravação infinita
+
 export default function useAudioRecorder() {
     const [gravando, setGravando] = useState(false);
     const [audioBlob, setAudioBlob] = useState(null);
@@ -12,6 +15,21 @@ export default function useAudioRecorder() {
     const mediaRecorderRef = useRef(null);
     const chunksRef = useRef([]);
     const streamRef = useRef(null);
+    const timeoutRef = useRef(null);
+
+    const pararGravacao = useCallback((motivo) => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+            timeoutRef.current = null;
+        }
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+            mediaRecorderRef.current.stop();
+        }
+        setGravando(false);
+        if (motivo === "duracao_maxima") {
+            setErro("Gravação parada automaticamente após 60 segundos.");
+        }
+    }, []);
 
     const iniciarGravacao = useCallback(async () => {
         setErro(null);
@@ -40,18 +58,15 @@ export default function useAudioRecorder() {
             mediaRecorderRef.current = mediaRecorder;
             mediaRecorder.start();
             setGravando(true);
+
+            timeoutRef.current = setTimeout(() => {
+                pararGravacao("duracao_maxima");
+            }, DURACAO_MAXIMA_MS);
         } catch (err) {
             console.error("Erro ao acessar microfone:", err);
             setErro("Não foi possível acessar o microfone. Verifique as permissões do navegador.");
         }
-    }, []);
-
-    const pararGravacao = useCallback(() => {
-        if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
-            mediaRecorderRef.current.stop();
-        }
-        setGravando(false);
-    }, []);
+    }, [pararGravacao]);
 
     const limpar = useCallback(() => {
         if (audioUrl) URL.revokeObjectURL(audioUrl);
@@ -59,6 +74,12 @@ export default function useAudioRecorder() {
         setAudioUrl(null);
         setErro(null);
     }, [audioUrl]);
+
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        };
+    }, []);
 
     return { gravando, audioBlob, audioUrl, erro, iniciarGravacao, pararGravacao, limpar };
 }

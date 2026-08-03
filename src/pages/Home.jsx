@@ -10,9 +10,10 @@ import PremiumModal from '../components/PremiumModal'
 import ModalConfirm from '../components/ModalConfirm';
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
+import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 
 
-import { BookOpen, BarChart3, Settings, Play, Crown, Bot, Plus } from "lucide-react";
+import { BookOpen, BarChart3, Bot, Plus, Home as HomeIcon, CheckCircle2, Flame, Settings, Crown } from "lucide-react";
 
 const AVATAR_COLORS = [
     'bg-emerald-500',
@@ -45,11 +46,14 @@ export default function Home() {
     const [frase, openFrase] = useState('')
     const [error, setError] = useState('')
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+    const [motivoPremium, setMotivoPremium] = useState(null);
     const [menuOpenId, setMenuOpenId] = useState(null);
     const [recarregar, setRecarregar] = useState(false)
     const [modalConfirm, setOpenModalConfirm] = useState(false)
     const [msgModalConfirm, setMsgModalConfirm] = useState('')
     const [deleteId, setDeleteId] = useState(0)
+    const [streak, setStreak] = useState(0)
+    const [totalAprendidas, setTotalAprendidas] = useState(0)
     const { t } = useTranslation();
     const API_URL = import.meta.env.VITE_API_URL;
 
@@ -108,6 +112,21 @@ export default function Home() {
 
     }, []);
 
+    useEffect(() => {
+        if (!user) return;
+
+        fetch(`${API_URL}/controller/metricas.php`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({ action: 'streak' })
+        })
+            .then(res => res.json())
+            .then(data => setStreak(data?.streak ?? 0))
+            .catch(() => setStreak(0));
+    }, [user?.native_language, user?.learning_language, user?.id]);
 
     const carregarCategorias = () => {
         const nativeLanguage = user?.native_language ?? user?.nativeLanguage ?? user?.idioma_nativo ?? user?.idiomaNativo ?? null;
@@ -178,6 +197,7 @@ export default function Home() {
     const carregarRevisarPorCategoria = (listaCategorias) => {
         if (!listaCategorias.length) {
             setRevisarPorCategoria({});
+            setTotalAprendidas(0);
             return;
         }
 
@@ -195,15 +215,24 @@ export default function Home() {
                     })
                 })
                     .then(res => res.json())
-                    .then(data => ({ id: cat.id, revisar: data.data?.[3]?.total ?? 0 }))
-                    .catch(() => ({ id: cat.id, revisar: 0 }))
+                    // data.data é indexado pelos 4 estágios do treino, em ordem:
+                    // [0]=não conheço [1]=memorizando [2]=em treino [3]=memorizado
+                    .then(data => ({
+                        id: cat.id,
+                        revisar: data.data?.[2]?.total ?? 0,
+                        aprendidas: data.data?.[3]?.total ?? 0
+                    }))
+                    .catch(() => ({ id: cat.id, revisar: 0, aprendidas: 0 }))
             )
         ).then((resultados) => {
             const mapa = {};
-            resultados.forEach(({ id, revisar }) => {
+            let somaAprendidas = 0;
+            resultados.forEach(({ id, revisar, aprendidas }) => {
                 mapa[id] = revisar;
+                somaAprendidas += aprendidas;
             });
             setRevisarPorCategoria(mapa);
+            setTotalAprendidas(somaAprendidas);
         });
     };
 
@@ -275,14 +304,23 @@ export default function Home() {
     }
 
     function verifyPlan(e) {
-        if (user.plano === 1) {
+        // Limitado também tem acesso (amostra vitalícia) tanto na Frase do
+        // Dia quanto nas Perguntas - quem barra de verdade quando a cota
+        // acaba são os próprios endpoints (fraseDoDia.php/DailyQuestionController.php).
+        if (user.plano === 1 || user.plano === 3) {
             setOpenTreinoIA(true)
             return
         }
+        setMotivoPremium(null)
         setIsPremiumModalOpen(true)
         // navigate('/premiumplan');
 
     }
+
+    usePremiumLimitListener((motivo) => {
+        setMotivoPremium(motivo);
+        setIsPremiumModalOpen(true);
+    });
 
     async function translateString(phrase) {
         try {
@@ -347,6 +385,45 @@ export default function Home() {
                 </p>
             </div>
 
+            <div className="grid grid-cols-2 gap-3 px-4 pt-4">
+                <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-3 flex items-center">
+                    <div>
+                        <BookOpen className="text-emerald-400 me-3" size={30} />
+                    </div>
+                    <div>
+                        <p className="text-xs text-gray-400 lowercase">{t("categories")}</p>
+                        <p className="text-xl font-bold text-white">{categorias.length}</p>
+                        <p className="text-xs text-gray-400">{t("active")}</p>
+                    </div>
+                </div>
+
+                <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-3 flex items-center">
+                    <div>
+                        <CheckCircle2 className="text-purple-400 me-3" size={30} />
+                    </div>
+                    <div>
+                        <p className="text-xs text-gray-400 flex"> {t("words")}</p>
+                        <p className="text-xl font-bold text-white">{totalAprendidas}</p>
+                        <p className="text-xs text-gray-400">{t("learned")}</p>
+                    </div>
+
+
+                </div>
+
+                {/* <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-3 flex items-center">
+                    <div>
+                        <Flame className="text-orange-400 me-3" size={30} />
+
+                    </div>
+                    <div>
+                        <p className="text-xs text-gray-400">{t("streak")}</p>
+                        <p className="text-xl font-bold text-white">{streak}</p>
+                        <p className="text-xs text-gray-400">{t("days")}</p>
+                    </div>
+
+                </div> */}
+            </div>
+
             <div className="lista-categoria flex-1 overflow-y-auto py-4 scrollbar-hide mt-4" id="lista-categoria">
                 <div className=" items-center justify-center px-4 ">
 
@@ -358,89 +435,89 @@ export default function Home() {
                             : 0;
 
                         return (
-                        <div key={item.id} onClick={() => validar(item.quantidade, item.id)} className="flex bg-gray-800/50   border border-gray-700 items-center justify-between py-3 px-4  rounded-xl  shadow-lg mb-4 ">
-                            <div className="flex items-center gap-3 min-w-0">
-                                <div className={`flex items-center justify-center w-11 h-11 shrink-0 rounded-full text-white font-semibold text-lg ${AVATAR_COLORS[index % AVATAR_COLORS.length]}`}>
-                                    {item.categoria?.charAt(0)?.toUpperCase()}
-                                </div>
-                                <div className="min-w-0">
-                                    <p className="text-lg text-white font-medium truncate">
-                                        {item.categoria}
-                                    </p>
-                                    <div className="flex items-center gap-1 text-xs text-gray-400">
-                                        <span>{item.quantidade} {t("words")}</span>
-                                        <span>•</span>
-                                        <span className="text-emerald-400">{paraRevisar} {t("to_review")}</span>
+                            <div key={item.id} onClick={() => validar(item.quantidade, item.id)} className="flex bg-gray-800/50   border border-gray-700 items-center justify-between py-3 px-4  rounded-xl  shadow-lg mb-4 ">
+                                <div className="flex items-center gap-3 min-w-0">
+                                    <div className={`flex items-center justify-center w-11 h-11 shrink-0 rounded-full text-white font-semibold text-lg ${AVATAR_COLORS[index % AVATAR_COLORS.length]}`}>
+                                        {item.categoria?.charAt(0)?.toUpperCase()}
                                     </div>
-                                    <div className="mt-1.5 h-1.5 w-32 max-w-full rounded-full bg-gray-700 overflow-hidden">
-                                        <div
-                                            className="h-full rounded-full bg-emerald-400 transition-all"
-                                            style={{ width: `${progresso}%` }}
-                                        />
+                                    <div className="min-w-0">
+                                        <p className="text-lg text-white font-medium truncate">
+                                            {item.categoria}
+                                        </p>
+                                        <div className="flex items-center gap-1 text-xs text-gray-400">
+                                            <span>{item.quantidade} {t("words")}</span>
+                                            <span>•</span>
+                                            <span className="text-emerald-400">{paraRevisar} {t("to_review")}</span>
+                                        </div>
+                                        <div className="mt-1.5 h-1.5 w-32 max-w-full rounded-full bg-gray-700 overflow-hidden">
+                                            <div
+                                                className="h-full rounded-full bg-emerald-400 transition-all"
+                                                style={{ width: `${progresso}%` }}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div className="flex items-center gap-3 relative z-60 shrink-0">
-                                <button
-                                    className="shadow-md px-4 py-1 text-md  rounded-full bg-[#4cb8c4] text-white hover:opacity-90"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setCategoriaId(item.id);
-                                        setOpenTreino(true);
-                                    }}
-                                >
-                                    {t("training")}
-                                </button>
-
-                                {/* Botão dos 3 pontinhos */}
-                                <button
-                                    className="text-slate-300 text-3xl"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setMenuOpenId(menuOpenId === item.id ? null : item.id);
-                                    }}
-                                >
-                                    ⋮
-                                </button>
-
-                                {/* Menu */}
-                                {menuOpenId === item.id && (
-                                    <div
-                                        ref={menuRef}
-                                        className="absolute right-0 top-10 bg-gray-800   border border-gray-700 shadow-lg rounded-lg p-2 w-32 z-40"
+                                <div className="flex items-center gap-3 relative z-60 shrink-0">
+                                    <button
+                                        className="shadow-md px-4 py-1 text-md  rounded-full bg-[#4cb8c4] text-white hover:opacity-90"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setCategoriaId(item.id);
+                                            setOpenTreino(true);
+                                        }}
                                     >
-                                        <button
-                                            className="block w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-white"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setCategoriaClick(item.categoria);
-                                                setCategoriaPublicaClick(item.categoriaPublica);
-                                                setOpenCategoriaEditar(true);
-                                                setCategoriaId(item.id);
-                                                setMenuOpenId(false);
-                                            }}
-                                        >
-                                            {t("edit")}
-                                        </button>
+                                        {t("training")}
+                                    </button>
 
-                                        <button
-                                            className="block w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-white"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setDeleteId(item.id);
-                                                setMsgModalConfirm(translations.confirmDelete ?? 'Deseja excluir esta categoria?');
-                                                setOpenModalConfirm(true);
-                                                setMenuOpenId(false);
+                                    {/* Botão dos 3 pontinhos */}
+                                    <button
+                                        className="text-slate-300 text-3xl"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setMenuOpenId(menuOpenId === item.id ? null : item.id);
+                                        }}
+                                    >
+                                        ⋮
+                                    </button>
 
-                                            }}
+                                    {/* Menu */}
+                                    {menuOpenId === item.id && (
+                                        <div
+                                            ref={menuRef}
+                                            className="absolute right-0 top-10 bg-gray-800   border border-gray-700 shadow-lg rounded-lg p-2 w-32 z-40"
                                         >
-                                            {t("delete")}
-                                        </button>
-                                    </div>
-                                )}
+                                            <button
+                                                className="block w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-white"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setCategoriaClick(item.categoria);
+                                                    setCategoriaPublicaClick(item.categoriaPublica);
+                                                    setOpenCategoriaEditar(true);
+                                                    setCategoriaId(item.id);
+                                                    setMenuOpenId(false);
+                                                }}
+                                            >
+                                                {t("edit")}
+                                            </button>
+
+                                            <button
+                                                className="block w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-white"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setDeleteId(item.id);
+                                                    setMsgModalConfirm(translations.confirmDelete ?? 'Deseja excluir esta categoria?');
+                                                    setOpenModalConfirm(true);
+                                                    setMenuOpenId(false);
+
+                                                }}
+                                            >
+                                                {t("delete")}
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
-                        </div>
                         );
                     })}
 
@@ -462,68 +539,52 @@ export default function Home() {
                     </div>
                 )}
 
-                <div className="relative inline-block">
+                <div className="relative inline-block w-full px-4">
                     <button className={`
                         flex items-center justify-center gap-2
-                        px-6
+                        w-full
                         mb-4
                         py-3
                         rounded-full
-                        bg-[#4cb8c4] hover:opacity-90
+                        bg-gradient-to-r from-blue-500 to-emerald-500 hover:opacity-90
                         text-white
                         font-medium
                        text-lg
                         transition
                         ${mostrarGuiaCategoria ? "animate-pulse-glow-ring" : ""}
                         `} onClick={() => {
-                        setOpen(true);
-                        if (mostrarGuiaCategoria) {
-                            setMostrarGuiaCategoria(false);
-                            localStorage.removeItem("zaldemy_guia_add_categoria_pendente");
-                        }
-                    }}>
+                            setOpen(true);
+                            if (mostrarGuiaCategoria) {
+                                setMostrarGuiaCategoria(false);
+                                localStorage.removeItem("zaldemy_guia_add_categoria_pendente");
+                            }
+                        }}>
                         <Plus size={20} />
                         {t("add_category")}
                     </button>
                 </div>
 
                 <div className=" w-full ">
-                    <div className='flex  left-0   w-full justify-center py-2 '>
-                        {/*  <a href="/leituradigital"> <div className='bg-blue-400 rounded-full p-3 flex justify-center items-center'> */}
-
-                        <button type="button" onClick={() => navigate('/configuracoes')}>
-                            <div className=' p-3 flex justify-center items-center'>
-                                {/*  <BookOpen className='text-white' /> */}
-                                <Settings width={38} height={38} className='text-violet-400' />
-                                {/* <img src={imgSetting} alt="" width={40} /> */}
-                            </div>
+                    <div className='flex  left-0   w-full justify-around py-2 '>
+                        <button type="button" className="flex flex-col items-center gap-1">
+                            <HomeIcon width={26} height={26} className='text-violet-400' />
+                            <span className="w-1 h-1 rounded-full bg-violet-400" />
                         </button>
-                        {/* <button type="button" onClick={() => navigate('/leituradigital')} >
-                            <div className=' p-3 flex justify-center items-center'>
-                                <BookOpen width={38} height={38} className='text-green-600' />
 
-                            </div>
-                        </button> */}
-                        <button type="button" onClick={() => navigate('/metricas')}>
-                            <div className=' p-3 flex justify-center items-center'>
-                                <BarChart3 className='text-amber-400' width={38} height={38} />
-
-                                {/*  <BookOpen className='text-white' /> */}
-                                {/* <img src={imgEstatistica} alt="" width={40} /> */}
-                            </div>
+                        <button type="button" onClick={() => navigate('/configuracoes')} className="flex flex-col items-center gap-1">
+                            <Settings width={26} height={26} className='text-blue-400' />
                         </button>
-                        {/*<a href="/videos">
-                            <div className=' p-3 flex justify-center items-center'>
-                                <Play className='text-red-500 ' width={38} height={38} />
-                                
-                            </div>
-                        </a>*/}
-                        {/*<button onClick={(e) => { verifyPlan() }}>
-                            <div className=' p-3 flex justify-center items-center'>
-                                <Bot width={38} height={38} className="text-yellow-500" />
-                               
-                            </div>
-                        </button>*/}
+
+                        <button type="button" onClick={() => navigate('/metricas')} className="flex flex-col items-center gap-1">
+                            <BarChart3 className='text-green-400' width={26} height={26} />
+                        </button>
+
+                        <button type="button" onClick={() => verifyPlan()} className="relative flex flex-col items-center gap-1">
+                            <Bot width={28} height={28} className="text-orange-400" />
+                            {user?.plano !== 1 && user?.plano !== 3 && (
+                                <Crown className="absolute -top-1 -right-2 w-4 h-4 text-yellow-400" />
+                            )}
+                        </button>
                     </div>
                 </div>
 
@@ -538,6 +599,11 @@ export default function Home() {
                 }}
                 setOpenModalSucesso={setOpenModalSucesso}
                 onSuccess={carregarCategorias}
+                onOpenPremium={(motivo) => {
+                    setOpen(false);
+                    setMotivoPremium(motivo ?? "categorias");
+                    setIsPremiumModalOpen(true);
+                }}
             />
             <ModalCategoriasEditar
                 open={openCategoriaEditar}
@@ -562,6 +628,7 @@ export default function Home() {
                 onOpenPremium={() => {
                     setOpenTreino(false);
                     setOpenTreinoAdvinhar(false);
+                    setMotivoPremium(null);
                     setIsPremiumModalOpen(true);
                 }}
 
@@ -582,7 +649,7 @@ export default function Home() {
             <ModalTreinoAdvinhar categoriaId={categoriaId} setOpenTreinoAdvinhar={setOpenTreinoAdvinhar} openTreinoAdvinhar={openTreinoAdvinhar} />
             <ModalIA setOpenTreinoIA={setOpenTreinoIA} openTreinoIA={openTreinoIA} />
             <ModalSucesso msg={msgModalSucesso} openModalSucesso={openModalSucesso} setOpenModalSucesso={setOpenModalSucesso} />
-            <PremiumModal isOpen={isPremiumModalOpen} setIsPremiumModalOpen={setIsPremiumModalOpen} onClose={() => setIsPremiumModalOpen(false)} />
+            <PremiumModal isOpen={isPremiumModalOpen} setIsPremiumModalOpen={setIsPremiumModalOpen} onClose={() => { setIsPremiumModalOpen(false); setMotivoPremium(null); }} motivo={motivoPremium} />
             <ModalConfirm setOpenModalConfirm={setOpenModalConfirm} openModalConfirm={modalConfirm} msg={msgModalConfirm} onConfirm={confirmarExclusao} />
         </div>
     )

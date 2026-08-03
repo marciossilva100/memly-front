@@ -1,77 +1,144 @@
 import { useEffect, useRef, useState } from "react";
-import { Volume } from "lucide-react";
-import { playAudio } from "../utils/audioPlayer";
-import { useParams, useNavigate } from "react-router-dom";
+import { Volume2, Mic, Square, RotateCcw, History, Send, BookOpenText, Ban, AlertCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { RefreshCw } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { playAudio } from "../utils/audioPlayer";
+import useAudioRecorder from "../hooks/useAudioRecorder";
+import AudioPreviewPlayer from "../components/AudioPreviewPlayer";
+import PremiumModal from "../components/PremiumModal";
+import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
-import "../treinoIA.css";
+function corNota(nota) {
+    if (nota >= 8) return "text-green-400 border-green-400/30 bg-green-400/10";
+    if (nota >= 5) return "text-amber-400 border-amber-400/30 bg-amber-400/10";
+    return "text-red-400 border-red-400/30 bg-red-400/10";
+}
 
 export default function TreinoIA() {
     const { t } = useTranslation();
 
-    const [textoTraduzido, setTextoTraduzido] = useState('');
-    const [textoNativo, setTextoNativo] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [audioVazio, setAudioVazio] = useState(false);
+    const [fraseEncerrada, setFraseEncerrada] = useState(false);
+    const [premiumRequired, setPremiumRequired] = useState(false);
+    const [limitReached, setLimitReached] = useState(false);
+    const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+    const [motivoPremium, setMotivoPremium] = useState(null);
+
+    const [fraseId, setFraseId] = useState(null);
+    const [frase, setFrase] = useState('');
+    const [fraseTraducao, setFraseTraducao] = useState('');
     const [flipped, setFlipped] = useState(false);
+    const [enviando, setEnviando] = useState(false);
+    const [resultado, setResultado] = useState(null);
+
     const navigate = useNavigate();
-    const { user, setUser } = useAuth();
+    const { user } = useAuth();
     const API_URL = import.meta.env.VITE_API_URL;
     const jaBuscou = useRef(false);
 
+    const { gravando, audioBlob, audioUrl, erro: erroGravacao, iniciarGravacao, pararGravacao, limpar } = useAudioRecorder();
+
+    usePremiumLimitListener((motivo) => {
+        setMotivoPremium(motivo);
+        setIsPremiumModalOpen(true);
+    });
+
     useEffect(() => {
-
-        // setTextoTraduzido('Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.');
-        // return
-
         if (jaBuscou.current) return;
         jaBuscou.current = true;
+        buscarFraseDoDia();
+    }, []);
 
+    function buscarFraseDoDia() {
         setLoading(true);
         setError(null);
+        setFlipped(false);
 
-        fetch(`${API_URL}/controller/aiController.php`, {
+        fetch(`${API_URL}/controller/fraseDoDia.php`, {
             method: 'POST',
             headers: {
+                "Content-Type": "application/json",
                 "Authorization": "Bearer " + localStorage.getItem("token")
             },
+            body: JSON.stringify({ action: 'obter' })
         })
-            .then(res => {
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                return res.json();
-            })
+            .then(res => res.json())
             .then(data => {
                 if (!data.success) {
                     if (data.premium_necessario) {
-                        throw new Error(t("premium_feature_required"));
+                        setPremiumRequired(true);
+                        setMotivoPremium("limite_gratuito");
+                        setIsPremiumModalOpen(true);
+                        return;
                     }
-                    throw new Error(data.error || 'Erro desconhecido');
+                    if (data.limite_atingido) {
+                        setLimitReached(true);
+                        if (user?.plano === 3) {
+                            setMotivoPremium("limite_gratuito");
+                            setIsPremiumModalOpen(true);
+                        }
+                        return;
+                    }
+                    setError(data.message || t("unexpected_error"));
+                    return;
                 }
-                setTextoTraduzido(data.traduzido);
-                setTextoNativo(data.nativo);
+
+                setFraseId(data.id);
+                setFrase(data.frase);
+                setFraseTraducao(data.traducao || '');
             })
             .catch(err => {
                 console.error(err);
-                setError(err.message === t("premium_feature_required")
-                    ? err.message
-                    : t("could_not_generate_training"));
+                setError(t("could_not_generate_training"));
             })
             .finally(() => setLoading(false));
-    }, []);
+    }
 
-    // Função para pronunciar o texto traduzido
-    // const speakText = () => {
-    //     if ('speechSynthesis' in window) {
-    //         const utterance = new SpeechSynthesisUtterance(textoTraduzido);
-    //         utterance.lang = 'en-US'; // ou 'en-US' para inglês
-    //         window.speechSynthesis.speak(utterance);
-    //     } else {
-    //         console.warn('Speech Synthesis não suportado nesse navegador.');
-    //     }
-    // };
+    async function enviarResposta() {
+        if (!audioBlob) return;
+
+        setEnviando(true);
+        setError(null);
+
+        try {
+            const formData = new FormData();
+            formData.append('action', 'responder');
+            formData.append('frase_id', fraseId);
+            formData.append('audio', audioBlob, 'audio.webm');
+
+            const res = await fetch(`${API_URL}/controller/fraseDoDia.php`, {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: formData
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                setError(data.message || t("unexpected_error"));
+                if (data.audio_vazio) {
+                    setAudioVazio(true);
+                }
+                if (data.pode_tentar_novamente === false) {
+                    setFraseEncerrada(true);
+                }
+                return;
+            }
+
+            setResultado(data);
+        } catch (err) {
+            console.error(err);
+            setError(t("server_connection_error"));
+        } finally {
+            setEnviando(false);
+        }
+    }
 
     if (loading) {
         return (
@@ -85,53 +152,278 @@ export default function TreinoIA() {
         );
     }
 
-    if (error) {
+    if (premiumRequired) {
         return (
-            <div className="min-h-[calc(100vh-70px)] flex items-center justify-center text-red-600 text-center px-4">
-                {error}
+            <div className="h-screen from-gray-900 to-gray-800 bg-gradient-to-br">
+                <PremiumModal
+                    isOpen={isPremiumModalOpen}
+                    setIsPremiumModalOpen={setIsPremiumModalOpen}
+                    onClose={() => navigate('/home')}
+                    motivo={motivoPremium}
+                />
+            </div>
+        );
+    }
+
+    if (limitReached) {
+        const limiteVitalicio = user?.plano === 3;
+
+        if (limiteVitalicio) {
+            return (
+                <div className="h-screen from-gray-900 to-gray-800 bg-gradient-to-br">
+                    <PremiumModal
+                        isOpen={isPremiumModalOpen}
+                        setIsPremiumModalOpen={setIsPremiumModalOpen}
+                        onClose={() => navigate('/home')}
+                        motivo={motivoPremium}
+                    />
+                </div>
+            );
+        }
+
+        return (
+            <div className="h-screen flex flex-col items-center justify-center text-center p-6 from-gray-900 to-gray-800 bg-gradient-to-br">
+                <div className="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center mb-5">
+                    <Ban className="w-8 h-8 text-red-400" />
+                </div>
+
+                <h1 className="text-xl font-semibold text-white mb-2">
+                    {t("daily_limit_reached")}
+                </h1>
+                <p className="text-gray-400 text-sm max-w-xs">
+                    {t("come_back_tomorrow")}
+                </p>
+
+                <button
+                    onClick={() => navigate(-1)}
+                    className="mt-8 px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors"
+                >
+                    {t("back")}
+                </button>
+            </div>
+        );
+    }
+
+    if (error && !frase) {
+        return (
+            <div className="h-screen flex flex-col items-center justify-center text-center p-6 from-gray-900 to-gray-800 bg-gradient-to-br">
+                <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mb-5">
+                    <AlertCircle className="w-8 h-8 text-amber-400" />
+                </div>
+
+                <h1 className="text-xl font-semibold text-white mb-2">
+                    {t("insufficient_content")}
+                </h1>
+                <p className="text-gray-400 text-sm max-w-xs">
+                    {t("add_more_phrases_hint")}
+                </p>
+
+                <button
+                    onClick={() => navigate(-1)}
+                    className="mt-8 px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors"
+                >
+                    {t("back")}
+                </button>
             </div>
         );
     }
 
     return (
-        <div className="h-[100dvh] flex flex-col items-center  px-4 gap-4 from-gray-900 to-gray-800 bg-gradient-to-br ">
-            <div className="overflow-y-auto scrollbar-hide pb-4">
-                <div className="relative text-left w-full mt-3">
-                    <div className="left-0  cursor-pointer" onClick={() => navigate(-1)} >
+        <div className="p-4 justify-center w-full px-6 h-screen flex flex-col h-dvh from-gray-900 to-gray-800 bg-gradient-to-br">
+            <div className="flex-1 overflow-y-auto scrollbar-hide">
+                <div className="relative mb-6 flex items-center justify-between">
+                    <div className="cursor-pointer" onClick={() => navigate(-1)}>
                         <i className="bi bi-arrow-left text-2xl text-white"></i>
                     </div>
+
+                    <button
+                        onClick={() => navigate('/treinoia/historico')}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-gray-300 text-xs hover:bg-gray-700/50 transition-colors"
+                    >
+                        <History className="w-3.5 h-3.5" />
+                        {t("view_history")}
+                    </button>
                 </div>
-                <div>
-                    <div className="flashcard-container cursor-pointer select-none " onClick={() => setFlipped(!flipped)} >
-                        <div className={`flashcard ${flipped ? "flipped" : ""} `}>
-                            <div className="relative py-20 bg-[linear-gradient(to_right,#233245,#0d1425)] text-white shadow-md rounded-lg flex items-center justify-center p-6 text-center text-white-700">
-                                <p className="text-2xl md:text-2xl font-medium">
-                                    {textoTraduzido}
-                                </p>
-                                <div className="absolute right-0 top-0 mt-3 me-3">
-                                    <RefreshCw className="text-white" />
-                                </div>
-                            </div>
-                            <div className="relative py-20 back rounded-lg flex items-center justify-center p-6 text-center bg-[linear-gradient(to_right,#0d1425,#233245)]">
-                                <p className="text-2xl md:text-2xl font-medium text-white">
-                                    {textoNativo}
-                                </p>
-                                <div className="absolute right-0 top-0 mt-3 me-3">
-                                    <RefreshCw className="text-white" />
+
+                <h1 className="text-lg font-semibold text-white text-center mb-4">
+                    {t("daily_phrase_title")}
+                </h1>
+
+                {!resultado && (
+                    <>
+                        <div className="perspective flex justify-center h-[460px]">
+                            <div className="flashcard w-full h-full">
+                                <div
+                                    className={`card w-full h-full ${flipped ? "flip" : ""}`}
+                                    onClick={() => setFlipped(!flipped)}
+                                    style={{ cursor: "pointer" }}
+                                >
+                                    <div className="card-front rounded-2xl border border-gray-700 bg-gradient-to-br from-[#233245] to-[#0d1425] px-6 py-9 shadow-md flex flex-col items-center gap-3">
+                                        <div className="w-10 h-10 shrink-0 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 flex items-center justify-center">
+                                            <BookOpenText className="w-5 h-5 text-[#4cb8c4]" />
+                                        </div>
+
+                                        <div className="flex-1 flex items-center min-h-0">
+                                            <p className="text-xl text-white leading-relaxed text-center">{frase}</p>
+                                        </div>
+
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                playAudio(frase, user, true);
+                                            }}
+                                            className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors"
+                                        >
+                                            <Volume2 className="w-3.5 h-3.5" />
+                                            {t("listen")}
+                                        </button>
+                                    </div>
+
+                                    <div className="card-back rounded-2xl border border-gray-700 bg-gradient-to-br from-[#0d1425] to-[#233245] px-6 py-9 shadow-md flex flex-col items-center gap-3">
+                                        <div className="flex-1 flex items-center min-h-0">
+                                            <p className="text-xl text-white leading-relaxed text-center">{fraseTraducao}</p>
+                                        </div>
+
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                // Tradução é sempre no idioma nativo - voz gratuita sempre, mesmo padrão do
+                                                // lado da frente do flashcard em DigitarTexto.jsx.
+                                                playAudio(fraseTraducao, user, false, user?.native_language, true);
+                                            }}
+                                            className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-700/50 border border-gray-600 text-gray-300 text-xs hover:bg-gray-700 transition-colors"
+                                        >
+                                            <Volume2 className="w-3.5 h-3.5" />
+                                            {t("listen")}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="w-full flex justify-center items-center">
+                        <p className="text-center text-gray-500 text-xs mt-2">{t("tap_card_to_flip")}</p>
+                    </>
+                )}
+
+                {resultado && (
+                    <div className="flex flex-col gap-3">
+                        <div className="flex flex-col items-center py-2 gap-1">
+                            <p className="text-gray-500 text-xs uppercase tracking-wide">{t("grade_label")}</p>
+                            <span className={`text-4xl font-bold px-5 py-2 rounded-2xl border ${corNota(resultado.nota)}`}>
+                                {resultado.nota}<span className="text-lg opacity-70">/10</span>
+                            </span>
+                        </div>
+
+                        <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4">
+                            <p className="text-gray-500 text-xs mb-1 uppercase tracking-wide">{t("transcription_label")}</p>
+                            <p className="text-white italic">"{resultado.transcricao}"</p>
+                        </div>
+
+                        <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4">
+                            <p className="text-[#4cb8c4] text-xs font-semibold mb-1">{t("grammar_label")}</p>
+                            <p className="text-white text-sm">{resultado.feedback_gramatica}</p>
+                        </div>
+
+                        <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4">
+                            <p className="text-[#4cb8c4] text-xs font-semibold mb-1">{t("pronunciation_label")}</p>
+                            <p className="text-white text-sm">{resultado.feedback_pronuncia}</p>
+                        </div>
+
+                        <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4">
+                            <p className="text-[#4cb8c4] text-xs font-semibold mb-1">{t("fluency_label")}</p>
+                            <p className="text-white text-sm">{resultado.feedback_fluencia}</p>
+                        </div>
+
                         <button
-                            onClick={() => playAudio(textoTraduzido, user, true)}
-                            className="mt-2 px-4 py-2 bg-slate-500 text-white rounded  flex items-center"
+                            onClick={() => navigate(-1)}
+                            className="mt-2 px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors"
                         >
-                            <Volume /> {t("listen")}
+                            {t("back")}
                         </button>
                     </div>
-                </div>
+                )}
             </div>
+
+            {!resultado && !flipped && (
+                <div className="sticky bottom-0 py-4 flex flex-col items-center gap-4 ">
+                    {!audioUrl && !gravando && (
+                        <button
+                            onClick={() => { setError(null); setAudioVazio(false); iniciarGravacao(); }}
+                            className="relative w-24 h-24 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] flex items-center justify-center shadow-lg shadow-[#4cb8c4]/20 transition"
+                        >
+                            <Mic className="w-9 h-9 text-white" />
+                        </button>
+                    )}
+
+                    {gravando && (
+                        <button
+                            onClick={pararGravacao}
+                            className="relative w-24 h-24 rounded-full bg-red-600 flex items-center justify-center shadow-lg"
+                        >
+                            <span className="absolute inset-0 rounded-full bg-red-500 animate-ping opacity-75"></span>
+                            <Square className="w-8 h-8 text-white relative z-10" />
+                        </button>
+                    )}
+
+                    {gravando && (
+                        <p className="text-red-400 text-sm font-medium">{t("recording_in_progress")}</p>
+                    )}
+
+                    {!gravando && !audioUrl && (
+                        <p className="text-gray-500 text-xs text-center max-w-[220px]">{t("tap_mic_to_read")}</p>
+                    )}
+
+                    {audioUrl && !gravando && !fraseEncerrada && (
+                        <div className="w-full flex flex-col items-center gap-3">
+                            <AudioPreviewPlayer src={audioUrl} />
+
+                            <div className="flex flex-col gap-3 w-full">
+                                {!audioVazio && (
+                                    <button
+                                        onClick={enviarResposta}
+                                        disabled={enviando}
+                                        className="w-full px-4 py-2.5 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] disabled:opacity-50 text-white text-lg font-medium flex items-center justify-center gap-2 transition-colors"
+                                    >
+                                        <Send className="w-4 h-4" />
+                                        {enviando ? t("sending") : t("send")}
+                                    </button>
+                                )}
+
+                                <button
+                                    onClick={() => { setError(null); setAudioVazio(false); limpar(); }}
+                                    className="w-full px-4 py-2.5 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white text-lg font-medium flex items-center justify-center gap-2 hover:bg-gray-700/50 transition-colors"
+                                >
+                                    <RotateCcw className="w-4 h-4" />
+                                    {t("re_record")}
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {fraseEncerrada && (
+                        <button
+                            onClick={() => navigate(-1)}
+                            className="w-full px-4 py-2.5 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white text-lg font-medium transition-colors"
+                        >
+                            {t("back")}
+                        </button>
+                    )}
+
+                    {erroGravacao && (
+                        <p className="text-red-400 text-xs text-center">{erroGravacao}</p>
+                    )}
+
+                    {error && (
+                        <p className="text-red-400 text-xs text-center">{error}</p>
+                    )}
+                </div>
+            )}
+
+            <PremiumModal
+                isOpen={isPremiumModalOpen}
+                setIsPremiumModalOpen={setIsPremiumModalOpen}
+                onClose={() => { setIsPremiumModalOpen(false); setMotivoPremium(null); }}
+                motivo={motivoPremium}
+            />
         </div>
     );
 }

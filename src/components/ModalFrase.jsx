@@ -15,10 +15,11 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
     const [loading, setLoading] = useState(false)
     const [phrase, setPhrase] = useState('')
     const [translatedPhrase, setTranslatedPhrase] = useState('')
+    const [loadingSugestao, setLoadingSugestao] = useState(false)
+    const [loadingMelhorar, setLoadingMelhorar] = useState(false)
 
     const [errorPhrase, setErrorPhrase] = useState('')
     const [errorTranslatedPhrase, setErrorTranslatedPhrase] = useState('')
-    const [error, setError] = useState('')
     const API_URL = import.meta.env.VITE_API_URL;
     const isEditing = Boolean(phraseToEdit?.id);
 
@@ -95,51 +96,88 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
         }
     }
 
-    // eslint-disable-next-line no-unused-vars -- mantido para quando o botão "sugerir tradução" (comentado abaixo) for reativado
-    function verifyPlan(e) {
-        if (user.plano === 1) {
-            console.log("kk")
-            translationSuggested(e)
-            return
-        }
-        onOpenPremium()
-        // navigate('/premiumplan');
-
-    }
-
-    async function translationSuggested(e) {
-
+    // Sugestão gratuita (Google Translate via LibreTranslate.php) - disponível
+    // pra todos os planos, tradução literal/instantânea.
+    async function sugerirTraducao(e) {
         e.preventDefault();
 
-        const res = await fetch(`${API_URL}/controller/libreTranslate.php`, {
-            method: 'POST',
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            },
-            body: JSON.stringify({
-                phrase: phrase,
-                sourceLang: user.native_language,
-                targetLang: user.learning_language
-            })
-        });
+        if (loadingSugestao || loadingMelhorar) return;
 
-        const data = await res.json();
+        setLoadingSugestao(true);
+        setErrorTranslatedPhrase('');
 
-        if (!data.success) {
-            setErrorTranslatedPhrase(data.message);
-            return;
+        try {
+            const res = await fetch(`${API_URL}/controller/libreTranslate.php`, {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({
+                    phrase: phrase,
+                    sourceLang: user.native_language,
+                    targetLang: user.learning_language
+                })
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                setErrorTranslatedPhrase(data.message);
+                return;
+            }
+
+            setTranslatedPhrase(data.message)
+
+        } catch (error) {
+            setErrorTranslatedPhrase(error?.message || t("unexpected_error"))
+        } finally {
+            setLoadingSugestao(false);
         }
-
-        setTranslatedPhrase(data.message)
-
     }
 
-    useEffect(()=>{
-        console.log(user)
-    },[])
+    // Melhoria por IA (gpt-5-nano) - tradução natural/idiomática, não literal.
+    // Recurso premium/limitado (amostra vitalícia) - free vê o cadeado com
+    // coroa e abre o PremiumModal ao clicar.
+    async function melhorarComIA(e) {
+        e.preventDefault();
 
-    if (error) {
-        console.log(error)
+        if (loadingSugestao || loadingMelhorar) return;
+
+        setLoadingMelhorar(true);
+        setErrorTranslatedPhrase('');
+
+        try {
+            const res = await fetch(`${API_URL}/controller/traducaoIA.php`, {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({
+                    action: 'melhorar',
+                    phrase: phrase,
+                    sourceLang: user.native_language,
+                    targetLang: user.learning_language
+                })
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                if (data.limite_atingido || data.premium_necessario) {
+                    onOpenPremium?.();
+                    return;
+                }
+                setErrorTranslatedPhrase(data.message);
+                return;
+            }
+
+            setTranslatedPhrase(data.traducao)
+
+        } catch (error) {
+            setErrorTranslatedPhrase(error?.message || t("unexpected_error"))
+        } finally {
+            setLoadingMelhorar(false);
+        }
     }
 
     return (
@@ -203,19 +241,30 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                                     outline-none"
                             ></textarea>
 
-                            {/* Comentado: modo premium ainda não implementado no sistema
                             {phrase?.length > 1 && (
-                                <div>
-                                    <button type="button" className="flex text-sm bg-blue-500 text-white px-4 py-1 rounded-full" onClick={verifyPlan}>
-                                        {user.plano === 2 && (
-                                            <Crown size={20} className="me-2 text-yellow-500" />
-                                        )}
+                                <div className="flex flex-wrap gap-2 mt-3">
+                                    <button
+                                        type="button"
+                                        disabled={loadingSugestao || loadingMelhorar}
+                                        className="flex items-center text-sm bg-gray-700/60 hover:bg-gray-700 disabled:opacity-50 text-white px-4 py-1.5 rounded-full transition-colors"
+                                        onClick={sugerirTraducao}
+                                    >
+                                        {loadingSugestao ? t("suggesting_translation") : t("suggest_translation")}
+                                    </button>
 
-                                        {t("suggest_translation")}
+                                    <button
+                                        type="button"
+                                        disabled={loadingSugestao || loadingMelhorar}
+                                        className="flex items-center gap-1.5 text-sm bg-gradient-to-r from-[#4cb8c4] to-[#085078] hover:from-[#3da5b0] hover:to-[#064060] disabled:opacity-50 text-white px-4 py-1.5 rounded-full transition-colors"
+                                        onClick={melhorarComIA}
+                                    >
+                                        {(user.plano !== 1 && user.plano !== 3) && (
+                                            <Crown size={16} className="text-yellow-400" />
+                                        )}
+                                        {loadingMelhorar ? t("improving_translation") : t("improve_with_ai")}
                                     </button>
                                 </div>
                             )}
-                            */}
 
                             {errorTranslatedPhrase &&
                                 <span className="text-sm text-red-500">{errorTranslatedPhrase}</span>

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { FaList, FaPlus } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 
-export default function ModalIncorporarFrases({openIncorporar,setOpenIncorporar}) {
+export default function ModalIncorporarFrases({openIncorporar,setOpenIncorporar,onOpenPremium}) {
     const { t } = useTranslation();
     const [categoria, setCategoria] = useState()
     const [error, setError] = useState('')
@@ -40,6 +40,10 @@ export default function ModalIncorporarFrases({openIncorporar,setOpenIncorporar}
             const data = await res.json();
 
             if (!data.success) {
+                if (data.limite_atingido) {
+                    onOpenPremium?.();
+                    return;
+                }
                 setError(data.message);
                 return;
             }

@@ -9,9 +9,10 @@ import PremiumModal from '../components/PremiumModal'
 import { useAuth } from "../context/AuthContext";
 import ModalIncorporarFrases from '../components/ModalIncorporarFrases'
 import { useTranslation } from "react-i18next";
+import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 
 
-import { BookOpen,Search,Filter,Loader2,Home,Settings,BarChart3,UserRound,ChevronDown,FolderPlus } from "lucide-react";
+import { BookOpen,Search,Filter,Loader2,Home,Settings,BarChart3,UserRound,ChevronDown,FolderPlus,Bot,Crown } from "lucide-react";
 
 const AVATAR_COLORS = [
     'bg-emerald-500',
@@ -37,6 +38,7 @@ export default function ListCategoria() {
     const [msgModalSucesso, setMsgModalSucesso] = useState('')
     const [frase, openFrase] = useState('')
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+    const [motivoPremium, setMotivoPremium] = useState(null);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
@@ -46,6 +48,20 @@ export default function ListCategoria() {
     const API_URL = import.meta.env.VITE_API_URL;
 
     const navigate = useNavigate();
+
+    usePremiumLimitListener((motivo) => {
+        setMotivoPremium(motivo);
+        setIsPremiumModalOpen(true);
+    });
+
+    function verifyPlan() {
+        if (user?.plano === 1 || user?.plano === 3) {
+            setOpenTreinoIA(true);
+            return;
+        }
+        setMotivoPremium(null);
+        setIsPremiumModalOpen(true);
+    }
 
     const carregarCategorias = async (pageAtual = 1, reset = false) => {
         if (!reset && (loading || !hasMore)) return;
@@ -106,6 +122,12 @@ export default function ListCategoria() {
         })
             .then(res => res.json())
             .then(data => {
+                if (data.limite_atingido) {
+                    setMotivoPremium("categorias");
+                    setIsPremiumModalOpen(true);
+                    return;
+                }
+
                 if (data.message === 'Categoria já existe')
                     setOpenIncorporar(true)
 
@@ -290,30 +312,44 @@ export default function ListCategoria() {
 
             <ModalIA setOpenTreinoIA={setOpenTreinoIA} openTreinoIA={openTreinoIA} />
             <ModalSucesso msg={msgModalSucesso} openModalSucesso={openModalSucesso} setOpenModalSucesso={setOpenModalSucesso} />
-            <ModalIncorporarFrases openIncorporar={openIncorporar} setOpenIncorporar={setOpenIncorporar} />
+            <ModalIncorporarFrases
+                openIncorporar={openIncorporar}
+                setOpenIncorporar={setOpenIncorporar}
+                onOpenPremium={() => {
+                    setOpenIncorporar(false);
+                    setMotivoPremium("categorias");
+                    setIsPremiumModalOpen(true);
+                }}
+            />
+            <PremiumModal
+                isOpen={isPremiumModalOpen}
+                setIsPremiumModalOpen={setIsPremiumModalOpen}
+                onClose={() => { setIsPremiumModalOpen(false); setMotivoPremium(null); }}
+                motivo={motivoPremium}
+            />
 
             <div className="sticky inset-x-0 bottom-0 z-10 text-center w-full justify-items-center justify-center items-center   ">
 
 
                 <div className=" w-full ">
-                    <div className='flex  left-0   w-full justify-center py-2 '>
-                        <button type="button" onClick={() => navigate('/home')}>
-                            <div className=' p-3 flex justify-center items-center'>
-                                <Home width={38} height={38} className='text-[#4cb8c4]' />
-                            </div>
+                    <div className='flex  left-0   w-full justify-around py-2 '>
+                        <button type="button" onClick={() => navigate('/home')} className="flex flex-col items-center gap-1">
+                            <Home width={26} height={26} className='text-violet-400' />
                         </button>
-                        <button type="button" onClick={() => navigate('/configuracoes')}>
-                            <div className=' p-3 flex justify-center items-center'>
-                                <Settings width={38} height={38} className='text-violet-400' />
-                            </div>
-                        </button>
-                        <button type="button" onClick={() => navigate('/metricas')}>
-                            <div className=' p-3 flex justify-center items-center'>
-                                <BarChart3 className='text-amber-400' width={38} height={38} />
 
-                                {/*  <BookOpen className='text-white' /> */}
-                                {/* <img src={imgEstatistica} alt="" width={40} /> */}
-                            </div>
+                        <button type="button" onClick={() => navigate('/configuracoes')} className="flex flex-col items-center gap-1">
+                            <Settings width={26} height={26} className='text-blue-400' />
+                        </button>
+
+                        <button type="button" onClick={() => navigate('/metricas')} className="flex flex-col items-center gap-1">
+                            <BarChart3 width={26} height={26} className='text-green-400' />
+                        </button>
+
+                        <button type="button" onClick={verifyPlan} className="relative flex flex-col items-center gap-1">
+                            <Bot width={26} height={26} className="text-amber-400" />
+                            {user?.plano !== 1 && user?.plano !== 3 && (
+                                <Crown className="absolute -top-1 -right-1 w-3 h-3 text-yellow-400" />
+                            )}
                         </button>
                     </div>
                 </div>

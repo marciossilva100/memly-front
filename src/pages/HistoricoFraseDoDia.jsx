@@ -1,0 +1,100 @@
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { ClipboardList } from "lucide-react";
+import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
+
+function corNota(nota) {
+    if (nota >= 8) return "text-green-400 border-green-400/30 bg-green-400/10";
+    if (nota >= 5) return "text-amber-400 border-amber-400/30 bg-amber-400/10";
+    return "text-red-400 border-red-400/30 bg-red-400/10";
+}
+
+export default function HistoricoFraseDoDia() {
+    const { t } = useTranslation();
+    const navigate = useNavigate();
+    const API_URL = import.meta.env.VITE_API_URL;
+
+    const [loading, setLoading] = useState(true);
+    const [historico, setHistorico] = useState([]);
+    const jaBuscou = useRef(false);
+
+    useEffect(() => {
+        if (jaBuscou.current) return;
+        jaBuscou.current = true;
+
+        fetch(`${API_URL}/controller/fraseDoDia.php`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({ action: 'historico' })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    setHistorico(data.historico || []);
+                }
+            })
+            .catch(err => console.error(err))
+            .finally(() => setLoading(false));
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="flex h-screen items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
+                <img
+                    src={imgChapeuFormatura}
+                    alt={t("loading")}
+                    className="w-28 animate-pulse"
+                />
+            </div>
+        );
+    }
+
+    return (
+        <div className="h-dvh flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
+            <div className="flex-1 overflow-y-auto scrollbar-hide px-5 pb-[100px]">
+                <div className="relative mb-4 mt-4">
+                    <div className="left-0 cursor-pointer inline-block" onClick={() => navigate(-1)}>
+                        <i className="bi bi-arrow-left text-2xl text-white"></i>
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-2 mb-6">
+                    <ClipboardList className="w-6 h-6 text-[#4cb8c4]" />
+                    <h1 className="text-2xl font-bold text-white">{t("answer_history_title")}</h1>
+                </div>
+
+                {historico.length === 0 && (
+                    <p className="text-gray-400 text-center mt-10">{t("answer_history_empty")}</p>
+                )}
+
+                <div className="space-y-3">
+                    {historico.map((item, index) => (
+                        <div
+                            key={index}
+                            className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4"
+                        >
+                            <div className="flex items-start justify-between gap-3 mb-2">
+                                <p className="text-white font-medium">{item.frase}</p>
+                                <span className={`shrink-0 text-sm font-bold px-2 py-0.5 rounded-full border ${corNota(item.nota)}`}>
+                                    {item.nota}/10
+                                </span>
+                            </div>
+
+                            <p className="text-gray-400 text-sm italic mb-3">"{item.transcricao}"</p>
+
+                            <div className="space-y-1.5 border-t border-gray-700 pt-2">
+                                <p className="text-gray-300 text-sm"><span className="text-[#4cb8c4] font-medium">{t("grammar_label")}: </span>{item.feedback_gramatica}</p>
+                                <p className="text-gray-300 text-sm"><span className="text-[#4cb8c4] font-medium">{t("pronunciation_label")}: </span>{item.feedback_pronuncia}</p>
+                                <p className="text-gray-300 text-sm"><span className="text-[#4cb8c4] font-medium">{t("fluency_label")}: </span>{item.feedback_fluencia}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+}

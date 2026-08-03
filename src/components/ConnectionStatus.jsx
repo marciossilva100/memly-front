@@ -15,7 +15,7 @@ export default function ConnectionStatus() {
       if (isOnline) {
         const start = Date.now();
         try {
-          await fetch('/favicon.ico', { 
+          await fetch('/robots.txt', {
             method: 'HEAD',
             cache: 'no-store'
           });

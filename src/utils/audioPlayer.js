@@ -1,7 +1,15 @@
+import { dispatchPremiumLimitHit } from "../hooks/usePremiumLimitListener";
+
 let currentAudio = null;
 let currentToken = 0;
 
-export const playAudio = async (text, user, ia = false, lang = null) => {
+// Depois que o modal premium por limite de áudio já apareceu uma vez nesta
+// sessão do app, novas tentativas de reprodução caem direto pra voz padrão
+// (free) em vez de interromper de novo com o modal - evita ficar repetindo
+// o aviso a cada frase enquanto o usuário continua praticando.
+let avisoLimiteAudioExibido = false;
+
+export const playAudio = async (text, user, ia = false, lang = null, forcarVozPadrao = false) => {
     const API_URL = import.meta.env.VITE_API_URL;
     if (!text) return;
 
@@ -14,28 +22,38 @@ export const playAudio = async (text, user, ia = false, lang = null) => {
     }
     currentAudio = null;
 
-    // Voz natural (ElevenLabs) é exclusiva do plano premium, com limite diário
-    // controlado pelo backend. Se não vier áudio (não é premium, limite do dia
-    // atingido, ou qualquer erro), cai para a voz padrão abaixo em vez de ficar
-    // em silêncio.
-    if (user.plano === 1) {
-        const url = await gerarAudio(text);
+    // Voz natural (ElevenLabs): liberada pro plano premium (1, limite diário)
+    // e, como amostra grátis, pro plano limitado (3, limite vitalício) -
+    // ambos controlados pelo backend. Se der erro genérico (rede, API fora),
+    // cai pra voz padrão abaixo. Mas se o motivo for limite atingido, não
+    // reproduz nada - só mostra o modal premium.
+    // forcarVozPadrao ignora o plano e usa sempre a voz gratuita (ex: frente
+    // do flashcard em DigitarTexto.jsx, que não deve gastar cota de voz premium).
+    if (!forcarVozPadrao && (user.plano === 1 || user.plano === 3)) {
+        const resultado = await gerarAudio(text);
 
-        if (url) {
+        if (resultado?.limiteAtingido) {
+            if (!avisoLimiteAudioExibido) {
+                avisoLimiteAudioExibido = true;
+                dispatchPremiumLimitHit("audio");
+                return;
+            }
+            // Modal já foi exibido antes nesta sessão - segue pro fallback de voz padrão abaixo.
+        } else if (resultado?.url) {
             // uma chamada mais recente já assumiu o controle enquanto aguardávamos o áudio
             if (myToken !== currentToken) {
-                URL.revokeObjectURL(url);
+                URL.revokeObjectURL(resultado.url);
                 return;
             }
 
-            const audio = new Audio(url);
+            const audio = new Audio(resultado.url);
             currentAudio = audio;
 
             audio.playbackRate = 0.9;
             audio.play().catch(() => {});
 
             audio.onended = () => {
-                URL.revokeObjectURL(url);
+                URL.revokeObjectURL(resultado.url);
                 currentAudio = null;
             };
 
@@ -84,7 +102,11 @@ export const playAudio = async (text, user, ia = false, lang = null) => {
             const audio = new Audio(urlAudio);
             currentAudio = audio;
 
-            audio.playbackRate = 1.0;
+            // A voz padrão (LibreTranslate) não tem parâmetro de velocidade
+            // na API, então aplicamos no player - disponível em qualquer
+            // plano, diferente da escolha de voz (só premium).
+            const velocidadePreferida = parseFloat(localStorage.getItem('zaldemy_velocidade_tts'));
+            audio.playbackRate = Number.isFinite(velocidadePreferida) ? velocidadePreferida : 1.0;
 
             await audio.play().catch(err => {
                 console.error("ERRO PLAY:", err);
@@ -110,11 +132,13 @@ export const playAudio = async (text, user, ia = false, lang = null) => {
     }
 };
 
+// Retorna { limiteAtingido: true }, { url } ou null (erro genérico - cai
+// pro fallback de voz padrão).
 const gerarAudio = async (texto) => {
     const API_URL = import.meta.env.VITE_API_URL;
 
     try {
-        const res = await fetch(`${API_URL}/controller/elevenlabs.php`, {
+        const res = await fetch(`${API_URL}/controller/tts.php`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -135,6 +159,16 @@ const gerarAudio = async (texto) => {
         if (!contentType || !contentType.includes("audio")) {
             const text = await res.text();
             console.error("Resposta não é áudio:", text);
+
+            try {
+                const data = JSON.parse(text);
+                if (data.limite_atingido) {
+                    return { limiteAtingido: true };
+                }
+            } catch {
+                // resposta não era JSON - segue pro fallback normal abaixo
+            }
+
             throw new Error("API não retornou áudio");
         }
 
@@ -144,7 +178,7 @@ const gerarAudio = async (texto) => {
             throw new Error("Áudio vazio");
         }
 
-        return URL.createObjectURL(blob);
+        return { url: URL.createObjectURL(blob) };
 
     } catch (err) {
         console.error("Erro ao gerar áudio:", err);

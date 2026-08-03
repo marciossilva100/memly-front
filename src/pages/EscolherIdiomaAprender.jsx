@@ -50,7 +50,7 @@ export default function EscolherIdiomaAprender() {
 
   useEffect(() => {
     if (user?.step > 1) {
-      navigate("/referenciausuario", { replace: true });
+      navigate(user?.nivel ? "/referenciausuario" : "/escolhernivel", { replace: true });
     }
   }, [user]);
 
@@ -116,7 +116,7 @@ export default function EscolherIdiomaAprender() {
       await checkAuth(true);
 
       // 🔥 navega só depois de sincronizar
-      navigate("/referenciausuario");
+      navigate("/escolhernivel");
 
     } catch (error) {
       console.log(error);

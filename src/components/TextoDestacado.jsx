@@ -10,7 +10,7 @@ export default function TextoDestacado({ tokens, texto }) {
 
   return tokens.map((token, i) =>
     token.destaque ? (
-      <span key={i} className="bg-[#4cb8c4]/25 text-[#7fd4dd] rounded px-0.5">
+      <span key={i} className="bg-[#4cb8c4]/10">
         {token.texto}
       </span>
     ) : (

@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura-v2.png"
 import useEnableBodyScroll from "../hooks/useEnableBodyScroll";
 
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useLocation } from "react-router-dom";
 
 // 🌍 Bandeiras
 const flags = {
@@ -38,18 +38,24 @@ export default function EscolherIdiomaNativo() {
   const selectRef = useRef(null)
   const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
+  const location = useLocation();
 
 
   const [form, setForm] = useState({
     native_language: ''
   })
 
+  // Se veio pelo botão de voltar pra trocar o idioma nativo, pré-seleciona o
+  // que já estava escolhido (até o usuário escolher outro) em vez de
+  // aparecer em branco - computado direto no render, sem useEffect/setState.
+  const idiomaAtualId = languageList.find((l) => l.sigla === user?.native_language)?.id ?? '';
+  const valorSelecionado = form.native_language || idiomaAtualId;
   const idiomaSelecionado = languageList.find(
-    (l) => l.id == form.native_language
+    (l) => l.id == valorSelecionado
   );
 
   useEffect(() => {
-    if (user?.step > 0) {
+    if (user?.step > 0 && !location.state?.fromBack) {
       navigate("/escolheridiomaaprender", { replace: true });
     }
   }, [user]);
@@ -96,7 +102,7 @@ export default function EscolherIdiomaNativo() {
         },
         body: JSON.stringify({
           action: 'set_native_language',
-          native_language: form.native_language,
+          native_language: valorSelecionado,
         })
       });
 
@@ -109,7 +115,7 @@ export default function EscolherIdiomaNativo() {
 
       // 🔥 Garante que o idioma existe
       const idiomaSelecionado = languageList.find(
-        (l) => l.id == form.native_language
+        (l) => l.id == valorSelecionado
       );
 
       // 🔥 Atualiza local imediatamente (sem quebrar se user for null)
@@ -154,7 +160,7 @@ export default function EscolherIdiomaNativo() {
   function handleSubmit(e) {
     e.preventDefault();
 
-    if (!form.native_language) {
+    if (!valorSelecionado) {
       setErro(t("choose_a_language"))
       return
     }

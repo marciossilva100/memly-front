@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { Sprout, TrendingUp, Trophy } from "lucide-react";
@@ -15,18 +15,24 @@ export default function EscolherNivel() {
   const { t } = useTranslation();
   const { user, setUser, checkAuth } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Não pode chegar aqui sem ter escolhido o idioma de aprendizado ainda, e
   // se já tem nível salvo, essa etapa já foi concluída - segue em frente.
+  // Exceto se veio pelo botão de voltar (fromBack), aí deixa editar de novo.
   useEffect(() => {
     if (user?.step <= 1) {
       navigate("/escolheridiomaaprender", { replace: true });
-    } else if (user?.nivel) {
+    } else if (user?.nivel && !location.state?.fromBack) {
       navigate(user?.interesses_definidos ? "/referenciausuario" : "/escolhercategorias", { replace: true });
     }
   }, [user]);
 
-  const [nivel, setNivel] = useState(null);
+  const [nivelEscolhido, setNivelEscolhido] = useState(null);
+  // Pré-seleciona o nível já salvo (útil ao voltar pra editar) até o
+  // usuário escolher outro - computado direto no render.
+  const nivel = nivelEscolhido ?? user?.nivel ?? null;
+
   const [erro, setErro] = useState('');
   const [enviando, setEnviando] = useState(false);
   const API_URL = import.meta.env.VITE_API_URL;
@@ -71,6 +77,15 @@ export default function EscolherNivel() {
 
   return (
     <div className="h-dvh overflow-hidden flex flex-col px-8 pt-6 pb-[env(safe-area-inset-bottom)] from-gray-900 to-gray-800 bg-gradient-to-br">
+      <div className="relative mb-2">
+        <div
+          className="left-0 cursor-pointer inline-block"
+          onClick={() => navigate("/escolheridiomaaprender", { state: { fromBack: true } })}
+        >
+          <i className="bi bi-arrow-left text-2xl text-white"></i>
+        </div>
+      </div>
+
       <div className="w-full max-w-md mx-auto text-center mb-6">
         <div className="flex justify-center mb-3">
           <img src={imgChapeuFormatura} alt="Coruja" className="w-28" />
@@ -88,7 +103,7 @@ export default function EscolherNivel() {
           <button
             key={item.id}
             type="button"
-            onClick={() => { setErro(''); setNivel(item.id); }}
+            onClick={() => { setErro(''); setNivelEscolhido(item.id); }}
             className={`flex items-center gap-4 px-4 py-4 rounded-2xl border text-left transition-colors ${
               nivel === item.id
                 ? "border-[#4cb8c4] bg-[#4cb8c4]/10"

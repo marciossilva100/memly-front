@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { Plane, Film, Briefcase, UtensilsCrossed, Trophy, Music, Cpu, Users } from "lucide-react";
@@ -22,11 +22,16 @@ export default function EscolherCategoriasInteresse() {
   const { t } = useTranslation();
   const { user, setUser, checkAuth } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Se já tinha concluído e voltou pra editar (fromBack), deixa escolher de
+  // novo em vez de já mandar pra frente.
+  const editando = !!user?.interesses_definidos;
 
   useEffect(() => {
     if (user?.step <= 1 || !user?.nivel) {
       navigate("/escolhernivel", { replace: true });
-    } else if (user?.interesses_definidos) {
+    } else if (user?.interesses_definidos && !location.state?.fromBack) {
       navigate("/referenciausuario", { replace: true });
     }
   }, [user]);
@@ -62,6 +67,19 @@ export default function EscolherCategoriasInteresse() {
 
     try {
       const token = localStorage.getItem("token");
+
+      if (editando) {
+        // Apaga as categorias de interesse antigas antes de criar as novas,
+        // senão fica duplicado (as antigas + as novas).
+        await fetch(`${API_URL}/controller/categoriaIA.php`, {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+          },
+          body: JSON.stringify({ action: 'reiniciar_interesses' })
+        });
+      }
 
       const resultados = await Promise.all(selecionados.map(async (key) => {
         const res = await fetch(`${API_URL}/controller/categoriaIA.php`, {
@@ -108,6 +126,15 @@ export default function EscolherCategoriasInteresse() {
   return (
     <div className="h-dvh overflow-hidden flex flex-col px-8 pt-6 pb-[env(safe-area-inset-bottom)] from-gray-900 to-gray-800 bg-gradient-to-br">
       <div className="flex-1 overflow-y-auto scrollbar-hide pb-28">
+        <div className="relative mb-2">
+          <div
+            className="left-0 cursor-pointer inline-block"
+            onClick={() => navigate("/escolhernivel", { state: { fromBack: true } })}
+          >
+            <i className="bi bi-arrow-left text-2xl text-white"></i>
+          </div>
+        </div>
+
         <div className="w-full max-w-md mx-auto text-center mb-6">
           <div className="flex justify-center mb-3">
             <img src={imgChapeuFormatura} alt="Coruja" className="w-28" />

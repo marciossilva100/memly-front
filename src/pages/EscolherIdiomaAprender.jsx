@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { idiomas } from "../data/idiomas"
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura-v2.png"
@@ -29,6 +29,7 @@ export default function EscolherIdiomaAprender() {
   const { user, setUser, checkAuth } = useAuth();
 
   const navigate = useNavigate();
+  const location = useLocation();
   const [erro, setErro] = useState('')
   const [idioma, setIdioma] = useState("")
   const [languageList, setLanguageList] = useState([])
@@ -39,8 +40,14 @@ export default function EscolherIdiomaAprender() {
   const [form, setForm] = useState({
     learning_language: ''
   })
+
+  // Se veio pelo botão de voltar pra trocar o idioma, pré-seleciona o que já
+  // estava escolhido (até o usuário escolher outro) em vez de aparecer em
+  // branco - computado direto no render, sem useEffect/setState.
+  const idiomaAtualId = languageList.find((l) => l.sigla === user?.learning_language)?.id ?? '';
+  const valorSelecionado = form.learning_language || idiomaAtualId;
   const idiomaSelecionado = languageList.find(
-    (l) => l.id == form.learning_language
+    (l) => l.id == valorSelecionado
   );
 
   // Não faz sentido aprender o mesmo idioma que já é o nativo
@@ -49,7 +56,7 @@ export default function EscolherIdiomaAprender() {
   );
 
   useEffect(() => {
-    if (user?.step > 1) {
+    if (user?.step > 1 && !location.state?.fromBack) {
       navigate(user?.nivel ? "/referenciausuario" : "/escolhernivel", { replace: true });
     }
   }, [user]);
@@ -89,7 +96,7 @@ export default function EscolherIdiomaAprender() {
         },
         body: JSON.stringify({
           action: 'set_learning_language',
-          learning_language: form.learning_language,
+          learning_language: valorSelecionado,
         })
       });
 
@@ -102,7 +109,7 @@ export default function EscolherIdiomaAprender() {
 
       // 🔥 garante idioma válido
       const idiomaSelecionado = languageList.find(
-        (l) => l.id == form.learning_language
+        (l) => l.id == valorSelecionado
       );
 
       // 🔥 atualiza local sem quebrar
@@ -156,7 +163,7 @@ export default function EscolherIdiomaAprender() {
   function handleSubmit(e) {
     e.preventDefault();
 
-    if (!form.learning_language) {
+    if (!valorSelecionado) {
       setErro(t("choose_a_language"))
       return
     }
@@ -177,6 +184,15 @@ export default function EscolherIdiomaAprender() {
       "
     >
       <form action="" onSubmit={(e) => handleSubmit(e)}>
+
+        <div className="relative mb-2 mt-2">
+          <div
+            className="left-0 cursor-pointer inline-block"
+            onClick={() => navigate("/escolheridioma", { state: { fromBack: true } })}
+          >
+            <i className="bi bi-arrow-left text-2xl text-white"></i>
+          </div>
+        </div>
 
         {/* TOPO */}
         <div className="w-full max-w-md mx-auto text-center mb-6">

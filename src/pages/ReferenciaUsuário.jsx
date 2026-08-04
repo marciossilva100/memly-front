@@ -9,7 +9,7 @@ import tandemIcone from '../assets/img/tandem.png'
 import speakyIcone from '../assets/img/speaky.png'
 import imgChapeuFormatura from "../assets/img/chapeu_formatura-v2.png"
 import { useAuth } from "../context/AuthContext";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 
@@ -20,8 +20,11 @@ export default function ReferenciaUsuario({ setTitulo }) {
     const [finishStep, setFinishStep] = useState(false)
     const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
+        if (location.state?.fromBack) return;
+
         if (user?.step > 3) {
             navigate("/home", { replace: true });
         } else if (user?.step === 3) {
@@ -78,6 +81,15 @@ export default function ReferenciaUsuario({ setTitulo }) {
 
     return (
         <div className="h-dvh overflow-hidden flex flex-col px-10 pt-6 pb-[env(safe-area-inset-bottom)] from-gray-900 to-gray-800 bg-gradient-to-br">
+
+            <div className="relative mb-2">
+                <div
+                    className="left-0 cursor-pointer inline-block"
+                    onClick={() => navigate("/escolhercategorias", { state: { fromBack: true } })}
+                >
+                    <i className="bi bi-arrow-left text-2xl text-white"></i>
+                </div>
+            </div>
 
             <div className="w-full max-w-md mx-auto text-center mb-6">
                 <div className="flex justify-center mb-3">

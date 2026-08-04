@@ -462,5 +462,18 @@
     "subscription_confirming": "お支払いを確認しています。少々お待ちください...",
     "subscription_success_desc": "Zaldemy+プランが有効になりました。すべてのプレミアム機能をお楽しみください！",
     "subscription_canceled_title": "登録が完了していません",
-    "subscription_canceled_desc": "決済を完了せずに離れました。いつでも再度お試しいただけます。"
+    "subscription_canceled_desc": "決済を完了せずに離れました。いつでも再度お試しいただけます。",
+    "choose_interests_prompt": "最初に何を学びたいですか？",
+    "choose_interests_subtitle": "{{max}}つの興味のある分野を選んでください - それに関するフレーズ付きのフラッシュカードを作成します。",
+    "choose_exactly_three": "興味のある分野をちょうど3つ選んでください",
+    "interest_categories_error": "1つ以上のカテゴリを作成できませんでした。もう一度お試しください。",
+    "generating_interest_categories": "カテゴリを作成中...（{{done}}/{{total}}）",
+    "interest_viagens": "旅行",
+    "interest_filmes_series": "映画とドラマ",
+    "interest_negocios": "ビジネス",
+    "interest_culinaria": "料理",
+    "interest_esportes": "スポーツ",
+    "interest_musica": "音楽",
+    "interest_tecnologia": "テクノロジー",
+    "interest_familia_amigos": "家族と友人"
 }

@@ -14,6 +14,7 @@ import EscolherIdiomaNativo from './pages/EscolherIdiomaNativo'
 import ListCategoria from './pages/listCategorias';
 import EscolherIdiomaAprender from './pages/EscolherIdiomaAprender'
 import EscolherNivel from './pages/EscolherNivel'
+import EscolherCategoriasInteresse from './pages/EscolherCategoriasInteresse'
 import AssinaturaSucesso from './pages/AssinaturaSucesso'
 import AssinaturaCancelada from './pages/AssinaturaCancelada'
 import Header from './includes/Header'
@@ -182,6 +183,15 @@ function Layout({ titulo, setTitulo }) {
           element={
             <PrivateRoute>
               <EscolherNivel user={user} />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/escolhercategorias"
+          element={
+            <PrivateRoute>
+              <EscolherCategoriasInteresse user={user} />
             </PrivateRoute>
           }
         />

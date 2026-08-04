@@ -462,5 +462,18 @@
     "subscription_confirming": "We bevestigen je betaling, een moment...",
     "subscription_success_desc": "Je Zaldemy+ abonnement is nu actief. Geniet van alle premiumfuncties!",
     "subscription_canceled_title": "Abonnement niet voltooid",
-    "subscription_canceled_desc": "Je hebt de checkout verlaten zonder af te ronden. Je kunt het opnieuw proberen wanneer je wilt."
+    "subscription_canceled_desc": "Je hebt de checkout verlaten zonder af te ronden. Je kunt het opnieuw proberen wanneer je wilt.",
+    "choose_interests_prompt": "Wat wil je als eerste leren?",
+    "choose_interests_subtitle": "Kies {{max}} interessegebieden - we maken kant-en-klare flashcards met zinnen hierover.",
+    "choose_exactly_three": "Kies precies 3 interessegebieden",
+    "interest_categories_error": "Kon een of meer categorieën niet aanmaken. Probeer het opnieuw.",
+    "generating_interest_categories": "Categorieën maken... ({{done}}/{{total}})",
+    "interest_viagens": "Reizen",
+    "interest_filmes_series": "Films en Series",
+    "interest_negocios": "Zaken",
+    "interest_culinaria": "Koken",
+    "interest_esportes": "Sport",
+    "interest_musica": "Muziek",
+    "interest_tecnologia": "Technologie",
+    "interest_familia_amigos": "Familie en Vrienden"
 }

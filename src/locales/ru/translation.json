@@ -462,5 +462,18 @@
     "subscription_confirming": "Мы подтверждаем ваш платёж, один момент...",
     "subscription_success_desc": "Ваш план Zaldemy+ теперь активен. Наслаждайтесь всеми премиум-функциями!",
     "subscription_canceled_title": "Подписка не завершена",
-    "subscription_canceled_desc": "Вы вышли из оплаты, не завершив её. Можете попробовать снова в любое время."
+    "subscription_canceled_desc": "Вы вышли из оплаты, не завершив её. Можете попробовать снова в любое время.",
+    "choose_interests_prompt": "Что бы вы хотели изучить в первую очередь?",
+    "choose_interests_subtitle": "Выберите {{max}} области интересов - мы создадим готовые карточки с фразами на эти темы.",
+    "choose_exactly_three": "Выберите ровно 3 области интересов",
+    "interest_categories_error": "Не удалось создать одну или несколько категорий. Попробуйте снова.",
+    "generating_interest_categories": "Создание категорий... ({{done}}/{{total}})",
+    "interest_viagens": "Путешествия",
+    "interest_filmes_series": "Фильмы и сериалы",
+    "interest_negocios": "Бизнес",
+    "interest_culinaria": "Кулинария",
+    "interest_esportes": "Спорт",
+    "interest_musica": "Музыка",
+    "interest_tecnologia": "Технологии",
+    "interest_familia_amigos": "Семья и друзья"
 }

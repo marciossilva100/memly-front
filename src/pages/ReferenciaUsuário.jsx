@@ -26,6 +26,10 @@ export default function ReferenciaUsuario({ setTitulo }) {
             navigate("/home", { replace: true });
         } else if (user?.step === 3) {
             navigate("/onboarding-tutorial", { replace: true });
+        } else if (user?.step > 1 && !user?.nivel) {
+            navigate("/escolhernivel", { replace: true });
+        } else if (user?.step > 1 && user?.nivel && !user?.interesses_definidos) {
+            navigate("/escolhercategorias", { replace: true });
         }
     }, [user]);
 

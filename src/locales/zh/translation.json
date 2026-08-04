@@ -462,5 +462,18 @@
     "subscription_confirming": "正在确认您的付款，请稍候...",
     "subscription_success_desc": "您的 Zaldemy+ 套餐现已生效。尽情体验所有高级功能吧！",
     "subscription_canceled_title": "订阅未完成",
-    "subscription_canceled_desc": "您未完成付款就离开了。您可以随时重新尝试。"
+    "subscription_canceled_desc": "您未完成付款就离开了。您可以随时重新尝试。",
+    "choose_interests_prompt": "你想先学习什么？",
+    "choose_interests_subtitle": "选择{{max}}个兴趣领域——我们会为你生成对应的现成单词卡和例句。",
+    "choose_exactly_three": "请正好选择3个兴趣领域",
+    "interest_categories_error": "无法创建一个或多个分类，请重试。",
+    "generating_interest_categories": "正在创建分类...（{{done}}/{{total}}）",
+    "interest_viagens": "旅行",
+    "interest_filmes_series": "电影与剧集",
+    "interest_negocios": "商务",
+    "interest_culinaria": "美食烹饪",
+    "interest_esportes": "体育",
+    "interest_musica": "音乐",
+    "interest_tecnologia": "科技",
+    "interest_familia_amigos": "家人与朋友"
 }

@@ -462,5 +462,18 @@
     "subscription_confirming": "نقوم بتأكيد دفعتك، لحظة من فضلك...",
     "subscription_success_desc": "خطة Zaldemy+ الخاصة بك نشطة الآن. استمتع بجميع الميزات المميزة!",
     "subscription_canceled_title": "لم يتم إتمام الاشتراك",
-    "subscription_canceled_desc": "لقد غادرت صفحة الدفع دون الانتهاء. يمكنك المحاولة مرة أخرى في أي وقت."
+    "subscription_canceled_desc": "لقد غادرت صفحة الدفع دون الانتهاء. يمكنك المحاولة مرة أخرى في أي وقت.",
+    "choose_interests_prompt": "ماذا تود أن تتعلم أولاً؟",
+    "choose_interests_subtitle": "اختر {{max}} مجالات اهتمام - سننشئ بطاقات تعليمية جاهزة بجمل عنها.",
+    "choose_exactly_three": "اختر 3 مجالات اهتمام بالضبط",
+    "interest_categories_error": "تعذر إنشاء فئة واحدة أو أكثر. حاول مرة أخرى.",
+    "generating_interest_categories": "جارٍ إنشاء الفئات... ({{done}}/{{total}})",
+    "interest_viagens": "السفر",
+    "interest_filmes_series": "أفلام ومسلسلات",
+    "interest_negocios": "الأعمال",
+    "interest_culinaria": "الطبخ",
+    "interest_esportes": "الرياضة",
+    "interest_musica": "الموسيقى",
+    "interest_tecnologia": "التكنولوجيا",
+    "interest_familia_amigos": "العائلة والأصدقاء"
 }

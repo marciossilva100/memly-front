@@ -462,5 +462,18 @@
     "subscription_confirming": "Ödemenizi onaylıyoruz, bir dakika...",
     "subscription_success_desc": "Zaldemy+ planınız artık aktif. Tüm premium özelliklerin keyfini çıkarın!",
     "subscription_canceled_title": "Abonelik tamamlanmadı",
-    "subscription_canceled_desc": "Ödemeyi tamamlamadan çıktınız. İstediğiniz zaman tekrar deneyebilirsiniz."
+    "subscription_canceled_desc": "Ödemeyi tamamlamadan çıktınız. İstediğiniz zaman tekrar deneyebilirsiniz.",
+    "choose_interests_prompt": "Önce ne öğrenmek istersin?",
+    "choose_interests_subtitle": "{{max}} ilgi alanı seçin - bunlarla ilgili hazır flash kartlar oluşturacağız.",
+    "choose_exactly_three": "Tam olarak 3 ilgi alanı seçin",
+    "interest_categories_error": "Bir veya daha fazla kategori oluşturulamadı. Tekrar deneyin.",
+    "generating_interest_categories": "Kategoriler oluşturuluyor... ({{done}}/{{total}})",
+    "interest_viagens": "Seyahat",
+    "interest_filmes_series": "Film ve Diziler",
+    "interest_negocios": "İş Dünyası",
+    "interest_culinaria": "Yemek",
+    "interest_esportes": "Spor",
+    "interest_musica": "Müzik",
+    "interest_tecnologia": "Teknoloji",
+    "interest_familia_amigos": "Aile ve Arkadaşlar"
 }

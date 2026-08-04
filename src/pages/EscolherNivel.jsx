@@ -22,7 +22,7 @@ export default function EscolherNivel() {
     if (user?.step <= 1) {
       navigate("/escolheridiomaaprender", { replace: true });
     } else if (user?.nivel) {
-      navigate("/referenciausuario", { replace: true });
+      navigate(user?.interesses_definidos ? "/referenciausuario" : "/escolhercategorias", { replace: true });
     }
   }, [user]);
 
@@ -60,7 +60,7 @@ export default function EscolherNivel() {
       setUser(prev => ({ ...(prev || {}), nivel }));
       await checkAuth(true);
 
-      navigate("/referenciausuario");
+      navigate("/escolhercategorias");
     } catch (error) {
       console.error(error);
       setErro(t("server_connection_error"));

@@ -462,5 +462,18 @@
     "subscription_confirming": "हम आपके भुगतान की पुष्टि कर रहे हैं, एक क्षण रुकें...",
     "subscription_success_desc": "आपका Zaldemy+ प्लान अब सक्रिय है। सभी प्रीमियम सुविधाओं का आनंद लें!",
     "subscription_canceled_title": "सदस्यता पूरी नहीं हुई",
-    "subscription_canceled_desc": "आपने भुगतान पूरा किए बिना छोड़ दिया। आप जब चाहें फिर से प्रयास कर सकते हैं।"
+    "subscription_canceled_desc": "आपने भुगतान पूरा किए बिना छोड़ दिया। आप जब चाहें फिर से प्रयास कर सकते हैं।",
+    "choose_interests_prompt": "आप सबसे पहले क्या सीखना चाहेंगे?",
+    "choose_interests_subtitle": "{{max}} रुचि के क्षेत्र चुनें - हम उनके बारे में वाक्यों के साथ तैयार फ्लैशकार्ड बनाएंगे।",
+    "choose_exactly_three": "बिल्कुल 3 रुचि के क्षेत्र चुनें",
+    "interest_categories_error": "एक या अधिक श्रेणियां नहीं बनाई जा सकीं। कृपया पुनः प्रयास करें।",
+    "generating_interest_categories": "श्रेणियां बनाई जा रही हैं... ({{done}}/{{total}})",
+    "interest_viagens": "यात्रा",
+    "interest_filmes_series": "फ़िल्में और सीरीज़",
+    "interest_negocios": "व्यवसाय",
+    "interest_culinaria": "खाना-पकाना",
+    "interest_esportes": "खेल",
+    "interest_musica": "संगीत",
+    "interest_tecnologia": "प्रौद्योगिकी",
+    "interest_familia_amigos": "परिवार और दोस्त"
 }

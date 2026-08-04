@@ -462,5 +462,18 @@
     "subscription_confirming": "Nous confirmons votre paiement, un instant...",
     "subscription_success_desc": "Votre abonnement Zaldemy+ est maintenant actif. Profitez de toutes les fonctionnalités premium !",
     "subscription_canceled_title": "Abonnement non finalisé",
-    "subscription_canceled_desc": "Vous avez quitté le paiement sans le terminer. Vous pouvez réessayer quand vous voulez."
+    "subscription_canceled_desc": "Vous avez quitté le paiement sans le terminer. Vous pouvez réessayer quand vous voulez.",
+    "choose_interests_prompt": "Qu'aimeriez-vous apprendre en premier ?",
+    "choose_interests_subtitle": "Choisissez {{max}} centres d'intérêt - nous créerons des flashcards prêts avec des phrases à ce sujet.",
+    "choose_exactly_three": "Choisissez exactement 3 centres d'intérêt",
+    "interest_categories_error": "Impossible de créer une ou plusieurs catégories. Réessayez.",
+    "generating_interest_categories": "Création des catégories... ({{done}}/{{total}})",
+    "interest_viagens": "Voyages",
+    "interest_filmes_series": "Films et Séries",
+    "interest_negocios": "Affaires",
+    "interest_culinaria": "Cuisine",
+    "interest_esportes": "Sports",
+    "interest_musica": "Musique",
+    "interest_tecnologia": "Technologie",
+    "interest_familia_amigos": "Famille et Amis"
 }

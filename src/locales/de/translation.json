@@ -462,5 +462,18 @@
     "subscription_confirming": "Wir bestätigen deine Zahlung, einen Moment...",
     "subscription_success_desc": "Dein Zaldemy+ Plan ist jetzt aktiv. Genieße alle Premium-Funktionen!",
     "subscription_canceled_title": "Abo nicht abgeschlossen",
-    "subscription_canceled_desc": "Du hast die Zahlung ohne Abschluss verlassen. Du kannst es jederzeit erneut versuchen."
+    "subscription_canceled_desc": "Du hast die Zahlung ohne Abschluss verlassen. Du kannst es jederzeit erneut versuchen.",
+    "choose_interests_prompt": "Was möchtest du zuerst lernen?",
+    "choose_interests_subtitle": "Wähle {{max}} Interessensgebiete - wir erstellen fertige Karteikarten mit passenden Sätzen.",
+    "choose_exactly_three": "Wähle genau 3 Interessensgebiete",
+    "interest_categories_error": "Eine oder mehrere Kategorien konnten nicht erstellt werden. Versuche es erneut.",
+    "generating_interest_categories": "Kategorien werden erstellt... ({{done}}/{{total}})",
+    "interest_viagens": "Reisen",
+    "interest_filmes_series": "Filme & Serien",
+    "interest_negocios": "Geschäft",
+    "interest_culinaria": "Kochen",
+    "interest_esportes": "Sport",
+    "interest_musica": "Musik",
+    "interest_tecnologia": "Technologie",
+    "interest_familia_amigos": "Familie & Freunde"
 }

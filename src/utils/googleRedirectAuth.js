@@ -20,6 +20,14 @@ export function startGoogleRedirectLogin(redirectPath) {
     window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
 }
 
+// Checagem não-destrutiva (não mexe na URL) - usada pelo AuthContext pra
+// saber se deve ceder a autenticação pro fluxo de redirecionamento do Google
+// em vez de rodar a checagem padrão em paralelo (ver comentário em
+// AuthContext.jsx sobre a corrida entre os dois).
+export function hasGoogleRedirectToken() {
+    return window.location.hash.includes("access_token");
+}
+
 export function consumeGoogleRedirectToken() {
     if (!window.location.hash.includes("access_token")) return null;
 

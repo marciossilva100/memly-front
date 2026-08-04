@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, useMemo, useCallback } from "react";
+import { hasGoogleRedirectToken } from "../utils/googleRedirectAuth";
 
 const AuthContext = createContext();
 
@@ -81,6 +82,19 @@ export function AuthProvider({ children }) {
   }, [checkAuth]);
 
   useEffect(() => {
+    // Se a URL tem um token de retorno do redirecionamento do Google (fluxo
+    // usado no PWA instalado, ver googleRedirectAuth.js), a checagem padrão
+    // aqui rodava em paralelo com o processamento desse token em Login.jsx -
+    // como essa checagem usa o token ANTIGO/ausente do localStorage, ela
+    // podia terminar depois e sobrescrever o usuário recém-autenticado de
+    // volta pra null, chutando o usuário pra tela de login sem erro nenhum
+    // (o login tinha funcionado, só foi sobrescrito). Cede a autenticação
+    // pro fluxo de redirecionamento nesse caso, em vez de rodar em paralelo.
+    if (hasGoogleRedirectToken()) {
+      setLoading(false);
+      return;
+    }
+
     checkAuth();
   }, [checkAuth]);
 

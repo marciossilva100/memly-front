@@ -264,9 +264,6 @@ export default function Home() {
             }
             setOpenModalSucesso(true)
             setMsgModalSucesso(translations.deletedSuccess ?? 'Excluído com sucesso')
-            setTimeout(() => {
-                setOpenModalSucesso(false);
-            }, 2500); // 3 segundos
             carregarCategorias();
 
 
@@ -597,7 +594,6 @@ export default function Home() {
                     setOpenModalSucesso(true);
                     setMsgModalSucesso(msgSucesso);
                 }}
-                setOpenModalSucesso={setOpenModalSucesso}
                 onSuccess={carregarCategorias}
                 onOpenPremium={(motivo) => {
                     setOpen(false);

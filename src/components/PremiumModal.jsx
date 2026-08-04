@@ -8,7 +8,6 @@ import {
   FileText,
   MessageSquare,
   CheckCircle,
-  BarChart3,
   Zap,
   Brain,
   ChevronRight,
@@ -72,6 +71,11 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
     },
     {
       icon: <FileText className="w-5 h-5" />,
+      title: t("detailed_reports_title"),
+      description: t("detailed_reports_desc")
+    },
+    {
+      icon: <Mic2 className="w-5 h-5" />,
       title: t("ai_texts_title"),
       description: t("ai_texts_desc")
     },
@@ -84,11 +88,6 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
       icon: <CheckCircle className="w-5 h-5" />,
       title: t("realtime_correction_title"),
       description: t("realtime_correction_desc")
-    },
-    {
-      icon: <BarChart3 className="w-5 h-5" />,
-      title: t("detailed_reports_title"),
-      description: t("detailed_reports_desc")
     },
     {
       icon: <Zap className="w-5 h-5" />,

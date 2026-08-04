@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 
 import { HelpCircle, List, FolderPlus, ChevronRight, Sparkles, Crown } from 'lucide-react';
 import { containsProfanity } from '../utils/contentFilter';
-export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onSuccess, setOpenModalSucesso, onOpenPremium }) {
+export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onSuccess, onOpenPremium }) {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { user } = useAuth();
@@ -73,9 +73,6 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
             setError('')
             onSuccess?.();
             onOpenModalSucesso(t("added_successfully"))
-            setTimeout(() => {
-                setOpenModalSucesso(false);
-            }, 2500); // 3 segundos
 
         } catch (error) {
             setError(error?.message || t("unexpected_error"))
@@ -132,9 +129,6 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
             setError('')
             onSuccess?.();
             onOpenModalSucesso(t("ai_category_success", { count: data.inseridas }))
-            setTimeout(() => {
-                setOpenModalSucesso(false);
-            }, 2500);
 
         } catch (error) {
             setError(error?.message || t("unexpected_error"))

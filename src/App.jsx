@@ -415,12 +415,14 @@ function App() {
   const [titulo, setTitulo] = useState('')
 
   useEffect(() => {
-    registerSW({
+    // Com registerType "prompt" (vite.config.js), o service worker novo só é
+    // ativado quando updateSW() é chamado - só recarrega se o usuário
+    // confirmar, e nunca sozinho no meio de alguma ação em andamento.
+    const updateSW = registerSW({
       onNeedRefresh() {
         console.log("Nova versão disponível");
-        // Adiciona confirmação antes de recarregar
         if (window.confirm(t("new_version_available_confirm"))) {
-          window.location.reload();
+          updateSW(true);
         }
       },
       onOfflineReady() {

@@ -125,7 +125,7 @@ export default function EscolherCategoriasInteresse() {
 
   return (
     <div className="h-dvh overflow-hidden flex flex-col px-8 pt-6 pb-[env(safe-area-inset-bottom)] from-gray-900 to-gray-800 bg-gradient-to-br">
-      <div className="flex-1 overflow-y-auto scrollbar-hide pb-28">
+      <div className="flex-1 overflow-y-auto scrollbar-hide pb-36">
         <div className="relative mb-2">
           <div
             className="left-0 cursor-pointer inline-block"
@@ -191,7 +191,7 @@ export default function EscolherCategoriasInteresse() {
         )}
       </div>
 
-      <div className="mt-auto pb-4 fixed bottom-0 left-0 w-full px-8">
+      <div className="fixed bottom-0 left-0 w-full px-8 pt-8 pb-[calc(1rem+env(safe-area-inset-bottom))] bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent">
         <button
           type="button"
           onClick={confirmar}

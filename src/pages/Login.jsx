@@ -164,7 +164,7 @@ export default function Login({ setTitulo }) {
         // PWA instalado (standalone): o popup do Google não consegue se
         // comunicar de volta com o app, então usamos redirecionamento de página inteira
         if (isStandalone) {
-            startGoogleRedirectLogin("/login");
+            startGoogleRedirectLogin();
             return;
         }
 

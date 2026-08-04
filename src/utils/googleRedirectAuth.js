@@ -5,8 +5,15 @@
 // standalone do Android, deixando o usuário preso na tela de login.
 const GOOGLE_CLIENT_ID = "1055075063152-tkobce7c2j9eq1t4doi0419votjlemis.apps.googleusercontent.com";
 
-export function startGoogleRedirectLogin(redirectPath) {
-    const redirectUri = window.location.origin + redirectPath;
+// Sempre usa /login como redirect_uri, mesmo quando chamado a partir de
+// outra tela (ex: Cadastro.jsx) - o backend processa o retorno do Google do
+// mesmo jeito (action: login_google) não importa de onde veio, então usar
+// uma rota fixa evita ter que cadastrar cada rota nova no Google Cloud
+// Console (Authorized redirect URIs) toda vez que um botão de Google surgir
+// em outra tela. Sem isso, cada rota nova batia em "Acesso bloqueado" até
+// alguém lembrar de liberá-la manualmente no console do Google.
+export function startGoogleRedirectLogin() {
+    const redirectUri = window.location.origin + "/login";
 
     const params = new URLSearchParams({
         client_id: GOOGLE_CLIENT_ID,

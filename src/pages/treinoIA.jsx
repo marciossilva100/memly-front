@@ -285,7 +285,7 @@ export default function TreinoIA() {
                                         </div>
 
                                         <div className="flex-1 flex items-center min-h-0">
-                                            <p className="text-xl text-white leading-relaxed text-center">
+                                            <p className="text-xl [@media(max-height:700px)]:text-lg text-white leading-relaxed text-center">
                                                 <TextoDestacado tokens={mostrarVocabulario ? fraseDestacada : null} texto={frase} />
                                             </p>
                                         </div>
@@ -304,21 +304,8 @@ export default function TreinoIA() {
 
                                     <div className="card-back rounded-2xl border border-gray-700 bg-gradient-to-br from-[#0d1425] to-[#233245] px-6 py-9 shadow-md flex flex-col items-center gap-3">
                                         <div className="flex-1 flex items-center min-h-0">
-                                            <p className="text-xl text-white leading-relaxed text-center">{fraseTraducao}</p>
+                                            <p className="text-xl [@media(max-height:700px)]:text-lg text-white leading-relaxed text-center">{fraseTraducao}</p>
                                         </div>
-
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                // Tradução é sempre no idioma nativo - voz gratuita sempre, mesmo padrão do
-                                                // lado da frente do flashcard em DigitarTexto.jsx.
-                                                playAudio(fraseTraducao, user, false, user?.native_language, true);
-                                            }}
-                                            className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-700/50 border border-gray-600 text-gray-300 text-xs hover:bg-gray-700 transition-colors"
-                                        >
-                                            <Volume2 className="w-3.5 h-3.5" />
-                                            {t("listen")}
-                                        </button>
                                     </div>
                                 </div>
                             </div>

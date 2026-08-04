@@ -9,13 +9,19 @@ import { containsProfanity } from '../utils/contentFilter';
 export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onSuccess, onOpenPremium }) {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const { user, checkAuth } = useAuth();
     const [categoria, setCategoria] = useState()
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [modo, setModo] = useState('inicial') // 'inicial' | 'manual' | 'ia'
     const [categoriaPublica, setCategoriaPublica] = useState(1)
     const API_URL = import.meta.env.VITE_API_URL;
+
+    // Bloqueia de cara (antes de abrir o formulário) quem não tem plano
+    // premium/limitado OU já usou a amostra grátis do limitado - sem isso, o
+    // usuário só descobria que não tinha mais acesso depois de preencher o
+    // formulário e tentar enviar.
+    const semAcessoCategoriaIA = (user?.plano !== 1 && user?.plano !== 3) || user?.categoria_ia_disponivel === false;
 
     useEffect(() => {
         setModo('inicial')
@@ -129,6 +135,9 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
             setError('')
             onSuccess?.();
             onOpenModalSucesso(t("ai_category_success", { count: data.inseridas }))
+            // Atualiza a cota (categoria_ia_disponivel) na hora, senão o
+            // limitado ainda veria a opção liberada até o próximo checkAuth.
+            checkAuth(true);
 
         } catch (error) {
             setError(error?.message || t("unexpected_error"))
@@ -228,10 +237,11 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
                                 type="button"
                                 className="group flex items-center gap-3 text-left py-3 px-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl w-full text-white hover:bg-gray-700/60 hover:border-gray-600 transition"
                                 onClick={() => {
-                                    // Free nunca tem acesso, nem pra tentar - mesmo padrão do
-                                    // botão Explorar (verifyPlan): nem abre o formulário,
-                                    // já manda direto pro PremiumModal.
-                                    if (user?.plano !== 1 && user?.plano !== 3) {
+                                    // Free nunca tem acesso, nem pra tentar, e o limitado que já
+                                    // usou a amostra grátis também não - mesmo padrão do botão
+                                    // Explorar (verifyPlan): nem abre o formulário, já manda
+                                    // direto pro PremiumModal.
+                                    if (semAcessoCategoriaIA) {
                                         setOpen(false);
                                         onOpenPremium?.("limite_gratuito");
                                         return;
@@ -245,7 +255,7 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
                                 <div className="flex-1">
                                     <p className="text-lg font-medium leading-tight flex items-center gap-1.5">
                                         {t("create_category_with_ai")}
-                                        {user?.plano !== 1 && user?.plano !== 3 && (
+                                        {semAcessoCategoriaIA && (
                                             <Crown size={14} className="text-yellow-400" />
                                         )}
                                     </p>

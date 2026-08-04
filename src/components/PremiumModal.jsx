@@ -9,11 +9,9 @@ import {
   MessageSquare,
   CheckCircle,
   Zap,
-  Brain,
   ChevronRight,
   Star,
   Shield,
-  Award,
   Rocket,
   Target,
   Gem,
@@ -147,7 +145,7 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
                     {t("premium_headline_part2")}
                   </span>
                 </h1>
-                <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+                <p className="text-lg text-gray-300 max-w-2xl mx-auto">
                   {t("premium_subtitle")}
                 </p>
               </div>
@@ -170,18 +168,18 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
                       <div className="text-center lg:text-left">
                         <div className="flex items-center justify-center lg:justify-start mb-1">
                           <span className="text-5xl font-bold text-white">US$ 4,90</span>
-                          <span className="text-gray-400 ml-2">{t("per_month")}</span>
+                          <span className="text-gray-300 ml-2">{t("per_month")}</span>
                         </div>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center justify-center lg:justify-start space-x-2">
                           <Star className="w-4 h-4 text-[#4cb8c4] fill-current" />
-                          <p className="text-sm text-gray-400">{t("save_up_to")}</p>
+                          <p className="text-sm text-gray-300">{t("save_up_to")}</p>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-3 bg-[#4cb8c4]/10 px-5 py-2 rounded-xl border border-[#4cb8c4]/20">
                         <Target className="w-5 h-5 text-[#4cb8c4]" />
                         <div>
-                          <p className="text-xs text-gray-400">{t("exclusive_content")}</p>
+                          <p className="text-xs text-gray-300">{t("exclusive_content")}</p>
                           <p className="font-bold text-[#4cb8c4] text-sm">{t("based_on_vocabulary")}</p>
                         </div>
                       </div>
@@ -201,14 +199,14 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
                         <div className="bg-gray-800/60 rounded-lg p-3 border border-gray-700">
                           <div className="flex items-center justify-between mb-1">
                             <span className="text-xs font-medium text-gray-300">{t("free_plan")}</span>
-                            <Volume2 className="w-3 h-3 text-gray-500" />
+                            <Volume2 className="w-3 h-3 text-gray-400" />
                           </div>
-                          <p className="text-xs text-gray-500 mb-1">{t("standard_voice")}</p>
+                          <p className="text-xs text-gray-400 mb-1">{t("standard_voice")}</p>
                           <div className="flex items-center gap-1">
-                            <WavesIcon className="w-3 h-3 text-gray-600" />
-                            <WavesIcon className="w-3 h-3 text-gray-600" />
-                            <WavesIcon className="w-3 h-3 text-gray-600" />
-                            <span className="text-xs text-gray-500 ml-1">{t("standard_quality")}</span>
+                            <WavesIcon className="w-3 h-3 text-gray-500" />
+                            <WavesIcon className="w-3 h-3 text-gray-500" />
+                            <WavesIcon className="w-3 h-3 text-gray-500" />
+                            <span className="text-xs text-gray-400 ml-1">{t("standard_quality")}</span>
                           </div>
                         </div>
 
@@ -232,7 +230,7 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
                         </div>
                       </div>
 
-                      <p className="text-xs text-gray-500 mt-2 italic">
+                      <p className="text-xs text-gray-400 mt-2 italic">
                         {t("audio_quality_note")}
                       </p>
                     </div>
@@ -252,30 +250,11 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
                               <h3 className="font-semibold text-white text-sm">
                                 {feature.title}
                               </h3>
-                              <p className="text-xs text-gray-500">{feature.description}</p>
+                              <p className="text-xs text-gray-300">{feature.description}</p>
                             </div>
                           </div>
                         </div>
                       ))}
-                    </div>
-
-                    {/* Benefícios exclusivos */}
-                    <div className="grid sm:grid-cols-3 gap-3 mb-6">
-                      <div className="bg-gray-900/50 rounded-xl p-3 text-center border border-gray-700">
-                        <Brain className="w-5 h-5 text-[#4cb8c4] mx-auto mb-1" />
-                        <p className="text-xs font-semibold text-gray-200">{t("adaptive_ai")}</p>
-                        <p className="text-xs text-gray-500">{t("adaptive_ai_desc")}</p>
-                      </div>
-                      <div className="bg-gray-900/50 rounded-xl p-3 text-center border border-gray-700">
-                        <Zap className="w-5 h-5 text-[#4cb8c4] mx-auto mb-1" />
-                        <p className="text-xs font-semibold text-gray-200">{t("smart_cache_label")}</p>
-                        <p className="text-xs text-gray-500">{t("smart_cache_label_desc")}</p>
-                      </div>
-                      <div className="bg-gray-900/50 rounded-xl p-3 text-center border border-gray-700">
-                        <Award className="w-5 h-5 text-[#4cb8c4] mx-auto mb-1" />
-                        <p className="text-xs font-semibold text-gray-200">{t("exclusive_content_label")}</p>
-                        <p className="text-xs text-gray-500">{t("exclusive_content_desc")}</p>
-                      </div>
                     </div>
 
                     {/* Botão de assinatura - só funciona na web (Stripe). No
@@ -303,15 +282,15 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
 
                     {/* Selos de garantia */}
                     <div className="flex flex-wrap justify-center gap-4">
-                      <div className="flex items-center text-xs text-gray-500">
+                      <div className="flex items-center text-xs text-gray-400">
                         <Shield className="w-3 h-3 text-[#4cb8c4] mr-1" />
                         {t("secure_payment")}
                       </div>
-                      <div className="flex items-center text-xs text-gray-500">
+                      <div className="flex items-center text-xs text-gray-400">
                         <CheckCircle className="w-3 h-3 text-[#4cb8c4] mr-1" />
                         {t("cancel_anytime")}
                       </div>
-                      <div className="flex items-center text-xs text-gray-500">
+                      <div className="flex items-center text-xs text-gray-400">
                         <Star className="w-3 h-3 text-[#4cb8c4] mr-1 fill-current" />
                         {t("money_back_guarantee")}
                       </div>
@@ -321,7 +300,7 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
                     <div className="text-center mt-4">
                       <button
                         onClick={onClose}
-                        className="text-xs text-gray-500 hover:text-gray-300 underline underline-offset-2 transition-colors"
+                        className="text-xs text-gray-400 hover:text-gray-200 underline underline-offset-2 transition-colors"
                       >
                         {t("continue_without_premium_voice")}
                       </button>

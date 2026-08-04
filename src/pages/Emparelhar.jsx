@@ -223,21 +223,25 @@ export default function JogoFrases() {
 
 
     return (
-      <div className="h-dvh flex items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br px-10">
-        <div className="bg-white p-10 rounded-2xl shadow-2xl text-center max-w-md">
-          <p className="text-xl mb-4">{mensagemFinal()}</p>
+      <div className="h-dvh flex items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br px-8">
+        <div className="w-full max-w-md bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-2xl shadow-2xl p-8 text-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 flex items-center justify-center text-3xl">
+            {porcentagem >= 80 ? "🏆" : porcentagem >= 60 ? "👏" : "💪"}
+          </div>
 
-          <div className="text-5xl font-extrabold text-indigo-600 mb-2">
+          <p className="text-lg text-white mb-2">{mensagemFinal()}</p>
+
+          <div className="text-5xl font-extrabold text-[#4cb8c4] mb-2">
             {porcentagem}%
           </div>
 
-          <p className="text-text mb-6">
+          <p className="text-gray-300 mb-6">
             {t("results_summary", { acertos, erros })}
           </p>
 
           <button
             onClick={() => navigate("/home")}
-            className="px-6 py-3 bg-indigo-600 text-white hover:bg-indigo-700 transition rounded-full"
+            className="w-full px-6 py-3 bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors rounded-full"
           >
             {t("back_to_home")}
           </button>

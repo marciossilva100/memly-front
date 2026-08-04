@@ -426,25 +426,29 @@ export default function DigitarTexto() {
                 : 0;
 
         return (
-            <div className="h-screen flex items-center justify-center bg-gradient-to-r from-[#4cb8c4] to-[#085078] px-10">
+            <div className="h-screen flex items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br px-8">
 
-                <div className="bg-white p-10 rounded-2xl shadow-2xl text-center max-w-md">
+                <div className="w-full max-w-md bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-2xl shadow-2xl p-8 text-center">
 
-                    <p className="text-xl mb-4">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 flex items-center justify-center text-3xl">
+                        {porcentagem >= 80 ? "🏆" : porcentagem >= 60 ? "👏" : "💪"}
+                    </div>
+
+                    <p className="text-lg text-white mb-2">
                         {t("training_finished")}
                     </p>
 
-                    <div className="text-5xl font-extrabold text-indigo-600 mb-2">
+                    <div className="text-5xl font-extrabold text-[#4cb8c4] mb-2">
                         {porcentagem}%
                     </div>
 
-                    <p className="text-gray-600 mb-6">
+                    <p className="text-gray-300 mb-6">
                         {t("results_summary", { acertos, erros })}
                     </p>
 
                     <button
                         onClick={() => navigate("/home")}
-                        className="px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors"
+                        className="w-full px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors"
                     >
                         {t("back_to_home")}
                     </button>

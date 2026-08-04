@@ -475,5 +475,8 @@
     "interest_esportes": "الرياضة",
     "interest_musica": "الموسيقى",
     "interest_tecnologia": "التكنولوجيا",
-    "interest_familia_amigos": "العائلة والأصدقاء"
+    "interest_familia_amigos": "العائلة والأصدقاء",
+    "highlighted_vocabulary_hint": "الكلمات المميزة هي جزء من مفرداتك",
+    "interests_selected_count": "تم اختيار {{done}} من {{total}}",
+    "choose_more_interests": "اختر {{count}} أخرى"
 }

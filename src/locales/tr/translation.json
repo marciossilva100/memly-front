@@ -475,5 +475,8 @@
     "interest_esportes": "Spor",
     "interest_musica": "Müzik",
     "interest_tecnologia": "Teknoloji",
-    "interest_familia_amigos": "Aile ve Arkadaşlar"
+    "interest_familia_amigos": "Aile ve Arkadaşlar",
+    "highlighted_vocabulary_hint": "Vurgulanan kelimeler kelime dağarcığının bir parçasıdır",
+    "interests_selected_count": "{{total}} kategoriden {{done}} seçildi",
+    "choose_more_interests": "{{count}} tane daha seç"
 }

@@ -3,6 +3,8 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { playAudio } from "../utils/audioPlayer";
 import { useTranslation } from "react-i18next";
+import PremiumModal from "../components/PremiumModal";
+import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 
 export default function JogoFrases() {
   const { t } = useTranslation();
@@ -34,6 +36,13 @@ export default function JogoFrases() {
   const API_URL = import.meta.env.VITE_API_URL;
   const [finalizado, setFinalizado] = useState(false);
   const { user } = useAuth();
+  const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+  const [motivoPremium, setMotivoPremium] = useState(null);
+
+  usePremiumLimitListener((motivo) => {
+    setMotivoPremium(motivo);
+    setIsPremiumModalOpen(true);
+  });
 
   const navigate = useNavigate();
 
@@ -290,6 +299,13 @@ export default function JogoFrases() {
           </div>
         </div>
       </div>
+
+      <PremiumModal
+        isOpen={isPremiumModalOpen}
+        setIsPremiumModalOpen={setIsPremiumModalOpen}
+        onClose={() => { setIsPremiumModalOpen(false); setMotivoPremium(null); }}
+        motivo={motivoPremium}
+      />
     </div>
   );
 }

@@ -475,5 +475,8 @@
     "interest_esportes": "खेल",
     "interest_musica": "संगीत",
     "interest_tecnologia": "प्रौद्योगिकी",
-    "interest_familia_amigos": "परिवार और दोस्त"
+    "interest_familia_amigos": "परिवार और दोस्त",
+    "highlighted_vocabulary_hint": "हाइलाइट किए गए शब्द आपकी शब्दावली का हिस्सा हैं",
+    "interests_selected_count": "{{total}} में से {{done}} चुनी गईं",
+    "choose_more_interests": "{{count}} और चुनें"
 }

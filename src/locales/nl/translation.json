@@ -475,5 +475,8 @@
     "interest_esportes": "Sport",
     "interest_musica": "Muziek",
     "interest_tecnologia": "Technologie",
-    "interest_familia_amigos": "Familie en Vrienden"
+    "interest_familia_amigos": "Familie en Vrienden",
+    "highlighted_vocabulary_hint": "De gemarkeerde woorden maken deel uit van jouw woordenschat",
+    "interests_selected_count": "{{done}} van {{total}} geselecteerd",
+    "choose_more_interests": "Kies er nog {{count}}"
 }

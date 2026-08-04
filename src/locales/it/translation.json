@@ -475,5 +475,8 @@
     "interest_esportes": "Sport",
     "interest_musica": "Musica",
     "interest_tecnologia": "Tecnologia",
-    "interest_familia_amigos": "Famiglia e Amici"
+    "interest_familia_amigos": "Famiglia e Amici",
+    "highlighted_vocabulary_hint": "Le parole evidenziate fanno parte del tuo vocabolario",
+    "interests_selected_count": "{{done}} di {{total}} selezionate",
+    "choose_more_interests": "Scegline altre {{count}}"
 }

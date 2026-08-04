@@ -475,5 +475,8 @@
     "interest_esportes": "Спорт",
     "interest_musica": "Музыка",
     "interest_tecnologia": "Технологии",
-    "interest_familia_amigos": "Семья и друзья"
+    "interest_familia_amigos": "Семья и друзья",
+    "highlighted_vocabulary_hint": "Выделенные слова — часть вашего словарного запаса",
+    "interests_selected_count": "Выбрано {{done}} из {{total}}",
+    "choose_more_interests": "Выберите ещё {{count}}"
 }

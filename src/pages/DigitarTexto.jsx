@@ -7,6 +7,8 @@ import { Volume, Play, Check, RefreshCw } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
+import PremiumModal from "../components/PremiumModal";
+import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 
 
 export default function DigitarTexto() {
@@ -36,6 +38,13 @@ export default function DigitarTexto() {
     const [nativeAudioPlayed, setNativeAudioPlayed] = useState(false);
     const { user, setUser } = useAuth();
     const flipTimeoutRef = useRef(null);
+    const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+    const [motivoPremium, setMotivoPremium] = useState(null);
+
+    usePremiumLimitListener((motivo) => {
+        setMotivoPremium(motivo);
+        setIsPremiumModalOpen(true);
+    });
 
     useEffect(() => {
 
@@ -728,6 +737,13 @@ export default function DigitarTexto() {
                 </div>
 
             )}
+
+            <PremiumModal
+                isOpen={isPremiumModalOpen}
+                setIsPremiumModalOpen={setIsPremiumModalOpen}
+                onClose={() => { setIsPremiumModalOpen(false); setMotivoPremium(null); }}
+                motivo={motivoPremium}
+            />
 
         </div>
 

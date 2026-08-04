@@ -475,5 +475,8 @@
     "interest_esportes": "스포츠",
     "interest_musica": "음악",
     "interest_tecnologia": "기술",
-    "interest_familia_amigos": "가족과 친구"
+    "interest_familia_amigos": "가족과 친구",
+    "highlighted_vocabulary_hint": "강조된 단어는 당신의 어휘에 포함된 단어입니다",
+    "interests_selected_count": "{{total}}개 중 {{done}}개 선택됨",
+    "choose_more_interests": "{{count}}개 더 선택하세요"
 }

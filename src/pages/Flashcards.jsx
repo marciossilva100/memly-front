@@ -7,6 +7,8 @@ import { Volume, RefreshCw } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
+import PremiumModal from "../components/PremiumModal";
+import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 
 export default function Flashcards() {
   const { t } = useTranslation();
@@ -30,6 +32,13 @@ export default function Flashcards() {
   const { user, setUser } = useAuth();
   const location = useLocation();
   const correctIds = location.state?.correctIds || [];
+  const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+  const [motivoPremium, setMotivoPremium] = useState(null);
+
+  usePremiumLimitListener((motivo) => {
+    setMotivoPremium(motivo);
+    setIsPremiumModalOpen(true);
+  });
 
   const FLIP_TIME = 8000;
   const FLIP_DURATION = 400;
@@ -496,6 +505,13 @@ export default function Flashcards() {
 
         )}
       </div>
+
+      <PremiumModal
+        isOpen={isPremiumModalOpen}
+        setIsPremiumModalOpen={setIsPremiumModalOpen}
+        onClose={() => { setIsPremiumModalOpen(false); setMotivoPremium(null); }}
+        motivo={motivoPremium}
+      />
 
     </div>
 

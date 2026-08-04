@@ -145,11 +145,15 @@ export default function EscolherCategoriasInteresse() {
           <p className="text-sm text-gray-400 mt-1">
             {t("choose_interests_subtitle", { max: MAXIMO_SELECIONAVEL })}
           </p>
+          <p className="text-sm font-medium text-[#4cb8c4] mt-2">
+            {t("interests_selected_count", { done: selecionados.length, total: MAXIMO_SELECIONAVEL })}
+          </p>
         </div>
 
         <div className="w-full max-w-md mx-auto grid grid-cols-2 gap-3">
           {INTERESSES.map((item) => {
-            const selecionado = selecionados.includes(item.key);
+            const posicao = selecionados.indexOf(item.key);
+            const selecionado = posicao !== -1;
             const desabilitado = !selecionado && selecionados.length >= MAXIMO_SELECIONAVEL;
 
             return (
@@ -158,12 +162,17 @@ export default function EscolherCategoriasInteresse() {
                 type="button"
                 disabled={desabilitado || enviando}
                 onClick={() => alternarSelecao(item.key)}
-                className={`flex flex-col items-center gap-2 px-4 py-5 rounded-2xl border text-center transition-colors disabled:opacity-40 ${
+                className={`relative flex flex-col items-center gap-2 px-4 py-5 rounded-2xl border text-center transition-colors disabled:opacity-40 ${
                   selecionado
                     ? "border-[#4cb8c4] bg-[#4cb8c4]/10"
                     : "border-gray-700 bg-gray-800/50 hover:bg-gray-700/50"
                 }`}
               >
+                {selecionado && (
+                  <span className="absolute top-2 right-2 w-5 h-5 rounded-full bg-[#4cb8c4] text-white text-xs font-bold flex items-center justify-center">
+                    {posicao + 1}
+                  </span>
+                )}
                 <div className={`w-11 h-11 rounded-full flex items-center justify-center ${
                   selecionado ? "bg-[#4cb8c4]/20" : "bg-gray-700/50"
                 }`}>
@@ -191,7 +200,9 @@ export default function EscolherCategoriasInteresse() {
         >
           {enviando
             ? t("generating_interest_categories", { done: progresso, total: MAXIMO_SELECIONAVEL })
-            : t("confirm")}
+            : selecionados.length < MAXIMO_SELECIONAVEL
+              ? t("choose_more_interests", { count: MAXIMO_SELECIONAVEL - selecionados.length })
+              : t("confirm")}
         </button>
       </div>
     </div>

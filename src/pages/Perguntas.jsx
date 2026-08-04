@@ -8,6 +8,7 @@ import useAudioRecorder from "../hooks/useAudioRecorder";
 import AudioPreviewPlayer from "../components/AudioPreviewPlayer";
 import PremiumModal from "../components/PremiumModal";
 import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
+import TextoDestacado from "../components/TextoDestacado";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
 function corNota(nota) {
@@ -25,6 +26,7 @@ export default function Perguntas() {
     const [questionId, setQuestionId] = useState(null)
     const [question, setQuestion] = useState('')
     const [questionTraducao, setQuestionTraducao] = useState('')
+    const [questionDestacada, setQuestionDestacada] = useState(null)
     const [flipped, setFlipped] = useState(false)
     const [numeroPergunta, setNumeroPergunta] = useState(null)
     const [totalPerguntas, setTotalPerguntas] = useState(null)
@@ -91,6 +93,7 @@ export default function Perguntas() {
                 setQuestionId(data.id);
                 setQuestion(data.question);
                 setQuestionTraducao(data.traducao || '');
+                setQuestionDestacada(data.question_destacada || null);
                 setNumeroPergunta(data.numero ?? null);
                 setTotalPerguntas(data.total ?? null);
             })
@@ -287,6 +290,13 @@ export default function Perguntas() {
                     </button>
                 </div>
 
+                {questionDestacada && !resultado && (
+                    <p className="text-center text-xs text-gray-500 mb-4 flex items-center justify-center gap-1.5">
+                        <span className="inline-block w-2.5 h-2.5 rounded-sm bg-[#4cb8c4]/40 shrink-0"></span>
+                        {t("highlighted_vocabulary_hint")}
+                    </p>
+                )}
+
                 {!resultado &&
                     <div>
                         <div className="perspective flex justify-center h-[460px]">
@@ -309,7 +319,9 @@ export default function Perguntas() {
                                         </div>
 
                                         <div className="flex-1 flex items-center min-h-0">
-                                            <p className="text-xl text-white leading-relaxed text-center">{question}</p>
+                                            <p className="text-xl text-white leading-relaxed text-center">
+                                                <TextoDestacado tokens={questionDestacada} texto={question} />
+                                            </p>
                                         </div>
 
                                         <button

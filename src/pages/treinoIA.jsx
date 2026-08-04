@@ -8,6 +8,7 @@ import useAudioRecorder from "../hooks/useAudioRecorder";
 import AudioPreviewPlayer from "../components/AudioPreviewPlayer";
 import PremiumModal from "../components/PremiumModal";
 import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
+import TextoDestacado from "../components/TextoDestacado";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
 function corNota(nota) {
@@ -31,6 +32,7 @@ export default function TreinoIA() {
     const [fraseId, setFraseId] = useState(null);
     const [frase, setFrase] = useState('');
     const [fraseTraducao, setFraseTraducao] = useState('');
+    const [fraseDestacada, setFraseDestacada] = useState(null);
     const [flipped, setFlipped] = useState(false);
     const [enviando, setEnviando] = useState(false);
     const [resultado, setResultado] = useState(null);
@@ -90,6 +92,7 @@ export default function TreinoIA() {
                 setFraseId(data.id);
                 setFrase(data.frase);
                 setFraseTraducao(data.traducao || '');
+                setFraseDestacada(data.frase_destacada || null);
             })
             .catch(err => {
                 console.error(err);
@@ -245,9 +248,16 @@ export default function TreinoIA() {
                     </button>
                 </div>
 
-                <h1 className="text-lg font-semibold text-white text-center mb-4">
+                <h1 className="text-lg font-semibold text-white text-center mb-2">
                     {t("daily_phrase_title")}
                 </h1>
+
+                {fraseDestacada && !resultado && (
+                    <p className="text-center text-xs text-gray-500 mb-4 flex items-center justify-center gap-1.5">
+                        <span className="inline-block w-2.5 h-2.5 rounded-sm bg-[#4cb8c4]/40 shrink-0"></span>
+                        {t("highlighted_vocabulary_hint")}
+                    </p>
+                )}
 
                 {!resultado && (
                     <>
@@ -264,7 +274,9 @@ export default function TreinoIA() {
                                         </div>
 
                                         <div className="flex-1 flex items-center min-h-0">
-                                            <p className="text-xl text-white leading-relaxed text-center">{frase}</p>
+                                            <p className="text-xl text-white leading-relaxed text-center">
+                                                <TextoDestacado tokens={fraseDestacada} texto={frase} />
+                                            </p>
                                         </div>
 
                                         <button

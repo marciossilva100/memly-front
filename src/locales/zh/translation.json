@@ -475,5 +475,8 @@
     "interest_esportes": "体育",
     "interest_musica": "音乐",
     "interest_tecnologia": "科技",
-    "interest_familia_amigos": "家人与朋友"
+    "interest_familia_amigos": "家人与朋友",
+    "highlighted_vocabulary_hint": "高亮的词汇是你已学词汇的一部分",
+    "interests_selected_count": "已选择 {{done}}/{{total}} 个",
+    "choose_more_interests": "再选择{{count}}个"
 }

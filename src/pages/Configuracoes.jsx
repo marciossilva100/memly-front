@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
-import { FileText, Shield, ShieldCheck, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2, Volume2, Check, Gauge, Bot, Crown, Play } from "lucide-react";
+import { FileText, Shield, ShieldCheck, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2, Volume2, Check, Gauge, Bot, Crown, Play, CreditCard, RotateCcw } from "lucide-react";
 import ModalConfirm from "../components/ModalConfirm";
 import ModalIA from "../components/ModalIA";
 import PremiumModal from "../components/PremiumModal";
@@ -38,7 +38,7 @@ function ItemMenu({ icone: Icone, titulo, onClick, cor = "text-gray-300" }) {
 export default function Configuracoes() {
     const navigate = useNavigate();
     const { t } = useTranslation();
-    const { logout, user } = useAuth();
+    const { logout, user, checkAuth } = useAuth();
     const isPremium = user?.plano === 1;
     const API_URL = import.meta.env.VITE_API_URL;
 
@@ -87,6 +87,10 @@ export default function Configuracoes() {
     const [excluindoConta, setExcluindoConta] = useState(false);
     const [erroExcluirConta, setErroExcluirConta] = useState('');
 
+    const [openModalCancelarAssinatura, setOpenModalCancelarAssinatura] = useState(false);
+    const [processandoAssinatura, setProcessandoAssinatura] = useState(false);
+    const [erroAssinatura, setErroAssinatura] = useState('');
+
     async function handleLogout() {
         await logout();
         navigate("/login");
@@ -122,6 +126,69 @@ export default function Configuracoes() {
             setOpenModalExcluirConta(false);
         } finally {
             setExcluindoConta(false);
+        }
+    }
+
+    async function handleCancelarAssinatura() {
+        setProcessandoAssinatura(true);
+        setErroAssinatura('');
+
+        try {
+            const res = await fetch(`${API_URL}/controller/assinatura.php`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({ action: 'cancelar' })
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                setErroAssinatura(data.message || t("unexpected_error"));
+                setOpenModalCancelarAssinatura(false);
+                return;
+            }
+
+            await checkAuth(true);
+            setOpenModalCancelarAssinatura(false);
+        } catch (error) {
+            console.error('Erro ao cancelar assinatura:', error);
+            setErroAssinatura(t("server_connection_error"));
+            setOpenModalCancelarAssinatura(false);
+        } finally {
+            setProcessandoAssinatura(false);
+        }
+    }
+
+    async function handleReativarAssinatura() {
+        setProcessandoAssinatura(true);
+        setErroAssinatura('');
+
+        try {
+            const res = await fetch(`${API_URL}/controller/assinatura.php`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({ action: 'reativar' })
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                setErroAssinatura(data.message || t("unexpected_error"));
+                return;
+            }
+
+            await checkAuth(true);
+        } catch (error) {
+            console.error('Erro ao reativar assinatura:', error);
+            setErroAssinatura(t("server_connection_error"));
+        } finally {
+            setProcessandoAssinatura(false);
         }
     }
 
@@ -432,6 +499,50 @@ export default function Configuracoes() {
                         </div>
                     </div>
 
+                    {isPremium && (
+                        <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 mb-3">
+                            <div className="flex items-center gap-3 mb-3">
+                                <CreditCard className="w-5 h-5 text-[#4cb8c4]" />
+                                <span className="text-white text-base">{t("subscription")}</span>
+                            </div>
+
+                            {user?.assinatura_cancelamento_previsto ? (
+                                <>
+                                    <p className="text-amber-300 text-sm mb-3">
+                                        {t("subscription_ends_on", {
+                                            date: new Date(user.assinatura_cancelamento_previsto).toLocaleDateString()
+                                        })}
+                                    </p>
+                                    <button
+                                        type="button"
+                                        onClick={handleReativarAssinatura}
+                                        disabled={processandoAssinatura}
+                                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#4cb8c4] hover:bg-[#3da5b0] disabled:opacity-60 text-white text-sm font-medium transition-colors"
+                                    >
+                                        <RotateCcw className="w-4 h-4" />
+                                        {t("reactivate_subscription")}
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <p className="text-gray-300 text-sm mb-3">{t("subscription_active")}</p>
+                                    <button
+                                        type="button"
+                                        onClick={() => setOpenModalCancelarAssinatura(true)}
+                                        disabled={processandoAssinatura}
+                                        className="w-full px-4 py-2.5 rounded-lg border border-gray-700 hover:bg-gray-700/50 disabled:opacity-60 text-gray-300 text-sm font-medium transition-colors"
+                                    >
+                                        {t("cancel_subscription")}
+                                    </button>
+                                </>
+                            )}
+
+                            {erroAssinatura && (
+                                <p className="text-red-400 text-xs mt-3">{erroAssinatura}</p>
+                            )}
+                        </div>
+                    )}
+
                     <div className="space-y-3">
                         <ItemMenu
                             icone={FileText}
@@ -480,6 +591,13 @@ export default function Configuracoes() {
                 setOpenModalConfirm={setOpenModalExcluirConta}
                 msg={t("delete_account_confirm_message")}
                 onConfirm={handleExcluirConta}
+            />
+
+            <ModalConfirm
+                openModalConfirm={openModalCancelarAssinatura}
+                setOpenModalConfirm={setOpenModalCancelarAssinatura}
+                msg={t("cancel_subscription_confirm_message")}
+                onConfirm={handleCancelarAssinatura}
             />
 
             <div className="sticky inset-x-0 bottom-0 z-10 text-center w-full justify-items-center justify-center items-center   ">

@@ -466,7 +466,6 @@
     "interest_musica": "Musica",
     "interest_tecnologia": "Tecnologia",
     "interest_familia_amigos": "Famiglia e Amici",
-    "highlighted_vocabulary_hint": "Le parole evidenziate fanno parte del tuo vocabolario",
     "interests_selected_count": "{{done}} di {{total}} selezionate",
     "choose_more_interests": "Scegline altre {{count}}",
     "subscription": "Abbonamento",
@@ -476,5 +475,6 @@
     "reactivate_subscription": "Riattiva abbonamento",
     "cancel_subscription_confirm_message": "Annullare il tuo abbonamento Zaldemy+? Manterrai l'accesso premium fino alla fine del periodo già pagato.",
     "based_on_vocabulary_title": "80% basato sul tuo vocabolario",
-    "based_on_vocabulary_desc": "I contenuti generati dall'IA usano principalmente parole che stai già studiando"
+    "based_on_vocabulary_desc": "I contenuti generati dall'IA usano principalmente parole che stai già studiando",
+    "toggle_vocabulary_hint": "Mostra le parole che sto già studiando"
 }

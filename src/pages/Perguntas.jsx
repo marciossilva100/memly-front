@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { Volume2, Mic, Square, RotateCcw, History, SkipForward, Send, MessageCircleQuestion, Ban, AlertCircle } from "lucide-react";
+import { Volume2, Mic, Square, RotateCcw, History, SkipForward, Send, MessageCircleQuestion, Ban, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { playAudio } from "../utils/audioPlayer";
 import { useAuth } from "../context/AuthContext";
@@ -27,6 +27,7 @@ export default function Perguntas() {
     const [question, setQuestion] = useState('')
     const [questionTraducao, setQuestionTraducao] = useState('')
     const [questionDestacada, setQuestionDestacada] = useState(null)
+    const [mostrarVocabulario, setMostrarVocabulario] = useState(false)
     const [flipped, setFlipped] = useState(false)
     const [numeroPergunta, setNumeroPergunta] = useState(null)
     const [totalPerguntas, setTotalPerguntas] = useState(null)
@@ -291,10 +292,20 @@ export default function Perguntas() {
                 </div>
 
                 {questionDestacada && !resultado && (
-                    <p className="text-center text-xs text-gray-500 mb-4 flex items-center justify-center gap-1.5">
-                        <span className="inline-block w-2.5 h-2.5 rounded-sm bg-[#4cb8c4]/40 shrink-0"></span>
-                        {t("highlighted_vocabulary_hint")}
-                    </p>
+                    <div className="flex justify-center mb-4">
+                        <button
+                            type="button"
+                            onClick={() => setMostrarVocabulario(prev => !prev)}
+                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs transition-colors ${
+                                mostrarVocabulario
+                                    ? "bg-[#4cb8c4]/10 border-[#4cb8c4]/30 text-[#4cb8c4]"
+                                    : "bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-700/50"
+                            }`}
+                        >
+                            {mostrarVocabulario ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                            {t("toggle_vocabulary_hint")}
+                        </button>
+                    </div>
                 )}
 
                 {!resultado &&
@@ -320,7 +331,7 @@ export default function Perguntas() {
 
                                         <div className="flex-1 flex items-center min-h-0">
                                             <p className="text-xl text-white leading-relaxed text-center">
-                                                <TextoDestacado tokens={questionDestacada} texto={question} />
+                                                <TextoDestacado tokens={mostrarVocabulario ? questionDestacada : null} texto={question} />
                                             </p>
                                         </div>
 

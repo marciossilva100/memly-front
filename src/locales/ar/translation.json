@@ -466,7 +466,6 @@
     "interest_musica": "الموسيقى",
     "interest_tecnologia": "التكنولوجيا",
     "interest_familia_amigos": "العائلة والأصدقاء",
-    "highlighted_vocabulary_hint": "الكلمات المميزة هي جزء من مفرداتك",
     "interests_selected_count": "تم اختيار {{done}} من {{total}}",
     "choose_more_interests": "اختر {{count}} أخرى",
     "subscription": "الاشتراك",
@@ -476,5 +475,6 @@
     "reactivate_subscription": "إعادة تفعيل الاشتراك",
     "cancel_subscription_confirm_message": "هل تريد إلغاء اشتراكك في Zaldemy+؟ ستحتفظ بالوصول المميز حتى نهاية الفترة المدفوعة بالفعل.",
     "based_on_vocabulary_title": "80% مبني على مفرداتك",
-    "based_on_vocabulary_desc": "المحتوى الذي ينشئه الذكاء الاصطناعي يستخدم غالبًا كلمات تدرسها بالفعل"
+    "based_on_vocabulary_desc": "المحتوى الذي ينشئه الذكاء الاصطناعي يستخدم غالبًا كلمات تدرسها بالفعل",
+    "toggle_vocabulary_hint": "إظهار الكلمات التي أدرسها"
 }

@@ -466,7 +466,6 @@
     "interest_musica": "Müzik",
     "interest_tecnologia": "Teknoloji",
     "interest_familia_amigos": "Aile ve Arkadaşlar",
-    "highlighted_vocabulary_hint": "Vurgulanan kelimeler kelime dağarcığının bir parçasıdır",
     "interests_selected_count": "{{total}} kategoriden {{done}} seçildi",
     "choose_more_interests": "{{count}} tane daha seç",
     "subscription": "Abonelik",
@@ -476,5 +475,6 @@
     "reactivate_subscription": "Aboneliği yeniden etkinleştir",
     "cancel_subscription_confirm_message": "Zaldemy+ aboneliğini iptal etmek istiyor musun? Zaten ödediğin dönemin sonuna kadar premium erişimin devam eder.",
     "based_on_vocabulary_title": "%80'i kelime dağarcığına dayalı",
-    "based_on_vocabulary_desc": "Yapay zekanın oluşturduğu içerik ağırlıklı olarak zaten çalıştığın kelimeleri kullanır"
+    "based_on_vocabulary_desc": "Yapay zekanın oluşturduğu içerik ağırlıklı olarak zaten çalıştığın kelimeleri kullanır",
+    "toggle_vocabulary_hint": "Zaten çalıştığım kelimeleri göster"
 }

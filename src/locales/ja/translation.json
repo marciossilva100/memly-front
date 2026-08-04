@@ -466,7 +466,6 @@
     "interest_musica": "音楽",
     "interest_tecnologia": "テクノロジー",
     "interest_familia_amigos": "家族と友人",
-    "highlighted_vocabulary_hint": "ハイライトされた単語はあなたの語彙の一部です",
     "interests_selected_count": "{{total}}件中{{done}}件を選択済み",
     "choose_more_interests": "あと{{count}}件選んでください",
     "subscription": "サブスクリプション",
@@ -476,5 +475,6 @@
     "reactivate_subscription": "サブスクリプションを再開",
     "cancel_subscription_confirm_message": "Zaldemy+のサブスクリプションを解約しますか？すでに支払い済みの期間が終わるまでプレミアムアクセスは継続します。",
     "based_on_vocabulary_title": "あなたの語彙に基づいて80%カスタマイズ",
-    "based_on_vocabulary_desc": "AIが生成するコンテンツは主にあなたがすでに学習している単語を使います"
+    "based_on_vocabulary_desc": "AIが生成するコンテンツは主にあなたがすでに学習している単語を使います",
+    "toggle_vocabulary_hint": "学習中の単語を表示"
 }

@@ -474,7 +474,7 @@ export default function DigitarTexto() {
 
         <div style={{ height: vh, top: viewportTop }} className="fixed inset-x-0 flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br digitar-texto px-6 pb-5 overscroll-none">
 
-            <div ref={contentRef} className="flex-1 overflow-y-auto overscroll-contain scrollbar-hide pt-3">
+            <div ref={contentRef} className="flex-1 overflow-y-auto overscroll-contain scrollbar-hide pt-3 pb-24">
 
                 <div className="relative text-left mb-4 text-white">
 
@@ -673,7 +673,7 @@ export default function DigitarTexto() {
                     <div>
 
 
-                        <div className=" flex sticky bottom-6 w-full flex justify-center gap-3 ">
+                        <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-3">
 
                             <button
                                 onClick={(e) => {
@@ -699,19 +699,14 @@ export default function DigitarTexto() {
                 ) : (
                     <div>
 
+                        <div className="absolute bottom-6 left-0 right-0">
 
-                        <div className=" sticky ">
-
-                            <div className="left-0 w-full bottom-0">
-
-                                <button
-                                    onClick={nextCard}
-                                    className="w-full px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium text-lg transition-colors"
-                                >
-                                    {t("next")}
-                                </button>
-
-                            </div>
+                            <button
+                                onClick={nextCard}
+                                className="w-full px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium text-lg transition-colors"
+                            >
+                                {t("next")}
+                            </button>
 
                         </div>
                     </div>
@@ -722,7 +717,7 @@ export default function DigitarTexto() {
 
             {!isFlipped && (!diff || !diff.isCorrect) && (
 
-                <div className="sticky bottom-6 w-full  pt-4 flex gap-3">
+                <div className="absolute bottom-6 left-0 right-0 flex gap-3">
 
 
                     <button

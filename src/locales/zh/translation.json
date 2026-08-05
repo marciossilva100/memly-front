@@ -476,5 +476,7 @@
     "cancel_subscription_confirm_message": "确定要取消 Zaldemy+ 订阅吗？在已付费周期结束前你仍可使用高级功能。",
     "based_on_vocabulary_title": "80% 基于你的词汇量",
     "based_on_vocabulary_desc": "AI 生成的内容主要使用你已经在学习的单词",
-    "toggle_vocabulary_hint": "显示我正在学习的单词"
+    "toggle_vocabulary_hint": "显示我正在学习的单词",
+    "no_vocabulary_matched": "这句话中没有识别到你词汇表中的任何单词",
+    "ia_gerando_conteudo": "AI 正在生成您的内容..."
 }

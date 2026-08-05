@@ -476,5 +476,7 @@
     "cancel_subscription_confirm_message": "Annullare il tuo abbonamento Zaldemy+? Manterrai l'accesso premium fino alla fine del periodo già pagato.",
     "based_on_vocabulary_title": "80% basato sul tuo vocabolario",
     "based_on_vocabulary_desc": "I contenuti generati dall'IA usano principalmente parole che stai già studiando",
-    "toggle_vocabulary_hint": "Mostra le parole che sto già studiando"
+    "toggle_vocabulary_hint": "Mostra le parole che sto già studiando",
+    "no_vocabulary_matched": "Nessuna parola del tuo vocabolario è stata riconosciuta in questa frase",
+    "ia_gerando_conteudo": "L'IA sta generando il tuo contenuto..."
 }

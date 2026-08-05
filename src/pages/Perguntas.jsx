@@ -184,12 +184,13 @@ export default function Perguntas() {
 
     if (loading) {
         return (
-            <div className="flex h-screen items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
+            <div className="flex h-screen flex-col items-center justify-center gap-4 from-gray-900 to-gray-800 bg-gradient-to-br">
                 <img
                     src={imgChapeuFormatura}
                     alt={t("loading")}
                     className="w-28 animate-pulse"
                 />
+                <p className="text-gray-400 text-sm">{t("ia_gerando_conteudo")}</p>
             </div>
         );
     }
@@ -292,7 +293,7 @@ export default function Perguntas() {
                 </div>
 
                 {questionDestacada && !resultado && (
-                    <div className="flex justify-center mb-4">
+                    <div className="flex flex-col items-center mb-4 gap-1.5">
                         <button
                             type="button"
                             onClick={() => setMostrarVocabulario(prev => !prev)}
@@ -305,6 +306,9 @@ export default function Perguntas() {
                             {mostrarVocabulario ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                             {t("toggle_vocabulary_hint")}
                         </button>
+                        {mostrarVocabulario && !questionDestacada.some(t => t.destaque) && (
+                            <p className="text-gray-500 text-xs">{t("no_vocabulary_matched")}</p>
+                        )}
                     </div>
                 )}
 

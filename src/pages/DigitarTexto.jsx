@@ -538,7 +538,7 @@ export default function DigitarTexto() {
                     <div className="text-center flex justify-center mt-5 [@media(max-height:700px)]:mt-2">
                         <button onClick={(e) => {
                             e.preventDefault();
-                            playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, mode !== "traine");
+                            playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, mode === "learn");
                         }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors">
                             <Volume className="w-4 h-4" />
                             {t("listen")}

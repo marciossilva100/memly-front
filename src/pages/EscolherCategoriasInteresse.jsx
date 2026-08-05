@@ -56,8 +56,8 @@ export default function EscolherCategoriasInteresse() {
   }
 
   async function confirmar() {
-    if (selecionados.length !== MAXIMO_SELECIONAVEL) {
-      setErro(t("choose_exactly_three"));
+    if (selecionados.length < 1) {
+      setErro(t("choose_at_least_one_interest"));
       return;
     }
 
@@ -143,7 +143,7 @@ export default function EscolherCategoriasInteresse() {
             {t("choose_interests_prompt")}
           </h4>
           <p className="text-sm text-gray-400 mt-1">
-            {t("choose_interests_subtitle", { max: MAXIMO_SELECIONAVEL })}
+            {t("choose_interests_subtitle_up_to", { max: MAXIMO_SELECIONAVEL })}
           </p>
           <p className="text-sm font-medium text-[#4cb8c4] mt-2">
             {t("interests_selected_count", { done: selecionados.length, total: MAXIMO_SELECIONAVEL })}
@@ -195,13 +195,13 @@ export default function EscolherCategoriasInteresse() {
         <button
           type="button"
           onClick={confirmar}
-          disabled={enviando || selecionados.length !== MAXIMO_SELECIONAVEL}
+          disabled={enviando || selecionados.length < 1}
           className="block w-full max-w-md mx-auto bg-[#4cb8c4] hover:bg-[#3da5b0] disabled:opacity-50 text-white font-medium py-3 rounded-full transition text-center"
         >
           {enviando
-            ? t("generating_interest_categories", { done: progresso, total: MAXIMO_SELECIONAVEL })
-            : selecionados.length < MAXIMO_SELECIONAVEL
-              ? t("choose_more_interests", { count: MAXIMO_SELECIONAVEL - selecionados.length })
+            ? t("generating_interest_categories", { done: progresso, total: selecionados.length })
+            : selecionados.length < 1
+              ? t("choose_at_least_one_interest")
               : t("confirm")}
         </button>
       </div>

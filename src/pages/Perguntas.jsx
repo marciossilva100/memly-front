@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { Volume2, Mic, Square, RotateCcw, History, SkipForward, Send, MessageCircleQuestion, Ban, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { Volume2, Mic, Square, RotateCcw, History, SkipForward, Send, MessageCircleQuestion, Ban, AlertCircle, Eye, EyeOff, Keyboard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { playAudio } from "../utils/audioPlayer";
 import { useAuth } from "../context/AuthContext";
@@ -33,6 +33,8 @@ export default function Perguntas() {
     const [totalPerguntas, setTotalPerguntas] = useState(null)
     const [resultado, setResultado] = useState(null)
     const [enviando, setEnviando] = useState(false)
+    const [modoTexto, setModoTexto] = useState(false)
+    const [respostaTexto, setRespostaTexto] = useState("")
     const jaBuscou = useRef(false);
     const navigate = useNavigate();
     const { user } = useAuth();
@@ -56,6 +58,8 @@ export default function Perguntas() {
         setAudioVazio(false);
         setPerguntaEncerrada(false);
         setFlipped(false);
+        setModoTexto(false);
+        setRespostaTexto("");
         limpar();
 
         fetch(`${API_URL}/controller/DailyQuestionController.php`, {
@@ -172,6 +176,45 @@ export default function Perguntas() {
         }
     }
 
+    async function enviarRespostaTexto() {
+        if (!respostaTexto.trim()) return;
+
+        setEnviando(true);
+        setError(null);
+
+        try {
+            const formData = new FormData();
+            formData.append('action', 'responder_texto');
+            formData.append('question_id', questionId);
+            formData.append('resposta', respostaTexto);
+
+            const res = await fetch(`${API_URL}/controller/DailyQuestionController.php`, {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: formData
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                setError(data.message || t("unexpected_error"));
+                if (data.pode_tentar_novamente === false) {
+                    setPerguntaEncerrada(true);
+                }
+                return;
+            }
+
+            setResultado(data);
+        } catch (err) {
+            console.error(err);
+            setError(t("server_connection_error"));
+        } finally {
+            setEnviando(false);
+        }
+    }
+
     function proximaPergunta() {
         setResultado(null);
         fetchQuestion();
@@ -179,6 +222,7 @@ export default function Perguntas() {
 
     function tentarNovamente() {
         setResultado(null);
+        setRespostaTexto("");
         limpar();
     }
 
@@ -363,7 +407,7 @@ export default function Perguntas() {
                         <p className="text-center text-gray-500 text-xs mt-2">{t("tap_card_to_flip")}</p>
 
                         <div className={`mt-10 flex flex-col items-center gap-4 ${flipped ? "hidden" : ""}`}>
-                            {!audioUrl && !gravando && (
+                            {!modoTexto && !audioUrl && !gravando && (
                                 <button
                                     onClick={() => { setError(null); setAudioVazio(false); iniciarGravacao(); }}
                                     className="relative w-20 h-20 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] flex items-center justify-center shadow-lg shadow-[#4cb8c4]/20 transition"
@@ -372,7 +416,7 @@ export default function Perguntas() {
                                 </button>
                             )}
 
-                            {gravando && (
+                            {!modoTexto && gravando && (
                                 <button
                                     onClick={pararGravacao}
                                     className="relative w-20 h-20 rounded-full bg-red-600 flex items-center justify-center shadow-lg"
@@ -382,15 +426,26 @@ export default function Perguntas() {
                                 </button>
                             )}
 
-                            {gravando && (
+                            {!modoTexto && gravando && (
                                 <p className="text-red-400 text-sm font-medium">{t("recording_in_progress")}</p>
                             )}
 
-                            {!gravando && !audioUrl && (
+                            {!modoTexto && !gravando && !audioUrl && (
                                 <p className="text-gray-500 text-xs text-center max-w-[220px]">{t("tap_mic_to_answer")}</p>
                             )}
 
-                            {audioUrl && !gravando && !perguntaEncerrada && (
+                            {!modoTexto && !gravando && !audioUrl && (
+                                <button
+                                    type="button"
+                                    onClick={() => { setError(null); setModoTexto(true); }}
+                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-gray-300 text-xs hover:bg-gray-700/50 transition-colors"
+                                >
+                                    <Keyboard className="w-3.5 h-3.5" />
+                                    {t("type_answer")}
+                                </button>
+                            )}
+
+                            {!modoTexto && audioUrl && !gravando && !perguntaEncerrada && (
                                 <div className="w-full flex flex-col items-center gap-3">
                                     <AudioPreviewPlayer src={audioUrl} />
 
@@ -412,6 +467,37 @@ export default function Perguntas() {
                                         >
                                             <RotateCcw className="w-4 h-4" />
                                             {t("re_record")}
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {modoTexto && !perguntaEncerrada && (
+                                <div className="w-full flex flex-col items-center gap-3">
+                                    <textarea
+                                        value={respostaTexto}
+                                        onChange={(e) => setRespostaTexto(e.target.value)}
+                                        placeholder={t("type_answer_placeholder")}
+                                        rows={3}
+                                        className="w-full px-4 py-3 rounded-xl bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white text-base placeholder:text-gray-500 focus:outline-none focus:border-[#4cb8c4] resize-none"
+                                    />
+
+                                    <div className="flex flex-col gap-3 w-full">
+                                        <button
+                                            onClick={enviarRespostaTexto}
+                                            disabled={enviando || !respostaTexto.trim()}
+                                            className="w-full px-4 py-2.5 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] disabled:opacity-50 text-white text-lg font-medium flex items-center justify-center gap-2 transition-colors"
+                                        >
+                                            <Send className="w-4 h-4" />
+                                            {enviando ? t("sending") : t("send")}
+                                        </button>
+
+                                        <button
+                                            onClick={() => { setError(null); setModoTexto(false); setRespostaTexto(""); }}
+                                            className="w-full px-4 py-2.5 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white text-lg font-medium flex items-center justify-center gap-2 hover:bg-gray-700/50 transition-colors"
+                                        >
+                                            <Mic className="w-4 h-4" />
+                                            {t("answer_by_voice")}
                                         </button>
                                     </div>
                                 </div>

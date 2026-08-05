@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { playAudio } from "../utils/audioPlayer";
 import { Heart, Trophy, Loader2, CloudRain, Check, Volume2 } from "lucide-react";
+import PremiumModal from "../components/PremiumModal";
 
 const AVATAR_COLORS = [
     'bg-emerald-500',
@@ -90,6 +91,9 @@ export default function ChuvaFrases() {
     const [vidas, setVidas] = useState(VIDAS_INICIAIS);
     const [explodindo, setExplodindo] = useState(null);
 
+    const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+    const [motivoPremium, setMotivoPremium] = useState(null);
+
     const uidRef = useRef(0);
     const areaRef = useRef(null);
     // ids de frases já usadas como alvo nesse ciclo - só controla a ordem de
@@ -124,6 +128,33 @@ export default function ChuvaFrases() {
                 ? prev.filter((id) => id !== categoria.id)
                 : [...prev, categoria.id]
         );
+    }
+
+    // Premium joga sem limite; Limitado tem uma amostra vitalícia; Free é
+    // bloqueado - checagem separada da busca de frases porque não depende de
+    // categoria (uma partida pode juntar frases de várias categorias).
+    function verificarAcessoEJogar(categoriasParaJogar) {
+        fetch(`${API_URL}/controller/jogoChuvaFrases.php`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token"),
+            },
+            body: JSON.stringify({ action: "verificar_acesso" }),
+        })
+            .then((r) => r.json())
+            .then((data) => {
+                if (!data.success) {
+                    setMotivoPremium("limite_gratuito");
+                    setIsPremiumModalOpen(true);
+                    return;
+                }
+                iniciarJogo(categoriasParaJogar);
+            })
+            .catch(() => {
+                // erro de rede - não libera o jogo (evita burlar o limite);
+                // usuário pode tentar de novo.
+            });
     }
 
     function iniciarJogo(categoriasParaJogar) {
@@ -226,15 +257,6 @@ export default function ChuvaFrases() {
         if (!alvo) return;
         playAudio(alvo.texto_traduzido, user, false, null, true, true).catch(() => { });
     }
-
-    // toca o áudio da frase alvo (no idioma que o aluno está aprendendo) toda
-    // vez que ela muda - dá a dica em voz assim que a rodada começa, em vez
-    // de só no acerto.
-    useEffect(() => {
-        if (fase !== "jogando" || !alvo) return;
-        tocarAudioAlvo();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [alvo]);
 
     // spawn das frases caindo
     useEffect(() => {
@@ -365,7 +387,7 @@ export default function ChuvaFrases() {
 
     function jogarDeNovo() {
         if (categoriasEscolhidas.length > 0) {
-            iniciarJogo(categoriasEscolhidas);
+            verificarAcessoEJogar(categoriasEscolhidas);
         }
     }
 
@@ -447,7 +469,7 @@ export default function ChuvaFrases() {
                     {selecionadas.length > 0 && (
                         <button
                             onClick={() =>
-                                iniciarJogo(categorias.filter((c) => selecionadas.includes(c.id)))
+                                verificarAcessoEJogar(categorias.filter((c) => selecionadas.includes(c.id)))
                             }
                             className="w-full px-6 py-3 mb-4 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors shrink-0"
                         >
@@ -504,9 +526,9 @@ export default function ChuvaFrases() {
                                 key={item.uid}
                                 onClick={(e) => handleToque(item, e)}
                                 onAnimationEnd={() => handleFimDaQueda(item)}
-                                className={`chuva-item px-3 py-2 rounded-2xl border text-sm font-medium text-center transition-colors ${item.estado === "errada"
-                                        ? "bg-red-500/80 border-red-400 text-white"
-                                        : "bg-gray-800/80 border-gray-600 text-white"
+                                className={`chuva-item px-3 py-2 rounded-2xl text-sm font-medium text-center transition-colors ${item.estado === "errada"
+                                        ? "bg-red-500/80 text-white"
+                                        : "bg-gray-800/80 text-white"
                                     }`}
                                 style={{
                                     left: `${RAIAS[item.raia]}%`,
@@ -559,6 +581,13 @@ export default function ChuvaFrases() {
                     </div>
                 </div>
             )}
+
+            <PremiumModal
+                isOpen={isPremiumModalOpen}
+                setIsPremiumModalOpen={setIsPremiumModalOpen}
+                onClose={() => { setIsPremiumModalOpen(false); setMotivoPremium(null); }}
+                motivo={motivoPremium}
+            />
         </div>
     );
 }

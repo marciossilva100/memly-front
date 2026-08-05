@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 
 
-import { BookOpen, BarChart3, Bot, Plus, Home as HomeIcon, CheckCircle2, Flame, CloudRain, Crown } from "lucide-react";
+import { BookOpen, BarChart3, Bot, Plus, Home as HomeIcon, CheckCircle2, Flame, Gamepad2, Crown } from "lucide-react";
 
 const AVATAR_COLORS = [
     'bg-emerald-500',
@@ -58,6 +58,7 @@ export default function Home() {
     const [deleteId, setDeleteId] = useState(0)
     const [streak, setStreak] = useState(0)
     const [totalAprendidas, setTotalAprendidas] = useState(0)
+    const [jogoChuvaBloqueado, setJogoChuvaBloqueado] = useState(false)
     const { t } = useTranslation();
     const API_URL = import.meta.env.VITE_API_URL;
 
@@ -131,6 +132,37 @@ export default function Home() {
             .then(data => setStreak(data?.streak ?? 0))
             .catch(() => setStreak(0));
     }, [user?.native_language, user?.learning_language, user?.id]);
+
+    // Coroa no ícone do jogo quando o acesso está bloqueado: free (sempre) ou
+    // limitado que já gastou a amostra grátis. Premium nunca busca (nunca
+    // bloqueado). Usa 'status_acesso' (só consulta, não gasta amostra) -
+    // nunca a 'verificar_acesso' aqui, que registraria uma partida a cada
+    // vez que a Home carrega.
+    useEffect(() => {
+        if (!user?.id) return;
+
+        if (user.plano === 1) {
+            setJogoChuvaBloqueado(false);
+            return;
+        }
+
+        if (user.plano !== 3) {
+            setJogoChuvaBloqueado(true);
+            return;
+        }
+
+        fetch(`${API_URL}/controller/jogoChuvaFrases.php`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({ action: 'status_acesso' })
+        })
+            .then(res => res.json())
+            .then(data => setJogoChuvaBloqueado(Boolean(data?.bloqueado)))
+            .catch(() => setJogoChuvaBloqueado(false));
+    }, [user?.id, user?.plano, API_URL]);
 
     const carregarCategorias = () => {
         const nativeLanguage = user?.native_language ?? user?.nativeLanguage ?? user?.idioma_nativo ?? user?.idiomaNativo ?? null;
@@ -566,8 +598,11 @@ export default function Home() {
                             <span className="w-1 h-1 rounded-full bg-violet-400" />
                         </button>
 
-                        <button type="button" onClick={() => navigate('/chuvadefrases')} className="flex flex-col items-center gap-1">
-                            <CloudRain width={26} height={26} className='text-blue-400' />
+                        <button type="button" onClick={() => navigate('/chuvadefrases')} className="relative flex flex-col items-center gap-1">
+                            <Gamepad2 width={26} height={26} className='text-blue-400' />
+                            {jogoChuvaBloqueado && (
+                                <Crown className="absolute -top-1 -right-2 w-4 h-4 text-yellow-400" />
+                            )}
                         </button>
 
                         <button type="button" onClick={() => navigate('/metricas')} className="flex flex-col items-center gap-1">

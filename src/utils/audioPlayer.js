@@ -1,17 +1,29 @@
 import { dispatchPremiumLimitHit } from "../hooks/usePremiumLimitListener";
+import { dispatchPrimeiroAudio } from "../hooks/useAudioSpeedHintListener";
 
 let currentAudio = null;
 let currentToken = 0;
 
-// Depois que o modal premium por limite de áudio já apareceu uma vez nesta
-// sessão do app, novas tentativas de reprodução caem direto pra voz padrão
-// (free) em vez de interromper de novo com o modal - evita ficar repetindo
-// o aviso a cada frase enquanto o usuário continua praticando.
-let avisoLimiteAudioExibido = false;
+// Depois que o modal premium por limite de áudio já apareceu uma vez, novas
+// tentativas de reprodução caem direto pra voz padrão (free) em vez de
+// interromper de novo com o modal. Guardado no localStorage (não só em
+// memória) porque uma flag em memória reseta a cada recarregamento - no PWA
+// do celular isso acontece toda vez que o app volta do segundo plano,
+// fazendo o modal reaparecer repetidamente durante o mesmo treino.
+const CHAVE_AVISO_LIMITE_AUDIO = "zaldemy_aviso_limite_audio_exibido";
 
 export const playAudio = async (text, user, ia = false, lang = null, forcarVozPadrao = false, velocidadeNormal = false) => {
     const API_URL = import.meta.env.VITE_API_URL;
     if (!text) return;
+
+    // Dica "dá pra mudar a velocidade em Configurações" na primeira vez que o
+    // usuário ouve um áudio de verdade (treino, perguntas, frases por IA).
+    // velocidadeNormal=true identifica o jogo Chuva de Frases (único chamador
+    // que usa esse parâmetro) - lá o áudio é sempre no tom normal de
+    // propósito, então a dica de velocidade não faz sentido nesse contexto.
+    if (!velocidadeNormal) {
+        dispatchPrimeiroAudio();
+    }
 
     const voiceLang = lang || user?.learning_language;
 
@@ -33,12 +45,12 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
         const resultado = await gerarAudio(text);
 
         if (resultado?.limiteAtingido) {
-            if (!avisoLimiteAudioExibido) {
-                avisoLimiteAudioExibido = true;
+            if (!localStorage.getItem(CHAVE_AVISO_LIMITE_AUDIO)) {
+                localStorage.setItem(CHAVE_AVISO_LIMITE_AUDIO, "1");
                 dispatchPremiumLimitHit("audio");
                 return;
             }
-            // Modal já foi exibido antes nesta sessão - segue pro fallback de voz padrão abaixo.
+            // Modal já foi exibido antes - segue pro fallback de voz padrão abaixo.
         } else if (resultado?.url) {
             // uma chamada mais recente já assumiu o controle enquanto aguardávamos o áudio
             if (myToken !== currentToken) {

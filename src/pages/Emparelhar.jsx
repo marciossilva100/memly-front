@@ -252,10 +252,13 @@ export default function JogoFrases() {
 
   return (
     <div className="px-6 pt-4 h-screen grid grid-rows-[auto,1fr] overflow-hidden from-gray-900 to-gray-800 bg-gradient-to-br">
-      <div className="mb-4">
-        <div onClick={() => navigate(-1)} className="cursor-pointer text-white text-2xl">
+      <div className="relative text-center mb-4">
+        <div onClick={() => navigate(-1)} className="text-left cursor-pointer text-white text-2xl">
           ←
         </div>
+        <h1 className="absolute inset-x-0 top-0 text-lg font-semibold text-white">
+          {t("match_the_pairs")}
+        </h1>
       </div>
 
       <div className="flex justify-center pb-6">

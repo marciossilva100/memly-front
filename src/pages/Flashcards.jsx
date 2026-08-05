@@ -33,11 +33,48 @@ export default function Flashcards() {
   const correctIds = location.state?.correctIds || [];
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
   const [motivoPremium, setMotivoPremium] = useState(null);
+  const [vh, setVh] = useState(window.innerHeight);
+  const [viewportTop, setViewportTop] = useState(0);
 
   usePremiumLimitListener((motivo) => {
     setMotivoPremium(motivo);
     setIsPremiumModalOpen(true);
   });
+
+  // h-dvh sozinho não é confiável dentro da WebView do Capacitor no iOS
+  // (o card ficava baixo demais). Mesma solução usada em DigitarTexto:
+  // acompanha o visualViewport de verdade e trava o body no lugar.
+  useEffect(() => {
+    const vv = window.visualViewport;
+
+    const handleResize = () => {
+      setVh(vv?.height || window.innerHeight);
+      setViewportTop(vv?.offsetTop || 0);
+    };
+
+    handleResize();
+
+    vv?.addEventListener("resize", handleResize);
+    vv?.addEventListener("scroll", handleResize);
+
+    const originalOverflow = document.body.style.overflow;
+    const originalPosition = document.body.style.position;
+    const originalTop = document.body.style.top;
+    const originalWidth = document.body.style.width;
+    document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.top = "0";
+    document.body.style.width = "100%";
+
+    return () => {
+      vv?.removeEventListener("resize", handleResize);
+      vv?.removeEventListener("scroll", handleResize);
+      document.body.style.overflow = originalOverflow;
+      document.body.style.position = originalPosition;
+      document.body.style.top = originalTop;
+      document.body.style.width = originalWidth;
+    };
+  }, []);
 
   const FLIP_TIME = 8000;
   const FLIP_DURATION = 400;
@@ -346,9 +383,17 @@ export default function Flashcards() {
     ? Math.max(2, progressBar)
     : 0;
 
+  // Altura do card como % da altura real da tela (vh, do visualViewport) em
+  // vez de pixels fixos - mesma proporção usada em DigitarTexto.jsx (via
+  // classes CSS h-[40%]/h-[30%]). Calculado em JS aqui porque o card fica
+  // aninhado dentro de divs sem altura própria (não dá pra herdar % de CSS
+  // corretamente sem reestruturar o layout) - com vh em JS o cálculo funciona
+  // não importa a estrutura do DOM ao redor.
+  const alturaCard = Math.round(vh * (vh <= 700 ? 0.30 : 0.40));
+
   return (
 
-    <div className="flex px-6 h-dvh pt-4 from-gray-900 to-gray-800 bg-gradient-to-br">
+    <div style={{ height: vh, top: viewportTop }} className="fixed inset-x-0 flex px-6 pt-4 from-gray-900 to-gray-800 bg-gradient-to-br overscroll-none">
       <div className="overflow-y-auto flex-1 scrollbar-hide pb-24">
 
         <div className="relative text-center mb-4">
@@ -359,6 +404,10 @@ export default function Flashcards() {
           >
             <i className="bi bi-arrow-left text-2xl text-white"></i>
           </div>
+
+          <h1 className="absolute inset-x-0 top-0 text-lg font-semibold text-white">
+            {t("translate_the_text")}
+          </h1>
 
         </div>
 
@@ -373,10 +422,11 @@ export default function Flashcards() {
 
         <div className="pt-8">
 
-          {/* Card com efeito 3D corrigido - altura/fonte menores em telas
-              baixas (ex: iPhone SE), senão o card cortava. Mesmo padrão de
-              breakpoint já usado em treinoIA/Perguntas. */}
-          <div className="perspective flex justify-center h-[380px] [@media(max-height:700px)]:h-[300px]">
+          {/* Card com efeito 3D corrigido - altura proporcional à tela real
+              (vh), não pixels fixos, senão em telas baixas (ex: iPhone SE/mini)
+              o card ficava grande demais ou cortava. Mesma proporção de
+              DigitarTexto.jsx. */}
+          <div className="perspective flex justify-center" style={{ height: alturaCard }}>
             <div className="flashcard w-full h-full">
               <div
                 className={`card w-full h-full ${isFlipped ? "flip" : ""}`}

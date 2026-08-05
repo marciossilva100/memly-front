@@ -231,7 +231,7 @@ export default function ChuvaFrases() {
         const nivel = nivelAtual(pontos);
         const intervaloSpawn = Math.max(4500 - nivel * 150, 3000);
 
-        const interval = setInterval(() => {
+        function spawnUmaFrase() {
             setCaindo((prev) => {
                 const raiasOcupadas = prev.map((item) => item.raia);
                 const raiasLivres = RAIAS.map((_, i) => i).filter((i) => !raiasOcupadas.includes(i));
@@ -281,7 +281,12 @@ export default function ChuvaFrases() {
                     },
                 ];
             });
-        }, intervaloSpawn);
+        }
+
+        // dispara a primeira imediatamente (sem esperar o intervalo) - senão
+        // a tela ficava vazia por vários segundos toda vez que o alvo mudava
+        spawnUmaFrase();
+        const interval = setInterval(spawnUmaFrase, intervaloSpawn);
 
         return () => clearInterval(interval);
     }, [fase, alvo, pontos, frases, textoCentral]);

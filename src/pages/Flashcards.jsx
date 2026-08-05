@@ -365,7 +365,7 @@ export default function Flashcards() {
   return (
 
     <div className="flex px-6 h-dvh pt-4 from-gray-900 to-gray-800 bg-gradient-to-br">
-      <div className="overflow-y-auto flex-1 scrollbar-hide">
+      <div className="overflow-y-auto flex-1 scrollbar-hide pb-24">
 
         <div className="relative text-center mb-4">
 
@@ -496,21 +496,26 @@ export default function Flashcards() {
 
         </div>
 
-        {/* Botões de avaliação - aparecem quando o card JÁ FOI VIRADO pelo menos uma vez */}
+        {/* Botões de avaliação - aparecem quando o card JÁ FOI VIRADO pelo menos uma vez.
+            Fixed (não sticky) porque sticky só "gruda" quando o conteúdo é mais alto
+            que a viewport - em telas muito altas (ex: Galaxy S20 Ultra) o conteúdo
+            cabe inteiro sem precisar rolar, então o sticky nunca tinha nada pra
+            grudar embaixo e os botões ficavam presos logo depois do card, no meio
+            da tela, com um vão vazio enorme abaixo. */}
         {hasBeenFlipped && (
 
-          <div className="flex sticky bottom-6 items-center justify-center gap-3 w-full">
+          <div className="fixed bottom-6 left-0 right-0 px-6 flex items-center justify-center gap-3">
 
             <button
               onClick={() => nextCard(false)}
-              className="bg-red-400/70 backdrop-blur-sm text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full"
+              className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 hover:bg-gray-700/50 text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full"
             >
               {t("didnt_remember")}
             </button>
 
             <button
               onClick={() => nextCard(true)}
-              className="bg-gray-700/50 backdrop-blur-sm text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full"
+              className="bg-[#4cb8c4] hover:bg-[#3da5b0] text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full"
             >
               {t("remembered")}
             </button>

@@ -276,20 +276,20 @@ export default function TreinoIA() {
 
                 {!resultado && (
                     <>
-                        <div className="perspective flex justify-center h-[380px]">
+                        <div className="perspective flex justify-center h-[360px]">
                             <div className="flashcard w-full h-full">
                                 <div
                                     className={`card w-full h-full ${flipped ? "flip" : ""}`}
                                     onClick={() => setFlipped(!flipped)}
                                     style={{ cursor: "pointer" }}
                                 >
-                                    <div className="card-front rounded-2xl border border-gray-700 bg-gradient-to-br from-[#233245] to-[#0d1425] px-6 py-9 shadow-md flex flex-col items-center gap-3">
+                                    <div className="card-front rounded-2xl border border-gray-700 bg-gradient-to-br from-[#233245] to-[#0d1425] px-6 py-7 shadow-md flex flex-col items-center gap-2">
                                         <div className="w-10 h-10 shrink-0 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 flex items-center justify-center">
                                             <BookOpenText className="w-5 h-5 text-[#4cb8c4]" />
                                         </div>
 
                                         <div className="flex-1 flex items-center min-h-0">
-                                            <p className="text-lg [@media(max-height:700px)]:text-base text-white leading-relaxed text-center">
+                                            <p className="text-base [@media(max-height:700px)]:text-sm text-white leading-relaxed text-center">
                                                 <TextoDestacado tokens={mostrarVocabulario ? fraseDestacada : null} texto={frase} />
                                             </p>
                                         </div>
@@ -306,9 +306,9 @@ export default function TreinoIA() {
                                         </button>
                                     </div>
 
-                                    <div className="card-back rounded-2xl border border-gray-700 bg-gradient-to-br from-[#0d1425] to-[#233245] px-6 py-9 shadow-md flex flex-col items-center gap-3">
+                                    <div className="card-back rounded-2xl border border-gray-700 bg-gradient-to-br from-[#0d1425] to-[#233245] px-6 py-7 shadow-md flex flex-col items-center gap-2">
                                         <div className="flex-1 flex items-center min-h-0">
-                                            <p className="text-lg [@media(max-height:700px)]:text-base text-white leading-relaxed text-center">{fraseTraducao}</p>
+                                            <p className="text-base [@media(max-height:700px)]:text-sm text-white leading-relaxed text-center">{fraseTraducao}</p>
                                         </div>
                                     </div>
                                 </div>

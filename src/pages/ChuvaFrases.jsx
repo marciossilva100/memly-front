@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { playAudio } from "../utils/audioPlayer";
-import { Heart, Trophy, Loader2, CloudRain, Check } from "lucide-react";
+import { Heart, Trophy, Loader2, CloudRain, Check, Volume2 } from "lucide-react";
 
 const AVATAR_COLORS = [
     'bg-emerald-500',
@@ -21,8 +21,8 @@ const VIDAS_INICIAIS = 3;
 // Raias fixas (centro em %) - cada frase cai numa raia exclusiva, largura
 // fixa pra todas (LARGURA_ITEM), garantindo que nunca fiquem uma por cima
 // da outra em vez de depender de posição horizontal aleatória.
-const RAIAS = [25, 75];
-const LARGURA_ITEM = 42; // % fixo, mesmo pra todos os itens
+const RAIAS = [17, 50, 83];
+const LARGURA_ITEM = 28; // % fixo, mesmo pra todos os itens
 
 function nivelAtual(pontos) {
     return Math.floor(pontos / 50) + 1;
@@ -218,13 +218,19 @@ export default function ChuvaFrases() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [vidas]);
 
+    // Sempre em velocidade normal, ignorando a preferência de velocidade
+    // salva em Configurações (é uma dica, não o estudo em si).
+    function tocarAudioAlvo() {
+        if (!alvo) return;
+        playAudio(alvo.texto_traduzido, user, false, null, false, true).catch(() => { });
+    }
+
     // toca o áudio da frase alvo (no idioma que o aluno está aprendendo) toda
     // vez que ela muda - dá a dica em voz assim que a rodada começa, em vez
-    // de só no acerto. Sempre em velocidade normal, ignorando a preferência
-    // de velocidade salva em Configurações (é uma dica, não o estudo em si).
+    // de só no acerto.
     useEffect(() => {
         if (fase !== "jogando" || !alvo) return;
-        playAudio(alvo.texto_traduzido, user, false, null, false, true).catch(() => { });
+        tocarAudioAlvo();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [alvo]);
 
@@ -473,9 +479,18 @@ export default function ChuvaFrases() {
                         <p className="relative text-[#8fdce6] text-[11px] font-semibold uppercase tracking-wider mb-1">
                             {t("translate_this")}
                         </p>
-                        <p className="relative text-base font-bold text-white">
+                        <p className="relative text-base font-bold text-white mb-2">
                             {loadingFrases ? "..." : alvo?.texto_nativo}
                         </p>
+                        <button
+                            type="button"
+                            onClick={tocarAudioAlvo}
+                            disabled={!alvo}
+                            className="relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors disabled:opacity-50"
+                        >
+                            <Volume2 className="w-3.5 h-3.5" />
+                            {t("listen")}
+                        </button>
                     </div>
 
                     <div ref={areaRef} className="chuva-area relative flex-1 overflow-hidden rounded-2xl border border-gray-800 bg-gray-950/40">

@@ -22,7 +22,7 @@ const VIDAS_INICIAIS = 3;
 // fixa pra todas (LARGURA_ITEM), garantindo que nunca fiquem uma por cima
 // da outra em vez de depender de posição horizontal aleatória.
 const RAIAS = [17, 50, 83];
-const LARGURA_ITEM = 28; // % fixo, mesmo pra todos os itens
+const LARGURA_ITEM = 32; // % fixo, mesmo pra todos os itens (raias ficam 33% entre si)
 
 function nivelAtual(pontos) {
     return Math.floor(pontos / 50) + 1;

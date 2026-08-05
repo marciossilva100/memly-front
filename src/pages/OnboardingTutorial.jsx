@@ -44,7 +44,6 @@ export default function OnboardingTutorial() {
             // segue pro app mesmo se a chamada falhar - não é algo que deva travar o usuário
         }
 
-        localStorage.setItem("zaldemy_guia_add_categoria_pendente", "1");
         setUser((prev) => ({ ...prev, step: 4 }));
         navigate("/home", { replace: true });
     }

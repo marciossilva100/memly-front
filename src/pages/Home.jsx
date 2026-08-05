@@ -27,14 +27,18 @@ const AVATAR_COLORS = [
 ];
 
 export default function Home() {
-    const { user, setUser, setCategoriasLoading } = useAuth();
+    const { user, setUser, setCategoriasLoading, categoriasLoading } = useAuth();
     const [open, setOpen] = useState(false);
-    const [mostrarGuiaCategoria, setMostrarGuiaCategoria] = useState(
-        () => localStorage.getItem("zaldemy_guia_add_categoria_pendente") === "1"
-    );
     const [openCategoriaEditar, setOpenCategoriaEditar] = useState(false);
     const [openTreino, setOpenTreino] = useState(false)
     const [categorias, setCategorias] = useState([]);
+    // Balão "crie sua primeira categoria" - baseado no estado real (usuário
+    // sem nenhuma categoria ainda), não numa flag solta que só era limpa
+    // clicando exatamente no botão de adicionar. Isso fazia o balão voltar a
+    // aparecer pra usuários antigos: se a primeira categoria fosse criada por
+    // outro caminho, ou se a flag ficasse de um login antigo no mesmo
+    // navegador (localStorage não é por conta), ela nunca era removida.
+    const mostrarGuiaCategoria = !categoriasLoading && categorias.length === 0;
     const [revisarPorCategoria, setRevisarPorCategoria] = useState({});
     const [openTreinoAdvinhar, setOpenTreinoAdvinhar] = useState(false)
     const [openTreinoIA, setOpenTreinoIA] = useState(false)
@@ -549,13 +553,7 @@ export default function Home() {
                        text-lg
                         transition
                         ${mostrarGuiaCategoria ? "animate-pulse-glow-ring" : ""}
-                        `} onClick={() => {
-                            setOpen(true);
-                            if (mostrarGuiaCategoria) {
-                                setMostrarGuiaCategoria(false);
-                                localStorage.removeItem("zaldemy_guia_add_categoria_pendente");
-                            }
-                        }}>
+                        `} onClick={() => setOpen(true)}>
                         <Plus size={20} />
                         {t("add_category")}
                     </button>

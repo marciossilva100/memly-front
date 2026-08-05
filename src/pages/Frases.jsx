@@ -158,56 +158,60 @@ export default function Frases() {
                 />
             </div>
 
-            <div className="overflow-auto scrollbar-hide mt-4">
+            {/* único container com altura real (flex-1 dentro do flex-col com
+                h-dvh do wrapper) - antes essa div e as duas de dentro dela
+                tinham flex-1/overflow sem um pai flex com altura definida,
+                então não delimitavam nada de verdade: a lista crescia a
+                página inteira em vez de rolar sozinha, e a busca "sumia"
+                junto quando a lista era grande. */}
+            <div className="flex-1 overflow-y-auto scrollbar-hide mt-4 pb-24 space-y-2">
 
-                <div className="flex-1 flex flex-col">
-
-                    <div className="flex-1 overflow-y-auto scrollbar-hide pb-24 space-y-2">
-
-                        {frasesFiltradas.length === 0 && (
-                            <div className="text-center py-10 text-gray-400 text-sm">
-                                {t("no_phrase_found")}
-                            </div>
-                        )}
-
-                        {frasesFiltradas.map((item) => (
-                            <div key={item.id}
-                                className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-3 flex items-center justify-between gap-3 cursor-pointer hover:bg-gray-700/50 transition-colors"
-                                onClick={() => {
-                                    setFraseEditando(item);
-                                    setOpenFrase(true);
-                                }}
-                            >
-                                <div className="min-w-0 flex-1">
-                                    <p className="text-white truncate">{item.texto_nativo}</p>
-                                    <p className="text-[#4cb8c4] text-sm truncate mt-0.5">{item.texto_traduzido}</p>
-                                </div>
-                                <div className="flex items-center gap-3 shrink-0">
-                                    <Volume2 size={18} className="text-blue-400" onClick={(e) => {
-                                        e.stopPropagation();
-                                        playAudio(item.texto_traduzido, user);
-                                    }} />
-                                    <Trash size={18} className="text-red-400" onClick={(e) => {
-                                        e.stopPropagation();
-                                        setDeleteId(item.id);
-                                        setOpenModalConfirm(true);
-                                    }} />
-                                </div>
-                            </div>
-                        ))}
-
+                {frasesFiltradas.length === 0 && (
+                    <div className="text-center py-10 text-gray-400 text-sm">
+                        {t("no_phrase_found")}
                     </div>
-                </div>
+                )}
 
-                <div className="fixed bottom-0 left-0 w-full justify-center items-center py-4 px-6 ">
-                    <button className="px-6 py-3 w-full rounded-full bg-gradient-to-r from-[#4cb8c4] to-[#085078] hover:from-[#3da5b0] hover:to-[#064060] text-white text-lg font-medium transition-colors"
+                {frasesFiltradas.map((item) => (
+                    <div key={item.id}
+                        className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-3 flex items-center justify-between gap-3 cursor-pointer hover:bg-gray-700/50 transition-colors"
                         onClick={() => {
-                            setFraseEditando(null);
+                            setFraseEditando(item);
                             setOpenFrase(true);
-                        }}>
-                        {t("add")}
-                    </button>
-                </div>
+                        }}
+                    >
+                        <div className="min-w-0 flex-1">
+                            <p className="text-white truncate">{item.texto_nativo}</p>
+                            <p className="text-[#4cb8c4] text-sm truncate mt-0.5">{item.texto_traduzido}</p>
+                        </div>
+                        <div className="flex items-center gap-3 shrink-0">
+                            <Volume2 size={18} className="text-blue-400" onClick={(e) => {
+                                e.stopPropagation();
+                                playAudio(item.texto_traduzido, user);
+                            }} />
+                            <Trash size={18} className="text-red-400" onClick={(e) => {
+                                e.stopPropagation();
+                                setDeleteId(item.id);
+                                setOpenModalConfirm(true);
+                            }} />
+                        </div>
+                    </div>
+                ))}
+
+            </div>
+
+            {/* barra fixa precisa de fundo opaco - sem isso era um retângulo
+                transparente (só o botão tinha cor), deixando a lista aparecer
+                por trás dela ao rolar. Também faltava a classe "flex" pra
+                justify-center/items-center funcionarem. */}
+            <div className="fixed bottom-0 left-0 w-full flex justify-center items-center py-4 px-6 bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent">
+                <button className="px-6 py-3 w-full rounded-full bg-gradient-to-r from-[#4cb8c4] to-[#085078] hover:from-[#3da5b0] hover:to-[#064060] text-white text-lg font-medium transition-colors"
+                    onClick={() => {
+                        setFraseEditando(null);
+                        setOpenFrase(true);
+                    }}>
+                    {t("add")}
+                </button>
             </div>
 
             <ModalFrase openPhrase={openFrase} setOpenPhrase={setOpenFrase} category={id} listPhrase={listPhrase}

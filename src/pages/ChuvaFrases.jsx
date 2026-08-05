@@ -18,6 +18,11 @@ const AVATAR_COLORS = [
 
 const MIN_FRASES = 5;
 const VIDAS_INICIAIS = 3;
+// Raias fixas (centro em %) - cada frase cai numa raia exclusiva, largura
+// fixa pra todas (LARGURA_ITEM), garantindo que nunca fiquem uma por cima
+// da outra em vez de depender de posição horizontal aleatória.
+const RAIAS = [25, 75];
+const LARGURA_ITEM = 42; // % fixo, mesmo pra todos os itens
 
 function nivelAtual(pontos) {
     return Math.floor(pontos / 50) + 1;
@@ -224,20 +229,21 @@ export default function ChuvaFrases() {
         if (fase !== "jogando" || !alvo || textoCentral) return;
 
         const nivel = nivelAtual(pontos);
-        const maxSimultaneas = Math.min(3 + Math.floor(nivel / 2), 7);
-        const intervaloSpawn = Math.max(2400 - nivel * 120, 1100);
+        const intervaloSpawn = Math.max(4500 - nivel * 150, 3000);
 
         const interval = setInterval(() => {
             setCaindo((prev) => {
-                if (prev.length >= maxSimultaneas) return prev;
+                const raiasOcupadas = prev.map((item) => item.raia);
+                const raiasLivres = RAIAS.map((_, i) => i).filter((i) => !raiasOcupadas.includes(i));
+                if (raiasLivres.length === 0) return prev;
 
                 const temCorreta = prev.some((item) => item.correta);
                 // Sorteia se essa é a vez de cair a certa (~35% de chance a cada
                 // spawn) em vez de sempre ser a primeira - só força quando chega
-                // no último espaço livre, garantindo que ela sempre apareça em
+                // na última raia livre, garantindo que ela sempre apareça em
                 // algum momento do ciclo, mas em posição aleatória.
-                const ultimoSlotDisponivel = prev.length >= maxSimultaneas - 1;
-                const vaiSerCorreta = !temCorreta && (ultimoSlotDisponivel || Math.random() < 0.35);
+                const ultimaRaiaLivre = raiasLivres.length === 1;
+                const vaiSerCorreta = !temCorreta && (ultimaRaiaLivre || Math.random() < 0.35);
 
                 let texto;
                 if (vaiSerCorreta) {
@@ -255,8 +261,10 @@ export default function ChuvaFrases() {
                     texto = candidatas[Math.floor(Math.random() * faixa)].texto_traduzido;
                 }
 
-                const duracaoBase = Math.max(15000 - nivel * 600, 7000);
+                const duracaoBase = Math.max(30000 - nivel * 800, 16000);
                 const duracao = duracaoBase + (Math.random() * 1500 - 750);
+
+                const raia = raiasLivres[Math.floor(Math.random() * raiasLivres.length)];
 
                 uidRef.current += 1;
 
@@ -266,10 +274,7 @@ export default function ChuvaFrases() {
                         uid: uidRef.current,
                         texto,
                         correta: vaiSerCorreta,
-                        // centralizado via transform:translateX(-50%) no render,
-                        // faixa apertada pra não deixar a frase saindo da tela
-                        // mesmo quando ela é mais comprida.
-                        left: 22 + Math.random() * 56,
+                        raia,
                         duracao,
                         estado: "normal",
                         jaErrou: false,
@@ -483,9 +488,9 @@ export default function ChuvaFrases() {
                                         : "bg-gray-800/80 border-gray-600 text-white"
                                     }`}
                                 style={{
-                                    left: `${item.left}%`,
+                                    left: `${RAIAS[item.raia]}%`,
                                     transform: "translateX(-50%)",
-                                    maxWidth: "62%",
+                                    width: `${LARGURA_ITEM}%`,
                                     animationDuration: `${item.duracao}ms`,
                                 }}
                             >

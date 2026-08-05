@@ -35,7 +35,6 @@ export default function DigitarTexto() {
     const textareaRef = useRef(null);
     const contentRef = useRef(null);
     const [pular, setPular] = useState(false)
-    const [nativeAudioPlayed, setNativeAudioPlayed] = useState(false);
     const { user, setUser } = useAuth();
     const flipTimeoutRef = useRef(null);
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
@@ -154,7 +153,6 @@ export default function DigitarTexto() {
             .then(data => {
 
                 setFrases(data || []);
-                setNativeAudioPlayed(false);
 
                 const ids = data.map(item => item.id);
                 setIdPhrases(ids);
@@ -169,21 +167,8 @@ export default function DigitarTexto() {
 
     }, [id, mode]);
 
-    // Toca o áudio do texto nativo automaticamente quando a frente do card é
-    // exibida - só se o usuário ligou essa opção em Configurações (padrão é
-    // desligado, precisa clicar no botão "Ouvir"). O áudio da frente sempre
-    // usa a voz gratuita (forcarVozPadrao), mesmo pra quem é premium/limitado.
-    useEffect(() => {
-
-        if (!frases.length || isFlipped || nativeAudioPlayed) return;
-
-        const autoplayFrente = localStorage.getItem('zaldemy_autoplay_frente') === '1';
-        if (!autoplayFrente) return;
-
-        playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, mode !== "traine");
-        setNativeAudioPlayed(true);
-
-    }, [index, frases, isFlipped, nativeAudioPlayed, user, mode]);
+    // O áudio do texto nativo não tem mais autoplay - só toca quando o
+    // usuário clica no botão "Ouvir", em qualquer modo.
 
 
     function virarFlashcard() {
@@ -199,7 +184,7 @@ export default function DigitarTexto() {
         flipTimeoutRef.current = setTimeout(() => {
 
             setShowBackContent(true);
-            playAudio(frases[currentIndex].texto_traduzido, user, false, null, mode !== "traine");
+            playAudio(frases[currentIndex].texto_traduzido, user);
             flipTimeoutRef.current = null;
 
         }, 200);
@@ -257,7 +242,6 @@ export default function DigitarTexto() {
         setIsFlipped(false);
         setShowBackContent(false);
         setResposta("");
-        setNativeAudioPlayed(false);
 
         if (isLast) {
             if (mode === "traine") {
@@ -292,7 +276,6 @@ export default function DigitarTexto() {
         setIsFlipped(false);
         setShowBackContent(false);
         setResposta("");
-        setNativeAudioPlayed(false);
 
     };
 
@@ -314,7 +297,7 @@ export default function DigitarTexto() {
             const currentIndex = index;
             flipTimeoutRef.current = setTimeout(() => {
                 setShowBackContent(true);
-                playAudio(frases[currentIndex].texto_traduzido, user, false, null, mode !== "traine");
+                playAudio(frases[currentIndex].texto_traduzido, user);
                 flipTimeoutRef.current = null;
             }, 200);
         } else {
@@ -338,7 +321,7 @@ export default function DigitarTexto() {
             const currentIndex = index;
             flipTimeoutRef.current = setTimeout(() => {
                 setShowBackContent(true);
-                playAudio(frases[currentIndex].texto_traduzido, user, false, null, mode !== "traine");
+                playAudio(frases[currentIndex].texto_traduzido, user);
                 flipTimeoutRef.current = null;
             }, 200);
         } else {
@@ -569,7 +552,7 @@ export default function DigitarTexto() {
                         <div className="text-center flex justify-center">
                             <button onClick={(e) => {
                                 e.preventDefault();
-                                playAudio(frases[index].texto_traduzido, user, false, null, mode !== "traine");
+                                playAudio(frases[index].texto_traduzido, user);
                             }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-700/50 border border-gray-600 text-gray-300 text-xs hover:bg-gray-700 transition-colors">
                                 <Volume className="w-4 h-4" />
                                 {t("listen")}
@@ -642,7 +625,7 @@ export default function DigitarTexto() {
                         <div className="text-center flex justify-center mt-4">
                             <button onClick={(e) => {
                                 e.preventDefault();
-                                playAudio(frases[index].texto_traduzido, user, false, null, mode !== "traine");
+                                playAudio(frases[index].texto_traduzido, user);
                             }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-700/50 border border-gray-600 text-gray-300 text-xs hover:bg-gray-700 transition-colors">
                                 <Volume className="w-4 h-4" />
                                 {t("listen")}

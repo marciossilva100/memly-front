@@ -158,7 +158,7 @@ export default function JogoFrases() {
 
       setAcertos((prev) => prev + 1);
 
-      playAudio(selecionadaDireita.texto_traduzido, user, false, null, mode !== "traine");
+      playAudio(selecionadaDireita.texto_traduzido, user);
 
       // 🔥 AQUI ESTÁ A CORREÇÃO
       setTimeout(() => {

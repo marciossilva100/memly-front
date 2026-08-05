@@ -23,7 +23,6 @@ export default function Flashcards() {
   const [finished, setFinished] = useState(false);
   const [progress, setProgress] = useState(0);
   const [hasBeenFlipped, setHasBeenFlipped] = useState(false); // NOVO: controla se o card já foi virado alguma vez
-  const [nativeAudioPlayed, setNativeAudioPlayed] = useState(false);
   const flipTimeoutRef = useRef(null);
   const API_URL = import.meta.env.VITE_API_URL;
   const [listIdCorrectPhrase, setListIdCorrectPhrase] = useState([]);
@@ -71,7 +70,6 @@ export default function Flashcards() {
         setIsFlipped(false);
         setShowButton(true);
         setHasBeenFlipped(false); // Reset quando carregar novo deck
-        setNativeAudioPlayed(false);
         setFinished(false);
         setProgress(0);
 
@@ -88,16 +86,6 @@ export default function Flashcards() {
     if (!frases.length || finished) {
       setProgress(0);
       return;
-    }
-
-    // Autoplay do áudio nativo é opt-in (configurável em Configurações) -
-    // sem essa checagem tocava sempre, ignorando a preferência do usuário.
-    // Mesmo padrão já usado em DigitarTexto.jsx.
-    const autoplayFrente = localStorage.getItem('zaldemy_autoplay_frente') === '1';
-
-    if (autoplayFrente && !isFlipped && showButton && !nativeAudioPlayed) {
-      playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, mode !== "traine");
-      setNativeAudioPlayed(true);
     }
 
     // Só inicia o timer se o card NÃO estiver virado E o botão ainda estiver visível (primeira vez)
@@ -123,7 +111,7 @@ export default function Flashcards() {
       setProgress(0);
     }
 
-  }, [index, frases, finished, isFlipped, showButton, nativeAudioPlayed, user, mode]);
+  }, [index, frases, finished, isFlipped, showButton]);
 
   const flipCard = () => {
     const willFlip = !isFlipped;
@@ -151,7 +139,7 @@ export default function Flashcards() {
 
       const currentIndex = index;
       flipTimeoutRef.current = setTimeout(() => {
-        playAudio(frases[currentIndex].texto_traduzido, user, false, null, mode !== "traine");
+        playAudio(frases[currentIndex].texto_traduzido, user);
         flipTimeoutRef.current = null;
       }, FLIP_DURATION / 2);
     }
@@ -256,13 +244,9 @@ export default function Flashcards() {
 
     await trainingUpdate(actionToSend, frases[index].id, statusCorrectPhrase)
 
-    // Reset e avanço de índice precisam ocorrer juntos (mesmo batch de render).
-    // Se o reset de nativeAudioPlayed acontecesse antes do índice mudar, o autoplay
-    // disparava ainda com o card anterior e depois não tocava mais o card atual.
     setIsFlipped(false);
     setShowButton(true); // Mostra o botão novamente para o próximo card
     setHasBeenFlipped(false); // Reset para o próximo card
-    setNativeAudioPlayed(false); // Permite autoplay do texto nativo no próximo card
     setProgress(0);
 
     if (index + 1 < frases.length) {
@@ -441,7 +425,7 @@ export default function Flashcards() {
             <div className="text-center flex justify-center mt-5">
               <button onClick={(e) => {
                 e.preventDefault();
-                playAudio(frases[index].texto_traduzido, user, false, null, mode !== "traine");
+                playAudio(frases[index].texto_traduzido, user);
               }} className="px-4 py-2 rounded-md bg-slate-500 text-white text-sm  transition flex">
                 <Volume className="w-5 h-5" />
                 {t("listen")}

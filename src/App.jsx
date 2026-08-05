@@ -44,6 +44,7 @@ import PremiumPlan from './components/PremiumModal';
 import Metricas from './pages/Metricas';
 import DashboardAdmin from './pages/DashboardAdmin';
 import Configuracoes from './pages/Configuracoes';
+import ChuvaFrases from './pages/ChuvaFrases';
 import TermosDeUso from './pages/TermosDeUso';
 import PoliticaPrivacidade from './pages/PoliticaPrivacidade';
 import Contato from './pages/Contato';
@@ -246,6 +247,15 @@ function Layout({ titulo, setTitulo }) {
           element={
             <PrivateRoute>
               <Frases />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/chuvadefrases"
+          element={
+            <PrivateRoute>
+              <ChuvaFrases />
             </PrivateRoute>
           }
         />

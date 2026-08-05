@@ -478,5 +478,14 @@
     "based_on_vocabulary_desc": "AI-gegenereerde content gebruikt vooral woorden die je al leert",
     "toggle_vocabulary_hint": "Woorden tonen die ik al leer",
     "no_vocabulary_matched": "Er is geen woord uit jouw woordenschat herkend in deze zin",
-    "ia_gerando_conteudo": "De AI genereert je inhoud..."
+    "ia_gerando_conteudo": "De AI genereert je inhoud...",
+    "view_categories": "Categorieën bekijken",
+    "phrase_rain_title": "Zinnenregen",
+    "choose_category_to_play": "Kies een categorie om te spelen",
+    "need_min_phrases_hint": "Je hebt categorieën met minstens {{minimo}} zinnen nodig om te spelen. Voeg meer zinnen toe aan een categorie en kom terug.",
+    "translate_this": "Tik op de juiste vertaling",
+    "score": "Punten",
+    "best_score": "Record",
+    "game_over_title": "Game over!",
+    "play_again": "Opnieuw spelen"
 }

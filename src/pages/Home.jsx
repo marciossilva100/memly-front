@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 
 
-import { BookOpen, BarChart3, Bot, Plus, Home as HomeIcon, CheckCircle2, Flame, Settings, Crown } from "lucide-react";
+import { BookOpen, BarChart3, Bot, Plus, Home as HomeIcon, CheckCircle2, Flame, CloudRain, Crown } from "lucide-react";
 
 const AVATAR_COLORS = [
     'bg-emerald-500',
@@ -566,8 +566,8 @@ export default function Home() {
                             <span className="w-1 h-1 rounded-full bg-violet-400" />
                         </button>
 
-                        <button type="button" onClick={() => navigate('/configuracoes')} className="flex flex-col items-center gap-1">
-                            <Settings width={26} height={26} className='text-blue-400' />
+                        <button type="button" onClick={() => navigate('/chuvadefrases')} className="flex flex-col items-center gap-1">
+                            <CloudRain width={26} height={26} className='text-blue-400' />
                         </button>
 
                         <button type="button" onClick={() => navigate('/metricas')} className="flex flex-col items-center gap-1">

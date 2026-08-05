@@ -478,5 +478,14 @@
     "based_on_vocabulary_desc": "I contenuti generati dall'IA usano principalmente parole che stai già studiando",
     "toggle_vocabulary_hint": "Mostra le parole che sto già studiando",
     "no_vocabulary_matched": "Nessuna parola del tuo vocabolario è stata riconosciuta in questa frase",
-    "ia_gerando_conteudo": "L'IA sta generando il tuo contenuto..."
+    "ia_gerando_conteudo": "L'IA sta generando il tuo contenuto...",
+    "view_categories": "Vedi categorie",
+    "phrase_rain_title": "Pioggia di Frasi",
+    "choose_category_to_play": "Scegli una categoria per giocare",
+    "need_min_phrases_hint": "Hai bisogno di categorie con almeno {{minimo}} frasi per giocare. Aggiungi altre frasi a una categoria e torna qui.",
+    "translate_this": "Tocca la traduzione giusta",
+    "score": "Punti",
+    "best_score": "Record",
+    "game_over_title": "Fine del gioco!",
+    "play_again": "Gioca ancora"
 }

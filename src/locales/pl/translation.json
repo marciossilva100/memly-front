@@ -478,5 +478,14 @@
     "based_on_vocabulary_desc": "Treści generowane przez AI wykorzystują głównie słowa, których już się uczysz",
     "toggle_vocabulary_hint": "Pokaż słowa, których się uczę",
     "no_vocabulary_matched": "Żadne słowo z twojego słownictwa nie zostało rozpoznane w tym zdaniu",
-    "ia_gerando_conteudo": "AI generuje Twoją treść..."
+    "ia_gerando_conteudo": "AI generuje Twoją treść...",
+    "view_categories": "Zobacz kategorie",
+    "phrase_rain_title": "Deszcz Zdań",
+    "choose_category_to_play": "Wybierz kategorię do gry",
+    "need_min_phrases_hint": "Potrzebujesz kategorii z co najmniej {{minimo}} zdaniami, aby grać. Dodaj więcej zdań do kategorii i wróć tutaj.",
+    "translate_this": "Dotknij poprawnego tłumaczenia",
+    "score": "Punkty",
+    "best_score": "Rekord",
+    "game_over_title": "Koniec gry!",
+    "play_again": "Zagraj ponownie"
 }

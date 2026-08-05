@@ -478,5 +478,14 @@
     "based_on_vocabulary_desc": "المحتوى الذي ينشئه الذكاء الاصطناعي يستخدم غالبًا كلمات تدرسها بالفعل",
     "toggle_vocabulary_hint": "إظهار الكلمات التي أدرسها",
     "no_vocabulary_matched": "لم يتم التعرف على أي كلمة من مفرداتك في هذه الجملة",
-    "ia_gerando_conteudo": "الذكاء الاصطناعي يقوم بإنشاء المحتوى الخاص بك..."
+    "ia_gerando_conteudo": "الذكاء الاصطناعي يقوم بإنشاء المحتوى الخاص بك...",
+    "view_categories": "عرض الفئات",
+    "phrase_rain_title": "مطر الجمل",
+    "choose_category_to_play": "اختر فئة للعب",
+    "need_min_phrases_hint": "تحتاج إلى فئات تحتوي على {{minimo}} جملة على الأقل للعب. أضف المزيد من الجمل إلى فئة وعد إلى هنا.",
+    "translate_this": "اضغط على الترجمة الصحيحة",
+    "score": "النقاط",
+    "best_score": "أفضل نتيجة",
+    "game_over_title": "انتهت اللعبة!",
+    "play_again": "العب مرة أخرى"
 }

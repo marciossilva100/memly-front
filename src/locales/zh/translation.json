@@ -478,5 +478,14 @@
     "based_on_vocabulary_desc": "AI 生成的内容主要使用你已经在学习的单词",
     "toggle_vocabulary_hint": "显示我正在学习的单词",
     "no_vocabulary_matched": "这句话中没有识别到你词汇表中的任何单词",
-    "ia_gerando_conteudo": "AI 正在生成您的内容..."
+    "ia_gerando_conteudo": "AI 正在生成您的内容...",
+    "view_categories": "查看分类",
+    "phrase_rain_title": "句子雨",
+    "choose_category_to_play": "选择一个分类开始游戏",
+    "need_min_phrases_hint": "你需要至少有{{minimo}}个句子的分类才能玩。给分类添加更多句子后再回来吧。",
+    "translate_this": "点击正确的翻译",
+    "score": "得分",
+    "best_score": "最高纪录",
+    "game_over_title": "游戏结束！",
+    "play_again": "再玩一次"
 }

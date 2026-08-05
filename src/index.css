@@ -236,6 +236,25 @@ input{
   animation: gentle-bounce 1.6s ease-in-out infinite;
 }
 
+/* Minijogo Chuva de Frases - top em % relativo à .chuva-area (position:
+   relative, altura definida pelo flex-1 do container), não vh, pra
+   funcionar em qualquer tamanho de tela sem recalcular nada em JS. */
+.chuva-area {
+  position: relative;
+}
+
+@keyframes chuva-cair {
+  from { top: -12%; }
+  to { top: 108%; }
+}
+
+.chuva-item {
+  position: absolute;
+  animation-name: chuva-cair;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
 
 
 

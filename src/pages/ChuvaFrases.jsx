@@ -89,9 +89,6 @@ export default function ChuvaFrases() {
     const [pontos, setPontos] = useState(0);
     const [vidas, setVidas] = useState(VIDAS_INICIAIS);
     const [explodindo, setExplodindo] = useState(null);
-    // texto mostrado no centro da tela junto com o áudio, no acerto - a
-    // próxima chuva só começa depois que ele some (áudio termina).
-    const [textoCentral, setTextoCentral] = useState(null);
 
     const uidRef = useRef(0);
     const areaRef = useRef(null);
@@ -172,7 +169,6 @@ export default function ChuvaFrases() {
                 setVidas(VIDAS_INICIAIS);
                 usadasRef.current = [];
                 setCaindo([]);
-                setTextoCentral(null);
                 setAlvo(escolherProximoAlvo(listaFrases, []));
             })
             .catch(() => setFase("escolher"))
@@ -198,7 +194,6 @@ export default function ChuvaFrases() {
     useEffect(() => {
         if (fase === "jogando" && vidas <= 0) {
             setCaindo([]);
-            setTextoCentral(null);
             setFase("fimDeJogo");
 
             // recorde só é salvo pra jogo de categoria única (ver iniciarJogo)
@@ -223,10 +218,19 @@ export default function ChuvaFrases() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [vidas]);
 
-    // spawn das frases caindo - pausado enquanto o texto central (acerto) está
-    // na tela, senão a chuva do próximo alvo começaria antes da hora.
+    // toca o áudio da frase alvo (no idioma que o aluno está aprendendo) toda
+    // vez que ela muda - dá a dica em voz assim que a rodada começa, em vez
+    // de só no acerto. Sempre em velocidade normal, ignorando a preferência
+    // de velocidade salva em Configurações (é uma dica, não o estudo em si).
     useEffect(() => {
-        if (fase !== "jogando" || !alvo || textoCentral) return;
+        if (fase !== "jogando" || !alvo) return;
+        playAudio(alvo.texto_traduzido, user, false, null, false, true).catch(() => { });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [alvo]);
+
+    // spawn das frases caindo
+    useEffect(() => {
+        if (fase !== "jogando" || !alvo) return;
 
         const nivel = nivelAtual(pontos);
         const intervaloSpawn = Math.max(4500 - nivel * 150, 3000);
@@ -289,7 +293,7 @@ export default function ChuvaFrases() {
         const interval = setInterval(spawnUmaFrase, intervaloSpawn);
 
         return () => clearInterval(interval);
-    }, [fase, alvo, pontos, frases, textoCentral]);
+    }, [fase, alvo, pontos, frases]);
 
     function removerCaindo(uid) {
         setCaindo((prev) => prev.filter((item) => item.uid !== uid));
@@ -344,19 +348,8 @@ export default function ChuvaFrases() {
         setTimeout(() => setExplodindo(null), 700);
 
         removerCaindo(item.uid);
-        setCaindo([]);
         setPontos((prev) => prev + 10 + nivelAtual(prev));
-        setTextoCentral(item.texto);
-
-        // Sempre em velocidade normal, ignorando a preferência de velocidade
-        // configurada em Configurações - o objetivo aqui é reforçar a
-        // pronúncia certa, não seguir a preferência de estudo do usuário.
-        playAudio(item.texto, user, false, null, false, true)
-            .catch(() => { })
-            .finally(() => {
-                setTextoCentral(null);
-                avancarAlvo();
-            });
+        avancarAlvo();
     }
 
     function jogarDeNovo() {
@@ -475,9 +468,12 @@ export default function ChuvaFrases() {
                         </div>
                     </div>
 
-                    <div className="rounded-2xl border border-gray-700 bg-gray-800/50 backdrop-blur-sm px-4 py-3 text-center mb-3 shrink-0">
-                        <p className="text-xs text-gray-400 mb-1">{t("translate_this")}</p>
-                        <p className="text-lg font-semibold text-white">
+                    <div className="relative rounded-2xl border border-[#4cb8c4]/40 bg-gradient-to-br from-[#4cb8c4]/15 via-gray-900 to-gray-900 px-4 py-3 text-center mb-3 shrink-0 shadow-[0_0_25px_rgba(76,184,196,0.15)] overflow-hidden">
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_#4cb8c4_0%,_transparent_65%)] opacity-10 pointer-events-none" />
+                        <p className="relative text-[#8fdce6] text-[11px] font-semibold uppercase tracking-wider mb-1">
+                            {t("translate_this")}
+                        </p>
+                        <p className="relative text-base font-bold text-white">
                             {loadingFrases ? "..." : alvo?.texto_nativo}
                         </p>
                     </div>
@@ -503,14 +499,6 @@ export default function ChuvaFrases() {
                             </button>
                         ))}
                         {explodindo && <Explosao {...explodindo} />}
-
-                        {textoCentral && (
-                            <div className="absolute inset-0 flex items-center justify-center px-6 pointer-events-none">
-                                <div className="bg-gray-900/95 border border-[#4cb8c4]/40 rounded-2xl px-5 py-4 text-center shadow-xl max-w-[85%]">
-                                    <p className="text-white text-lg font-semibold">{textoCentral}</p>
-                                </div>
-                            </div>
-                        )}
                     </div>
                 </div>
             )}

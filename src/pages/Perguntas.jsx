@@ -314,14 +314,14 @@ export default function Perguntas() {
 
                 {!resultado &&
                     <div>
-                        <div className="perspective flex justify-center h-[360px]">
+                        <div className="perspective flex justify-center h-[260px]">
                             <div className="flashcard w-full h-full">
                                 <div
                                     className={`card w-full h-full ${flipped ? "flip" : ""}`}
                                     onClick={() => setFlipped(!flipped)}
                                     style={{ cursor: "pointer" }}
                                 >
-                                    <div className="card-front rounded-2xl border border-gray-700 bg-gradient-to-br from-[#233245] to-[#0d1425] px-6 py-7 shadow-md flex flex-col items-center gap-2">
+                                    <div className="card-front rounded-2xl border border-gray-700 bg-gradient-to-br from-[#233245] to-[#0d1425] px-6 py-5 shadow-md flex flex-col items-center gap-2">
                                         <div className="flex items-center justify-between w-full shrink-0">
                                             <div className="w-10 h-10 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 flex items-center justify-center">
                                                 <MessageCircleQuestion className="w-5 h-5 text-[#4cb8c4]" />
@@ -334,7 +334,7 @@ export default function Perguntas() {
                                         </div>
 
                                         <div className="flex-1 flex items-center min-h-0">
-                                            <p className="text-base [@media(max-height:700px)]:text-sm text-white leading-relaxed text-center">
+                                            <p className="text-lg [@media(max-height:700px)]:text-base text-white leading-relaxed text-center">
                                                 <TextoDestacado tokens={mostrarVocabulario ? questionDestacada : null} texto={question} />
                                             </p>
                                         </div>
@@ -352,9 +352,9 @@ export default function Perguntas() {
                                         </button>
                                     </div>
 
-                                    <div className="card-back rounded-2xl border border-gray-700 bg-gradient-to-br from-[#0d1425] to-[#233245] px-6 py-7 shadow-md flex flex-col items-center gap-2">
+                                    <div className="card-back rounded-2xl border border-gray-700 bg-gradient-to-br from-[#0d1425] to-[#233245] px-6 py-5 shadow-md flex flex-col items-center gap-2">
                                         <div className="flex-1 flex items-center min-h-0">
-                                            <p className="text-base [@media(max-height:700px)]:text-sm text-white leading-relaxed text-center">{questionTraducao}</p>
+                                            <p className="text-lg [@media(max-height:700px)]:text-base text-white leading-relaxed text-center">{questionTraducao}</p>
                                         </div>
                                     </div>
                                 </div>

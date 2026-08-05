@@ -180,10 +180,10 @@ export default function DigitarTexto() {
         const autoplayFrente = localStorage.getItem('zaldemy_autoplay_frente') === '1';
         if (!autoplayFrente) return;
 
-        playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, true);
+        playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, mode !== "traine");
         setNativeAudioPlayed(true);
 
-    }, [index, frases, isFlipped, nativeAudioPlayed, user]);
+    }, [index, frases, isFlipped, nativeAudioPlayed, user, mode]);
 
 
     function virarFlashcard() {
@@ -199,7 +199,7 @@ export default function DigitarTexto() {
         flipTimeoutRef.current = setTimeout(() => {
 
             setShowBackContent(true);
-            playAudio(frases[currentIndex].texto_traduzido, user);
+            playAudio(frases[currentIndex].texto_traduzido, user, false, null, mode !== "traine");
             flipTimeoutRef.current = null;
 
         }, 200);
@@ -314,7 +314,7 @@ export default function DigitarTexto() {
             const currentIndex = index;
             flipTimeoutRef.current = setTimeout(() => {
                 setShowBackContent(true);
-                playAudio(frases[currentIndex].texto_traduzido, user);
+                playAudio(frases[currentIndex].texto_traduzido, user, false, null, mode !== "traine");
                 flipTimeoutRef.current = null;
             }, 200);
         } else {
@@ -338,7 +338,7 @@ export default function DigitarTexto() {
             const currentIndex = index;
             flipTimeoutRef.current = setTimeout(() => {
                 setShowBackContent(true);
-                playAudio(frases[currentIndex].texto_traduzido, user);
+                playAudio(frases[currentIndex].texto_traduzido, user, false, null, mode !== "traine");
                 flipTimeoutRef.current = null;
             }, 200);
         } else {
@@ -555,7 +555,7 @@ export default function DigitarTexto() {
                     <div className="text-center flex justify-center mt-5 [@media(max-height:700px)]:mt-2">
                         <button onClick={(e) => {
                             e.preventDefault();
-                            playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, true);
+                            playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, mode !== "traine");
                         }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors">
                             <Volume className="w-4 h-4" />
                             {t("listen")}
@@ -569,7 +569,7 @@ export default function DigitarTexto() {
                         <div className="text-center flex justify-center">
                             <button onClick={(e) => {
                                 e.preventDefault();
-                                playAudio(frases[index].texto_traduzido, user);
+                                playAudio(frases[index].texto_traduzido, user, false, null, mode !== "traine");
                             }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-700/50 border border-gray-600 text-gray-300 text-xs hover:bg-gray-700 transition-colors">
                                 <Volume className="w-4 h-4" />
                                 {t("listen")}
@@ -642,7 +642,7 @@ export default function DigitarTexto() {
                         <div className="text-center flex justify-center mt-4">
                             <button onClick={(e) => {
                                 e.preventDefault();
-                                playAudio(frases[index].texto_traduzido, user);
+                                playAudio(frases[index].texto_traduzido, user, false, null, mode !== "traine");
                             }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-700/50 border border-gray-600 text-gray-300 text-xs hover:bg-gray-700 transition-colors">
                                 <Volume className="w-4 h-4" />
                                 {t("listen")}

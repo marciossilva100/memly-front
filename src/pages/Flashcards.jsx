@@ -96,7 +96,7 @@ export default function Flashcards() {
     const autoplayFrente = localStorage.getItem('zaldemy_autoplay_frente') === '1';
 
     if (autoplayFrente && !isFlipped && showButton && !nativeAudioPlayed) {
-      playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language);
+      playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, mode !== "traine");
       setNativeAudioPlayed(true);
     }
 
@@ -123,7 +123,7 @@ export default function Flashcards() {
       setProgress(0);
     }
 
-  }, [index, frases, finished, isFlipped, showButton, nativeAudioPlayed, user]);
+  }, [index, frases, finished, isFlipped, showButton, nativeAudioPlayed, user, mode]);
 
   const flipCard = () => {
     const willFlip = !isFlipped;
@@ -151,7 +151,7 @@ export default function Flashcards() {
 
       const currentIndex = index;
       flipTimeoutRef.current = setTimeout(() => {
-        playAudio(frases[currentIndex].texto_traduzido, user);
+        playAudio(frases[currentIndex].texto_traduzido, user, false, null, mode !== "traine");
         flipTimeoutRef.current = null;
       }, FLIP_DURATION / 2);
     }
@@ -425,7 +425,7 @@ export default function Flashcards() {
             <div className="text-center flex justify-center mt-5">
               <button onClick={(e) => {
                 e.preventDefault();
-                playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language);
+                playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, mode !== "traine");
               }} className="px-4 py-2 rounded-md bg-slate-500 text-white text-sm transition flex">
                 <Volume className="w-5 h-5" />
                 {t("listen_native")}
@@ -441,7 +441,7 @@ export default function Flashcards() {
             <div className="text-center flex justify-center mt-5">
               <button onClick={(e) => {
                 e.preventDefault();
-                playAudio(frases[index].texto_traduzido, user);
+                playAudio(frases[index].texto_traduzido, user, false, null, mode !== "traine");
               }} className="px-4 py-2 rounded-md bg-slate-500 text-white text-sm  transition flex">
                 <Volume className="w-5 h-5" />
                 {t("listen")}

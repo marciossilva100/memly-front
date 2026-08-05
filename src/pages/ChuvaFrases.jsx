@@ -220,9 +220,11 @@ export default function ChuvaFrases() {
 
     // Sempre em velocidade normal, ignorando a preferência de velocidade
     // salva em Configurações (é uma dica, não o estudo em si).
+    // forcarVozPadrao=true - o jogo nunca usa a voz natural (premium), só a
+    // padrão, mesmo pra quem tem plano premium/limitado.
     function tocarAudioAlvo() {
         if (!alvo) return;
-        playAudio(alvo.texto_traduzido, user, false, null, false, true).catch(() => { });
+        playAudio(alvo.texto_traduzido, user, false, null, true, true).catch(() => { });
     }
 
     // toca o áudio da frase alvo (no idioma que o aluno está aprendendo) toda

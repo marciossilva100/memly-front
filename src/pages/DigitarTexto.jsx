@@ -497,9 +497,9 @@ export default function DigitarTexto() {
                 </div>
 
                 {!isFlipped && (!diff || !diff.isCorrect) && (
-                    <div className="justify-start mb-4 w-full">
+                    <div className="justify-start mb-4 [@media(max-height:700px)]:mb-2 w-full">
 
-                        <h2 className="text-white text-lg">
+                        <h2 className="text-white text-lg [@media(max-height:700px)]:text-base">
                             {t("what_do_you_want_to_say")}
                         </h2>
 
@@ -510,7 +510,11 @@ export default function DigitarTexto() {
                     </div>
                 )}
 
-                <div className="flex h-[40%]">
+                {/* altura/fonte menores em telas baixas (ex: iPhone SE) - senão
+                    o card + os campos abaixo somados ficavam maiores que a
+                    tela, empurrando os botões pra cima/fora do lugar. Mesmo
+                    padrão de breakpoint já usado em treinoIA/Perguntas/Flashcards. */}
+                <div className="flex h-[40%] [@media(max-height:700px)]:h-[30%]">
                     <div className="perspective flashcard justify-center flex w-full h-full">
 
                         <div
@@ -518,9 +522,9 @@ export default function DigitarTexto() {
                             className={`card card-digitar-texto h-full ${isFlipped ? "flip" : ""} `}
                         >
 
-                            <div className="rounded-lg card-front bg-[linear-gradient(to_right,#233245,#0d1425)] shadow-[0_10px_40px_rgba(0,0,0,0.08)] px-5 py-4 text-center">
+                            <div className="rounded-lg card-front bg-[linear-gradient(to_right,#233245,#0d1425)] shadow-[0_10px_40px_rgba(0,0,0,0.08)] px-5 py-4 [@media(max-height:700px)]:py-2 text-center">
 
-                                <span className="text-2xl">
+                                <span className="text-2xl [@media(max-height:700px)]:text-lg">
                                     {frases[index].texto_nativo}
                                 </span>
                                 {!diff || diff.isCorrect && (
@@ -530,9 +534,9 @@ export default function DigitarTexto() {
                                 )}
                             </div>
 
-                            <div className="rounded-lg card-back bg-[linear-gradient(to_right,#0d1425,#233245)] shadow-[0_10px_40px_rgba(0,0,0,0.09)] px-5 py-4 text-center">
+                            <div className="rounded-lg card-back bg-[linear-gradient(to_right,#0d1425,#233245)] shadow-[0_10px_40px_rgba(0,0,0,0.09)] px-5 py-4 [@media(max-height:700px)]:py-2 text-center">
 
-                                <span className="text-2xl text-white">
+                                <span className="text-2xl [@media(max-height:700px)]:text-lg text-white">
                                     {showBackContent && frases[index].texto_traduzido}
                                 </span>
                                 {!diff || diff.isCorrect && (
@@ -548,7 +552,7 @@ export default function DigitarTexto() {
                 </div>
 
                 {!isFlipped && !diff && (
-                    <div className="text-center flex justify-center mt-5">
+                    <div className="text-center flex justify-center mt-5 [@media(max-height:700px)]:mt-2">
                         <button onClick={(e) => {
                             e.preventDefault();
                             playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, true);
@@ -603,11 +607,11 @@ export default function DigitarTexto() {
 
                 )}
                 {!isFlipped && !diff && (
-                    <div className="w-full mt-8">
+                    <div className="w-full mt-8 [@media(max-height:700px)]:mt-4">
 
                         <form onSubmit={handleSubmit} id="respostaForm">
 
-                            <div className="justify-center mb-8">
+                            <div className="justify-center mb-8 [@media(max-height:700px)]:mb-3">
 
 
 
@@ -622,7 +626,7 @@ export default function DigitarTexto() {
                                         }, 300);
                                     }}
                                     rows={1}
-                                    className="text-xl text-white toutline-none w-full min-h-[56px] max-h-[35vh] py-3 text-center rounded-lg  resize-none overflow-y-auto overscroll-contain bg-gray-800/50 backdrop-blur-sm  border border-gray-700 px-3"
+                                    className="text-xl [@media(max-height:700px)]:text-lg text-white toutline-none w-full min-h-[56px] max-h-[35vh] py-3 text-center rounded-lg  resize-none overflow-y-auto overscroll-contain bg-gray-800/50 backdrop-blur-sm  border border-gray-700 px-3"
                                 />
 
 

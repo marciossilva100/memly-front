@@ -90,7 +90,12 @@ export default function Flashcards() {
       return;
     }
 
-    if (!isFlipped && showButton && !nativeAudioPlayed) {
+    // Autoplay do áudio nativo é opt-in (configurável em Configurações) -
+    // sem essa checagem tocava sempre, ignorando a preferência do usuário.
+    // Mesmo padrão já usado em DigitarTexto.jsx.
+    const autoplayFrente = localStorage.getItem('zaldemy_autoplay_frente') === '1';
+
+    if (autoplayFrente && !isFlipped && showButton && !nativeAudioPlayed) {
       playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language);
       setNativeAudioPlayed(true);
     }
@@ -382,18 +387,20 @@ export default function Flashcards() {
 
         </div>
 
-        <div className="h-dvh justify-center pt-8 h-20">
+        <div className="pt-8">
 
-          {/* Card com efeito 3D corrigido */}
-          <div className="perspective flex justify-center h-[380px]">
+          {/* Card com efeito 3D corrigido - altura/fonte menores em telas
+              baixas (ex: iPhone SE), senão o card cortava. Mesmo padrão de
+              breakpoint já usado em treinoIA/Perguntas. */}
+          <div className="perspective flex justify-center h-[380px] [@media(max-height:700px)]:h-[300px]">
             <div className="flashcard w-full h-full">
               <div
                 className={`card w-full h-full ${isFlipped ? "flip" : ""}`}
                 onClick={flipCard}
                 style={{ cursor: "pointer" }}
               >
-                <div className="card-front shadow-[0_10px_40px_rgba(0,0,0,0.08)] text-center px-8 py-10 bg-[linear-gradient(to_right,#233245,#0d1425)] rounded-lg">
-                  <span className="text-2xl">
+                <div className="card-front shadow-[0_10px_40px_rgba(0,0,0,0.08)] text-center px-8 py-10 [@media(max-height:700px)]:py-6 bg-[linear-gradient(to_right,#233245,#0d1425)] rounded-lg">
+                  <span className="text-2xl [@media(max-height:700px)]:text-xl">
                     {frases[index].texto_nativo}
                   </span>
                   <div className="absolute right-0 top-0 mt-3 me-3">
@@ -401,8 +408,8 @@ export default function Flashcards() {
                   </div>
                 </div>
 
-                <div className="card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] text-center px-8 py-10 rounded-lg bg-[linear-gradient(to_right,#0d1425,#233245)]">
-                  <span className="text-2xl text-white">
+                <div className="card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] text-center px-8 py-10 [@media(max-height:700px)]:py-6 rounded-lg bg-[linear-gradient(to_right,#0d1425,#233245)]">
+                  <span className="text-2xl [@media(max-height:700px)]:text-xl text-white">
                     {hasBeenFlipped ? frases[index].texto_traduzido : ""}
                   </span>
                   <div className="absolute right-0 top-0 mt-3 me-3">

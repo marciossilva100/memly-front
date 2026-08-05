@@ -426,8 +426,11 @@ export default function Flashcards() {
             </div>
           )}
 
-          {/* Botão Ouvir - aparece quando o card JÁ FOI VIRADO pelo menos uma vez */}
-          {hasBeenFlipped && (
+          {/* Botão Ouvir - aparece quando o card está mostrando o verso agora
+              (isFlipped, não hasBeenFlipped - senão, ao virar de volta pra
+              frente depois da primeira virada, os dois botões apareciam
+              juntos, já que hasBeenFlipped nunca volta a false) */}
+          {isFlipped && (
             <div className="text-center flex justify-center mt-5">
               <button onClick={(e) => {
                 e.preventDefault();

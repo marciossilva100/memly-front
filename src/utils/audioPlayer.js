@@ -9,7 +9,7 @@ let currentToken = 0;
 // o aviso a cada frase enquanto o usuário continua praticando.
 let avisoLimiteAudioExibido = false;
 
-export const playAudio = async (text, user, ia = false, lang = null, forcarVozPadrao = false) => {
+export const playAudio = async (text, user, ia = false, lang = null, forcarVozPadrao = false, velocidadeNormal = false) => {
     const API_URL = import.meta.env.VITE_API_URL;
     if (!text) return;
 
@@ -49,13 +49,23 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
             const audio = new Audio(resultado.url);
             currentAudio = audio;
 
-            audio.playbackRate = 0.9;
-            audio.play().catch(() => {});
+            audio.playbackRate = velocidadeNormal ? 1.0 : 0.9;
 
-            audio.onended = () => {
-                URL.revokeObjectURL(resultado.url);
-                currentAudio = null;
-            };
+            // Espera o áudio terminar de verdade antes de resolver - quem
+            // chama (ex: jogo Chuva de Frases) precisa saber quando a
+            // reprodução acabou pra prosseguir só depois disso.
+            await new Promise((resolve) => {
+                audio.onended = () => {
+                    URL.revokeObjectURL(resultado.url);
+                    currentAudio = null;
+                    resolve();
+                };
+                audio.onerror = () => {
+                    currentAudio = null;
+                    resolve();
+                };
+                audio.play().catch(() => resolve());
+            });
 
             return;
         }
@@ -104,9 +114,13 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
 
             // A voz padrão (LibreTranslate) não tem parâmetro de velocidade
             // na API, então aplicamos no player - disponível em qualquer
-            // plano, diferente da escolha de voz (só premium).
+            // plano, diferente da escolha de voz (só premium). velocidadeNormal
+            // ignora a preferência salva (ex: acerto no jogo Chuva de Frases,
+            // que sempre toca no tom normal pra não atrapalhar o reforço).
             const velocidadePreferida = parseFloat(localStorage.getItem('zaldemy_velocidade_tts'));
-            audio.playbackRate = Number.isFinite(velocidadePreferida) ? velocidadePreferida : 1.0;
+            audio.playbackRate = velocidadeNormal
+                ? 1.0
+                : (Number.isFinite(velocidadePreferida) ? velocidadePreferida : 1.0);
 
             await audio.play().catch(err => {
                 console.error("ERRO PLAY:", err);

@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Heart, Trophy, Loader2, CloudRain } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+import { playAudio } from "../utils/audioPlayer";
+import { Heart, Trophy, Loader2, CloudRain, Check } from "lucide-react";
 
 const AVATAR_COLORS = [
     'bg-emerald-500',
@@ -60,6 +62,7 @@ function Explosao({ top, left, letras }) {
 
 export default function ChuvaFrases() {
     const { t } = useTranslation();
+    const { user } = useAuth();
     const navigate = useNavigate();
     const API_URL = import.meta.env.VITE_API_URL;
 
@@ -67,17 +70,23 @@ export default function ChuvaFrases() {
 
     const [categorias, setCategorias] = useState([]);
     const [loadingCategorias, setLoadingCategorias] = useState(true);
-    const [categoriaEscolhida, setCategoriaEscolhida] = useState(null);
+    const [selecionadas, setSelecionadas] = useState([]); // ids marcados no picker
+    const [categoriasEscolhidas, setCategoriasEscolhidas] = useState([]); // categorias já confirmadas pro jogo atual
     const [loadingFrases, setLoadingFrases] = useState(false);
 
     const [frases, setFrases] = useState([]);
-    const [recorde, setRecorde] = useState(0);
+    // recorde só existe fazendo sentido com UMA categoria - com várias
+    // selecionadas, não há uma categoria única pra comparar o recorde salvo.
+    const [recorde, setRecorde] = useState(null);
 
     const [alvo, setAlvo] = useState(null);
     const [caindo, setCaindo] = useState([]);
     const [pontos, setPontos] = useState(0);
     const [vidas, setVidas] = useState(VIDAS_INICIAIS);
     const [explodindo, setExplodindo] = useState(null);
+    // texto mostrado no centro da tela junto com o áudio, no acerto - a
+    // próxima chuva só começa depois que ele some (áudio termina).
+    const [textoCentral, setTextoCentral] = useState(null);
 
     const uidRef = useRef(0);
     const areaRef = useRef(null);
@@ -107,29 +116,45 @@ export default function ChuvaFrases() {
             .finally(() => setLoadingCategorias(false));
     }, [fase, API_URL]);
 
-    function escolherCategoria(categoria) {
-        setCategoriaEscolhida(categoria);
+    function alternarSelecao(categoria) {
+        setSelecionadas((prev) =>
+            prev.includes(categoria.id)
+                ? prev.filter((id) => id !== categoria.id)
+                : [...prev, categoria.id]
+        );
+    }
+
+    function iniciarJogo(categoriasParaJogar) {
+        setCategoriasEscolhidas(categoriasParaJogar);
         setLoadingFrases(true);
+        setFase("jogando");
 
         const headers = {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + localStorage.getItem("token"),
         };
 
-        Promise.all([
+        const buscasFrases = categoriasParaJogar.map((cat) =>
             fetch(`${API_URL}/controller/frases.php`, {
                 method: "POST",
                 headers,
-                body: JSON.stringify({ action: "frases", category_id: categoria.id }),
-            }).then((r) => r.json()),
-            fetch(`${API_URL}/controller/jogoChuvaFrases.php`, {
-                method: "POST",
-                headers,
-                body: JSON.stringify({ action: "buscar_recorde", category_id: categoria.id }),
-            }).then((r) => r.json()),
-        ])
-            .then(([frasesData, recordeData]) => {
-                const listaFrases = Array.isArray(frasesData) ? frasesData : [];
+                body: JSON.stringify({ action: "frases", category_id: cat.id }),
+            }).then((r) => r.json())
+        );
+
+        // recorde só é buscado/mostrado quando o jogo é de uma categoria só
+        const buscaRecorde =
+            categoriasParaJogar.length === 1
+                ? fetch(`${API_URL}/controller/jogoChuvaFrases.php`, {
+                    method: "POST",
+                    headers,
+                    body: JSON.stringify({ action: "buscar_recorde", category_id: categoriasParaJogar[0].id }),
+                }).then((r) => r.json())
+                : Promise.resolve(null);
+
+        Promise.all([Promise.all(buscasFrases), buscaRecorde])
+            .then(([listasFrases, recordeData]) => {
+                const listaFrases = listasFrases.flatMap((lista) => (Array.isArray(lista) ? lista : []));
 
                 if (listaFrases.length < MIN_FRASES) {
                     setFase("escolher");
@@ -137,13 +162,13 @@ export default function ChuvaFrases() {
                 }
 
                 setFrases(listaFrases);
-                setRecorde(recordeData?.recorde ?? 0);
+                setRecorde(recordeData?.recorde ?? null);
                 setPontos(0);
                 setVidas(VIDAS_INICIAIS);
                 usadasRef.current = [];
                 setCaindo([]);
+                setTextoCentral(null);
                 setAlvo(escolherProximoAlvo(listaFrases, []));
-                setFase("jogando");
             })
             .catch(() => setFase("escolher"))
             .finally(() => setLoadingFrases(false));
@@ -168,7 +193,11 @@ export default function ChuvaFrases() {
     useEffect(() => {
         if (fase === "jogando" && vidas <= 0) {
             setCaindo([]);
+            setTextoCentral(null);
             setFase("fimDeJogo");
+
+            // recorde só é salvo pra jogo de categoria única (ver iniciarJogo)
+            if (categoriasEscolhidas.length !== 1) return;
 
             fetch(`${API_URL}/controller/jogoChuvaFrases.php`, {
                 method: "POST",
@@ -178,7 +207,7 @@ export default function ChuvaFrases() {
                 },
                 body: JSON.stringify({
                     action: "salvar_pontuacao",
-                    category_id: categoriaEscolhida.id,
+                    category_id: categoriasEscolhidas[0].id,
                     pontuacao: pontos,
                 }),
             })
@@ -189,20 +218,26 @@ export default function ChuvaFrases() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [vidas]);
 
-    // spawn das frases caindo
+    // spawn das frases caindo - pausado enquanto o texto central (acerto) está
+    // na tela, senão a chuva do próximo alvo começaria antes da hora.
     useEffect(() => {
-        if (fase !== "jogando" || !alvo) return;
+        if (fase !== "jogando" || !alvo || textoCentral) return;
 
         const nivel = nivelAtual(pontos);
         const maxSimultaneas = Math.min(3 + Math.floor(nivel / 2), 7);
-        const intervaloSpawn = Math.max(1800 - nivel * 120, 700);
+        const intervaloSpawn = Math.max(2400 - nivel * 120, 1100);
 
         const interval = setInterval(() => {
             setCaindo((prev) => {
                 if (prev.length >= maxSimultaneas) return prev;
 
                 const temCorreta = prev.some((item) => item.correta);
-                const vaiSerCorreta = !temCorreta;
+                // Sorteia se essa é a vez de cair a certa (~35% de chance a cada
+                // spawn) em vez de sempre ser a primeira - só força quando chega
+                // no último espaço livre, garantindo que ela sempre apareça em
+                // algum momento do ciclo, mas em posição aleatória.
+                const ultimoSlotDisponivel = prev.length >= maxSimultaneas - 1;
+                const vaiSerCorreta = !temCorreta && (ultimoSlotDisponivel || Math.random() < 0.35);
 
                 let texto;
                 if (vaiSerCorreta) {
@@ -220,7 +255,7 @@ export default function ChuvaFrases() {
                     texto = candidatas[Math.floor(Math.random() * faixa)].texto_traduzido;
                 }
 
-                const duracaoBase = Math.max(9000 - nivel * 500, 3500);
+                const duracaoBase = Math.max(15000 - nivel * 600, 7000);
                 const duracao = duracaoBase + (Math.random() * 1500 - 750);
 
                 uidRef.current += 1;
@@ -231,7 +266,10 @@ export default function ChuvaFrases() {
                         uid: uidRef.current,
                         texto,
                         correta: vaiSerCorreta,
-                        left: 5 + Math.random() * 78,
+                        // centralizado via transform:translateX(-50%) no render,
+                        // faixa apertada pra não deixar a frase saindo da tela
+                        // mesmo quando ela é mais comprida.
+                        left: 22 + Math.random() * 56,
                         duracao,
                         estado: "normal",
                         jaErrou: false,
@@ -241,7 +279,7 @@ export default function ChuvaFrases() {
         }, intervaloSpawn);
 
         return () => clearInterval(interval);
-    }, [fase, alvo, pontos, frases]);
+    }, [fase, alvo, pontos, frases, textoCentral]);
 
     function removerCaindo(uid) {
         setCaindo((prev) => prev.filter((item) => item.uid !== uid));
@@ -296,13 +334,24 @@ export default function ChuvaFrases() {
         setTimeout(() => setExplodindo(null), 700);
 
         removerCaindo(item.uid);
+        setCaindo([]);
         setPontos((prev) => prev + 10 + nivelAtual(prev));
-        avancarAlvo();
+        setTextoCentral(item.texto);
+
+        // Sempre em velocidade normal, ignorando a preferência de velocidade
+        // configurada em Configurações - o objetivo aqui é reforçar a
+        // pronúncia certa, não seguir a preferência de estudo do usuário.
+        playAudio(item.texto, user, false, null, false, true)
+            .catch(() => { })
+            .finally(() => {
+                setTextoCentral(null);
+                avancarAlvo();
+            });
     }
 
     function jogarDeNovo() {
-        if (categoriaEscolhida) {
-            escolherCategoria(categoriaEscolhida);
+        if (categoriasEscolhidas.length > 0) {
+            iniciarJogo(categoriasEscolhidas);
         }
     }
 
@@ -323,50 +372,73 @@ export default function ChuvaFrases() {
             </div>
 
             {fase === "escolher" && (
-                <div className="flex-1 overflow-y-auto scrollbar-hide pb-6">
-                    {loadingCategorias && (
-                        <div className="flex justify-center py-10">
-                            <Loader2 className="w-6 h-6 text-[#4cb8c4] animate-spin" />
-                        </div>
-                    )}
+                <div className="flex-1 flex flex-col min-h-0">
+                    <div className="flex-1 overflow-y-auto scrollbar-hide pb-4">
+                        {loadingCategorias && (
+                            <div className="flex justify-center py-10">
+                                <Loader2 className="w-6 h-6 text-[#4cb8c4] animate-spin" />
+                            </div>
+                        )}
 
-                    {!loadingCategorias && categorias.length === 0 && (
-                        <div className="text-center py-10">
-                            <p className="text-gray-300 mb-4">
-                                {t("need_min_phrases_hint", { minimo: MIN_FRASES })}
-                            </p>
-                            <button
-                                onClick={() => navigate("/listcategorias")}
-                                className="px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors"
-                            >
-                                {t("view_categories")}
-                            </button>
-                        </div>
-                    )}
-
-                    {!loadingCategorias && categorias.length > 0 && (
-                        <>
-                            <p className="text-gray-400 text-sm mb-3">{t("choose_category_to_play")}</p>
-                            {categorias.map((item, index) => (
-                                <div
-                                    key={item.id}
-                                    onClick={() => escolherCategoria(item)}
-                                    className="flex bg-gray-800/50 backdrop-blur-sm items-center gap-3 py-3 px-4 rounded-xl border border-gray-700 shadow-lg mb-3 cursor-pointer hover:bg-gray-700/50 transition-colors"
+                        {!loadingCategorias && categorias.length === 0 && (
+                            <div className="text-center py-10">
+                                <p className="text-gray-300 mb-4">
+                                    {t("need_min_phrases_hint", { minimo: MIN_FRASES })}
+                                </p>
+                                <button
+                                    onClick={() => navigate("/listcategorias")}
+                                    className="px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors"
                                 >
-                                    <div
-                                        className={`flex items-center justify-center w-11 h-11 shrink-0 rounded-full text-white font-semibold text-lg ${AVATAR_COLORS[index % AVATAR_COLORS.length]}`}
-                                    >
-                                        {item.categoria?.charAt(0)?.toUpperCase()}
-                                    </div>
-                                    <div className="min-w-0">
-                                        <p className="text-white font-medium truncate">{item.categoria}</p>
-                                        <p className="text-xs text-gray-400">
-                                            {item.total_frases} {t("words")}
-                                        </p>
-                                    </div>
-                                </div>
-                            ))}
-                        </>
+                                    {t("view_categories")}
+                                </button>
+                            </div>
+                        )}
+
+                        {!loadingCategorias && categorias.length > 0 && (
+                            <>
+                                <p className="text-gray-400 text-sm mb-3">{t("choose_category_to_play")}</p>
+                                {categorias.map((item, index) => {
+                                    const marcada = selecionadas.includes(item.id);
+                                    return (
+                                        <div
+                                            key={item.id}
+                                            onClick={() => alternarSelecao(item)}
+                                            className={`flex bg-gray-800/50 backdrop-blur-sm items-center gap-3 py-3 px-4 rounded-xl border shadow-lg mb-3 cursor-pointer transition-colors ${marcada ? "border-[#4cb8c4] bg-[#4cb8c4]/10" : "border-gray-700 hover:bg-gray-700/50"
+                                                }`}
+                                        >
+                                            <div
+                                                className={`flex items-center justify-center w-11 h-11 shrink-0 rounded-full text-white font-semibold text-lg ${AVATAR_COLORS[index % AVATAR_COLORS.length]}`}
+                                            >
+                                                {item.categoria?.charAt(0)?.toUpperCase()}
+                                            </div>
+                                            <div className="min-w-0 flex-1">
+                                                <p className="text-white font-medium truncate">{item.categoria}</p>
+                                                <p className="text-xs text-gray-400">
+                                                    {item.total_frases} {t("words")}
+                                                </p>
+                                            </div>
+                                            <div
+                                                className={`w-6 h-6 shrink-0 rounded-full border flex items-center justify-center ${marcada ? "bg-[#4cb8c4] border-[#4cb8c4]" : "border-gray-600"
+                                                    }`}
+                                            >
+                                                {marcada && <Check className="w-4 h-4 text-white" />}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </>
+                        )}
+                    </div>
+
+                    {selecionadas.length > 0 && (
+                        <button
+                            onClick={() =>
+                                iniciarJogo(categorias.filter((c) => selecionadas.includes(c.id)))
+                            }
+                            className="w-full px-6 py-3 mb-4 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors shrink-0"
+                        >
+                            {t("play_again") /* "Jogar" reaproveitando o mesmo texto do botão de início */}
+                        </button>
                     )}
                 </div>
             )}
@@ -384,10 +456,12 @@ export default function ChuvaFrases() {
                         </div>
                         <div className="flex items-center gap-3 text-sm text-gray-300">
                             <span>{t("score")}: {pontos}</span>
-                            <span className="flex items-center gap-1">
-                                <Trophy className="w-4 h-4 text-yellow-400" />
-                                {recorde}
-                            </span>
+                            {recorde !== null && (
+                                <span className="flex items-center gap-1">
+                                    <Trophy className="w-4 h-4 text-yellow-400" />
+                                    {recorde}
+                                </span>
+                            )}
                         </div>
                     </div>
 
@@ -404,16 +478,29 @@ export default function ChuvaFrases() {
                                 key={item.uid}
                                 onClick={(e) => handleToque(item, e)}
                                 onAnimationEnd={() => handleFimDaQueda(item)}
-                                className={`chuva-item px-3 py-2 rounded-full border text-sm font-medium whitespace-nowrap max-w-[75%] truncate transition-colors ${item.estado === "errada"
+                                className={`chuva-item px-3 py-2 rounded-2xl border text-sm font-medium text-center transition-colors ${item.estado === "errada"
                                         ? "bg-red-500/80 border-red-400 text-white"
                                         : "bg-gray-800/80 border-gray-600 text-white"
                                     }`}
-                                style={{ left: `${item.left}%`, animationDuration: `${item.duracao}ms` }}
+                                style={{
+                                    left: `${item.left}%`,
+                                    transform: "translateX(-50%)",
+                                    maxWidth: "62%",
+                                    animationDuration: `${item.duracao}ms`,
+                                }}
                             >
                                 {item.texto}
                             </button>
                         ))}
                         {explodindo && <Explosao {...explodindo} />}
+
+                        {textoCentral && (
+                            <div className="absolute inset-0 flex items-center justify-center px-6 pointer-events-none">
+                                <div className="bg-gray-900/95 border border-[#4cb8c4]/40 rounded-2xl px-5 py-4 text-center shadow-xl max-w-[85%]">
+                                    <p className="text-white text-lg font-semibold">{textoCentral}</p>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
@@ -425,7 +512,9 @@ export default function ChuvaFrases() {
                     </div>
                     <h1 className="text-xl font-semibold text-white mb-2">{t("game_over_title")}</h1>
                     <p className="text-gray-300 mb-1">{t("score")}: {pontos}</p>
-                    <p className="text-gray-400 text-sm mb-8">{t("best_score")}: {recorde}</p>
+                    {recorde !== null && (
+                        <p className="text-gray-400 text-sm mb-8">{t("best_score")}: {recorde}</p>
+                    )}
 
                     <div className="flex flex-col gap-3 w-full max-w-xs">
                         <button
@@ -435,7 +524,10 @@ export default function ChuvaFrases() {
                             {t("play_again")}
                         </button>
                         <button
-                            onClick={() => setFase("escolher")}
+                            onClick={() => {
+                                setSelecionadas([]);
+                                setFase("escolher");
+                            }}
                             className="w-full px-6 py-3 rounded-full bg-gray-800/50 border border-gray-700 text-white font-medium hover:bg-gray-700/50 transition-colors"
                         >
                             {t("choose_category_to_play")}

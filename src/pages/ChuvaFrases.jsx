@@ -272,7 +272,10 @@ export default function ChuvaFrases() {
                 }
 
                 const duracaoBase = Math.max(30000 - nivel * 800, 16000);
-                const duracao = duracaoBase + (Math.random() * 1500 - 750);
+                // varia de 70% a 130% da duração base - dá pra perceber
+                // diferença real entre um bloco e outro, sem deixar nenhum
+                // rápido demais nem lento demais.
+                const duracao = duracaoBase * (0.7 + Math.random() * 0.6);
 
                 const raia = raiasLivres[Math.floor(Math.random() * raiasLivres.length)];
 

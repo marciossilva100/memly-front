@@ -626,7 +626,7 @@ export default function DigitarTexto() {
                                         }, 300);
                                     }}
                                     rows={1}
-                                    className="text-xl [@media(max-height:700px)]:text-lg text-white toutline-none w-full min-h-[56px] max-h-[35vh] py-3 text-center rounded-lg  resize-none overflow-y-auto overscroll-contain bg-gray-800/50 backdrop-blur-sm  border border-gray-700 px-3"
+                                    className="text-xl [@media(max-height:700px)]:text-lg text-white toutline-none w-full min-h-[56px] max-h-[35vh] py-3 text-center rounded-lg  resize-none overflow-y-auto overscroll-contain bg-gray-800/50 backdrop-blur-sm  border border-gray-700 px-3 scroll-mb-28"
                                 />
 
 

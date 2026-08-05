@@ -405,7 +405,7 @@ export default function Flashcards() {
             <i className="bi bi-arrow-left text-2xl text-white"></i>
           </div>
 
-          <h1 className="absolute inset-x-0 top-0 text-lg font-semibold text-white">
+          <h1 className="absolute inset-x-0 top-0 text-lg font-semibold text-white pointer-events-none">
             {t("translate_the_text")}
           </h1>
 

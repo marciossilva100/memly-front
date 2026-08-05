@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { playAudio } from "../utils/audioPlayer";
+import { tocarSomAcerto } from "../utils/somJogo";
 import { Heart, Trophy, Loader2, CloudRain, Check, Volume2 } from "lucide-react";
 import PremiumModal from "../components/PremiumModal";
 
@@ -379,6 +380,7 @@ export default function ChuvaFrases() {
 
         setExplodindo({ uid: item.uid, top, left, letras });
         setTimeout(() => setExplodindo(null), 700);
+        tocarSomAcerto();
 
         removerCaindo(item.uid);
         setPontos((prev) => prev + 10 + nivelAtual(prev));

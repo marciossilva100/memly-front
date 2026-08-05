@@ -256,7 +256,7 @@ export default function JogoFrases() {
         <div onClick={() => navigate(-1)} className="text-left cursor-pointer text-white text-2xl">
           ←
         </div>
-        <h1 className="absolute inset-x-0 top-0 text-lg font-semibold text-white">
+        <h1 className="absolute inset-x-0 top-0 text-lg font-semibold text-white pointer-events-none">
           {t("match_the_pairs")}
         </h1>
       </div>

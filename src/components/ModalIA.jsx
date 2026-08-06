@@ -63,7 +63,7 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA }) {
             icon: BookOpenText,
             cor: "text-blue-400",
             fundo: "bg-blue-400/10 border-blue-400/30",
-            titulo: t("daily_phrase_title"),
+            titulo: t("daily_pronunciation_training_title"),
             descricao: t("daily_phrase_modal_desc"),
             rota: "/treinoia",
             temAcesso: temAcesso(acessoFrase)

@@ -471,9 +471,8 @@ export default function Home() {
                                         <p className="text-lg text-white font-medium truncate">
                                             {item.categoria}
                                         </p>
-                                        <div className="flex items-center gap-1 text-xs text-gray-400">
+                                        <div className="flex flex-col text-xs text-gray-400">
                                             <span>{item.quantidade} {t("words")}</span>
-                                            <span>•</span>
                                             <span className="text-emerald-400">{paraRevisar} {t("to_review")}</span>
                                         </div>
                                         <div className="mt-1.5 h-1.5 w-32 max-w-full rounded-full bg-gray-700 overflow-hidden">

@@ -10,7 +10,12 @@ let currentToken = 0;
 // memória) porque uma flag em memória reseta a cada recarregamento - no PWA
 // do celular isso acontece toda vez que o app volta do segundo plano,
 // fazendo o modal reaparecer repetidamente durante o mesmo treino.
-const CHAVE_AVISO_LIMITE_AUDIO = "zaldemy_aviso_limite_audio_exibido";
+// A chave inclui o user_id porque o localStorage é por dispositivo, não por
+// conta - sem isso, um usuário novo testando no mesmo aparelho de uma conta
+// que já viu o aviso nunca seria avisado na própria primeira vez.
+function chaveAvisoLimiteAudio(user) {
+    return `zaldemy_aviso_limite_audio_exibido_${user?.id ?? "anon"}`;
+}
 
 // Cancela o áudio em reprodução (se houver) e invalida qualquer chamada de
 // playAudio ainda em andamento (via o token) - usado tanto no início de toda
@@ -61,8 +66,9 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
         const resultado = await gerarAudio(text);
 
         if (resultado?.limiteAtingido) {
-            if (!localStorage.getItem(CHAVE_AVISO_LIMITE_AUDIO)) {
-                localStorage.setItem(CHAVE_AVISO_LIMITE_AUDIO, "1");
+            const chaveAviso = chaveAvisoLimiteAudio(user);
+            if (!localStorage.getItem(chaveAviso)) {
+                localStorage.setItem(chaveAviso, "1");
                 dispatchPremiumLimitHit("audio");
                 return;
             }

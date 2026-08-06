@@ -268,7 +268,7 @@ export default function JogoFrases() {
                 key={frase.id}
                 disabled={bloqueado}
                 onClick={() => setSelecionadaEsquerda(frase)}
-                className={`p-4 [@media(max-height:700px)]:p-2 [@media(max-height:700px)]:text-xs rounded-lg border text-white border-slate-400
+                className={`p-4 [@media(max-height:700px)]:p-2 [@media(max-height:700px)]:text-sm rounded-lg border text-white border-slate-400
                   ${sucessoEsquerdaId === frase.id
                     ? "bg-[#469118]"
                     : erroEsquerdaId === frase.id
@@ -289,7 +289,7 @@ export default function JogoFrases() {
                 key={frase.id}
                 disabled={bloqueado}
                 onClick={() => setSelecionadaDireita(frase)}
-                className={`p-4 [@media(max-height:700px)]:p-2 [@media(max-height:700px)]:text-xs rounded-lg border text-white border-slate-400
+                className={`p-4 [@media(max-height:700px)]:p-2 [@media(max-height:700px)]:text-sm rounded-lg border text-white border-slate-400
                   ${sucessoDireitaId === frase.id
                     ? "bg-[#469118]"
                     : erroDireitaId === frase.id

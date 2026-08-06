@@ -577,25 +577,22 @@ export default function ChuvaFrases() {
                         </div>
                     </div>
 
-                    <div className="rounded-2xl bg-gradient-to-r from-teal-400 via-[#4cb8c4] to-indigo-400 p-[1.5px] mb-3 shrink-0 shadow-[0_0_20px_rgba(129,140,248,0.2)]">
-                        <div className="relative rounded-2xl bg-gradient-to-br from-[#4cb8c4]/15 via-gray-900 to-gray-900 px-4 py-3 text-center overflow-hidden">
-                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_#4cb8c4_0%,_transparent_65%)] opacity-10 pointer-events-none" />
-                            <p className="relative text-[#8fdce6] text-[11px] font-semibold uppercase tracking-wider mb-1">
-                                {t("translate_this")}
-                            </p>
-                            <p className="relative text-base font-bold text-white mb-2">
-                                {loadingFrases ? "..." : alvo?.texto_nativo}
-                            </p>
-                            <button
-                                type="button"
-                                onClick={tocarAudioAlvo}
-                                disabled={!alvo}
-                                className="relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors disabled:opacity-50"
-                            >
-                                <Volume2 className="w-3.5 h-3.5" />
-                                {t("listen")}
-                            </button>
-                        </div>
+                    <div className="relative rounded-2xl border border-[#4cb8c4]/40 bg-gradient-to-br from-[#4cb8c4]/15 via-gray-900 to-gray-900 px-4 py-3 text-center mb-3 shrink-0 overflow-hidden">
+                        <p className="relative text-[#8fdce6] text-[11px] font-semibold uppercase tracking-wider mb-1">
+                            {t("translate_this")}
+                        </p>
+                        <p className="relative text-base font-bold text-white mb-2">
+                            {loadingFrases ? "..." : alvo?.texto_nativo}
+                        </p>
+                        <button
+                            type="button"
+                            onClick={tocarAudioAlvo}
+                            disabled={!alvo}
+                            className="relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors disabled:opacity-50"
+                        >
+                            <Volume2 className="w-3.5 h-3.5" />
+                            {t("listen")}
+                        </button>
                     </div>
 
                     <div ref={areaRef} className="chuva-area relative flex-1 overflow-hidden rounded-2xl border border-gray-800 bg-gray-950/40">

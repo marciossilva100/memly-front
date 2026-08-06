@@ -5,6 +5,7 @@ import imgZaldemy from "../assets/img/zaldemy.png"
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
+import PremiumModal from "../components/PremiumModal";
 
 
 import {
@@ -68,6 +69,7 @@ export default function Header({ titulo }) {
     const [idioma, setIdioma] = useState("")
     const [languageList, setLanguageList] = useState([])
     const [trocandoIdioma, setTrocandoIdioma] = useState(false)
+    const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false)
     const API_URL = import.meta.env.VITE_API_URL;
 
     const { user, setUser, categoriasLoading } = useAuth();
@@ -336,16 +338,24 @@ export default function Header({ titulo }) {
                         {t("settings")}
                     </button>
 
-                    {/* <a href="/" className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 text-white text-lg">
-                        <Crown size={20} className='text-yellow-500' />
-                        {t("premium_plan")}
-                    </a> */}
+                    {user?.plano !== 1 && (
+                        <button type="button" onClick={() => { setOpen(false); setIsPremiumModalOpen(true); }} className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 text-white text-lg text-left">
+                            <Crown size={18} className='text-yellow-500' />
+                            {t("go_premium")}
+                        </button>
+                    )}
 
                     <div className='px-4 py-3 text-white text-lg'>
                         <BotaoLogout />
                     </div>
                 </nav>
             </aside>
+
+            <PremiumModal
+                isOpen={isPremiumModalOpen}
+                setIsPremiumModalOpen={setIsPremiumModalOpen}
+                onClose={() => setIsPremiumModalOpen(false)}
+            />
 
         </div>
     )

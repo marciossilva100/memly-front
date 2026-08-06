@@ -553,7 +553,20 @@ export default function Home() {
                 </div>
 
             </div>
-            <div className="relative sticky z-10 bottom-0 text-center w-full justify-items-center justify-center items-center pt-4 pb-16 bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent">
+            <div
+                className="relative sticky z-10 bottom-0 text-center w-full justify-items-center justify-center items-center pb-16"
+                style={{
+                    backgroundImage: "none",
+                    boxShadow: "none",
+                    outline: "none",
+                    borderTop: "0px transparent",
+                    paddingTop: "60px",
+                    marginTop: "-60px",
+                    backgroundColor: "rgb(17, 24, 39)",
+                    WebkitMaskImage: "linear-gradient(to top, black 0%, black 70%, transparent 100%)",
+                    maskImage: "linear-gradient(to top, black 0%, black 70%, transparent 100%)",
+                }}
+            >
 
                 {mostrarGuiaCategoria && (
                     <div className="fixed bottom-40 left-1/2 -translate-x-1/2 w-52 max-w-[85vw] z-20 pointer-events-none">

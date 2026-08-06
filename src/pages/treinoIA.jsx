@@ -275,8 +275,10 @@ export default function TreinoIA() {
                 {!resultado && (
                     <>
                         {/* Altura/padding menores em telas baixas (ex: iPhone SE), mas SEM
-                            diminuir a fonte - só o espaço em volta do texto encolhe. */}
-                        <div className="perspective flex justify-center h-[360px] [@media(max-height:700px)]:h-[240px]">
+                            diminuir a fonte - o espaço em volta do texto encolhe, e se mesmo
+                            assim a frase for longa demais pro espaço, o texto rola dentro do
+                            card em vez de disputar espaço com o ícone/botão e quebrar o layout. */}
+                        <div className="perspective flex justify-center h-[360px] [@media(max-height:700px)]:h-[300px]">
                             <div className="flashcard w-full h-full">
                                 <div
                                     className={`card w-full h-full ${flipped ? "flip" : ""}`}
@@ -288,8 +290,8 @@ export default function TreinoIA() {
                                             <BookOpenText className="w-5 h-5 text-[#4cb8c4]" />
                                         </div>
 
-                                        <div className="flex-1 flex items-center min-h-0">
-                                            <p className="text-base text-white leading-relaxed text-center">
+                                        <div className="flex-1 w-full min-h-0 overflow-y-auto scrollbar-hide flex items-center">
+                                            <p className="text-base text-white leading-relaxed text-center w-full">
                                                 <TextoDestacado tokens={mostrarVocabulario ? fraseDestacada : null} texto={frase} />
                                             </p>
                                         </div>
@@ -307,8 +309,8 @@ export default function TreinoIA() {
                                     </div>
 
                                     <div className="card-back rounded-2xl border border-gray-700 bg-gradient-to-br from-[#0d1425] to-[#233245] px-6 py-7 [@media(max-height:700px)]:py-3 shadow-md flex flex-col items-center gap-2">
-                                        <div className="flex-1 flex items-center min-h-0">
-                                            <p className="text-base text-white leading-relaxed text-center">{fraseTraducao}</p>
+                                        <div className="flex-1 w-full min-h-0 overflow-y-auto scrollbar-hide flex items-center">
+                                            <p className="text-base text-white leading-relaxed text-center w-full">{fraseTraducao}</p>
                                         </div>
                                     </div>
                                 </div>

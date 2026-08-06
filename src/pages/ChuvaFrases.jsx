@@ -30,9 +30,11 @@ const VELOCIDADES_JOGO = [
 ];
 // Raias fixas (centro em %) - cada frase cai numa raia exclusiva, largura
 // fixa pra todas (LARGURA_ITEM), garantindo que nunca fiquem uma por cima
-// da outra em vez de depender de posição horizontal aleatória.
-const RAIAS = [17, 50, 83];
-const LARGURA_ITEM = 32; // % fixo, mesmo pra todos os itens (raias ficam 33% entre si)
+// da outra em vez de depender de posição horizontal aleatória. 2 raias (não
+// 3) pra caber blocos bem mais largos com folga real das bordas do
+// container, em vez de ficar tudo espremido/colado na lateral.
+const RAIAS = [28, 72];
+const LARGURA_ITEM = 42; // % fixo - deixa ~7% de margem de cada lado e ~2% entre as raias
 
 // Uma cor neon fixa por raia (não aleatória) - visual mais vivo sem virar
 // bagunça, já que cada raia sempre cai na mesma cor.

@@ -18,7 +18,9 @@ import {
     Crown,
     LogOut,
     Search,
-    Share2
+    Share2,
+    Camera,
+    Loader2
 } from "lucide-react";
 
 // 🌍 Bandeiras
@@ -70,9 +72,50 @@ export default function Header({ titulo }) {
     const [languageList, setLanguageList] = useState([])
     const [trocandoIdioma, setTrocandoIdioma] = useState(false)
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false)
+    const [enviandoFoto, setEnviandoFoto] = useState(false)
+    const [erroFoto, setErroFoto] = useState('')
+    const fotoInputRef = useRef(null)
     const API_URL = import.meta.env.VITE_API_URL;
 
     const { user, setUser, categoriasLoading } = useAuth();
+
+    async function handleSelecionarFoto(e) {
+        const arquivo = e.target.files?.[0];
+        e.target.value = ''; // permite escolher o mesmo arquivo de novo depois
+
+        if (!arquivo) return;
+
+        setErroFoto('');
+        setEnviandoFoto(true);
+
+        try {
+            const formData = new FormData();
+            formData.append('action', 'upload_foto');
+            formData.append('foto', arquivo);
+
+            const res = await fetch(`${API_URL}/controller/perfil.php`, {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: formData
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                setErroFoto(data.message || t("unexpected_error"));
+                return;
+            }
+
+            setUser((prev) => ({ ...(prev || {}), foto_perfil: data.foto_perfil }));
+        } catch (error) {
+            console.error('Erro ao enviar foto:', error);
+            setErroFoto(t("server_connection_error"));
+        } finally {
+            setEnviandoFoto(false);
+        }
+    }
 
     const idiomaNativo = languageList.find(
         (l) => l.sigla === user?.native_language
@@ -300,18 +343,46 @@ export default function Header({ titulo }) {
 
                 <div className="flex items-center gap-4 p-4 ">
 
-                    <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiB_hwnr2qi68_5lIrxK6fE74AlsQemoqOQw&s" alt="Avatar" className="w-full h-full object-cover" />
+                    <div className="relative shrink-0">
+                        <button
+                            type="button"
+                            onClick={() => fotoInputRef.current?.click()}
+                            disabled={enviandoFoto}
+                            className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden"
+                        >
+                            <img
+                                src={user?.foto_perfil ? `${API_URL}/${user.foto_perfil}` : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiB_hwnr2qi68_5lIrxK6fE74AlsQemoqOQw&s"}
+                                alt="Avatar"
+                                className="w-full h-full object-cover"
+                            />
+                            {enviandoFoto && (
+                                <span className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center">
+                                    <Loader2 className="w-5 h-5 text-white animate-spin" />
+                                </span>
+                            )}
+                        </button>
+                        <span
+                            onClick={() => fotoInputRef.current?.click()}
+                            className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#4cb8c4] border-2 border-gray-900 flex items-center justify-center cursor-pointer"
+                        >
+                            <Camera className="w-2.5 h-2.5 text-white" />
+                        </span>
+                        <input
+                            ref={fotoInputRef}
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp"
+                            onChange={handleSelecionarFoto}
+                            className="hidden"
+                        />
                     </div>
 
-
-                    <div>
+                    <div className="min-w-0">
                         <p className="text-md font-semibold text-white">
                             {t("hello")}, {user?.name?.split(' ')[0]}
                         </p>
-                        {/* <p class="text-sm text-gray-500">
-                            {user.email}
-                        </p> */}
+                        {erroFoto && (
+                            <p className="text-red-400 text-xs mt-0.5">{erroFoto}</p>
+                        )}
                     </div>
                 </div>
 

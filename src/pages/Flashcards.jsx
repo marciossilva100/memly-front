@@ -1,14 +1,12 @@
 import { useParams, useNavigate,useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import { playAudio } from "../utils/audioPlayer";
+import { playAudio, pararAudio } from "../utils/audioPlayer";
 import { Volume, RefreshCw } from "lucide-react";
 
 // import { gerarAudio } from "../services/elevenlabs";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
-import PremiumModal from "../components/PremiumModal";
-import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 
 export default function Flashcards() {
   const { t } = useTranslation();
@@ -31,15 +29,12 @@ export default function Flashcards() {
   const { user, setUser } = useAuth();
   const location = useLocation();
   const correctIds = location.state?.correctIds || [];
-  const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
-  const [motivoPremium, setMotivoPremium] = useState(null);
   const [vh, setVh] = useState(window.innerHeight);
   const [viewportTop, setViewportTop] = useState(0);
 
-  usePremiumLimitListener((motivo) => {
-    setMotivoPremium(motivo);
-    setIsPremiumModalOpen(true);
-  });
+  // Para o áudio em reprodução ao sair da tela (troca de rota) - sem isso,
+  // o áudio seguia tocando mesmo depois do usuário já ter navegado embora.
+  useEffect(() => () => pararAudio(), []);
 
   // h-dvh sozinho não é confiável dentro da WebView do Capacitor no iOS
   // (o card ficava baixo demais). Mesma solução usada em DigitarTexto:
@@ -268,6 +263,7 @@ export default function Flashcards() {
     }
 
     window.speechSynthesis.cancel();
+    pararAudio();
 
     if (flipTimeoutRef.current) {
       clearTimeout(flipTimeoutRef.current);
@@ -457,7 +453,7 @@ export default function Flashcards() {
           {/* Botão Ouvir nativo - aparece antes de virar o card */}
           {!isFlipped && (
             <div className="text-center flex justify-center mt-5">
-              <button data-audio-hint-target onClick={(e) => {
+              <button onClick={(e) => {
                 e.preventDefault();
                 playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, mode === "learn");
               }} className="px-4 py-2 rounded-md bg-slate-500 text-white text-sm transition flex">
@@ -473,7 +469,7 @@ export default function Flashcards() {
               juntos, já que hasBeenFlipped nunca volta a false) */}
           {isFlipped && (
             <div className="text-center flex justify-center mt-5">
-              <button data-audio-hint-target onClick={(e) => {
+              <button onClick={(e) => {
                 e.preventDefault();
                 playAudio(frases[index].texto_traduzido, user);
               }} className="px-4 py-2 rounded-md bg-slate-500 text-white text-sm  transition flex">
@@ -558,13 +554,6 @@ export default function Flashcards() {
 
         )}
       </div>
-
-      <PremiumModal
-        isOpen={isPremiumModalOpen}
-        setIsPremiumModalOpen={setIsPremiumModalOpen}
-        onClose={() => { setIsPremiumModalOpen(false); setMotivoPremium(null); }}
-        motivo={motivoPremium}
-      />
 
     </div>
 

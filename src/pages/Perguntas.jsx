@@ -1,13 +1,12 @@
 import { useState, useEffect, useRef } from "react"
 import { Volume2, Mic, Square, RotateCcw, History, SkipForward, Send, MessageCircleQuestion, Ban, AlertCircle, Eye, EyeOff, Keyboard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { playAudio } from "../utils/audioPlayer";
+import { playAudio, pararAudio } from "../utils/audioPlayer";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import useAudioRecorder from "../hooks/useAudioRecorder";
 import AudioPreviewPlayer from "../components/AudioPreviewPlayer";
 import PremiumModal from "../components/PremiumModal";
-import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 import TextoDestacado from "../components/TextoDestacado";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
@@ -47,10 +46,9 @@ export default function Perguntas() {
 
     const { gravando, audioBlob, audioUrl, erro: erroGravacao, iniciarGravacao, pararGravacao, limpar } = useAudioRecorder();
 
-    usePremiumLimitListener((motivo) => {
-        setMotivoPremium(motivo);
-        setIsPremiumModalOpen(true);
-    });
+    // Para o áudio em reprodução ao sair da tela (troca de rota) - sem isso,
+    // o áudio seguia tocando mesmo depois do usuário já ter navegado embora.
+    useEffect(() => () => pararAudio(), []);
 
     const fetchQuestion = () => {
         setLoading(true);
@@ -384,7 +382,6 @@ export default function Perguntas() {
                                         </div>
 
                                         <button
-                                            data-audio-hint-target
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 e.preventDefault();

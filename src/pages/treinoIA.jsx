@@ -3,11 +3,10 @@ import { Volume2, Mic, Square, RotateCcw, History, Send, BookOpenText, Ban, Aler
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
-import { playAudio } from "../utils/audioPlayer";
+import { playAudio, pararAudio } from "../utils/audioPlayer";
 import useAudioRecorder from "../hooks/useAudioRecorder";
 import AudioPreviewPlayer from "../components/AudioPreviewPlayer";
 import PremiumModal from "../components/PremiumModal";
-import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 import TextoDestacado from "../components/TextoDestacado";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
@@ -45,10 +44,9 @@ export default function TreinoIA() {
 
     const { gravando, audioBlob, audioUrl, erro: erroGravacao, iniciarGravacao, pararGravacao, limpar } = useAudioRecorder();
 
-    usePremiumLimitListener((motivo) => {
-        setMotivoPremium(motivo);
-        setIsPremiumModalOpen(true);
-    });
+    // Para o áudio em reprodução ao sair da tela (troca de rota) - sem isso,
+    // o áudio seguia tocando mesmo depois do usuário já ter navegado embora.
+    useEffect(() => () => pararAudio(), []);
 
     useEffect(() => {
         if (jaBuscou.current) return;
@@ -295,7 +293,6 @@ export default function TreinoIA() {
                                         </div>
 
                                         <button
-                                            data-audio-hint-target
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 playAudio(frase, user, true);

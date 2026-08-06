@@ -10,7 +10,6 @@ import PremiumModal from '../components/PremiumModal'
 import ModalConfirm from '../components/ModalConfirm';
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
-import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 
 
 import { BookOpen, BarChart3, Bot, Plus, Home as HomeIcon, CheckCircle2, Flame, Gamepad2, Crown } from "lucide-react";
@@ -349,11 +348,6 @@ export default function Home() {
         // navigate('/premiumplan');
 
     }
-
-    usePremiumLimitListener((motivo) => {
-        setMotivoPremium(motivo);
-        setIsPremiumModalOpen(true);
-    });
 
     async function translateString(phrase) {
         try {

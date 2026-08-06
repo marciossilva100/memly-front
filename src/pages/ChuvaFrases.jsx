@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
-import { playAudio } from "../utils/audioPlayer";
+import { playAudio, pararAudio } from "../utils/audioPlayer";
 import { tocarSomAcerto } from "../utils/somJogo";
 import { Heart, Trophy, Loader2, CloudRain, Check, Volume2 } from "lucide-react";
 import PremiumModal from "../components/PremiumModal";
@@ -101,9 +101,42 @@ export default function ChuvaFrases() {
     // sorteio (não aparece na tela), então fica num ref em vez de estado.
     const usadasRef = useRef([]);
 
+    // Para o áudio em reprodução ao sair da tela (troca de rota) - sem isso,
+    // o áudio seguia tocando mesmo depois do usuário já ter navegado embora.
+    useEffect(() => () => pararAudio(), []);
+
+    // null = checando, true = bloqueado (free ou limitado sem amostra),
+    // false = liberado. Checa ANTES de buscar/mostrar a lista de categorias -
+    // sem isso, dava pra escolher categoria à toa e só ser barrado ao clicar
+    // em "Jogar", depois de já ter visto tudo.
+    const [acessoBloqueado, setAcessoBloqueado] = useState(null);
+    const [mensagemBloqueio, setMensagemBloqueio] = useState(null);
+
+    useEffect(() => {
+        fetch(`${API_URL}/controller/jogoChuvaFrases.php`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token"),
+            },
+            body: JSON.stringify({ action: "status_acesso" }),
+        })
+            .then((r) => r.json())
+            .then((data) => {
+                const bloqueado = Boolean(data?.bloqueado);
+                setAcessoBloqueado(bloqueado);
+                if (bloqueado) {
+                    setMensagemBloqueio(data?.message ?? null);
+                    setMotivoPremium("limite_gratuito");
+                    setIsPremiumModalOpen(true);
+                }
+            })
+            .catch(() => setAcessoBloqueado(false));
+    }, [API_URL]);
+
     // fase "escolher": categorias do usuário com frases suficientes pro jogo
     useEffect(() => {
-        if (fase !== "escolher") return;
+        if (fase !== "escolher" || acessoBloqueado !== false) return;
 
         setLoadingCategorias(true);
         fetch(`${API_URL}/controller/categorias.php`, {
@@ -121,7 +154,7 @@ export default function ChuvaFrases() {
             })
             .catch(() => setCategorias([]))
             .finally(() => setLoadingCategorias(false));
-    }, [fase, API_URL]);
+    }, [fase, API_URL, acessoBloqueado]);
 
     function alternarSelecao(categoria) {
         setSelecionadas((prev) =>
@@ -412,13 +445,34 @@ export default function ChuvaFrases() {
             {fase === "escolher" && (
                 <div className="flex-1 flex flex-col min-h-0">
                     <div className="flex-1 overflow-y-auto scrollbar-hide pb-4">
-                        {loadingCategorias && (
+                        {acessoBloqueado === null && (
                             <div className="flex justify-center py-10">
                                 <Loader2 className="w-6 h-6 text-[#4cb8c4] animate-spin" />
                             </div>
                         )}
 
-                        {!loadingCategorias && categorias.length === 0 && (
+                        {acessoBloqueado === true && (
+                            <div className="text-center py-10">
+                                <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center">
+                                    <Trophy className="w-6 h-6 text-yellow-400" />
+                                </div>
+                                <p className="text-gray-300 mb-4">{mensagemBloqueio || t("premium_reason_audio")}</p>
+                                <button
+                                    onClick={() => navigate("/home")}
+                                    className="px-6 py-3 rounded-full bg-gray-800/50 border border-gray-700 text-white font-medium hover:bg-gray-700/50 transition-colors"
+                                >
+                                    {t("back_to_home")}
+                                </button>
+                            </div>
+                        )}
+
+                        {acessoBloqueado === false && loadingCategorias && (
+                            <div className="flex justify-center py-10">
+                                <Loader2 className="w-6 h-6 text-[#4cb8c4] animate-spin" />
+                            </div>
+                        )}
+
+                        {acessoBloqueado === false && !loadingCategorias && categorias.length === 0 && (
                             <div className="text-center py-10">
                                 <p className="text-gray-300 mb-4">
                                     {t("need_min_phrases_hint", { minimo: MIN_FRASES })}

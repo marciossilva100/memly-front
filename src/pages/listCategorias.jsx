@@ -9,7 +9,6 @@ import PremiumModal from '../components/PremiumModal'
 import { useAuth } from "../context/AuthContext";
 import ModalIncorporarFrases from '../components/ModalIncorporarFrases'
 import { useTranslation } from "react-i18next";
-import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 
 
 import { BookOpen,Search,Filter,Loader2,Home,Settings,BarChart3,UserRound,ChevronDown,FolderPlus,Bot,Crown } from "lucide-react";
@@ -48,11 +47,6 @@ export default function ListCategoria() {
     const API_URL = import.meta.env.VITE_API_URL;
 
     const navigate = useNavigate();
-
-    usePremiumLimitListener((motivo) => {
-        setMotivoPremium(motivo);
-        setIsPremiumModalOpen(true);
-    });
 
     function verifyPlan() {
         if (user?.plano === 1 || user?.plano === 3) {

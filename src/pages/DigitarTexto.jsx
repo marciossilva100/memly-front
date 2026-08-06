@@ -1,14 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { makePerfectDiff } from "../utils/makePerfectDiff";
-import { playAudio } from "../utils/audioPlayer";
+import { playAudio, pararAudio } from "../utils/audioPlayer";
 import '../digitartexto.css'
 import { Volume, Play, Check, RefreshCw } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
-import PremiumModal from "../components/PremiumModal";
-import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 
 
 export default function DigitarTexto() {
@@ -37,13 +35,10 @@ export default function DigitarTexto() {
     const [pular, setPular] = useState(false)
     const { user, setUser } = useAuth();
     const flipTimeoutRef = useRef(null);
-    const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
-    const [motivoPremium, setMotivoPremium] = useState(null);
 
-    usePremiumLimitListener((motivo) => {
-        setMotivoPremium(motivo);
-        setIsPremiumModalOpen(true);
-    });
+    // Para o áudio em reprodução ao sair da tela (troca de rota) - sem isso,
+    // o áudio seguia tocando mesmo depois do usuário já ter navegado embora.
+    useEffect(() => () => pararAudio(), []);
 
     useEffect(() => {
 
@@ -536,7 +531,7 @@ export default function DigitarTexto() {
 
                 {!isFlipped && !diff && (
                     <div className="text-center flex justify-center mt-5 [@media(max-height:700px)]:mt-2">
-                        <button data-audio-hint-target onClick={(e) => {
+                        <button onClick={(e) => {
                             e.preventDefault();
                             playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, mode === "learn");
                         }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors">
@@ -550,7 +545,7 @@ export default function DigitarTexto() {
 
                     <div className="mt-6 w-full ">
                         <div className="text-center flex justify-center">
-                            <button data-audio-hint-target onClick={(e) => {
+                            <button onClick={(e) => {
                                 e.preventDefault();
                                 playAudio(frases[index].texto_traduzido, user);
                             }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-700/50 border border-gray-600 text-gray-300 text-xs hover:bg-gray-700 transition-colors">
@@ -623,7 +618,7 @@ export default function DigitarTexto() {
                 {diff && diff.isCorrect && (
                     <div>
                         <div className="text-center flex justify-center mt-4">
-                            <button data-audio-hint-target onClick={(e) => {
+                            <button onClick={(e) => {
                                 e.preventDefault();
                                 playAudio(frases[index].texto_traduzido, user);
                             }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-700/50 border border-gray-600 text-gray-300 text-xs hover:bg-gray-700 transition-colors">
@@ -656,7 +651,7 @@ export default function DigitarTexto() {
                     <div>
 
 
-                        <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-3">
+                        <div className="absolute bottom-6 left-6 right-6 flex justify-center gap-3">
 
                             <button
                                 onClick={(e) => {
@@ -682,7 +677,7 @@ export default function DigitarTexto() {
                 ) : (
                     <div>
 
-                        <div className="absolute bottom-6 left-0 right-0">
+                        <div className="absolute bottom-6 left-6 right-6">
 
                             <button
                                 onClick={nextCard}
@@ -700,7 +695,7 @@ export default function DigitarTexto() {
 
             {!isFlipped && (!diff || !diff.isCorrect) && (
 
-                <div className="absolute bottom-6 left-0 right-0 flex gap-3">
+                <div className="absolute bottom-6 left-6 right-6 flex gap-3">
 
 
                     <button
@@ -723,13 +718,6 @@ export default function DigitarTexto() {
                 </div>
 
             )}
-
-            <PremiumModal
-                isOpen={isPremiumModalOpen}
-                setIsPremiumModalOpen={setIsPremiumModalOpen}
-                onClose={() => { setIsPremiumModalOpen(false); setMotivoPremium(null); }}
-                motivo={motivoPremium}
-            />
 
         </div>
 

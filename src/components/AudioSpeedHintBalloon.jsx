@@ -1,71 +1,62 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Volume2 } from "lucide-react";
 import useAudioSpeedHintListener from "../hooks/useAudioSpeedHintListener";
 
-const DURACAO_MS = 6000;
-const LARGURA_BALAO = 256; // w-64
-const MARGEM_TELA = 12;
+const DURACAO_VISIVEL_MS = 4500;
+const DURACAO_TRANSICAO_MS = 350;
 
-// Balão global: aparece uma única vez na vida do usuário (localStorage), na
+// Aviso global: aparece uma única vez na vida do usuário (localStorage), na
 // primeira reprodução de áudio real (treino, perguntas, frases por IA) -
 // disparado por utils/audioPlayer.js via evento, já que playAudio é chamado
-// de várias telas diferentes sem um balão local em cada uma. Posiciona-se
-// em cima do botão "Ouvir" que disparou o áudio (marcado com o atributo
-// data-audio-hint-target nas telas relevantes), com a ponta apontando pra
-// ele - se nenhum botão marcado estiver visível na tela, não mostra nada
-// (evita um balão solto sem apontar pra lugar nenhum).
+// de várias telas diferentes. Um cartãozinho fixo no canto inferior direito
+// que desliza entrando pela lateral, fica visível um tempo e desliza de
+// volta saindo - posição fixa (não relativa a nenhum botão) pra nunca ficar
+// por cima do card da frase, que muda de tamanho/posição em cada tela.
 export default function AudioSpeedHintBalloon() {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const [pos, setPos] = useState(null); // { top, left, pontaEsquerda } ou null
+    const [estado, setEstado] = useState("escondido"); // escondido | entrando | visivel | saindo
+    const timeoutsRef = useRef([]);
 
     const onPrimeiroAudio = useCallback(() => {
-        const alvo = document.querySelector('[data-audio-hint-target]');
-        const rect = alvo?.getBoundingClientRect();
+        timeoutsRef.current.forEach(clearTimeout);
 
-        if (!rect || (rect.width === 0 && rect.height === 0)) return;
+        setEstado("entrando");
 
-        const centroAlvo = rect.left + rect.width / 2;
-        const metadeBalao = LARGURA_BALAO / 2;
-        const left = Math.min(
-            Math.max(centroAlvo, MARGEM_TELA + metadeBalao),
-            window.innerWidth - MARGEM_TELA - metadeBalao
-        );
-
-        setPos({
-            top: rect.top,
-            left,
-            // desloca a ponta do balão pra continuar apontando pro botão mesmo
-            // quando o balão foi empurrado pra não estourar a borda da tela
-            pontaOffset: centroAlvo - left,
+        // monta fora da tela primeiro, só no frame seguinte anima pra dentro -
+        // senão o navegador funde os dois estados e não roda a transição.
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => setEstado("visivel"));
         });
 
-        setTimeout(() => setPos(null), DURACAO_MS);
+        timeoutsRef.current = [
+            setTimeout(() => setEstado("saindo"), DURACAO_VISIVEL_MS),
+            setTimeout(() => setEstado("escondido"), DURACAO_VISIVEL_MS + DURACAO_TRANSICAO_MS),
+        ];
     }, []);
 
     useAudioSpeedHintListener(onPrimeiroAudio);
 
-    if (!pos) return null;
+    if (estado === "escondido") return null;
+
+    const dentro = estado === "visivel";
 
     return (
         <div
-            className="fixed z-50 w-64 max-w-[85vw] -translate-x-1/2 -translate-y-full pointer-events-none"
-            style={{ top: pos.top - 10, left: pos.left }}
+            className={`fixed z-50 bottom-28 right-4 w-64 max-w-[75vw] transition-transform ease-out ${dentro ? "translate-x-0" : "translate-x-[130%]"
+                }`}
+            style={{ transitionDuration: `${DURACAO_TRANSICAO_MS}ms` }}
         >
             <button
                 type="button"
-                onClick={() => { setPos(null); navigate("/configuracoes"); }}
-                className="pointer-events-auto w-full flex items-start gap-2 bg-[#4cb8c4] text-white text-sm font-medium px-4 py-3 rounded-xl shadow-lg text-left animate-gentle-bounce"
+                onClick={() => { setEstado("saindo"); navigate("/configuracoes"); }}
+                className="w-full flex items-start gap-2 bg-[#4cb8c4] text-white text-sm font-medium px-4 py-3 rounded-xl shadow-lg text-left"
             >
                 <Volume2 className="w-4 h-4 shrink-0 mt-0.5" />
                 <span>{t("audio_speed_hint")}</span>
             </button>
-            <div
-                className="w-3 h-3 bg-[#4cb8c4] rotate-45 -mt-1.5"
-                style={{ marginLeft: pos.pontaOffset - 6 }}
-            />
         </div>
     );
 }

@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { playAudio } from "../utils/audioPlayer";
+import { playAudio, pararAudio } from "../utils/audioPlayer";
 import { useTranslation } from "react-i18next";
-import PremiumModal from "../components/PremiumModal";
-import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 
 export default function JogoFrases() {
   const { t } = useTranslation();
@@ -36,15 +34,12 @@ export default function JogoFrases() {
   const API_URL = import.meta.env.VITE_API_URL;
   const [finalizado, setFinalizado] = useState(false);
   const { user } = useAuth();
-  const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
-  const [motivoPremium, setMotivoPremium] = useState(null);
-
-  usePremiumLimitListener((motivo) => {
-    setMotivoPremium(motivo);
-    setIsPremiumModalOpen(true);
-  });
 
   const navigate = useNavigate();
+
+  // Para o áudio em reprodução ao sair da tela (troca de rota) - sem isso,
+  // o áudio seguia tocando mesmo depois do usuário já ter navegado embora.
+  useEffect(() => () => pararAudio(), []);
 
   useEffect(() => {
     if (finalizado) {
@@ -252,7 +247,7 @@ export default function JogoFrases() {
 
   return (
     <div className="px-6 pt-4 h-screen grid grid-rows-[auto,1fr] overflow-hidden from-gray-900 to-gray-800 bg-gradient-to-br">
-      <div className="relative text-center mb-4">
+      <div className="relative text-center mb-4 [@media(max-height:700px)]:mb-2">
         <div onClick={() => navigate(-1)} className="text-left cursor-pointer text-white text-2xl">
           ←
         </div>
@@ -261,15 +256,19 @@ export default function JogoFrases() {
         </h1>
       </div>
 
-      <div className="flex justify-center pb-6">
-        <div className="w-full max-w-5xl grid grid-cols-2 gap-8 h-full">
-          <div className="grid grid-rows-4 gap-3">
+      {/* Blocos/fonte menores em telas baixas (ex: iPhone SE) - senão as 4
+          linhas de pares somadas ficavam maiores que a tela e a última
+          linha cortava embaixo. Mesmo padrão de breakpoint já usado em
+          DigitarTexto/Flashcards/Perguntas. */}
+      <div className="flex justify-center pb-6 [@media(max-height:700px)]:pb-3 min-h-0">
+        <div className="w-full max-w-5xl grid grid-cols-2 gap-8 [@media(max-height:700px)]:gap-4 h-full">
+          <div className="grid grid-rows-4 gap-3 [@media(max-height:700px)]:gap-2">
             {nativas.map((frase) => (
               <button
                 key={frase.id}
                 disabled={bloqueado}
                 onClick={() => setSelecionadaEsquerda(frase)}
-                className={`p-4 rounded-lg border text-white border-slate-400
+                className={`p-4 [@media(max-height:700px)]:p-2 [@media(max-height:700px)]:text-xs rounded-lg border text-white border-slate-400
                   ${sucessoEsquerdaId === frase.id
                     ? "bg-[#469118]"
                     : erroEsquerdaId === frase.id
@@ -284,13 +283,13 @@ export default function JogoFrases() {
             ))}
           </div>
 
-          <div className="grid grid-rows-4 gap-3">
+          <div className="grid grid-rows-4 gap-3 [@media(max-height:700px)]:gap-2">
             {traduzidas.map((frase) => (
               <button
                 key={frase.id}
                 disabled={bloqueado}
                 onClick={() => setSelecionadaDireita(frase)}
-                className={`p-4 rounded-lg border text-white border-slate-400
+                className={`p-4 [@media(max-height:700px)]:p-2 [@media(max-height:700px)]:text-xs rounded-lg border text-white border-slate-400
                   ${sucessoDireitaId === frase.id
                     ? "bg-[#469118]"
                     : erroDireitaId === frase.id
@@ -306,13 +305,6 @@ export default function JogoFrases() {
           </div>
         </div>
       </div>
-
-      <PremiumModal
-        isOpen={isPremiumModalOpen}
-        setIsPremiumModalOpen={setIsPremiumModalOpen}
-        onClose={() => { setIsPremiumModalOpen(false); setMotivoPremium(null); }}
-        motivo={motivoPremium}
-      />
     </div>
   );
 }

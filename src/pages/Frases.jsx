@@ -6,8 +6,7 @@ import PremiumModal from '../components/PremiumModal';
 import ModalConfirm from '../components/ModalConfirm';
 import { useTranslation } from "react-i18next";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
-import { playAudio } from "../utils/audioPlayer";
-import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
+import { playAudio, pararAudio } from "../utils/audioPlayer";
 
 import {
     Trash,
@@ -34,10 +33,9 @@ export default function Frases() {
     const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
 
-    usePremiumLimitListener((motivo) => {
-        setMotivoPremium(motivo);
-        setIsPremiumModalOpen(true);
-    });
+    // Para o áudio em reprodução ao sair da tela (troca de rota) - sem isso,
+    // o áudio seguia tocando mesmo depois do usuário já ter navegado embora.
+    useEffect(() => () => pararAudio(), []);
 
     useEffect(() => {
 

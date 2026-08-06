@@ -12,6 +12,27 @@ let currentToken = 0;
 // fazendo o modal reaparecer repetidamente durante o mesmo treino.
 const CHAVE_AVISO_LIMITE_AUDIO = "zaldemy_aviso_limite_audio_exibido";
 
+// Cancela o áudio em reprodução (se houver) e invalida qualquer chamada de
+// playAudio ainda em andamento (via o token) - usado tanto no início de toda
+// nova chamada de playAudio quanto exportado como pararAudio() pra telas que
+// precisam interromper sem necessariamente tocar outro áudio em seguida (ex:
+// trocar de flashcard enquanto o áudio do card anterior ainda está tocando).
+function cancelarAudioAtual() {
+    const meuToken = ++currentToken;
+
+    if (currentAudio && currentAudio.pause) {
+        currentAudio.pause();
+    }
+
+    currentAudio = null;
+
+    return meuToken;
+}
+
+export function pararAudio() {
+    cancelarAudioAtual();
+}
+
 export const playAudio = async (text, user, ia = false, lang = null, forcarVozPadrao = false, velocidadeNormal = false) => {
     const API_URL = import.meta.env.VITE_API_URL;
     if (!text) return;
@@ -27,12 +48,7 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
 
     const voiceLang = lang || user?.learning_language;
 
-    // cancela áudio anterior e invalida qualquer chamada anterior ainda em andamento
-    const myToken = ++currentToken;
-    if (currentAudio && currentAudio.pause) {
-        currentAudio.pause();
-    }
-    currentAudio = null;
+    const myToken = cancelarAudioAtual();
 
     // Voz natural (ElevenLabs): liberada pro plano premium (1, limite diário)
     // e, como amostra grátis, pro plano limitado (3, limite vitalício) -

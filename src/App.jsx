@@ -39,6 +39,7 @@ import EnglishVideos from './pages/EnglishVideos'
 import MusicFlashcardFinder from './pages/MusicFlashcardFInder';
 import ConnectionStatus from './components/ConnectionStatus'; // Novo componente
 import AudioSpeedHintBalloon from './components/AudioSpeedHintBalloon';
+import AudioLimitToast from './components/AudioLimitToast';
 
 import imgChapeuFormatura from "./assets/img/chapeu_formatura.png"
 import PremiumPlan from './components/PremiumModal';
@@ -153,6 +154,7 @@ function Layout({ titulo, setTitulo }) {
       {/* Indicador de status de conexão */}
       <ConnectionStatus />
       <AudioSpeedHintBalloon />
+      <AudioLimitToast />
 
       {mostrarHeader && <Header titulo={titulo} />}
 

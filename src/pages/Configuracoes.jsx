@@ -25,7 +25,7 @@ const VELOCIDADES_TTS = [0.75, 1.00, 1.25, 1.50];
 const VELOCIDADES_JOGO_CHUVA = [
     { valor: 1.3, labelKey: "speed_slow" },
     { valor: 1.0, labelKey: "speed_normal" },
-    { valor: 0.7, labelKey: "speed_fast" },
+    { valor: 0.5, labelKey: "speed_fast" },
 ];
 
 function ItemMenu({ icone: Icone, titulo, onClick, cor = "text-gray-300" }) {

@@ -217,6 +217,19 @@ input{
     transform: rotateY(180deg) translateZ(1px);
 }
 
+/* No Safari/iOS, backface-visibility:hidden só esconde visualmente - a face
+   escondida às vezes ainda intercepta toques (bug conhecido do WebKit),
+   bloqueando botões da face visível (ex: "Ouvir" no card-front). Desliga o
+   toque na face escondida e liga só na visível, conforme o card está virado
+   ou não. */
+.card:not(.flip) .card-back {
+    pointer-events: none;
+}
+
+.card.flip .card-front {
+    pointer-events: none;
+}
+
 /* Guia da primeira categoria (Home) */
 @keyframes pulse-glow-ring {
   0%, 100% { box-shadow: 0 0 0 0 rgba(76, 184, 196, 0.55); }

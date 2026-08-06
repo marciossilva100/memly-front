@@ -26,22 +26,28 @@ const VIDAS_INICIAIS = 3;
 const VELOCIDADES_JOGO = [
     { valor: 1.3, labelKey: "speed_slow" },
     { valor: 1.0, labelKey: "speed_normal" },
-    { valor: 0.7, labelKey: "speed_fast" },
+    { valor: 0.5, labelKey: "speed_fast" },
 ];
-// Raias fixas (centro em %) - cada frase cai numa raia exclusiva, largura
-// fixa pra todas (LARGURA_ITEM), garantindo que nunca fiquem uma por cima
-// da outra em vez de depender de posição horizontal aleatória. De volta a
-// 3 raias (2 derrubava a sensação de "chuva"), mas com folga real das
-// bordas do container (~7.5% de cada lado, antes ~1%).
-const RAIAS = [21, 50, 79];
-const LARGURA_ITEM = 27; // % fixo - ~7.5% de margem de cada lado, ~2% entre raias vizinhas
+// Raias fixas (centro em %), largura fixa pra todas (LARGURA_ITEM). As
+// raias vizinhas SE SOBREPÕEM em X (largura > espaço entre centros) - isso
+// é de propósito: permite blocos bem mais largos com 3 raias ao mesmo
+// tempo. Quem garante que nunca fica um por cima do outro não é mais
+// "cada raia é exclusiva", e sim a checagem de colisão real no spawn (ver
+// LIMIAR_QUEDA_SEGURA): uma raia só fica temporariamente bloqueada pra
+// vizinhas enquanto o item nela ainda está no alto da tela.
+const RAIAS = [25, 50, 75];
+const LARGURA_ITEM = 38; // % fixo - ~6% de margem de cada lado
+// Fração da queda (0 a 1) que um item precisa ter percorrido antes de uma
+// raia vizinha (que se sobrepõe em X) poder spawnar outro item sem risco
+// de colisão visual.
+const LIMIAR_QUEDA_SEGURA = 0.3;
 
 // Uma cor neon fixa por raia (não aleatória) - visual mais vivo sem virar
 // bagunça, já que cada raia sempre cai na mesma cor.
 const CORES_RAIA = [
-    { bg: "bg-teal-500/25", border: "border-teal-400/70", shadow: "shadow-[0_0_14px_rgba(45,212,191,0.35)]" },
-    { bg: "bg-indigo-500/25", border: "border-indigo-400/70", shadow: "shadow-[0_0_14px_rgba(129,140,248,0.35)]" },
-    { bg: "bg-pink-500/25", border: "border-pink-400/70", shadow: "shadow-[0_0_14px_rgba(244,114,182,0.35)]" },
+    { bg: "bg-teal-500/25", border: "border-teal-400/70", shadow: "shadow-[0_0_14px_rgba(45,212,191,0.35)]", texto: "text-teal-400", glow: "rgba(45,212,191,0.9)" },
+    { bg: "bg-indigo-500/25", border: "border-indigo-400/70", shadow: "shadow-[0_0_14px_rgba(129,140,248,0.35)]", texto: "text-indigo-400", glow: "rgba(129,140,248,0.9)" },
+    { bg: "bg-pink-500/25", border: "border-pink-400/70", shadow: "shadow-[0_0_14px_rgba(244,114,182,0.35)]", texto: "text-pink-400", glow: "rgba(244,114,182,0.9)" },
 ];
 
 function nivelAtual(pontos) {
@@ -57,7 +63,7 @@ function escolherProximoAlvo(pool, usadasAtuais) {
 // Explosão da resposta certa: quebra o texto em letras e anima cada uma pra
 // uma direção aleatória (transform/opacity via transition, disparada só
 // depois do primeiro paint pra garantir que a transição rode).
-function Explosao({ top, left, letras }) {
+function Explosao({ top, left, letras, cor }) {
     const [animar, setAnimar] = useState(false);
 
     useEffect(() => {
@@ -70,8 +76,9 @@ function Explosao({ top, left, letras }) {
             {letras.map((l) => (
                 <span
                     key={l.i}
-                    className="absolute text-green-400 text-lg font-extrabold transition-all ease-out [text-shadow:0_0_10px_rgba(74,222,128,0.9)]"
+                    className={`absolute ${cor.texto} text-lg font-extrabold transition-all ease-out`}
                     style={{
+                        textShadow: `0 0 10px ${cor.glow}`,
                         transitionDuration: "800ms",
                         transitionDelay: `${l.atraso}ms`,
                         transform: animar
@@ -356,16 +363,32 @@ export default function ChuvaFrases() {
 
         function spawnUmaFrase() {
             setCaindo((prev) => {
-                const raiasOcupadas = prev.map((item) => item.raia);
-                const raiasLivres = RAIAS.map((_, i) => i).filter((i) => !raiasOcupadas.includes(i));
-                if (raiasLivres.length === 0) return prev;
+                const agora = Date.now();
+
+                // Raias largas o bastante pra sobrepor a vizinha em X quando
+                // ambas têm item "no alto" - por isso a checagem não é mais
+                // "raia ocupada = bloqueada", e sim colisão real: uma raia só
+                // bloqueia outra que se sobrepõe em X se o item nela ainda
+                // está na "zona de perigo" (pouco caído). Um item que já caiu
+                // o suficiente não bloqueia mais ninguém, mesmo que a raia
+                // "oficialmente" ainda esteja em uso - garante 3 raias
+                // simultâneas com blocos largos, sem nunca sobrepor de verdade.
+                const raiasCandidatas = RAIAS.map((_, i) => i).filter((i) => {
+                    return !prev.some((item) => {
+                        const progresso = Math.min(1, Math.max(0, (agora - item.spawnTime) / item.duracao));
+                        if (progresso >= LIMIAR_QUEDA_SEGURA) return false;
+                        return Math.abs(RAIAS[i] - RAIAS[item.raia]) < LARGURA_ITEM;
+                    });
+                });
+
+                if (raiasCandidatas.length === 0) return prev;
 
                 const temCorreta = prev.some((item) => item.correta);
                 // Sorteia se essa é a vez de cair a certa (~35% de chance a cada
                 // spawn) em vez de sempre ser a primeira - só força quando chega
-                // na última raia livre, garantindo que ela sempre apareça em
+                // na última raia candidata, garantindo que ela sempre apareça em
                 // algum momento do ciclo, mas em posição aleatória.
-                const ultimaRaiaLivre = raiasLivres.length === 1;
+                const ultimaRaiaLivre = raiasCandidatas.length === 1;
                 const vaiSerCorreta = !temCorreta && (ultimaRaiaLivre || Math.random() < 0.35);
 
                 let texto;
@@ -393,7 +416,7 @@ export default function ChuvaFrases() {
                 // rápido demais nem lento demais.
                 const duracao = duracaoBase * (0.7 + Math.random() * 0.6);
 
-                const raia = raiasLivres[Math.floor(Math.random() * raiasLivres.length)];
+                const raia = raiasCandidatas[Math.floor(Math.random() * raiasCandidatas.length)];
 
                 uidRef.current += 1;
 
@@ -405,6 +428,7 @@ export default function ChuvaFrases() {
                         correta: vaiSerCorreta,
                         raia,
                         duracao,
+                        spawnTime: agora,
                         estado: "normal",
                         jaErrou: false,
                     },
@@ -472,7 +496,7 @@ export default function ChuvaFrases() {
             atraso: Math.random() * 120,
         }));
 
-        setExplodindo({ uid: item.uid, top, left, letras });
+        setExplodindo({ uid: item.uid, top, left, letras, cor: CORES_RAIA[item.raia % CORES_RAIA.length] });
         setTimeout(() => setExplodindo(null), 950);
         tocarSomAcerto();
 

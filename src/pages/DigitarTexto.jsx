@@ -670,13 +670,13 @@ export default function DigitarTexto() {
                                 onClick={(e) => {
                                     handleSubmit(e, true);
                                 }}
-                                className="w-full px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white font-medium text-lg hover:bg-gray-700/50 transition-colors"
+                                className="w-full px-4 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white font-medium text-[13px] hover:bg-gray-700/50 transition-colors"
                             >
                                 {t("dont_remember")}
                             </button>
                             <button
                                 onClick={repeatCard}
-                                className="w-full px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium text-lg transition-colors"
+                                className="w-full px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium text-[13px] transition-colors"
                             >
                                 {t("try_again")}
                             </button>
@@ -694,7 +694,7 @@ export default function DigitarTexto() {
 
                             <button
                                 onClick={nextCard}
-                                className="w-full px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium text-lg transition-colors"
+                                className="w-full px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium text-[16px] transition-colors"
                             >
                                 {t("next")}
                             </button>
@@ -716,14 +716,14 @@ export default function DigitarTexto() {
                             handleSubmit(e, true);
                         }}
 
-                        className="w-full px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white font-medium text-lg hover:bg-gray-700/50 transition-colors"
+                        className="w-full px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white font-medium text-[13px] hover:bg-gray-700/50 transition-colors"
                     >
                         {t("dont_remember")}
                     </button>
                     <button
                         type="submit"
                         form="respostaForm"
-                        className="w-full px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium text-lg flex items-center justify-center transition-colors"
+                        className="w-full px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium text-[13px] flex items-center justify-center transition-colors"
                     >
                         {t("answer_button")}
                     </button>

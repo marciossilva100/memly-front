@@ -10,6 +10,7 @@ const slides = [
     { emoji: "🤖", titleKey: "onboarding_slide_ai_title", subtitleKey: "onboarding_slide_ai_subtitle" },
     { emoji: "🌍", titleKey: "onboarding_slide2_title", subtitleKey: "onboarding_slide2_subtitle" },
     { emoji: "🧠", titleKey: "onboarding_slide3_title", subtitleKey: "onboarding_slide3_subtitle" },
+    { emoji: "🎮", titleKey: "onboarding_slide_game_title", subtitleKey: "onboarding_slide_game_subtitle" },
 ];
 
 export default function OnboardingTutorial() {

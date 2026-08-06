@@ -295,6 +295,7 @@ export default function TreinoIA() {
                                         </div>
 
                                         <button
+                                            data-audio-hint-target
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 playAudio(frase, user, true);

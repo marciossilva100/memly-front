@@ -536,7 +536,7 @@ export default function DigitarTexto() {
 
                 {!isFlipped && !diff && (
                     <div className="text-center flex justify-center mt-5 [@media(max-height:700px)]:mt-2">
-                        <button onClick={(e) => {
+                        <button data-audio-hint-target onClick={(e) => {
                             e.preventDefault();
                             playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, mode === "learn");
                         }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors">
@@ -550,7 +550,7 @@ export default function DigitarTexto() {
 
                     <div className="mt-6 w-full ">
                         <div className="text-center flex justify-center">
-                            <button onClick={(e) => {
+                            <button data-audio-hint-target onClick={(e) => {
                                 e.preventDefault();
                                 playAudio(frases[index].texto_traduzido, user);
                             }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-700/50 border border-gray-600 text-gray-300 text-xs hover:bg-gray-700 transition-colors">
@@ -623,7 +623,7 @@ export default function DigitarTexto() {
                 {diff && diff.isCorrect && (
                     <div>
                         <div className="text-center flex justify-center mt-4">
-                            <button onClick={(e) => {
+                            <button data-audio-hint-target onClick={(e) => {
                                 e.preventDefault();
                                 playAudio(frases[index].texto_traduzido, user);
                             }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-700/50 border border-gray-600 text-gray-300 text-xs hover:bg-gray-700 transition-colors">

@@ -457,12 +457,12 @@ export default function Flashcards() {
           {/* Botão Ouvir nativo - aparece antes de virar o card */}
           {!isFlipped && (
             <div className="text-center flex justify-center mt-5">
-              <button onClick={(e) => {
+              <button data-audio-hint-target onClick={(e) => {
                 e.preventDefault();
                 playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, mode === "learn");
               }} className="px-4 py-2 rounded-md bg-slate-500 text-white text-sm transition flex">
                 <Volume className="w-5 h-5" />
-                {t("listen_native")}
+                {t("listen")}
               </button>
             </div>
           )}
@@ -473,7 +473,7 @@ export default function Flashcards() {
               juntos, já que hasBeenFlipped nunca volta a false) */}
           {isFlipped && (
             <div className="text-center flex justify-center mt-5">
-              <button onClick={(e) => {
+              <button data-audio-hint-target onClick={(e) => {
                 e.preventDefault();
                 playAudio(frases[index].texto_traduzido, user);
               }} className="px-4 py-2 rounded-md bg-slate-500 text-white text-sm  transition flex">

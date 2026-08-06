@@ -384,6 +384,7 @@ export default function Perguntas() {
                                         </div>
 
                                         <button
+                                            data-audio-hint-target
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 e.preventDefault();

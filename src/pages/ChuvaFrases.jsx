@@ -26,6 +26,14 @@ const VIDAS_INICIAIS = 3;
 const RAIAS = [17, 50, 83];
 const LARGURA_ITEM = 32; // % fixo, mesmo pra todos os itens (raias ficam 33% entre si)
 
+// Uma cor neon fixa por raia (não aleatória) - visual mais vivo sem virar
+// bagunça, já que cada raia sempre cai na mesma cor.
+const CORES_RAIA = [
+    { bg: "bg-teal-500/25", border: "border-teal-400/70", shadow: "shadow-[0_0_14px_rgba(45,212,191,0.35)]" },
+    { bg: "bg-indigo-500/25", border: "border-indigo-400/70", shadow: "shadow-[0_0_14px_rgba(129,140,248,0.35)]" },
+    { bg: "bg-pink-500/25", border: "border-pink-400/70", shadow: "shadow-[0_0_14px_rgba(244,114,182,0.35)]" },
+];
+
 function nivelAtual(pontos) {
     return Math.floor(pontos / 50) + 1;
 }
@@ -331,7 +339,14 @@ export default function ChuvaFrases() {
                     texto = candidatas[Math.floor(Math.random() * faixa)].texto_traduzido;
                 }
 
-                const duracaoBase = Math.max(30000 - nivel * 800, 16000);
+                // Preferência de velocidade do premium (Configurações > jogo
+                // Chuva de Frases) - multiplicador > 1 cai mais devagar, < 1
+                // mais rápido. Só existe pra premium, mas lida direto do
+                // localStorage (sem checar plano aqui) porque a tela de
+                // Configurações já só mostra a opção pra quem é premium.
+                const multiplicadorVelocidade = parseFloat(localStorage.getItem('zaldemy_velocidade_jogo_chuva')) || 1.0;
+
+                const duracaoBase = Math.max(30000 - nivel * 800, 16000) * multiplicadorVelocidade;
                 // varia de 70% a 130% da duração base - dá pra perceber
                 // diferença real entre um bloco e outro, sem deixar nenhum
                 // rápido demais nem lento demais.
@@ -562,45 +577,50 @@ export default function ChuvaFrases() {
                         </div>
                     </div>
 
-                    <div className="relative rounded-2xl border border-[#4cb8c4]/40 bg-gradient-to-br from-[#4cb8c4]/15 via-gray-900 to-gray-900 px-4 py-3 text-center mb-3 shrink-0 shadow-[0_0_25px_rgba(76,184,196,0.15)] overflow-hidden">
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_#4cb8c4_0%,_transparent_65%)] opacity-10 pointer-events-none" />
-                        <p className="relative text-[#8fdce6] text-[11px] font-semibold uppercase tracking-wider mb-1">
-                            {t("translate_this")}
-                        </p>
-                        <p className="relative text-base font-bold text-white mb-2">
-                            {loadingFrases ? "..." : alvo?.texto_nativo}
-                        </p>
-                        <button
-                            type="button"
-                            onClick={tocarAudioAlvo}
-                            disabled={!alvo}
-                            className="relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors disabled:opacity-50"
-                        >
-                            <Volume2 className="w-3.5 h-3.5" />
-                            {t("listen")}
-                        </button>
+                    <div className="rounded-2xl bg-gradient-to-r from-teal-400 via-[#4cb8c4] to-indigo-400 p-[1.5px] mb-3 shrink-0 shadow-[0_0_20px_rgba(129,140,248,0.2)]">
+                        <div className="relative rounded-2xl bg-gradient-to-br from-[#4cb8c4]/15 via-gray-900 to-gray-900 px-4 py-3 text-center overflow-hidden">
+                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_#4cb8c4_0%,_transparent_65%)] opacity-10 pointer-events-none" />
+                            <p className="relative text-[#8fdce6] text-[11px] font-semibold uppercase tracking-wider mb-1">
+                                {t("translate_this")}
+                            </p>
+                            <p className="relative text-base font-bold text-white mb-2">
+                                {loadingFrases ? "..." : alvo?.texto_nativo}
+                            </p>
+                            <button
+                                type="button"
+                                onClick={tocarAudioAlvo}
+                                disabled={!alvo}
+                                className="relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors disabled:opacity-50"
+                            >
+                                <Volume2 className="w-3.5 h-3.5" />
+                                {t("listen")}
+                            </button>
+                        </div>
                     </div>
 
                     <div ref={areaRef} className="chuva-area relative flex-1 overflow-hidden rounded-2xl border border-gray-800 bg-gray-950/40">
-                        {caindo.map((item) => (
-                            <button
-                                key={item.uid}
-                                onClick={(e) => handleToque(item, e)}
-                                onAnimationEnd={() => handleFimDaQueda(item)}
-                                className={`chuva-item px-3 py-2 rounded-2xl text-sm font-medium text-center transition-colors ${item.estado === "errada"
-                                        ? "bg-red-500/80 text-white"
-                                        : "bg-gray-800/80 text-white"
-                                    }`}
-                                style={{
-                                    left: `${RAIAS[item.raia]}%`,
-                                    transform: "translateX(-50%)",
-                                    width: `${LARGURA_ITEM}%`,
-                                    animationDuration: `${item.duracao}ms`,
-                                }}
-                            >
-                                {item.texto}
-                            </button>
-                        ))}
+                        {caindo.map((item) => {
+                            const cor = CORES_RAIA[item.raia % CORES_RAIA.length];
+                            return (
+                                <button
+                                    key={item.uid}
+                                    onClick={(e) => handleToque(item, e)}
+                                    onAnimationEnd={() => handleFimDaQueda(item)}
+                                    className={`chuva-item px-3 py-2 rounded-2xl border text-sm font-medium text-center transition-colors ${item.estado === "errada"
+                                            ? "bg-red-500/80 border-red-400 text-white"
+                                            : `${cor.bg} ${cor.border} ${cor.shadow} text-white`
+                                        }`}
+                                    style={{
+                                        left: `${RAIAS[item.raia]}%`,
+                                        transform: "translateX(-50%)",
+                                        width: `${LARGURA_ITEM}%`,
+                                        animationDuration: `${item.duracao}ms`,
+                                    }}
+                                >
+                                    {item.texto}
+                                </button>
+                            );
+                        })}
                         {explodindo && <Explosao {...explodindo} />}
                     </div>
                 </div>

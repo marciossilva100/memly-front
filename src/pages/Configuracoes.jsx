@@ -19,6 +19,15 @@ const VOZES_TTS = [
 
 const VELOCIDADES_TTS = [0.75, 1.00, 1.25, 1.50];
 
+// Multiplicador aplicado à duração da queda no jogo Chuva de Frases -
+// maior valor = queda mais devagar (duração maior), por isso os rótulos em
+// palavras em vez de "x", pra não confundir a direção com a velocidade da voz.
+const VELOCIDADES_JOGO_CHUVA = [
+    { valor: 1.3, labelKey: "speed_slow" },
+    { valor: 1.0, labelKey: "speed_normal" },
+    { valor: 0.7, labelKey: "speed_fast" },
+];
+
 function ItemMenu({ icone: Icone, titulo, onClick, cor = "text-gray-300" }) {
     return (
         <button
@@ -81,6 +90,18 @@ export default function Configuracoes() {
         const novoValor = !autoplayFrente;
         setAutoplayFrente(novoValor);
         localStorage.setItem('zaldemy_autoplay_frente', novoValor ? '1' : '0');
+    }
+
+    // Preferência só do dispositivo (mesmo padrão do autoplay acima) -
+    // controla a velocidade de queda dos blocos no jogo Chuva de Frases,
+    // lido diretamente do localStorage por ChuvaFrases.jsx.
+    const [velocidadeJogoChuva, setVelocidadeJogoChuva] = useState(
+        () => parseFloat(localStorage.getItem('zaldemy_velocidade_jogo_chuva')) || 1.0
+    );
+
+    function handleSelecionarVelocidadeJogoChuva(velocidade) {
+        setVelocidadeJogoChuva(velocidade);
+        localStorage.setItem('zaldemy_velocidade_jogo_chuva', String(velocidade));
     }
 
     const [openModalExcluirConta, setOpenModalExcluirConta] = useState(false);
@@ -498,6 +519,33 @@ export default function Configuracoes() {
                             </button>
                         </div>
                     </div>
+
+                    {isPremium && (
+                        <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 mb-3">
+                            <div className="flex items-center gap-3 mb-3">
+                                <Gauge className="w-5 h-5 text-[#4cb8c4]" />
+                                <span className="text-white text-base">{t("game_speed")}</span>
+                            </div>
+                            <div className="grid grid-cols-3 gap-2">
+                                {VELOCIDADES_JOGO_CHUVA.map(({ valor, labelKey }) => {
+                                    const selecionada = velocidadeJogoChuva === valor;
+                                    return (
+                                        <button
+                                            key={valor}
+                                            type="button"
+                                            onClick={() => handleSelecionarVelocidadeJogoChuva(valor)}
+                                            className={`rounded-lg border py-1.5 text-sm font-medium transition-colors ${selecionada
+                                                    ? "border-[#4cb8c4] bg-[#4cb8c4]/10 text-[#4cb8c4]"
+                                                    : "border-gray-700 bg-gray-900/40 text-gray-300 hover:bg-gray-700/40"
+                                                }`}
+                                        >
+                                            {t(labelKey)}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
 
                     {isPremium && (
                         <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 mb-3">

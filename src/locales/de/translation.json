@@ -392,6 +392,8 @@
     "voice_male": "Männlich",
     "voice_speed": "Erzähltempo",
     "game_speed": "Geschwindigkeit im Satzregen-Spiel",
+    "game_settings": "Spieleinstellungen",
+    "game_audio_autoplay": "Audio automatisch abspielen",
     "speed_slow": "Langsam",
     "speed_normal": "Normal",
     "speed_fast": "Schnell",

@@ -392,6 +392,8 @@
     "voice_male": "男性",
     "voice_speed": "読み上げ速度",
     "game_speed": "フレーズレインのゲーム速度",
+    "game_settings": "ゲーム設定",
+    "game_audio_autoplay": "音声を自動再生する",
     "speed_slow": "遅い",
     "speed_normal": "普通",
     "speed_fast": "速い",

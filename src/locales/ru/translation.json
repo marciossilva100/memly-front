@@ -392,6 +392,8 @@
     "voice_male": "Мужской",
     "voice_speed": "Скорость озвучивания",
     "game_speed": "Скорость игры «Дождь фраз»",
+    "game_settings": "Настройки игры",
+    "game_audio_autoplay": "Воспроизводить аудио автоматически",
     "speed_slow": "Медленно",
     "speed_normal": "Обычно",
     "speed_fast": "Быстро",

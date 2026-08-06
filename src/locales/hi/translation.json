@@ -392,6 +392,8 @@
     "voice_male": "पुरुष",
     "voice_speed": "वर्णन की गति",
     "game_speed": "फ्रेज़ रेन गेम की गति",
+    "game_settings": "गेम सेटिंग्स",
+    "game_audio_autoplay": "ऑडियो अपने आप चलाएं",
     "speed_slow": "धीमा",
     "speed_normal": "सामान्य",
     "speed_fast": "तेज़",

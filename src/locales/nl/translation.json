@@ -392,6 +392,8 @@
     "voice_male": "Mannelijk",
     "voice_speed": "Vertelsnelheid",
     "game_speed": "Snelheid van het zinnenregen-spel",
+    "game_settings": "Spelinstellingen",
+    "game_audio_autoplay": "Audio automatisch afspelen",
     "speed_slow": "Langzaam",
     "speed_normal": "Normaal",
     "speed_fast": "Snel",

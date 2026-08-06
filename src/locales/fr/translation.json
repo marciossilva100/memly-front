@@ -392,6 +392,8 @@
     "voice_male": "Masculine",
     "voice_speed": "Vitesse de narration",
     "game_speed": "Vitesse du jeu de pluie",
+    "game_settings": "Paramètres du jeu",
+    "game_audio_autoplay": "Lire l'audio automatiquement",
     "speed_slow": "Lent",
     "speed_normal": "Normal",
     "speed_fast": "Rapide",

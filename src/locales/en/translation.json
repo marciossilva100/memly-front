@@ -394,6 +394,8 @@
     "voice_male": "Male",
     "voice_speed": "Narration speed",
     "game_speed": "Phrase rain game speed",
+    "game_settings": "Game settings",
+    "game_audio_autoplay": "Play audio automatically",
     "speed_slow": "Slow",
     "speed_normal": "Normal",
     "speed_fast": "Fast",

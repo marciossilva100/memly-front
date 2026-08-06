@@ -392,6 +392,8 @@
     "voice_male": "ذكر",
     "voice_speed": "سرعة السرد",
     "game_speed": "سرعة لعبة مطر الجمل",
+    "game_settings": "إعدادات اللعبة",
+    "game_audio_autoplay": "تشغيل الصوت تلقائيًا",
     "speed_slow": "بطيء",
     "speed_normal": "عادي",
     "speed_fast": "سريع",

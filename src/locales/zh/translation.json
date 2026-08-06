@@ -392,6 +392,8 @@
     "voice_male": "男声",
     "voice_speed": "朗读速度",
     "game_speed": "短语雨游戏速度",
+    "game_settings": "游戏设置",
+    "game_audio_autoplay": "自动播放音频",
     "speed_slow": "慢",
     "speed_normal": "正常",
     "speed_fast": "快",

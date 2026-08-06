@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { playAudio, pararAudio } from "../utils/audioPlayer";
 import { tocarSomAcerto } from "../utils/somJogo";
-import { Heart, Trophy, Loader2, CloudRain, Check, Volume2 } from "lucide-react";
+import { Heart, Trophy, Loader2, CloudRain, Check, Volume2, Settings, X } from "lucide-react";
 import PremiumModal from "../components/PremiumModal";
 
 const AVATAR_COLORS = [
@@ -20,6 +20,14 @@ const AVATAR_COLORS = [
 
 const MIN_FRASES = 5;
 const VIDAS_INICIAIS = 3;
+
+// Mesmos valores/chave usados em Configuracoes.jsx pra velocidade do jogo -
+// mudar num lugar reflete no outro (mesmo localStorage).
+const VELOCIDADES_JOGO = [
+    { valor: 1.3, labelKey: "speed_slow" },
+    { valor: 1.0, labelKey: "speed_normal" },
+    { valor: 0.7, labelKey: "speed_fast" },
+];
 // Raias fixas (centro em %) - cada frase cai numa raia exclusiva, largura
 // fixa pra todas (LARGURA_ITEM), garantindo que nunca fiquem uma por cima
 // da outra em vez de depender de posição horizontal aleatória.
@@ -104,6 +112,28 @@ export default function ChuvaFrases() {
 
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
     const [motivoPremium, setMotivoPremium] = useState(null);
+
+    // Configurações do jogo (velocidade de queda + áudio automático),
+    // guardadas no dispositivo - mesmas chaves usadas em Configuracoes.jsx
+    // pra velocidade, então mudar aqui também reflete lá e vice-versa.
+    const [modalConfigAberto, setModalConfigAberto] = useState(false);
+    const [velocidadeJogo, setVelocidadeJogo] = useState(
+        () => parseFloat(localStorage.getItem('zaldemy_velocidade_jogo_chuva')) || 1.0
+    );
+    const [autoplayAudio, setAutoplayAudio] = useState(
+        () => localStorage.getItem('zaldemy_autoplay_jogo_chuva') === '1'
+    );
+
+    function handleSelecionarVelocidadeJogo(velocidade) {
+        setVelocidadeJogo(velocidade);
+        localStorage.setItem('zaldemy_velocidade_jogo_chuva', String(velocidade));
+    }
+
+    function handleToggleAutoplayAudio() {
+        const novoValor = !autoplayAudio;
+        setAutoplayAudio(novoValor);
+        localStorage.setItem('zaldemy_autoplay_jogo_chuva', novoValor ? '1' : '0');
+    }
 
     const uidRef = useRef(0);
     const areaRef = useRef(null);
@@ -302,9 +332,18 @@ export default function ChuvaFrases() {
         playAudio(alvo.texto_traduzido, user, false, null, true, true).catch(() => { });
     }
 
-    // spawn das frases caindo
+    // Toca o áudio sozinho a cada nova frase alvo, se a opção "áudio
+    // automático" (ícone de config na tela do jogo) estiver ligada.
     useEffect(() => {
-        if (fase !== "jogando" || !alvo) return;
+        if (fase !== "jogando" || !alvo || !autoplayAudio) return;
+        tocarAudioAlvo();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [alvo, autoplayAudio, fase]);
+
+    // spawn das frases caindo - pausa (sem spawnar nem contar intervalo)
+    // enquanto o modal de configurações do jogo está aberto.
+    useEffect(() => {
+        if (fase !== "jogando" || !alvo || modalConfigAberto) return;
 
         const nivel = nivelAtual(pontos);
         const intervaloSpawn = Math.max(4500 - nivel * 150, 3000);
@@ -339,14 +378,10 @@ export default function ChuvaFrases() {
                     texto = candidatas[Math.floor(Math.random() * faixa)].texto_traduzido;
                 }
 
-                // Preferência de velocidade do premium (Configurações > jogo
-                // Chuva de Frases) - multiplicador > 1 cai mais devagar, < 1
-                // mais rápido. Só existe pra premium, mas lida direto do
-                // localStorage (sem checar plano aqui) porque a tela de
-                // Configurações já só mostra a opção pra quem é premium.
-                const multiplicadorVelocidade = parseFloat(localStorage.getItem('zaldemy_velocidade_jogo_chuva')) || 1.0;
-
-                const duracaoBase = Math.max(30000 - nivel * 800, 16000) * multiplicadorVelocidade;
+                // Preferência de velocidade (Configurações ou o próprio ícone
+                // de config na tela do jogo, mesma chave) - multiplicador > 1
+                // cai mais devagar, < 1 mais rápido.
+                const duracaoBase = Math.max(30000 - nivel * 800, 16000) * velocidadeJogo;
                 // varia de 70% a 130% da duração base - dá pra perceber
                 // diferença real entre um bloco e outro, sem deixar nenhum
                 // rápido demais nem lento demais.
@@ -377,7 +412,7 @@ export default function ChuvaFrases() {
         const interval = setInterval(spawnUmaFrase, intervaloSpawn);
 
         return () => clearInterval(interval);
-    }, [fase, alvo, pontos, frases]);
+    }, [fase, alvo, pontos, frases, velocidadeJogo, modalConfigAberto]);
 
     function removerCaindo(uid) {
         setCaindo((prev) => prev.filter((item) => item.uid !== uid));
@@ -452,7 +487,7 @@ export default function ChuvaFrases() {
                 <div className="cursor-pointer" onClick={() => navigate(-1)}>
                     <i className="bi bi-arrow-left text-2xl text-white"></i>
                 </div>
-                <div className="flex items-center gap-2 min-w-0">
+                <div className="flex items-center gap-2 min-w-0 flex-1">
                     <span className="flex items-center justify-center w-9 h-9 shrink-0 rounded-xl bg-gradient-to-br from-[#4cb8c4]/20 to-[#085078]/20 text-[#4cb8c4]">
                         <CloudRain className="w-5 h-5" />
                     </span>
@@ -460,6 +495,15 @@ export default function ChuvaFrases() {
                         {t("phrase_rain_title")}
                     </h1>
                 </div>
+                {fase === "jogando" && (
+                    <button
+                        type="button"
+                        onClick={() => setModalConfigAberto(true)}
+                        className="shrink-0 flex items-center justify-center w-9 h-9 rounded-xl bg-gray-800/50 border border-gray-700 text-gray-300 hover:bg-gray-700/50 transition-colors"
+                    >
+                        <Settings className="w-4 h-4" />
+                    </button>
+                )}
             </div>
 
             {fase === "escolher" && (
@@ -612,6 +656,9 @@ export default function ChuvaFrases() {
                                         transform: "translateX(-50%)",
                                         width: `${LARGURA_ITEM}%`,
                                         animationDuration: `${item.duracao}ms`,
+                                        // congela a queda no ponto exato enquanto o modal de
+                                        // configurações do jogo está aberto
+                                        animationPlayState: modalConfigAberto ? "paused" : "running",
                                     }}
                                 >
                                     {item.texto}
@@ -656,6 +703,66 @@ export default function ChuvaFrases() {
                         >
                             {t("back_to_home")}
                         </button>
+                    </div>
+                </div>
+            )}
+
+            {modalConfigAberto && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/60" onClick={() => setModalConfigAberto(false)} />
+                    <div className="relative w-full max-w-xs rounded-2xl border border-gray-700 bg-gray-900 p-5 shadow-xl">
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-white font-semibold text-base flex items-center gap-2">
+                                <Settings className="w-4 h-4 text-[#4cb8c4]" />
+                                {t("game_settings")}
+                            </h2>
+                            <button
+                                type="button"
+                                onClick={() => setModalConfigAberto(false)}
+                                className="text-gray-400 hover:text-white"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        <div className="mb-4">
+                            <p className="text-gray-300 text-sm mb-2">{t("game_speed")}</p>
+                            <div className="grid grid-cols-3 gap-2">
+                                {VELOCIDADES_JOGO.map(({ valor, labelKey }) => {
+                                    const selecionada = velocidadeJogo === valor;
+                                    return (
+                                        <button
+                                            key={valor}
+                                            type="button"
+                                            onClick={() => handleSelecionarVelocidadeJogo(valor)}
+                                            className={`rounded-lg border py-1.5 text-sm font-medium transition-colors ${selecionada
+                                                    ? "border-[#4cb8c4] bg-[#4cb8c4]/10 text-[#4cb8c4]"
+                                                    : "border-gray-700 bg-gray-800/40 text-gray-300 hover:bg-gray-700/40"
+                                                }`}
+                                        >
+                                            {t(labelKey)}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        <div className="flex items-center justify-between gap-3 pt-3 border-t border-gray-700">
+                            <span className="text-gray-300 text-sm">{t("game_audio_autoplay")}</span>
+                            <button
+                                type="button"
+                                role="switch"
+                                aria-checked={autoplayAudio}
+                                onClick={handleToggleAutoplayAudio}
+                                className={`relative inline-flex h-5 w-10 shrink-0 items-center rounded-full transition-colors ${autoplayAudio ? "bg-[#4cb8c4]" : "bg-gray-700"
+                                    }`}
+                            >
+                                <span
+                                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${autoplayAudio ? "translate-x-5" : "translate-x-0.5"
+                                        }`}
+                                />
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

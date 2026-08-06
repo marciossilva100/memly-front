@@ -180,7 +180,7 @@ export default function ChuvaFrases() {
                 setAcessoBloqueado(bloqueado);
                 if (bloqueado) {
                     setMensagemBloqueio(data?.message ?? null);
-                    setMotivoPremium("limite_gratuito");
+                    setMotivoPremium("jogo_chuva");
                     setIsPremiumModalOpen(true);
                 }
             })
@@ -232,7 +232,7 @@ export default function ChuvaFrases() {
             .then((r) => r.json())
             .then((data) => {
                 if (!data.success) {
-                    setMotivoPremium("limite_gratuito");
+                    setMotivoPremium("jogo_chuva");
                     setIsPremiumModalOpen(true);
                     return;
                 }

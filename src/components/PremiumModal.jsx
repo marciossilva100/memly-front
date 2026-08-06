@@ -122,7 +122,10 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
               <div className="mb-6 bg-amber-500/10 border border-amber-500/30 text-amber-200 text-sm font-medium rounded-xl p-3 text-center">
                 {motivo === "audio" ? t("premium_reason_audio") : null}
                 {motivo === "categorias" ? t("premium_reason_categorias") : null}
-                {motivo === "limite_gratuito" ? t("premium_reason_limite_gratuito") : null}
+                {motivo === "categoria_ia" ? t("premium_reason_categoria_ia") : null}
+                {motivo === "jogo_chuva" ? t("premium_reason_jogo_chuva") : null}
+                {motivo === "perguntas_ia" ? t("premium_reason_perguntas_ia") : null}
+                {motivo === "frase_dia_ia" ? t("premium_reason_frase_dia_ia") : null}
               </div>
             )}
 

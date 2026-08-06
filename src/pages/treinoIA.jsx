@@ -72,14 +72,14 @@ export default function TreinoIA() {
                 if (!data.success) {
                     if (data.premium_necessario) {
                         setPremiumRequired(true);
-                        setMotivoPremium("limite_gratuito");
+                        setMotivoPremium("frase_dia_ia");
                         setIsPremiumModalOpen(true);
                         return;
                     }
                     if (data.limite_atingido) {
                         setLimitReached(true);
                         if (user?.plano === 3) {
-                            setMotivoPremium("limite_gratuito");
+                            setMotivoPremium("frase_dia_ia");
                             setIsPremiumModalOpen(true);
                         }
                         return;

@@ -21,6 +21,7 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA }) {
     const API_URL = import.meta.env.VITE_API_URL;
 
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+    const [motivoPremium, setMotivoPremium] = useState(null);
     // null = ainda não sabe (só importa pro limitado - free/premium são
     // sempre bloqueado/liberado, sem precisar checar o servidor)
     const [acessoFrase, setAcessoFrase] = useState(null);
@@ -66,7 +67,8 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA }) {
             titulo: t("daily_pronunciation_training_title"),
             descricao: t("daily_phrase_modal_desc"),
             rota: "/treinoia",
-            temAcesso: temAcesso(acessoFrase)
+            temAcesso: temAcesso(acessoFrase),
+            motivo: "frase_dia_ia"
         },
         {
             icon: MessageCircleQuestion,
@@ -75,7 +77,8 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA }) {
             titulo: t("questions_training"),
             descricao: t("questions_training_desc"),
             rota: "/perguntasia",
-            temAcesso: temAcesso(acessoPerguntas)
+            temAcesso: temAcesso(acessoPerguntas),
+            motivo: "perguntas_ia"
         }
     ];
 
@@ -111,6 +114,7 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA }) {
                                 type="button"
                                 onClick={() => {
                                     if (!opcao.temAcesso) {
+                                        setMotivoPremium(opcao.motivo);
                                         setIsPremiumModalOpen(true);
                                         return;
                                     }
@@ -141,7 +145,7 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA }) {
                 isOpen={isPremiumModalOpen}
                 setIsPremiumModalOpen={setIsPremiumModalOpen}
                 onClose={() => setIsPremiumModalOpen(false)}
-                motivo="limite_gratuito"
+                motivo={motivoPremium}
             />
         </Dialog>
     )

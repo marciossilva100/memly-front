@@ -75,7 +75,7 @@ export default function Perguntas() {
                     if (data.premium_necessario) {
                         setPremiumRequired(true);
                         setQuestion('');
-                        setMotivoPremium("limite_gratuito");
+                        setMotivoPremium("perguntas_ia");
                         setIsPremiumModalOpen(true);
                         return;
                     }
@@ -83,7 +83,7 @@ export default function Perguntas() {
                         setLimitReached(true);
                         setQuestion('');
                         if (user?.plano === 3) {
-                            setMotivoPremium("limite_gratuito");
+                            setMotivoPremium("perguntas_ia");
                             setIsPremiumModalOpen(true);
                         }
                         return;

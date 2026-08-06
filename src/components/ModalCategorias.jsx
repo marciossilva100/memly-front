@@ -125,7 +125,7 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
                     // PremiumModal e volta pro mesmo form pra tentar de novo,
                     // mesmo já sem nenhuma amostra grátis disponível.
                     setOpen(false);
-                    onOpenPremium?.("limite_gratuito");
+                    onOpenPremium?.("categoria_ia");
                     return;
                 }
                 setError(data.message);
@@ -243,7 +243,7 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
                                     // direto pro PremiumModal.
                                     if (semAcessoCategoriaIA) {
                                         setOpen(false);
-                                        onOpenPremium?.("limite_gratuito");
+                                        onOpenPremium?.("categoria_ia");
                                         return;
                                     }
                                     setModo('ia');

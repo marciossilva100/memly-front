@@ -38,6 +38,79 @@ export function pararAudio() {
     cancelarAudioAtual();
 }
 
+// Cache em memória das buscas de áudio (natural via ElevenLabs e padrão via
+// treino.php), por texto+idioma - permite pré-carregar (preloadAudio) assim
+// que um card aparece, em vez de só buscar no momento do clique em "Ouvir",
+// que é quando o atraso da voz natural é sentido. playAudio consome o mesmo
+// cache, então se o preload já rodou, tocar é instantâneo; se não, cai no
+// mesmo fetch de sempre.
+const CACHE_AUDIO_MAX = 20;
+const cacheAudio = new Map(); // chave -> Promise<resultado>
+
+function chaveCacheAudio(tipo, lang, text) {
+    return `${tipo}::${lang}::${text}`;
+}
+
+function obterOuBuscarAudio(chave, criarPromise) {
+    if (!cacheAudio.has(chave)) {
+        if (cacheAudio.size >= CACHE_AUDIO_MAX) {
+            cacheAudio.delete(cacheAudio.keys().next().value);
+        }
+        const promise = criarPromise();
+        cacheAudio.set(chave, promise);
+        // não guarda falha de rede no cache - permite tentar de novo depois
+        promise.catch(() => cacheAudio.delete(chave));
+    }
+    return cacheAudio.get(chave);
+}
+
+async function buscarAudiosPadrao(cleanText, voiceLang) {
+    const API_URL = import.meta.env.VITE_API_URL;
+    const url =
+        `${API_URL}/controller/treino.php?action=voice` +
+        "&text=" + encodeURIComponent(cleanText) +
+        "&lang=" + encodeURIComponent(voiceLang);
+
+    const res = await fetch(url);
+    if (!res.ok) {
+        throw new Error("Erro HTTP: " + res.status);
+    }
+
+    const audios = await res.json();
+    if (!Array.isArray(audios) || audios.length === 0) {
+        throw new Error("Áudios inválidos");
+    }
+
+    return audios;
+}
+
+// Pré-busca o(s) áudio(s) de um texto sem tocar, pra já estarem prontos
+// quando o usuário clicar em "Ouvir". Mesma regra de elegibilidade de voz
+// natural que playAudio - se o limite da voz natural já tiver sido
+// atingido (ou der erro), pré-carrega a voz padrão também, como fallback.
+export function preloadAudio(text, user, lang = null, forcarVozPadrao = false) {
+    if (!text || !user) return;
+
+    const voiceLang = lang || user?.learning_language;
+
+    if (!forcarVozPadrao && (user.plano === 1 || user.plano === 3)) {
+        const chaveNatural = chaveCacheAudio("natural", voiceLang, text);
+        const promiseNatural = obterOuBuscarAudio(chaveNatural, () => gerarAudio(text));
+
+        promiseNatural.then((resultado) => {
+            if (!resultado?.url) {
+                const cleanText = text.trim().replace(/^"|"$/g, '');
+                const chavePadrao = chaveCacheAudio("padrao", voiceLang, cleanText);
+                obterOuBuscarAudio(chavePadrao, () => buscarAudiosPadrao(cleanText, voiceLang));
+            }
+        });
+    } else {
+        const cleanText = text.trim().replace(/^"|"$/g, '');
+        const chavePadrao = chaveCacheAudio("padrao", voiceLang, cleanText);
+        obterOuBuscarAudio(chavePadrao, () => buscarAudiosPadrao(cleanText, voiceLang));
+    }
+}
+
 export const playAudio = async (text, user, ia = false, lang = null, forcarVozPadrao = false, velocidadeNormal = false) => {
     const API_URL = import.meta.env.VITE_API_URL;
     if (!text) return;
@@ -63,7 +136,8 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
     // forcarVozPadrao ignora o plano e usa sempre a voz gratuita (ex: frente
     // do flashcard em DigitarTexto.jsx, que não deve gastar cota de voz premium).
     if (!forcarVozPadrao && (user.plano === 1 || user.plano === 3)) {
-        const resultado = await gerarAudio(text);
+        const chaveNatural = chaveCacheAudio("natural", voiceLang, text);
+        const resultado = await obterOuBuscarAudio(chaveNatural, () => gerarAudio(text));
 
         if (resultado?.limiteAtingido) {
             const chaveAviso = chaveAvisoLimiteAudio(user);
@@ -107,26 +181,8 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
 
     try {
         const cleanText = text.trim().replace(/^"|"$/g, '');
-
-        const url =
-            `${API_URL}/controller/treino.php?action=voice` +
-            "&text=" + encodeURIComponent(cleanText) +
-            "&lang=" + encodeURIComponent(voiceLang);
-
-        const res = await fetch(url);
-
-        if (!res.ok) {
-            throw new Error("Erro HTTP: " + res.status);
-        }
-
-        const audios = await res.json();
-
-        console.log("AUDIOS:", audios);
-
-        if (!Array.isArray(audios) || audios.length === 0) {
-            console.error("Áudios inválidos:", audios);
-            return;
-        }
+        const chavePadrao = chaveCacheAudio("padrao", voiceLang, cleanText);
+        const audios = await obterOuBuscarAudio(chavePadrao, () => buscarAudiosPadrao(cleanText, voiceLang));
 
         // uma chamada mais recente já assumiu o controle enquanto buscávamos o áudio
         if (myToken !== currentToken) return;

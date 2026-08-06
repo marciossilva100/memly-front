@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { makePerfectDiff } from "../utils/makePerfectDiff";
-import { playAudio, pararAudio } from "../utils/audioPlayer";
+import { playAudio, pararAudio, preloadAudio } from "../utils/audioPlayer";
 import '../digitartexto.css'
 import { Volume, Play, Check, RefreshCw } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
@@ -164,6 +164,19 @@ export default function DigitarTexto() {
 
     // O áudio do texto nativo não tem mais autoplay - só toca quando o
     // usuário clica no botão "Ouvir", em qualquer modo.
+
+    // Pré-carrega os dois áudios do card assim que ele aparece - sem isso, a
+    // voz natural (ElevenLabs) só começa a ser buscada no momento em que o
+    // usuário vira o card, e essa busca demora o suficiente pra ser sentida.
+    // Se o limite da voz natural tiver acabado, preloadAudio já busca a voz
+    // padrão como fallback, então mesmo nesse caso a reprodução fica pronta.
+    useEffect(() => {
+        const frase = frases[index];
+        if (!frase || !user) return;
+
+        preloadAudio(frase.texto_nativo, user, user?.native_language || user?.learning_language, mode === "learn");
+        preloadAudio(frase.texto_traduzido, user);
+    }, [index, frases, user, mode]);
 
 
     function virarFlashcard() {

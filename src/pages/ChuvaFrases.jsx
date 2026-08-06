@@ -687,26 +687,28 @@ export default function ChuvaFrases() {
                         <p className="text-gray-400 text-sm mb-8">{t("best_score")}: {recorde}</p>
                     )}
 
-                    <div
-                        className="relative sticky z-10 bottom-0 flex flex-col gap-3 w-full max-w-xs pb-16"
-                        style={{
-                            backgroundImage: "none",
-                            boxShadow: "none",
-                            outline: "none",
-                            borderTop: "0px transparent",
-                            paddingTop: "60px",
-                            marginTop: "-60px",
-                            backgroundColor: "rgb(17, 24, 39)",
-                            WebkitMaskImage: "linear-gradient(to top, black 0%, black 70%, transparent 100%)",
-                            maskImage: "linear-gradient(to top, black 0%, black 70%, transparent 100%)",
-                        }}
-                    >
-                        <button
-                            onClick={jogarDeNovo}
-                            className="w-full px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors"
+                    <div className="flex flex-col gap-3 w-full max-w-xs">
+                        <div
+                            className="relative sticky z-10 bottom-0 w-full"
+                            style={{
+                                backgroundImage: "none",
+                                boxShadow: "none",
+                                outline: "none",
+                                borderTop: "0px transparent",
+                                paddingTop: "60px",
+                                marginTop: "-60px",
+                                backgroundColor: "rgb(17, 24, 39)",
+                                WebkitMaskImage: "linear-gradient(to top, black 0%, black 70%, transparent 100%)",
+                                maskImage: "linear-gradient(to top, black 0%, black 70%, transparent 100%)",
+                            }}
                         >
-                            {t("play_again")}
-                        </button>
+                            <button
+                                onClick={jogarDeNovo}
+                                className="w-full px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors"
+                            >
+                                {t("play_again")}
+                            </button>
+                        </div>
                         <button
                             onClick={() => {
                                 setSelecionadas([]);

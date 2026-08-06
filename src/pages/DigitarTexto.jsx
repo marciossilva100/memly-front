@@ -220,7 +220,7 @@ export default function DigitarTexto() {
 
     const nextCard = async () => {
 
-
+        pararAudio();
         window.speechSynthesis?.cancel();
 
         if (flipTimeoutRef.current) {

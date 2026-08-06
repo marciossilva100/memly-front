@@ -52,11 +52,13 @@ function Explosao({ top, left, letras }) {
             {letras.map((l) => (
                 <span
                     key={l.i}
-                    className="absolute text-white text-base font-semibold transition-all duration-700 ease-out"
+                    className="absolute text-green-400 text-lg font-extrabold transition-all ease-out [text-shadow:0_0_10px_rgba(74,222,128,0.9)]"
                     style={{
+                        transitionDuration: "800ms",
+                        transitionDelay: `${l.atraso}ms`,
                         transform: animar
-                            ? `translate(${l.dx}px, ${l.dy}px) rotate(${l.rot}deg)`
-                            : 'translate(0px, 0px) rotate(0deg)',
+                            ? `translate(${l.dx}px, ${l.dy}px) rotate(${l.rot}deg) scale(1.6)`
+                            : 'translate(0px, 0px) rotate(0deg) scale(1)',
                         opacity: animar ? 0 : 1,
                     }}
                 >
@@ -406,13 +408,16 @@ export default function ChuvaFrases() {
         const letras = item.texto.split("").map((ch, i) => ({
             ch,
             i,
-            dx: (Math.random() - 0.5) * 220,
-            dy: (Math.random() - 0.5) * 220 - 60,
-            rot: (Math.random() - 0.5) * 360,
+            dx: (Math.random() - 0.5) * 340,
+            dy: (Math.random() - 0.5) * 340 - 90,
+            rot: (Math.random() - 0.5) * 540,
+            // pequeno atraso por letra - a explosão "estoura" em sequência em
+            // vez de todas as letras saindo exatamente juntas, mais dinâmico.
+            atraso: Math.random() * 120,
         }));
 
         setExplodindo({ uid: item.uid, top, left, letras });
-        setTimeout(() => setExplodindo(null), 700);
+        setTimeout(() => setExplodindo(null), 950);
         tocarSomAcerto();
 
         removerCaindo(item.uid);

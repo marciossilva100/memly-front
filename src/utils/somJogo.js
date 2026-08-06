@@ -1,6 +1,6 @@
 // Efeitos sonoros do jogo Chuva de Frases, sintetizados via Web Audio API
-// (sem arquivo de áudio externo pra baixar/embutir) - um "ding-ding"
-// ascendente no estilo dos apps de idioma (Duolingo e afins) pro acerto.
+// (sem arquivo de áudio externo pra baixar/embutir) - um arpejo agudo tipo
+// "moeda"/recompensa (mais brilhante que um ding-ding grave) pro acerto.
 let audioCtx = null;
 
 function getAudioCtx() {
@@ -10,15 +10,15 @@ function getAudioCtx() {
     return audioCtx;
 }
 
-function tocarNota(ctx, freq, inicio, duracao, volume) {
+function tocarNota(ctx, freq, inicio, duracao, volume, tipo = "sine") {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
 
-    osc.type = "sine";
+    osc.type = tipo;
     osc.frequency.value = freq;
 
     gain.gain.setValueAtTime(0, inicio);
-    gain.gain.linearRampToValueAtTime(volume, inicio + 0.015);
+    gain.gain.linearRampToValueAtTime(volume, inicio + 0.012);
     gain.gain.exponentialRampToValueAtTime(0.001, inicio + duracao);
 
     osc.connect(gain);
@@ -35,9 +35,17 @@ export function tocarSomAcerto() {
         if (ctx.state === "suspended") ctx.resume();
 
         const agora = ctx.currentTime;
-        // Mi5 -> Lá5: intervalo curto e alegre, duas notas subindo.
-        tocarNota(ctx, 659.25, agora, 0.22, 0.22);
-        tocarNota(ctx, 880.0, agora + 0.1, 0.28, 0.22);
+        // Arpejo ascendente agudo (Dó6, Mi6, Sol6) - tipo "moeda"/recompensa
+        // de jogo, bem mais agudo e brilhante que o ding-ding anterior.
+        // Onda triangular (mais brilhante que seno) + um harmônico uma
+        // oitava acima em volume baixo em cada nota, pra dar um "sparkle".
+        const notas = [1046.5, 1318.5, 1568.0];
+
+        notas.forEach((freq, i) => {
+            const inicioNota = agora + i * 0.07;
+            tocarNota(ctx, freq, inicioNota, 0.18, 0.18, "triangle");
+            tocarNota(ctx, freq * 2, inicioNota, 0.14, 0.05, "triangle");
+        });
     } catch {
         // Web Audio indisponível (navegador antigo, contexto bloqueado etc.) -
         // som é só reforço, não essencial ao funcionamento do jogo.

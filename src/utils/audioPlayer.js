@@ -139,6 +139,14 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
         const chaveNatural = chaveCacheAudio("natural", voiceLang, text);
         const resultado = await obterOuBuscarAudio(chaveNatural, () => gerarAudio(text));
 
+        // A URL do blob é de uso único (revogada depois de tocar) - tira do
+        // cache assim que consumida, senão um replay reusaria uma URL já
+        // revogada e o áudio falharia em silêncio. Uma próxima reprodução
+        // busca de novo (sem cache, como antes do preload existir).
+        if (resultado?.url) {
+            cacheAudio.delete(chaveNatural);
+        }
+
         if (resultado?.limiteAtingido) {
             const chaveAviso = chaveAvisoLimiteAudio(user);
             if (!localStorage.getItem(chaveAviso)) {

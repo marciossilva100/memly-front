@@ -40,6 +40,7 @@ import MusicFlashcardFinder from './pages/MusicFlashcardFInder';
 import ConnectionStatus from './components/ConnectionStatus'; // Novo componente
 import AudioSpeedHintBalloon from './components/AudioSpeedHintBalloon';
 import AudioLimitToast from './components/AudioLimitToast';
+import NivelUpToast from './components/NivelUpToast';
 
 import imgChapeuFormatura from "./assets/img/chapeu_formatura.png"
 import PremiumPlan from './components/PremiumModal';
@@ -155,6 +156,7 @@ function Layout({ titulo, setTitulo }) {
       <ConnectionStatus />
       <AudioSpeedHintBalloon />
       <AudioLimitToast />
+      <NivelUpToast />
 
       {mostrarHeader && <Header titulo={titulo} />}
 

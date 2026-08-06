@@ -30,7 +30,7 @@ import {
     Flame,
     Zap,
     Bot,
-    Settings,
+    Gamepad2,
     Brain,
     Crown
 } from 'lucide-react';
@@ -640,8 +640,8 @@ const API_URL = import.meta.env.VITE_API_URL;
                             <Home width={26} height={26} className='text-violet-400' />
                         </button>
 
-                        <button type="button" onClick={() => navigate('/configuracoes')} className="flex flex-col items-center gap-1">
-                            <Settings width={26} height={26} className='text-blue-400' />
+                        <button type="button" onClick={() => navigate('/chuvadefrases')} className="flex flex-col items-center gap-1">
+                            <Gamepad2 width={26} height={26} className='text-blue-400' />
                         </button>
 
                         <button type="button" className="flex flex-col items-center gap-1">

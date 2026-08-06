@@ -129,6 +129,10 @@ export default function ChuvaFrases() {
     function handleSelecionarVelocidadeJogo(velocidade) {
         setVelocidadeJogo(velocidade);
         localStorage.setItem('zaldemy_velocidade_jogo_chuva', String(velocidade));
+        // Blocos que já estavam caindo mantêm a duração antiga (a animação já
+        // começou com aquele valor) - limpa pra sumirem e reaparecerem já na
+        // velocidade nova, senão a troca parece não ter feito nada.
+        setCaindo([]);
     }
 
     function handleToggleAutoplayAudio() {

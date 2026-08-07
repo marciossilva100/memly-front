@@ -121,16 +121,40 @@ export default defineConfig(({ mode }) => {
           background_color: "#111827",
           theme_color: "#111827",
 
+          // "any" = ícone como desenhado, sem corte (usado tal qual). Sem um
+          // ícone "maskable" dedicado, launchers Android que aplicam forma
+          // adaptativa (círculo, squircle) tratam o ícone "any" como não
+          // seguro pra máscara e o encolhem dentro de uma forma com fundo
+          // branco próprio - exatamente o "quadrado dentro de um círculo
+          // branco" que aparecia no ícone instalado. O "maskable" tem o
+          // logo bem mais recuado (~62% da largura) especificamente pra
+          // sobrar espaço de corte sem cortar o desenho, e o fundo já é o
+          // mesmo #111827 do app, então mesmo a máscara cortando bem
+          // rente, nunca aparece branco.
           icons: [
             {
               src: "/icon-192.png",
               sizes: "192x192",
-              type: "image/png"
+              type: "image/png",
+              purpose: "any"
             },
             {
               src: "/icon-512.png",
               sizes: "512x512",
-              type: "image/png"
+              type: "image/png",
+              purpose: "any"
+            },
+            {
+              src: "/icon-maskable-192.png",
+              sizes: "192x192",
+              type: "image/png",
+              purpose: "maskable"
+            },
+            {
+              src: "/icon-maskable-512.png",
+              sizes: "512x512",
+              type: "image/png",
+              purpose: "maskable"
             }
           ]
         }

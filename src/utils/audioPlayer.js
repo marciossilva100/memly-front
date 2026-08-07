@@ -25,6 +25,31 @@ function chaveAvisoLimiteAudio(user) {
 // próxima carta).
 const avisosLimiteAudioDisparados = new Set();
 
+// Depois que o servidor confirma limite atingido (plano premium: diário;
+// limitado: vitalício) pra uma frase, marca aqui pra TODAS as chamadas
+// seguintes (preload E play, de qualquer frase) pularem a voz natural direto
+// pra padrão - sem isso, uma frase que já tinha sido pré-carregada com
+// sucesso ANTES do limite acabar continuava tocando em voz natural pra
+// sempre (o cache de áudio, em memória ou do service worker, nunca era
+// invalidado pelo limite de cota estourar depois). Guardado com a data (não
+// só um bool) porque o limite do premium é diário - um valor de ontem não
+// deve continuar bloqueando hoje; o do limitado é vitalício, mas como o
+// backend sempre barra de novo, o pior caso é só 1 chamada extra por dia até
+// essa marca ser renovada.
+function chaveCotaNaturalEsgotada(user) {
+    return `zaldemy_cota_natural_esgotada_${user?.id ?? "anon"}`;
+}
+
+function cotaNaturalEsgotada(user) {
+    const hoje = new Date().toISOString().slice(0, 10);
+    return localStorage.getItem(chaveCotaNaturalEsgotada(user)) === hoje;
+}
+
+function marcarCotaNaturalEsgotada(user) {
+    const hoje = new Date().toISOString().slice(0, 10);
+    localStorage.setItem(chaveCotaNaturalEsgotada(user), hoje);
+}
+
 // Cancela o áudio em reprodução (se houver) e invalida qualquer chamada de
 // playAudio ainda em andamento (via o token) - usado tanto no início de toda
 // nova chamada de playAudio quanto exportado como pararAudio() pra telas que
@@ -101,11 +126,14 @@ export function preloadAudio(text, user, lang = null, forcarVozPadrao = false) {
 
     const voiceLang = lang || user?.learning_language;
 
-    if (!forcarVozPadrao && (user.plano === 1 || user.plano === 3)) {
+    if (!forcarVozPadrao && !cotaNaturalEsgotada(user) && (user.plano === 1 || user.plano === 3)) {
         const chaveNatural = chaveCacheAudio("natural", voiceLang, text);
         const promiseNatural = obterOuBuscarAudio(chaveNatural, () => gerarAudio(text));
 
         promiseNatural.then((resultado) => {
+            if (resultado?.limiteAtingido) {
+                marcarCotaNaturalEsgotada(user);
+            }
             if (!resultado?.url) {
                 const cleanText = text.trim().replace(/^"|"$/g, '');
                 const chavePadrao = chaveCacheAudio("padrao", voiceLang, cleanText);
@@ -143,7 +171,7 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
     // reproduz nada - só mostra o modal premium.
     // forcarVozPadrao ignora o plano e usa sempre a voz gratuita (ex: frente
     // do flashcard em DigitarTexto.jsx, que não deve gastar cota de voz premium).
-    if (!forcarVozPadrao && (user.plano === 1 || user.plano === 3)) {
+    if (!forcarVozPadrao && !cotaNaturalEsgotada(user) && (user.plano === 1 || user.plano === 3)) {
         const chaveNatural = chaveCacheAudio("natural", voiceLang, text);
         const resultado = await obterOuBuscarAudio(chaveNatural, () => gerarAudio(text));
 
@@ -156,6 +184,11 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
         }
 
         if (resultado?.limiteAtingido) {
+            // Marca ANTES de qualquer coisa - a partir daqui, nenhuma outra
+            // frase (mesmo já pré-carregada com sucesso antes do limite
+            // acabar) volta a tentar voz natural nesta sessão/dia.
+            marcarCotaNaturalEsgotada(user);
+
             const chaveAviso = chaveAvisoLimiteAudio(user);
             if (!avisosLimiteAudioDisparados.has(chaveAviso) && !localStorage.getItem(chaveAviso)) {
                 avisosLimiteAudioDisparados.add(chaveAviso);

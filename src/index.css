@@ -199,6 +199,14 @@ input{
   will-change: transform; /* 🔥 melhora GPU */
   /* box-shadow: 0 20px 40px rgba(0,0,0,0.15); */
 }
+/* Digitar Texto: fonte da frase no card sem negrito - o font-weight:600
+   compartilhado (acima) ficava com aparência muito pesada/grotesca em
+   texto grande (text-2xl) nesta tela especificamente. */
+.card-digitar-texto .card-front,
+.card-digitar-texto .card-back {
+  font-weight: 400;
+}
+
 .card-back {
   /* background: white; */
   

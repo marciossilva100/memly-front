@@ -593,6 +593,22 @@ export default function Home() {
                 </div>
 
             </div>
+            {/* Fica FORA da barra de baixo (abaixo) de propósito - essa barra
+                usa mask-image pra dar o efeito de fade, e mask-image recorta
+                a renderização de TODOS os descendentes, inclusive os com
+                position:fixed, mesmo saindo do fluxo normal. Um balão fixed
+                dentro dela ficava com metade cortada pela máscara. */}
+            {mostrarGuiaCategoria && (
+                <div className="fixed bottom-40 left-1/2 -translate-x-1/2 w-52 max-w-[85vw] z-20 pointer-events-none">
+                    <div className="animate-gentle-bounce">
+                        <div className="bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-xl shadow-lg text-center">
+                            {t("first_category_hint")}
+                        </div>
+                        <div className="w-3 h-3 bg-orange-600 rotate-45 mx-auto -mt-1.5" />
+                    </div>
+                </div>
+            )}
+
             <div
                 className="relative sticky z-10 bottom-0 text-center w-full justify-items-center justify-center items-center pb-16"
                 style={{
@@ -607,17 +623,6 @@ export default function Home() {
                     maskImage: "linear-gradient(to top, black 0%, black 70%, transparent 100%)",
                 }}
             >
-
-                {mostrarGuiaCategoria && (
-                    <div className="fixed bottom-40 left-1/2 -translate-x-1/2 w-52 max-w-[85vw] z-20 pointer-events-none">
-                        <div className="animate-gentle-bounce">
-                            <div className="bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-xl shadow-lg text-center">
-                                {t("first_category_hint")}
-                            </div>
-                            <div className="w-3 h-3 bg-orange-600 rotate-45 mx-auto -mt-1.5" />
-                        </div>
-                    </div>
-                )}
 
                 <div className="relative inline-block w-full px-4">
                     <button className={`

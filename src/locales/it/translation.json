@@ -313,7 +313,7 @@
     "faq_q5": "Quali modalità di allenamento sono disponibili?",
     "faq_a5": "Puoi allenarti digitando la traduzione della frase, in formato flashcard (girando la carta per vedere la risposta), in modalità indovina, oppure con l'allenamento con IA. Ogni mazzo mostra quante frasi sono in apprendimento, ripetizione e revisione.",
     "faq_q6": "Come funziona l'audio delle frasi?",
-    "faq_a6": "L'app genera automaticamente l'audio di pronuncia delle frasi nella lingua madre e in quella di apprendimento. Puoi anche riprodurre l'audio manualmente con il pulsante \"Ascolta\" durante l'allenamento.",
+    "faq_a6": "L'app genera automaticamente l'audio di pronuncia delle frasi nella lingua madre e in quella di apprendimento. L'audio nella lingua che stai imparando si riproduce automaticamente quando giri la carta; quello nella lingua madre si riproduce solo quando premi il pulsante \"Ascolta\".",
     "faq_q7": "Zaldemy funziona senza internet?",
     "faq_a7": "L'app può essere installata sul telefono e alcune schermate principali, come la home e le flashcard, continuano a funzionare anche senza connessione. Le azioni che dipendono dal server, come salvare nuovi contenuti, richiedono internet.",
     "faq_q8": "Cos'è il Piano Premium?",

@@ -315,7 +315,7 @@
     "faq_q5": "What training modes are available?",
     "faq_a5": "You can practice by typing the translation of the phrase, in flashcard format (flip the card to see the answer), in guess mode, or using AI training. Each deck shows how many phrases are in learning, repeat, and review.",
     "faq_q6": "How does the phrase audio work?",
-    "faq_a6": "The app automatically generates pronunciation audio for phrases in both your native and learning languages. You can also play the audio manually using the \"Listen\" button during training.",
+    "faq_a6": "The app automatically generates pronunciation audio for phrases in both your native and learning languages. The audio in the language you're learning plays automatically when you flip the card; the native-language audio only plays when you tap the \"Listen\" button.",
     "faq_q7": "Does Zaldemy work without internet?",
     "faq_a7": "The app can be installed on your phone, and some core screens, like the home screen and flashcards, keep working even without a connection. Actions that depend on the server, like saving new content, require internet.",
     "faq_q8": "What is the Premium Plan?",

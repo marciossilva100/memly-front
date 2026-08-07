@@ -313,7 +313,7 @@
     "faq_q5": "Welke trainingsmodi zijn beschikbaar?",
     "faq_a5": "Je kunt oefenen door de vertaling van de zin te typen, in flashcardformaat (kaart omdraaien om het antwoord te zien), in raadmodus, of met AI-training. Elke stapel toont hoeveel zinnen in leren, herhalen en herzien staan.",
     "faq_q6": "Hoe werkt de audio van de zinnen?",
-    "faq_a6": "De app genereert automatisch uitspraakaudio voor zinnen in zowel je moedertaal als je leertaal. Je kunt de audio ook handmatig afspelen met de knop \"Luisteren\" tijdens de training.",
+    "faq_a6": "De app genereert automatisch uitspraakaudio voor zinnen in zowel je moedertaal als je leertaal. De audio in de taal die je leert speelt automatisch af zodra je de kaart omdraait; de audio in je moedertaal speelt alleen af als je op de knop \"Luisteren\" tikt.",
     "faq_q7": "Werkt Zaldemy zonder internet?",
     "faq_a7": "De app kan op je telefoon worden geïnstalleerd, en sommige belangrijke schermen, zoals het startscherm en de flashcards, blijven werken zonder verbinding. Acties die afhankelijk zijn van de server, zoals het opslaan van nieuwe content, vereisen internet.",
     "faq_q8": "Wat is het Premium-abonnement?",

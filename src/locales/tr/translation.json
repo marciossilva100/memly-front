@@ -313,7 +313,7 @@
     "faq_q5": "Hangi antrenman modları mevcut?",
     "faq_a5": "Cümlenin çevirisini yazarak, flash kart formatında (cevabı görmek için kartı çevirerek), tahmin modunda ya da yapay zeka antrenmanıyla pratik yapabilirsiniz. Her deste, kaç cümlenin öğrenmede, tekrarda ve gözden geçirmede olduğunu gösterir.",
     "faq_q6": "Cümlelerin sesi nasıl çalışır?",
-    "faq_a6": "Uygulama, cümlelerin hem ana dilde hem de öğrenme dilinde telaffuz seslerini otomatik olarak oluşturur. Antrenman sırasında sesi \"Dinle\" düğmesiyle manuel olarak da oynatabilirsiniz.",
+    "faq_a6": "Uygulama, cümlelerin hem ana dilde hem de öğrenme dilinde telaffuz seslerini otomatik olarak oluşturur. Öğrendiğiniz dildeki ses, kartı çevirdiğinizde otomatik olarak çalar; ana dildeki ses ise yalnızca \"Dinle\" düğmesine bastığınızda çalar.",
     "faq_q7": "Zaldemy internetsiz çalışır mı?",
     "faq_a7": "Uygulama telefona kurulabilir ve ana ekran ile flash kartlar gibi bazı temel ekranlar bağlantı olmadan da çalışmaya devam eder. Yeni içerik kaydetmek gibi sunucuya bağlı işlemler için internet gereklidir.",
     "faq_q8": "Premium Plan nedir?",

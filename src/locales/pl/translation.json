@@ -313,7 +313,7 @@
     "faq_q5": "Jakie tryby treningu są dostępne?",
     "faq_a5": "Możesz ćwiczyć, wpisując tłumaczenie zdania, w formacie fiszek (odwróć kartę, aby zobaczyć odpowiedź), w trybie zgadywania lub korzystając z treningu z AI. Każda talia pokazuje, ile zdań jest w nauce, powtarzaniu i przeglądzie.",
     "faq_q6": "Jak działa dźwięk zdań?",
-    "faq_a6": "Aplikacja automatycznie generuje dźwięk wymowy zdań zarówno w języku ojczystym, jak i w języku nauki. Możesz również ręcznie odtworzyć dźwięk za pomocą przycisku \"Odsłuchaj\" podczas treningu.",
+    "faq_a6": "Aplikacja automatycznie generuje dźwięk wymowy zdań zarówno w języku ojczystym, jak i w języku nauki. Dźwięk w języku, którego się uczysz, odtwarza się automatycznie po odwróceniu karty; dźwięk w języku ojczystym odtwarza się tylko po naciśnięciu przycisku \"Odsłuchaj\".",
     "faq_q7": "Czy Zaldemy działa bez internetu?",
     "faq_a7": "Aplikację można zainstalować na telefonie, a niektóre kluczowe ekrany, takie jak ekran główny i fiszki, nadal działają nawet bez połączenia. Czynności zależne od serwera, takie jak zapisywanie nowych treści, wymagają internetu.",
     "faq_q8": "Czym jest Plan Premium?",

@@ -800,7 +800,16 @@ export default function ChuvaFrases() {
             <PremiumModal
                 isOpen={isPremiumModalOpen}
                 setIsPremiumModalOpen={setIsPremiumModalOpen}
-                onClose={() => { setIsPremiumModalOpen(false); setMotivoPremium(null); }}
+                onClose={() => {
+                    setIsPremiumModalOpen(false);
+                    setMotivoPremium(null);
+                    // Acesso à tela inteira bloqueado (limite do jogo acabou) - fechar
+                    // o modal só revelaria uma segunda tela repetindo a mesma
+                    // informação por trás. Vai direto pra home em vez disso.
+                    if (acessoBloqueado === true) {
+                        navigate("/home");
+                    }
+                }}
                 motivo={motivoPremium}
             />
         </div>

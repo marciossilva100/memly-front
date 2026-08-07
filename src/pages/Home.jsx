@@ -43,7 +43,14 @@ export default function Home() {
     // exclusão, o balão nunca aparecia pra ninguém: todo usuário novo já sai
     // do onboarding com pelo menos uma dessas.
     const temCategoriaPropria = categorias.some((cat) => cat.tipo !== 3);
-    const mostrarGuiaCategoria = !categoriasLoading && !temCategoriaPropria;
+    // Some assim que o usuário clica no botão indicado (balaoDispensado) -
+    // sem isso, o balão continuava visível até a categoria nova de fato
+    // aparecer na lista (recarregar do servidor), mesmo já tendo cumprido
+    // seu papel de chamar atenção pro botão. É só em memória (reseta a cada
+    // carregamento da página), não reintroduz o bug antigo de flag em
+    // localStorage nunca limpa entre logins.
+    const [balaoDispensado, setBalaoDispensado] = useState(false);
+    const mostrarGuiaCategoria = !categoriasLoading && !temCategoriaPropria && !balaoDispensado;
     const [revisarPorCategoria, setRevisarPorCategoria] = useState({});
     const [openTreinoAdvinhar, setOpenTreinoAdvinhar] = useState(false)
     const [openTreinoIA, setOpenTreinoIA] = useState(false)
@@ -639,7 +646,7 @@ export default function Home() {
                        text-lg
                         transition
                         ${mostrarGuiaCategoria ? "animate-pulse-glow-ring" : ""}
-                        `} onClick={() => setOpen(true)}>
+                        `} onClick={() => { setBalaoDispensado(true); setOpen(true); }}>
                         <Plus size={20} />
                         {t("add_category")}
                     </button>

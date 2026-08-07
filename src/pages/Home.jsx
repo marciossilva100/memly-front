@@ -377,16 +377,11 @@ export default function Home() {
     }
 
     function verifyPlan(e) {
-        // Limitado sem NENHUM dos dois recursos disponível (nem amostra nem
-        // pendente do dia) - abrir o ModalIA só mostraria as duas opções com
-        // coroa, uma tela a mais sem nenhuma ação possível. Vai direto pro
-        // modal premium, igual ao free.
-        if (user.plano === 3 && treinoIaBloqueado) {
-            setMotivoPremium(null)
-            setIsPremiumModalOpen(true)
-            return
-        }
-
+        // O bloqueio do limitado sem nenhum dos dois recursos disponível
+        // fica por conta do próprio ModalIA (uma coroa em cada opção
+        // bloqueada, que abre o modal premium só quando o usuário tenta
+        // entrar naquela opção específica) - aqui sempre abre o ModalIA,
+        // mesmo com treinoIaBloqueado true (usado só pra coroa neste botão).
         if (user.plano === 1 || user.plano === 3) {
             setOpenTreinoIA(true)
             return

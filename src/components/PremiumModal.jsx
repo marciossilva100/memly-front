@@ -103,11 +103,11 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
+    <div className="fixed inset-0 z-50 overflow-y-auto scrollbar-hide">
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
       <div className="flex min-h-full items-center justify-center p-3">
-        <div className="relative w-full max-w-md bg-gradient-to-b from-gray-900 to-gray-800 rounded-3xl shadow-2xl border border-gray-700 max-h-[calc(100vh-24px)] overflow-y-auto scrollbar-hide">
+        <div className="relative w-full max-w-md bg-gradient-to-b from-gray-900 to-gray-800 rounded-3xl shadow-2xl border border-gray-700 max-h-[calc(100dvh-24px)] overflow-y-auto scrollbar-hide">
 
           <button
             onClick={onClose}

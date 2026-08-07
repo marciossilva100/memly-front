@@ -5,7 +5,7 @@ import {
     Layers,
     Volume2,
     BarChart3,
-    Share2,
+    Bot,
     Smartphone,
     Menu,
     X,
@@ -19,7 +19,7 @@ import imgSlideDigitar from "../assets/img/landing-screenshot-digitar.png";
 import imgSlideCorreto from "../assets/img/landing-screenshot-correto.png";
 import imgSlideChuva from "../assets/img/landing-screenshot-chuva.png";
 
-const iconesRecursos = [Languages, Layers, RotateCcw, Volume2, BarChart3, Share2];
+const iconesRecursos = [Languages, Layers, RotateCcw, Volume2, BarChart3, Bot];
 
 const slidesApp = [imgSlideCategorias, imgSlideDigitar, imgSlideCorreto, imgSlideChuva];
 

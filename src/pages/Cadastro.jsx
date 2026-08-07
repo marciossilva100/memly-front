@@ -224,6 +224,9 @@ export default function Cadastro({ setTitulo }) {
                     <h5 className="text-sm text-white">
                         {t("do_your_signup")}
                     </h5>
+                    <p className="text-xs text-[#4cb8c4] mt-1">
+                        {t("signup_free_hint")}
+                    </p>
 
                     <form onSubmit={handleSubmit} className="mt-4 space-y-4">
 

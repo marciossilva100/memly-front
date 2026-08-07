@@ -183,6 +183,7 @@
     "enter_password": "Inserisci la password",
     "enter_password_confirm": "Inserisci la password per confermare",
     "do_your_signup": "Crea il tuo account",
+    "signup_free_hint": "È veloce e 100% gratuito.",
     "confirm_password_placeholder": "Conferma password",
     "sign_up_button": "Registrati",
     "or_signup_with": "Oppure registrati con",

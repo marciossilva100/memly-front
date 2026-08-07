@@ -74,7 +74,7 @@ export default function LandingPage() {
             {/* NAV */}
             <header className="sticky top-0 z-50 backdrop-blur-md bg-gray-900/70 border-b border-gray-800">
                 <div className="max-w-6xl mx-auto px-5 py-3 flex items-center justify-between">
-                    <img src={imgZaldemy} alt="Zaldemy" className="h-12" />
+                    <img src={imgZaldemy} alt="Zaldemy" className="h-8 md:h-12" />
 
                     <nav className="hidden md:flex items-center gap-8 text-sm">
                         <a href="#recursos" className="text-gray-300 hover:text-white transition-colors">

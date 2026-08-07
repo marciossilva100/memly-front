@@ -183,6 +183,7 @@
     "enter_password": "비밀번호를 입력하세요",
     "enter_password_confirm": "확인을 위해 비밀번호를 입력하세요",
     "do_your_signup": "회원가입 하기",
+    "signup_free_hint": "빠르고 100% 무료예요.",
     "confirm_password_placeholder": "비밀번호 확인",
     "sign_up_button": "가입하기",
     "or_signup_with": "또는 다음으로 가입하기",

@@ -17,6 +17,14 @@ function chaveAvisoLimiteAudio(user) {
     return `zaldemy_aviso_limite_audio_exibido_${user?.id ?? "anon"}`;
 }
 
+// Guarda em memória (além do localStorage) os avisos já disparados nesta
+// mesma carga de página - checagem síncrona extra antes de mexer no
+// localStorage, como reforço caso o dispositivo tenha algum atraso/
+// inconsistência de leitura do localStorage entre chamadas quase
+// simultâneas de playAudio (ex: autoplay ao virar o card + preload da
+// próxima carta).
+const avisosLimiteAudioDisparados = new Set();
+
 // Cancela o áudio em reprodução (se houver) e invalida qualquer chamada de
 // playAudio ainda em andamento (via o token) - usado tanto no início de toda
 // nova chamada de playAudio quanto exportado como pararAudio() pra telas que
@@ -149,7 +157,8 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
 
         if (resultado?.limiteAtingido) {
             const chaveAviso = chaveAvisoLimiteAudio(user);
-            if (!localStorage.getItem(chaveAviso)) {
+            if (!avisosLimiteAudioDisparados.has(chaveAviso) && !localStorage.getItem(chaveAviso)) {
+                avisosLimiteAudioDisparados.add(chaveAviso);
                 localStorage.setItem(chaveAviso, "1");
                 dispatchPremiumLimitHit("audio");
                 return;

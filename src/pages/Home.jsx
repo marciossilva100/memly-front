@@ -37,7 +37,13 @@ export default function Home() {
     // aparecer pra usuários antigos: se a primeira categoria fosse criada por
     // outro caminho, ou se a flag ficasse de um login antigo no mesmo
     // navegador (localStorage não é por conta), ela nunca era removida.
-    const mostrarGuiaCategoria = !categoriasLoading && categorias.length === 0;
+    // tipo=3 são as categorias de interesse criadas automaticamente no
+    // onboarding (uma por par de idioma) - o usuário não escolheu criá-las,
+    // então elas não contam como "já tem categoria" pra esse balão. Sem essa
+    // exclusão, o balão nunca aparecia pra ninguém: todo usuário novo já sai
+    // do onboarding com pelo menos uma dessas.
+    const temCategoriaPropria = categorias.some((cat) => cat.tipo !== 3);
+    const mostrarGuiaCategoria = !categoriasLoading && !temCategoriaPropria;
     const [revisarPorCategoria, setRevisarPorCategoria] = useState({});
     const [openTreinoAdvinhar, setOpenTreinoAdvinhar] = useState(false)
     const [openTreinoIA, setOpenTreinoIA] = useState(false)
@@ -250,6 +256,7 @@ export default function Home() {
                     idiomaAprendendo: cat.idioma_aprendendo ?? cat.idiomaAprendendo ?? cat.idioma_aprendendo_data ?? null,
                     categoriaPublica: Number(cat.public ?? cat.categoria_publica ?? 0),
                     categoriaDados: cat.categoria_dados ?? cat.categoriaDados ?? null,
+                    tipo: cat.tipo ?? null,
                 }));
 
                 setCategorias(categoriasFormatadas);

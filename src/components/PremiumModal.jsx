@@ -106,8 +106,15 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
     <div className="fixed inset-0 z-50 overflow-y-auto scrollbar-hide">
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="flex min-h-full items-center justify-center p-3">
-        <div className="relative w-full max-w-md bg-gradient-to-b from-gray-900 to-gray-800 rounded-3xl shadow-2xl border border-gray-700 max-h-[calc(100dvh-24px)] overflow-y-auto scrollbar-hide">
+      {/* items-start, não items-center: centralizar verticalmente com
+          align-items:center + overflow trava a rolagem do conteúdo que
+          fica ACIMA do centro em alguns navegadores (reproduzido no Safari
+          do iPhone SE) - o conteúdo que passa da tela fica inacessível
+          mesmo com overflow-y:auto no container. Com items-start, a
+          rolagem sempre funciona; o padding vertical mantém a aparência
+          equilibrada quando o conteúdo cabe inteiro na tela. */}
+      <div className="flex min-h-full items-start justify-center p-3 py-8">
+        <div className="relative w-full max-w-md bg-gradient-to-b from-gray-900 to-gray-800 rounded-3xl shadow-2xl border border-gray-700 max-h-[calc(100dvh-4rem)] overflow-y-auto scrollbar-hide">
 
           <button
             onClick={onClose}

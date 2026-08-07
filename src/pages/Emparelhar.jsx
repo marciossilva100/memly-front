@@ -4,6 +4,17 @@ import { useAuth } from "../context/AuthContext";
 import { playAudio, pararAudio } from "../utils/audioPlayer";
 import { useTranslation } from "react-i18next";
 
+// Reduz a fonte do card quando o texto é longo, pra caber sem quebrar de
+// forma estranha - independente da altura da tela (o breakpoint de altura
+// baixa, abaixo, resolve telas curtas mas não frases compridas numa tela
+// normal).
+function classeFontePorTamanho(texto) {
+  const tamanho = (texto || "").length;
+  if (tamanho > 40) return "text-xs [@media(max-height:700px)]:text-[11px]";
+  if (tamanho > 25) return "text-sm [@media(max-height:700px)]:text-xs";
+  return "text-base [@media(max-height:700px)]:text-sm";
+}
+
 export default function JogoFrases() {
   const { t } = useTranslation();
 
@@ -270,7 +281,7 @@ export default function JogoFrases() {
                 key={frase.id}
                 disabled={bloqueado}
                 onClick={() => setSelecionadaEsquerda(frase)}
-                className={`p-4 [@media(max-height:700px)]:p-2 [@media(max-height:700px)]:text-sm rounded-lg border text-white border-slate-400
+                className={`p-4 [@media(max-height:700px)]:p-2 ${classeFontePorTamanho(frase.texto_nativo)} rounded-lg border text-white border-slate-400
                   ${sucessoEsquerdaId === frase.id
                     ? "bg-[#469118]"
                     : erroEsquerdaId === frase.id
@@ -291,7 +302,7 @@ export default function JogoFrases() {
                 key={frase.id}
                 disabled={bloqueado}
                 onClick={() => setSelecionadaDireita(frase)}
-                className={`p-4 [@media(max-height:700px)]:p-2 [@media(max-height:700px)]:text-sm rounded-lg border text-white border-slate-400
+                className={`p-4 [@media(max-height:700px)]:p-2 ${classeFontePorTamanho(frase.texto_traduzido)} rounded-lg border text-white border-slate-400
                   ${sucessoDireitaId === frase.id
                     ? "bg-[#469118]"
                     : erroDireitaId === frase.id

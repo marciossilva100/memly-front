@@ -10,7 +10,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { isNativePlatform, signInWithGoogleNative } from "../utils/googleNativeAuth";
-import { startGoogleRedirectLogin, consumeGoogleRedirectToken } from "../utils/googleRedirectAuth";
+import { startGoogleRedirectLogin, consumeGoogleRedirectToken, hasGoogleRedirectToken } from "../utils/googleRedirectAuth";
 import { getInstallPrompt, onInstallPromptChange, clearInstallPrompt } from "../utils/pwaInstallPrompt";
 import useEnableBodyScroll from "../hooks/useEnableBodyScroll";
 
@@ -18,7 +18,12 @@ export default function Login({ setTitulo }) {
     const { t } = useTranslation();
     const navigate = useNavigate();
     useEnableBodyScroll();
-    const [loading, setLoading] = useState(false);
+    // Inicia já em loading (mostra o spinner, não o formulário) quando a URL
+    // já chega com o token de retorno do redirecionamento do Google (PWA
+    // instalado) - sem isso, o primeiro render acontece com loading=false
+    // (valor padrão) antes do useEffect que processa o token rodar, e o
+    // formulário de login pisca na tela por um instante à toa.
+    const [loading, setLoading] = useState(() => hasGoogleRedirectToken());
     const [finish, setFinish] = useState(false)
     const { checkAuth, syncAuth } = useAuth();
     const [installPrompt, setInstallPrompt] = useState(() => getInstallPrompt());

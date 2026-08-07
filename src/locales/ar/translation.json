@@ -496,7 +496,7 @@
     "cancel_subscription": "إلغاء الاشتراك",
     "reactivate_subscription": "إعادة تفعيل الاشتراك",
     "cancel_subscription_confirm_message": "هل تريد إلغاء اشتراكك في Zaldemy+؟ ستحتفظ بالوصول المميز حتى نهاية الفترة المدفوعة بالفعل.",
-    "based_on_vocabulary_title": "80% مبني على مفرداتك",
+    "based_on_vocabulary_title": "مبني على مفرداتك",
     "based_on_vocabulary_desc": "المحتوى الذي ينشئه الذكاء الاصطناعي يستخدم غالبًا كلمات تدرسها بالفعل",
     "toggle_vocabulary_hint": "إظهار الكلمات التي أدرسها",
     "no_vocabulary_matched": "لم يتم التعرف على أي كلمة من مفرداتك في هذه الجملة",

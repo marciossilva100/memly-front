@@ -41,7 +41,39 @@ export default defineConfig(({ mode }) => {
 
           runtimeCaching: [
 
-            // 🔥 API SEM CACHE
+            // 🔊 CACHE DO TTS (voz padrão) - precisa vir ANTES da regra "API
+            // sem cache" abaixo. O Workbox usa a primeira regra que casar
+            // com a URL, e essa era registrada depois de uma regra mais
+            // ampla que já cobre o mesmo hostname - a de cache nunca
+            // chegava a rodar de verdade, então nenhum áudio ficava
+            // salvo (bug: a promessa de "cache inteligente" no modal
+            // premium não se cumpria).
+            {
+              urlPattern: ({ url }) =>
+                (
+                  url.hostname === "api.zaldemy.com" ||
+                  url.hostname === "hml-api.zaldemy.com"
+                ) &&
+                url.pathname.includes("/controller/treino.php") &&
+                url.searchParams.get("action") === "voice",
+
+              handler: "CacheFirst",
+
+              options: {
+                cacheName: "tts-cache",
+                expiration: {
+                  maxEntries: 500,
+                  maxAgeSeconds: 60 * 60 * 24 * 365
+                },
+                cacheableResponse: {
+                  statuses: [200]
+                }
+              }
+            },
+
+            // 🔥 API SEM CACHE (tudo mais nesses hosts, inclusive a voz
+            // natural via POST em tts.php - não dá pra cachear por URL
+            // porque o texto vai no corpo do POST, não na URL)
             {
               urlPattern: ({ url }) =>
                 url.hostname === "api.zaldemy.com" ||
@@ -62,30 +94,6 @@ export default defineConfig(({ mode }) => {
                 expiration: {
                   maxEntries: 100,
                   maxAgeSeconds: 60 * 60 * 24 * 30
-                }
-              }
-            },
-
-            // 🔊 CACHE DO TTS
-            {
-              urlPattern: ({ url }) =>
-                (
-                  url.hostname === "api.zaldemy.com" ||
-                  url.hostname === "hml-api.zaldemy.com"
-                ) &&
-                url.pathname.includes("/controller/treino.php") &&
-                url.searchParams.get("action") === "voice",
-
-              handler: "CacheFirst",
-
-              options: {
-                cacheName: "tts-cache",
-                expiration: {
-                  maxEntries: 500,
-                  maxAgeSeconds: 60 * 60 * 24 * 365
-                },
-                cacheableResponse: {
-                  statuses: [200]
                 }
               }
             },

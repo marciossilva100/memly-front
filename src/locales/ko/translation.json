@@ -496,7 +496,7 @@
     "cancel_subscription": "구독 취소",
     "reactivate_subscription": "구독 다시 활성화",
     "cancel_subscription_confirm_message": "Zaldemy+ 구독을 취소하시겠습니까? 이미 결제한 기간이 끝날 때까지 프리미엄 액세스가 유지됩니다.",
-    "based_on_vocabulary_title": "당신의 어휘에 80% 기반",
+    "based_on_vocabulary_title": "당신의 어휘를 기반으로",
     "based_on_vocabulary_desc": "AI가 생성하는 콘텐츠는 주로 당신이 이미 공부하고 있는 단어를 사용해요",
     "toggle_vocabulary_hint": "공부 중인 단어 보기",
     "no_vocabulary_matched": "이 문장에서 당신의 어휘 단어가 인식되지 않았습니다",

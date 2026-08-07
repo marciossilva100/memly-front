@@ -14,7 +14,10 @@ import {
     RefreshCw,
     AlertCircle,
     Home,
-    ShieldAlert
+    ShieldAlert,
+    Globe,
+    X,
+    Plus
 } from 'lucide-react';
 
 const CORES = ['#00ff88', '#4ecdc4', '#ffe66d', '#c3447a', '#a78bfa', '#f472b6'];
@@ -32,7 +35,91 @@ export default function DashboardAdmin() {
     const [canaisAquisicao, setCanaisAquisicao] = useState([]);
     const [idiomas, setIdiomas] = useState([]);
 
+    const [paises, setPaises] = useState([]);
+    const [novoCodigoPais, setNovoCodigoPais] = useState('');
+    const [novoNomePais, setNovoNomePais] = useState('');
+    const [erroPaises, setErroPaises] = useState('');
+    const [salvandoPais, setSalvandoPais] = useState(false);
+
     const autorizado = isAdminEmail(user?.email);
+
+    async function carregarPaises() {
+        try {
+            const response = await fetch(`${API_URL}/controller/dashboard.php`, {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token"),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ action: 'listar_paises' })
+            });
+            const data = await response.json();
+            setPaises(data.paises || []);
+        } catch (error) {
+            console.error('Erro ao carregar países liberados:', error);
+        }
+    }
+
+    async function adicionarPais(e) {
+        e.preventDefault();
+        setErroPaises('');
+
+        const codigo = novoCodigoPais.trim().toUpperCase();
+        const nome = novoNomePais.trim();
+
+        if (codigo.length !== 2) {
+            setErroPaises('O código do país tem 2 letras (ex: BR, PT, US).');
+            return;
+        }
+        if (!nome) {
+            setErroPaises('Informe o nome do país.');
+            return;
+        }
+
+        setSalvandoPais(true);
+        try {
+            const response = await fetch(`${API_URL}/controller/dashboard.php`, {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token"),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ action: 'adicionar_pais', codigo, nome })
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                setErroPaises(data.error || 'Não foi possível adicionar o país.');
+                return;
+            }
+
+            setPaises(data.paises || []);
+            setNovoCodigoPais('');
+            setNovoNomePais('');
+        } catch (error) {
+            console.error('Erro ao adicionar país:', error);
+            setErroPaises('Erro de conexão ao adicionar o país.');
+        } finally {
+            setSalvandoPais(false);
+        }
+    }
+
+    async function removerPais(codigo) {
+        try {
+            const response = await fetch(`${API_URL}/controller/dashboard.php`, {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token"),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ action: 'remover_pais', codigo })
+            });
+            const data = await response.json();
+            setPaises(data.paises || []);
+        } catch (error) {
+            console.error('Erro ao remover país:', error);
+        }
+    }
 
     async function carregar() {
         setLoading(true);
@@ -69,7 +156,10 @@ export default function DashboardAdmin() {
     }
 
     useEffect(() => {
-        if (autorizado) carregar();
+        if (autorizado) {
+            carregar();
+            carregarPaises();
+        }
     }, [autorizado]);
 
     const CardKpi = ({ titulo, valor, icone: Icone, cor, subtexto }) => (
@@ -265,6 +355,71 @@ export default function DashboardAdmin() {
 
                     <Secao titulo="Canais de aquisição" icone={BadgeCheck} cor="text-purple-400">
                         <ListaComBarra dados={canaisAquisicao} vazio="Nenhum canal registrado" />
+                    </Secao>
+
+                    <Secao titulo="Países liberados para cadastro" icone={Globe} cor="text-cyan-400">
+                        <p className="text-gray-400 text-xs mb-4">
+                            Só afeta cadastro novo (tradicional e primeiro login com Google) - quem já tem conta continua acessando de qualquer país.
+                        </p>
+
+                        <div className="flex flex-wrap gap-2 mb-4">
+                            {paises.length === 0 && (
+                                <p className="text-gray-500 text-sm">Nenhum país liberado - ninguém consegue se cadastrar.</p>
+                            )}
+                            {paises.map((pais) => (
+                                <div
+                                    key={pais.codigo}
+                                    className="flex items-center gap-2 bg-gray-700/60 border border-gray-600 rounded-full pl-3 pr-1.5 py-1"
+                                >
+                                    <span className="text-white text-sm">{pais.nome}</span>
+                                    <span className="text-gray-400 text-xs">{pais.codigo}</span>
+                                    <button
+                                        type="button"
+                                        onClick={() => removerPais(pais.codigo)}
+                                        className="text-gray-400 hover:text-red-400 rounded-full p-0.5"
+                                        title="Remover"
+                                    >
+                                        <X className="w-3.5 h-3.5" />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+
+                        <form onSubmit={adicionarPais} className="flex flex-wrap items-end gap-2">
+                            <div>
+                                <label className="block text-xs text-gray-400 mb-1">Código</label>
+                                <input
+                                    type="text"
+                                    maxLength={2}
+                                    placeholder="PT"
+                                    value={novoCodigoPais}
+                                    onChange={(e) => setNovoCodigoPais(e.target.value)}
+                                    className="w-20 bg-gray-900 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm uppercase"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs text-gray-400 mb-1">Nome</label>
+                                <input
+                                    type="text"
+                                    placeholder="Portugal"
+                                    value={novoNomePais}
+                                    onChange={(e) => setNovoNomePais(e.target.value)}
+                                    className="bg-gray-900 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm"
+                                />
+                            </div>
+                            <button
+                                type="submit"
+                                disabled={salvandoPais}
+                                className="flex items-center gap-1 bg-cyan-600 hover:bg-cyan-500 disabled:brightness-75 text-white text-sm font-medium px-3 py-2 rounded-lg"
+                            >
+                                <Plus className="w-4 h-4" />
+                                Adicionar
+                            </button>
+                        </form>
+
+                        {erroPaises && (
+                            <p className="text-red-400 text-xs mt-2">{erroPaises}</p>
+                        )}
                     </Secao>
                 </div>
             </div>

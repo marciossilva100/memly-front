@@ -71,9 +71,36 @@ export default defineConfig(({ mode }) => {
               }
             },
 
-            // 🔥 API SEM CACHE (tudo mais nesses hosts, inclusive a voz
-            // natural via POST em tts.php - não dá pra cachear por URL
-            // porque o texto vai no corpo do POST, não na URL)
+            // 🔊 CACHE DO TTS (voz natural/premium) - stream_audio agora vai
+            // por GET (texto na querystring) exatamente pra poder cachear
+            // por URL igual à voz padrão acima. Um replay da mesma frase
+            // nem chega no servidor (não gasta cota nem gera custo de novo -
+            // o backend já tem seu próprio cache de arquivo, mas isso evita
+            // até a viagem de rede).
+            {
+              urlPattern: ({ url }) =>
+                (
+                  url.hostname === "api.zaldemy.com" ||
+                  url.hostname === "hml-api.zaldemy.com"
+                ) &&
+                url.pathname.includes("/controller/tts.php") &&
+                url.searchParams.get("action") === "stream_audio",
+
+              handler: "CacheFirst",
+
+              options: {
+                cacheName: "tts-cache-natural",
+                expiration: {
+                  maxEntries: 500,
+                  maxAgeSeconds: 60 * 60 * 24 * 365
+                },
+                cacheableResponse: {
+                  statuses: [200]
+                }
+              }
+            },
+
+            // 🔥 API SEM CACHE (tudo mais nesses hosts)
             {
               urlPattern: ({ url }) =>
                 url.hostname === "api.zaldemy.com" ||

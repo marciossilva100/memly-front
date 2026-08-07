@@ -259,16 +259,20 @@ const gerarAudio = async (texto) => {
     const API_URL = import.meta.env.VITE_API_URL;
 
     try {
-        const res = await fetch(`${API_URL}/controller/tts.php`, {
-            method: "POST",
+        // GET (não POST) de propósito - permite o service worker cachear a
+        // resposta por URL (ver vite.config.js, cache "tts-cache-natural"),
+        // pra um replay da mesma frase não gerar áudio (nem cobrar cota) de
+        // novo. Com POST o texto ficaria só no corpo, fora da URL, e não
+        // dava pra cachear.
+        const url =
+            `${API_URL}/controller/tts.php?action=stream_audio` +
+            "&texto=" + encodeURIComponent(texto);
+
+        const res = await fetch(url, {
+            method: "GET",
             headers: {
-                "Content-Type": "application/json",
                 "Authorization": "Bearer " + localStorage.getItem("token")
-            },
-            body: JSON.stringify({
-                action: "stream_audio",
-                texto: texto
-            })
+            }
         });
 
         if (!res.ok) {

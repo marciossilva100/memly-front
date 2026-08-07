@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
-import { Plane, Film, Briefcase, UtensilsCrossed, Trophy, Music, Cpu, Users } from "lucide-react";
+import { Plane, Film, Briefcase, UtensilsCrossed, Trophy, Music, Cpu, Users, GraduationCap, Stethoscope, HeartPulse, Leaf, Shirt, Gamepad2 } from "lucide-react";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura-v2.png"
 
 const MAXIMO_SELECIONAVEL = 3;
@@ -16,6 +16,12 @@ const INTERESSES = [
   { key: "musica", icon: Music },
   { key: "tecnologia", icon: Cpu },
   { key: "familia_amigos", icon: Users },
+  { key: "educacao", icon: GraduationCap },
+  { key: "medicina", icon: Stethoscope },
+  { key: "saude_bem_estar", icon: HeartPulse },
+  { key: "natureza", icon: Leaf },
+  { key: "moda", icon: Shirt },
+  { key: "jogos", icon: Gamepad2 },
 ];
 
 export default function EscolherCategoriasInteresse() {

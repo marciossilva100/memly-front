@@ -58,6 +58,7 @@ export default function Home() {
     const [streak, setStreak] = useState(0)
     const [totalAprendidas, setTotalAprendidas] = useState(0)
     const [jogoChuvaBloqueado, setJogoChuvaBloqueado] = useState(false)
+    const [treinoIaBloqueado, setTreinoIaBloqueado] = useState(false)
     const { t } = useTranslation();
     const API_URL = import.meta.env.VITE_API_URL;
 
@@ -161,6 +162,39 @@ export default function Home() {
             .then(res => res.json())
             .then(data => setJogoChuvaBloqueado(Boolean(data?.bloqueado)))
             .catch(() => setJogoChuvaBloqueado(false));
+    }, [user?.id, user?.plano, API_URL]);
+
+    // Coroa no ícone do Treino com IA quando AMBOS os recursos (Frase do dia
+    // e Perguntas) estão bloqueados pro limitado - free já cai na outra
+    // condição (user.plano !== 1 && !== 3) na hora de renderizar a coroa, e
+    // premium nunca bloqueia. 'verificar_acesso' já retorna acesso=true
+    // enquanto existir uma frase/pergunta pendente (gerada mas ainda não
+    // respondida) do próprio dia, mesmo com a amostra vitalícia já contada -
+    // é assim que o usuário continua vendo essa tela por até 24h depois de
+    // gerada, sem precisar de nenhuma lógica extra aqui.
+    useEffect(() => {
+        if (!user?.id || user.plano !== 3) {
+            setTreinoIaBloqueado(false);
+            return;
+        }
+
+        const headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem("token")
+        };
+
+        Promise.all([
+            fetch(`${API_URL}/controller/fraseDoDia.php`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ action: 'verificar_acesso' })
+            }).then(res => res.json()).catch(() => ({ acesso: true })),
+            fetch(`${API_URL}/controller/DailyQuestionController.php?action=verificar_acesso`, {
+                headers
+            }).then(res => res.json()).catch(() => ({ acesso: true })),
+        ]).then(([frase, perguntas]) => {
+            setTreinoIaBloqueado(!frase?.acesso && !perguntas?.acesso);
+        });
     }, [user?.id, user?.plano, API_URL]);
 
     const carregarCategorias = () => {
@@ -336,9 +370,16 @@ export default function Home() {
     }
 
     function verifyPlan(e) {
-        // Limitado também tem acesso (amostra vitalícia) tanto na Frase do
-        // Dia quanto nas Perguntas - quem barra de verdade quando a cota
-        // acaba são os próprios endpoints (fraseDoDia.php/DailyQuestionController.php).
+        // Limitado sem NENHUM dos dois recursos disponível (nem amostra nem
+        // pendente do dia) - abrir o ModalIA só mostraria as duas opções com
+        // coroa, uma tela a mais sem nenhuma ação possível. Vai direto pro
+        // modal premium, igual ao free.
+        if (user.plano === 3 && treinoIaBloqueado) {
+            setMotivoPremium(null)
+            setIsPremiumModalOpen(true)
+            return
+        }
+
         if (user.plano === 1 || user.plano === 3) {
             setOpenTreinoIA(true)
             return
@@ -617,7 +658,7 @@ export default function Home() {
 
                         <button type="button" onClick={() => verifyPlan()} className="relative flex flex-col items-center gap-1">
                             <Bot width={28} height={28} className="text-orange-400" />
-                            {user?.plano !== 1 && user?.plano !== 3 && (
+                            {((user?.plano !== 1 && user?.plano !== 3) || treinoIaBloqueado) && (
                                 <Crown className="absolute -top-1 -right-2 w-4 h-4 text-yellow-400" />
                             )}
                         </button>

@@ -17,10 +17,11 @@ import imgZaldemy from "../assets/img/zaldemy.png";
 import imgSlideCategorias from "../assets/img/landing-screenshot-categorias.png";
 import imgSlideDigitar from "../assets/img/landing-screenshot-digitar.png";
 import imgSlideCorreto from "../assets/img/landing-screenshot-correto.png";
+import imgSlideChuva from "../assets/img/landing-screenshot-chuva.png";
 
 const iconesRecursos = [Languages, Layers, RotateCcw, Volume2, BarChart3, Share2];
 
-const slidesApp = [imgSlideCategorias, imgSlideDigitar, imgSlideCorreto];
+const slidesApp = [imgSlideCategorias, imgSlideDigitar, imgSlideCorreto, imgSlideChuva];
 
 // TODO: trocar para true e colocar o link real assim que o app for aprovado na Aptoide
 const APTOIDE_DISPONIVEL = false;

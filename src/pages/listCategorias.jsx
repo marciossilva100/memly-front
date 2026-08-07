@@ -44,6 +44,7 @@ export default function ListCategoria() {
     const [contador, setContador] = useState(0);
     const [textoBusca, setTextoBusca] = useState("")
     const [categoriaSelecionada, setCategoriaSelecionada] = useState("")
+    const [nivelSelecionado, setNivelSelecionado] = useState("")
     const API_URL = import.meta.env.VITE_API_URL;
 
     const navigate = useNavigate();
@@ -86,7 +87,14 @@ export default function ListCategoria() {
                 id: cat.id,
                 categoria: cat.categoria,
                 quantidade: cat.total_frases,
-                usuario: cat.usuario
+                usuario: cat.usuario,
+                // Dono sem nível cadastrado conta como avançado - é o nível
+                // que assume mais vocabulário/complexidade, então trata o
+                // conteúdo dele como "sem restrição" em vez de escondê-lo do
+                // filtro por não ter informação.
+                nivel: cat.nivel_dono !== null && cat.nivel_dono !== undefined
+                    ? Number(cat.nivel_dono)
+                    : 3
             }));
 
             // 🔥 concatena (não sobrescreve), exceto ao trocar de idioma
@@ -185,7 +193,9 @@ export default function ListCategoria() {
 
         const combinaSelecao = !categoriaSelecionada || item.categoria === categoriaSelecionada;
 
-        return combinaBusca && combinaSelecao;
+        const combinaNivel = !nivelSelecionado || item.nivel === Number(nivelSelecionado);
+
+        return combinaBusca && combinaSelecao && combinaNivel;
     });
 
 
@@ -240,6 +250,22 @@ export default function ListCategoria() {
                         </div>
                     </div>
 
+                    <div className='mb-2 relative'>
+                        <select
+                            className="w-full appearance-none rounded-xl border border-gray-700 bg-gray-800/50 backdrop-blur-sm px-4 py-3 pr-10 text-base text-white shadow-lg outline-none transition focus:border-[#4cb8c4] focus:ring-2 focus:ring-[#4cb8c4]/30"
+                            value={nivelSelecionado}
+                            onChange={(e) => setNivelSelecionado(e.target.value)}
+                        >
+                            <option value="" className="bg-gray-800">{t("all_levels")}</option>
+                            <option value="1" className="bg-gray-800">{t("level_iniciante_title")}</option>
+                            <option value="2" className="bg-gray-800">{t("level_intermediario_title")}</option>
+                            <option value="3" className="bg-gray-800">{t("level_avancado_title")}</option>
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+                            <ChevronDown className="w-4 h-4 text-gray-400" />
+                        </div>
+                    </div>
+
                         {/* <div className="cursor-pointer flex justify-end mb-4">
                             <Filter className="text-white mt-2" width={15} />
                         </div> */}
@@ -284,7 +310,7 @@ export default function ListCategoria() {
                             </div>
 
                             <div className="flex items-center gap-3 shrink-0">
-                                <button className="shadow-md px-4 py-1 text-md font-medium rounded-full bg-emerald-500 text-white hover:bg-emerald-600 "
+                                <button className="shadow-md px-3 py-1 text-sm font-medium rounded-full bg-[#4cb8c4] text-white hover:opacity-90"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         adicionar(item.id);

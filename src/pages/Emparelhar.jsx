@@ -153,12 +153,14 @@ export default function JogoFrases() {
 
       setAcertos((prev) => prev + 1);
 
-      playAudio(selecionadaDireita.texto_traduzido, user);
-
-      // 🔥 AQUI ESTÁ A CORREÇÃO
-      setTimeout(() => {
+      // Espera o áudio da tradução terminar de tocar antes de seguir pro
+      // próximo par - playAudio só resolve quando a reprodução acaba (ver
+      // utils/audioPlayer.js). Sem isso, um timeout fixo podia cortar o
+      // áudio no meio, principalmente na troca de tela pro Flashcards
+      // depois do último par do último lote.
+      playAudio(selecionadaDireita.texto_traduzido, user).then(() => {
         finalizarAcerto();
-      }, 600);
+      });
     } else {
       setErroEsquerdaId(selecionadaEsquerda.id);
       setErroDireitaId(selecionadaDireita.id);

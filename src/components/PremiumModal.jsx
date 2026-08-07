@@ -33,6 +33,17 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
     setAssinando(true);
     setErroAssinatura('');
 
+    // Abre a aba em branco JÁ AQUI, de forma síncrona dentro do clique -
+    // bloqueadores de pop-up exigem que window.open aconteça direto no
+    // gesto do usuário; esperar o fetch terminar primeiro perde essa
+    // permissão em vários navegadores. Também evita o efeito de
+    // window.location.href pra um domínio externo (Stripe) ser capturado de
+    // volta pro escopo do próprio app em PWAs instalados no Android (modo
+    // standalone) - abrir um contexto de navegação novo em vez de navegar a
+    // janela atual embora com o app garante que o Android sai de verdade
+    // pro Chrome/Custom Tab.
+    const novaAba = window.open('', '_blank');
+
     try {
       const res = await fetch(`${API_URL}/controller/assinatura.php`, {
         method: 'POST',
@@ -47,13 +58,20 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
 
       if (!data.success || !data.url) {
         setErroAssinatura(data.message || t("server_connection_error"));
+        novaAba?.close();
         return;
       }
 
-      window.location.href = data.url;
+      if (novaAba) {
+        novaAba.location.href = data.url;
+      } else {
+        // bloqueio de pop-up mesmo assim (raro) - cai pro redirecionamento direto
+        window.location.href = data.url;
+      }
     } catch (error) {
       console.error(error);
       setErroAssinatura(t("server_connection_error"));
+      novaAba?.close();
     } finally {
       setAssinando(false);
     }

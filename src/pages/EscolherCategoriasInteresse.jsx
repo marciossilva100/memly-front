@@ -196,13 +196,11 @@ export default function EscolherCategoriasInteresse() {
           type="button"
           onClick={confirmar}
           disabled={enviando || selecionados.length < 1}
-          className="block w-full max-w-md mx-auto bg-[#4cb8c4] hover:bg-[#3da5b0] disabled:cursor-not-allowed text-white font-medium py-3 rounded-full transition text-center"
+          className="block w-full max-w-md mx-auto bg-[#4cb8c4] hover:bg-[#3da5b0] disabled:brightness-75 disabled:cursor-not-allowed text-white font-medium py-3 rounded-full transition text-center"
         >
           {enviando
             ? t("generating_interest_categories", { done: progresso, total: selecionados.length })
-            : selecionados.length < 1
-              ? t("choose_at_least_one_interest")
-              : t("confirm")}
+            : t("confirm")}
         </button>
       </div>
     </div>

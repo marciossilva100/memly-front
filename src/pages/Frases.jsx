@@ -182,16 +182,28 @@ export default function Frases() {
                             <p className="text-white truncate">{item.texto_nativo}</p>
                             <p className="text-[#4cb8c4] text-sm truncate mt-0.5">{item.texto_traduzido}</p>
                         </div>
-                        <div className="flex items-center gap-3 shrink-0">
-                            <Volume2 size={18} className="text-blue-400" onClick={(e) => {
-                                e.stopPropagation();
-                                playAudio(item.texto_traduzido, user);
-                            }} />
-                            <Trash size={18} className="text-red-400" onClick={(e) => {
-                                e.stopPropagation();
-                                setDeleteId(item.id);
-                                setOpenModalConfirm(true);
-                            }} />
+                        <div className="flex items-center shrink-0">
+                            <button
+                                type="button"
+                                className="p-2 -m-1 rounded-full hover:bg-gray-700/50 transition-colors"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    playAudio(item.texto_traduzido, user);
+                                }}
+                            >
+                                <Volume2 size={18} className="text-blue-400" />
+                            </button>
+                            <button
+                                type="button"
+                                className="p-2 -m-1 rounded-full hover:bg-gray-700/50 transition-colors"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setDeleteId(item.id);
+                                    setOpenModalConfirm(true);
+                                }}
+                            >
+                                <Trash size={18} className="text-red-400" />
+                            </button>
                         </div>
                     </div>
                 ))}

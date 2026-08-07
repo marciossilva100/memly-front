@@ -164,6 +164,13 @@ export default function ChuvaFrases() {
     // em "Jogar", depois de já ter visto tudo.
     const [acessoBloqueado, setAcessoBloqueado] = useState(null);
     const [mensagemBloqueio, setMensagemBloqueio] = useState(null);
+    // true assim que o usuário decide sair (fechar o modal de bloqueio ou
+    // clicar em "Voltar ao início") - esconde a tela de bloqueio na hora,
+    // sem esperar a troca de rota terminar de pintar. navigate() do React
+    // Router não troca a tela instantaneamente; sem essa flag, a tela de
+    // bloqueio ainda ficava visível por um frame entre o clique e a rota
+    // realmente mudar pra /home, piscando rápido antes de sumir de vez.
+    const [saindoParaHome, setSaindoParaHome] = useState(false);
 
     useEffect(() => {
         fetch(`${API_URL}/controller/jogoChuvaFrases.php`, {
@@ -545,14 +552,17 @@ export default function ChuvaFrases() {
                             </div>
                         )}
 
-                        {acessoBloqueado === true && (
+                        {acessoBloqueado === true && !saindoParaHome && (
                             <div className="text-center py-10">
                                 <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center">
                                     <Trophy className="w-6 h-6 text-yellow-400" />
                                 </div>
                                 <p className="text-gray-300 mb-4">{mensagemBloqueio || t("premium_reason_audio")}</p>
                                 <button
-                                    onClick={() => navigate("/home")}
+                                    onClick={() => {
+                                        setSaindoParaHome(true);
+                                        navigate("/home");
+                                    }}
                                     className="px-6 py-3 rounded-full bg-gray-800/50 border border-gray-700 text-white font-medium hover:bg-gray-700/50 transition-colors"
                                 >
                                     {t("back_to_home")}
@@ -801,14 +811,19 @@ export default function ChuvaFrases() {
                 isOpen={isPremiumModalOpen}
                 setIsPremiumModalOpen={setIsPremiumModalOpen}
                 onClose={() => {
+                    // Acesso à tela inteira bloqueado (limite do jogo acabou) - fechar o
+                    // modal (setIsPremiumModalOpen(false)) ANTES de navegar deixava a
+                    // tela de bloqueio por trás visível por um frame entre um estado e
+                    // outro (a rota só troca de verdade depois do navigate), causando
+                    // uma piscada rápida. Só navega, sem tocar no estado do modal - a
+                    // página inteira desmonta na troca de rota de qualquer forma.
+                    if (acessoBloqueado === true) {
+                        setSaindoParaHome(true);
+                        navigate("/home");
+                        return;
+                    }
                     setIsPremiumModalOpen(false);
                     setMotivoPremium(null);
-                    // Acesso à tela inteira bloqueado (limite do jogo acabou) - fechar
-                    // o modal só revelaria uma segunda tela repetindo a mesma
-                    // informação por trás. Vai direto pra home em vez disso.
-                    if (acessoBloqueado === true) {
-                        navigate("/home");
-                    }
                 }}
                 motivo={motivoPremium}
             />

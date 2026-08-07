@@ -43,14 +43,14 @@ export default function Home() {
     // exclusão, o balão nunca aparecia pra ninguém: todo usuário novo já sai
     // do onboarding com pelo menos uma dessas.
     const temCategoriaPropria = categorias.some((cat) => cat.tipo !== 3);
-    // Some assim que o usuário clica no botão indicado (balaoDispensado) -
-    // sem isso, o balão continuava visível até a categoria nova de fato
-    // aparecer na lista (recarregar do servidor), mesmo já tendo cumprido
-    // seu papel de chamar atenção pro botão. É só em memória (reseta a cada
-    // carregamento da página), não reintroduz o bug antigo de flag em
-    // localStorage nunca limpa entre logins.
-    const [balaoDispensado, setBalaoDispensado] = useState(false);
-    const mostrarGuiaCategoria = !categoriasLoading && !temCategoriaPropria && !balaoDispensado;
+    // Some assim que o usuário clica no botão indicado (guia_categoria_dispensado,
+    // persistido no backend via controller/categorias.php ação
+    // dispensar_guia_primeira_categoria) - nunca mais volta a aparecer
+    // depois disso, mesmo que ele ainda não tenha criado categoria nenhuma e
+    // mesmo em outro dispositivo/sessão. Antes disso ser persistido no
+    // servidor, um estado só em memória fazia o balão reaparecer a cada
+    // recarregamento da página.
+    const mostrarGuiaCategoria = !categoriasLoading && !temCategoriaPropria && !user?.guia_categoria_dispensado;
     const [revisarPorCategoria, setRevisarPorCategoria] = useState({});
     const [openTreinoAdvinhar, setOpenTreinoAdvinhar] = useState(false)
     const [openTreinoIA, setOpenTreinoIA] = useState(false)
@@ -376,6 +376,23 @@ export default function Home() {
         navigate(`/frases/${id}`)
     }
 
+    function abrirAdicionarCategoria() {
+        setOpen(true);
+
+        if (user?.guia_categoria_dispensado) return;
+
+        setUser((prev) => prev && { ...prev, guia_categoria_dispensado: true });
+
+        fetch(`${API_URL}/controller/categorias.php`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({ action: 'dispensar_guia_primeira_categoria' })
+        }).catch((error) => console.error('Erro ao dispensar guia de categoria:', error));
+    }
+
     function saudacaoPorHorario() {
         const hora = new Date().getHours();
         if (hora < 12) return t("good_morning");
@@ -646,7 +663,7 @@ export default function Home() {
                        text-lg
                         transition
                         ${mostrarGuiaCategoria ? "animate-pulse-glow-ring" : ""}
-                        `} onClick={() => { setBalaoDispensado(true); setOpen(true); }}>
+                        `} onClick={abrirAdicionarCategoria}>
                         <Plus size={20} />
                         {t("add_category")}
                     </button>

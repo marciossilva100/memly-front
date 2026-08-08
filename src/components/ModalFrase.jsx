@@ -258,7 +258,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                                         className="flex items-center gap-1.5 text-sm bg-gradient-to-r from-[#4cb8c4] to-[#085078] hover:from-[#3da5b0] hover:to-[#064060] disabled:opacity-50 text-white px-4 py-1.5 rounded-full transition-colors"
                                         onClick={melhorarComIA}
                                     >
-                                        {(user.plano !== 1 && user.plano !== 3) && (
+                                        {user.plano !== 1 && (
                                             <Crown size={16} className="text-yellow-400" />
                                         )}
                                         {loadingMelhorar ? t("improving_translation") : t("improve_with_ai")}

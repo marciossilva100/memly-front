@@ -12,6 +12,7 @@ import {
     Trash,
     Search,
     Volume2,
+    Loader2,
     BookOpen
 } from "lucide-react";
 
@@ -29,6 +30,10 @@ export default function Frases() {
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
     const [motivoPremium, setMotivoPremium] = useState(null);
     const [openModalConfirm, setOpenModalConfirm] = useState(false);
+    // Id da frase cujo áudio está sendo buscado - a voz natural pode levar
+    // um tempo pra gerar (chamada de verdade na API), sem nenhum indicador
+    // visual o clique parecia travado/sem resposta.
+    const [tocandoAudioId, setTocandoAudioId] = useState(null);
     const [deleteId, setDeleteId] = useState(0);
     const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
@@ -185,13 +190,23 @@ export default function Frases() {
                         <div className="flex items-center shrink-0">
                             <button
                                 type="button"
+                                disabled={tocandoAudioId === item.id}
                                 className="p-2 -m-1 rounded-full hover:bg-gray-700/50 transition-colors"
-                                onClick={(e) => {
+                                onClick={async (e) => {
                                     e.stopPropagation();
-                                    playAudio(item.texto_traduzido, user);
+                                    setTocandoAudioId(item.id);
+                                    try {
+                                        await playAudio(item.texto_traduzido, user);
+                                    } finally {
+                                        setTocandoAudioId(null);
+                                    }
                                 }}
                             >
-                                <Volume2 size={18} className="text-blue-400" />
+                                {tocandoAudioId === item.id ? (
+                                    <Loader2 size={18} className="text-blue-400 animate-spin" />
+                                ) : (
+                                    <Volume2 size={18} className="text-blue-400" />
+                                )}
                             </button>
                             <button
                                 type="button"

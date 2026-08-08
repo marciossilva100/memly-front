@@ -50,6 +50,32 @@ function marcarCotaNaturalEsgotada(user) {
     localStorage.setItem(chaveCotaNaturalEsgotada(user), hoje);
 }
 
+// Confirma com o servidor se a cota de voz natural já está esgotada, ANTES
+// de qualquer tentativa de tocar áudio - sem isso, se a primeira coisa que o
+// usuário faz é repetir uma frase que o service worker já tem em cache (de
+// uma sessão anterior, com a cota ainda livre na época), a resposta cacheada
+// é servida direto pelo navegador sem passar pelo servidor, e o app nunca
+// descobre que a cota acabou nesse meio tempo. Chamado uma vez ao carregar o
+// usuário autenticado (ver AuthContext). Não gasta cota - só consulta.
+export async function sincronizarCotaNatural(user) {
+    if (!user || (user.plano !== 1 && user.plano !== 3)) return;
+
+    const API_URL = import.meta.env.VITE_API_URL;
+
+    try {
+        const res = await fetch(`${API_URL}/controller/tts.php?action=verificar_limite`, {
+            headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
+        });
+        const data = await res.json();
+
+        if (data?.limite_atingido) {
+            marcarCotaNaturalEsgotada(user);
+        }
+    } catch (error) {
+        console.error('Erro ao sincronizar cota de voz natural:', error);
+    }
+}
+
 // Cancela o áudio em reprodução (se houver) e invalida qualquer chamada de
 // playAudio ainda em andamento (via o token) - usado tanto no início de toda
 // nova chamada de playAudio quanto exportado como pararAudio() pra telas que

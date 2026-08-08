@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, useMemo, useCallback } from "react";
 import { hasGoogleRedirectToken } from "../utils/googleRedirectAuth";
+import { sincronizarCotaNatural } from "../utils/audioPlayer";
 
 const AuthContext = createContext();
 
@@ -51,6 +52,10 @@ export function AuthProvider({ children }) {
 
       if (data.authenticated) {
         setUser(data.user);
+        // Sincroniza ANTES de qualquer tela ter chance de tocar áudio - ver
+        // comentário em sincronizarCotaNatural sobre o cache do service
+        // worker escondendo o estado real da cota.
+        sincronizarCotaNatural(data.user);
         return data.user;
       }
 

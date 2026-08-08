@@ -52,10 +52,14 @@ export function AuthProvider({ children }) {
 
       if (data.authenticated) {
         setUser(data.user);
-        // Sincroniza ANTES de qualquer tela ter chance de tocar áudio - ver
-        // comentário em sincronizarCotaNatural sobre o cache do service
-        // worker escondendo o estado real da cota.
-        sincronizarCotaNatural(data.user);
+        // AWAIT de propósito - loading só vira false depois disso (ver
+        // finally abaixo), então nenhuma tela consegue montar e disparar
+        // preloadAudio/playAudio antes da cota estar sincronizada. Sem
+        // esperar, a primeira tentativa de áudio da sessão podia vencer a
+        // corrida contra esse fetch e tocar em cache sem nunca descobrir
+        // que a cota já tinha acabado (ver comentário em
+        // sincronizarCotaNatural, em audioPlayer.js).
+        await sincronizarCotaNatural(data.user);
         return data.user;
       }
 

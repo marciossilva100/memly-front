@@ -25,6 +25,22 @@ function chaveAvisoLimiteAudio(user) {
 // próxima carta).
 const avisosLimiteAudioDisparados = new Set();
 
+// Mostra o aviso de limite (toast lateral) só uma vez por conta - chamado
+// tanto de dentro de playAudio (limite descoberto NA hora, tentando tocar)
+// quanto de sincronizarCotaNatural (limite já esgotado ANTES da sessão
+// começar) - sem isso, quem abre o app com a cota já estourada nunca via
+// nenhum aviso, o áudio simplesmente caía pra voz padrão em silêncio.
+function avisarLimiteAudioSeNecessario(user) {
+    const chaveAviso = chaveAvisoLimiteAudio(user);
+    if (avisosLimiteAudioDisparados.has(chaveAviso) || localStorage.getItem(chaveAviso)) {
+        return false;
+    }
+    avisosLimiteAudioDisparados.add(chaveAviso);
+    localStorage.setItem(chaveAviso, "1");
+    dispatchPremiumLimitHit("audio");
+    return true;
+}
+
 // Depois que o servidor confirma limite atingido (plano premium: diário;
 // limitado: vitalício) pra uma frase, marca aqui pra TODAS as chamadas
 // seguintes (preload E play, de qualquer frase) pularem a voz natural direto
@@ -70,6 +86,7 @@ export async function sincronizarCotaNatural(user) {
 
         if (data?.limite_atingido) {
             marcarCotaNaturalEsgotada(user);
+            avisarLimiteAudioSeNecessario(user);
         }
     } catch (error) {
         console.error('Erro ao sincronizar cota de voz natural:', error);
@@ -215,11 +232,7 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
             // acabar) volta a tentar voz natural nesta sessão/dia.
             marcarCotaNaturalEsgotada(user);
 
-            const chaveAviso = chaveAvisoLimiteAudio(user);
-            if (!avisosLimiteAudioDisparados.has(chaveAviso) && !localStorage.getItem(chaveAviso)) {
-                avisosLimiteAudioDisparados.add(chaveAviso);
-                localStorage.setItem(chaveAviso, "1");
-                dispatchPremiumLimitHit("audio");
+            if (avisarLimiteAudioSeNecessario(user)) {
                 return;
             }
             // Modal já foi exibido antes - segue pro fallback de voz padrão abaixo.

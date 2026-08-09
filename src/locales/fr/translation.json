@@ -521,6 +521,7 @@
     "score": "Points",
     "best_score": "Record",
     "game_over_title": "Partie terminée !",
+    "play": "Jouer",
     "play_again": "Rejouer",
     "audio_speed_hint": "Vous pouvez ajuster la vitesse de la prononciation dans Paramètres"
 }

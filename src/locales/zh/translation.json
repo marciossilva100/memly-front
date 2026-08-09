@@ -521,6 +521,7 @@
     "score": "得分",
     "best_score": "最高纪录",
     "game_over_title": "游戏结束！",
+    "play": "开始游戏",
     "play_again": "再玩一次",
     "audio_speed_hint": "你可以在设置中调整发音速度"
 }

@@ -521,6 +521,7 @@
     "score": "スコア",
     "best_score": "自己ベスト",
     "game_over_title": "ゲームオーバー！",
+    "play": "プレイ",
     "play_again": "もう一度プレイ",
     "audio_speed_hint": "設定で発音の速度を調整できます"
 }

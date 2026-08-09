@@ -633,7 +633,7 @@ export default function ChuvaFrases() {
                             }
                             className="w-full px-6 py-3 mb-4 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors shrink-0"
                         >
-                            {t("play_again") /* "Jogar" reaproveitando o mesmo texto do botão de início */}
+                            {t("play")}
                         </button>
                     )}
                 </div>

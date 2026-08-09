@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
-import { FileText, Shield, ShieldCheck, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2, Volume2, Check, Gauge, Bot, Crown, Play, CreditCard, RotateCcw } from "lucide-react";
+import { FileText, Shield, ShieldCheck, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2, Volume2, Check, Gauge, Bot, Crown, Play, CreditCard, RotateCcw, User } from "lucide-react";
 import ModalConfirm from "../components/ModalConfirm";
 import ModalIA from "../components/ModalIA";
 import PremiumModal from "../components/PremiumModal";
@@ -62,6 +62,58 @@ export default function Configuracoes() {
         }
         setMotivoPremium(null);
         setIsPremiumModalOpen(true);
+    }
+
+    const [apelido, setApelido] = useState('');
+    const [salvandoApelido, setSalvandoApelido] = useState(false);
+    const [erroApelido, setErroApelido] = useState('');
+    const [mensagemApelido, setMensagemApelido] = useState('');
+
+    useEffect(() => {
+        if (user?.apelido) setApelido(user.apelido);
+    }, [user?.apelido]);
+
+    async function handleSalvarApelido(e) {
+        e.preventDefault();
+        setErroApelido('');
+        setMensagemApelido('');
+
+        const valor = apelido.trim();
+
+        if (valor.length < 3 || valor.length > 20 || !/^[a-zA-Z0-9_]+$/.test(valor)) {
+            setErroApelido(t("nickname_invalid"));
+            return;
+        }
+
+        if (valor === user?.apelido) return;
+
+        setSalvandoApelido(true);
+
+        try {
+            const res = await fetch(`${API_URL}/controller/configuracoes.php`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({ action: 'atualizar_apelido', apelido: valor })
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                setErroApelido(data.message || t("unexpected_error"));
+                return;
+            }
+
+            setMensagemApelido(t("saved_successfully"));
+            checkAuth(true);
+        } catch (error) {
+            console.error('Erro ao salvar apelido:', error);
+            setErroApelido(t("server_connection_error"));
+        } finally {
+            setSalvandoApelido(false);
+        }
     }
 
     const [quantidadeFrases, setQuantidadeFrases] = useState('');
@@ -372,6 +424,44 @@ export default function Configuracoes() {
                     <div className="flex items-center gap-2 mb-6">
                         <Settings className="w-6 h-6 text-green-400" />
                         <h1 className="text-2xl font-bold text-white">{t("settings")}</h1>
+                    </div>
+
+                    <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 mb-3">
+                        <div className="flex items-center gap-2 mb-3">
+                            <User className="w-4 h-4 text-green-400" />
+                            <span className="text-white text-sm">{t("nickname")}</span>
+                        </div>
+
+                        <form onSubmit={handleSalvarApelido} className="flex items-center gap-2">
+                            <input
+                                type="text"
+                                maxLength={20}
+                                disabled={salvandoApelido}
+                                value={apelido}
+                                onChange={(e) => {
+                                    setApelido(e.target.value);
+                                    setErroApelido('');
+                                    setMensagemApelido('');
+                                }}
+                                className="flex-1 bg-gray-900 border border-gray-600 rounded-full px-4 py-2 text-white text-sm outline-none focus:border-green-400"
+                            />
+                            <button
+                                type="submit"
+                                disabled={salvandoApelido}
+                                className="shrink-0 bg-[#4cb8c4] disabled:opacity-50 text-white px-4 py-2 rounded-full text-sm font-medium"
+                            >
+                                {salvandoApelido ? t("saving") : t("save")}
+                            </button>
+                        </form>
+
+                        <p className="text-xs text-gray-400 mt-2">{t("nickname_hint")}</p>
+
+                        {erroApelido && (
+                            <p className="text-red-400 text-xs mt-2">{erroApelido}</p>
+                        )}
+                        {mensagemApelido && (
+                            <p className="text-green-400 text-xs mt-2">{mensagemApelido}</p>
+                        )}
                     </div>
 
                     <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-3 mb-3">

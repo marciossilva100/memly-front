@@ -55,7 +55,17 @@ export default function EscolherIdiomaNativo() {
   );
 
   useEffect(() => {
-    if (user?.step > 0 && !location.state?.fromBack) {
+    if (location.state?.fromBack) return;
+
+    // Apelido vem antes de qualquer outro passo do onboarding - tem
+    // prioridade mesmo se o usuário já tiver avançado o step de alguma
+    // outra forma.
+    if (!user?.apelido_definido_pelo_usuario) {
+      navigate("/escolherapelido", { replace: true });
+      return;
+    }
+
+    if (user?.step > 0) {
       navigate("/escolheridiomaaprender", { replace: true });
     }
   }, [user]);

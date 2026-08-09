@@ -11,6 +11,7 @@ import Cadastro from './pages/Cadastro'
 import FrasesGeral from './pages/FrasesGeral'
 import EsqueciSenha from './pages/EsqueciSenha'
 import EscolherIdiomaNativo from './pages/EscolherIdiomaNativo'
+import EscolherApelido from './pages/EscolherApelido'
 import ListCategoria from './pages/listCategorias';
 import EscolherIdiomaAprender from './pages/EscolherIdiomaAprender'
 import EscolherNivel from './pages/EscolherNivel'
@@ -166,6 +167,15 @@ function Layout({ titulo, setTitulo }) {
 
         <Route path="/cadastrar" element={<MobileOnlyRoute><Cadastro setTitulo={setTitulo} /></MobileOnlyRoute>} />
         <Route path="/esquecisenha" element={<EsqueciSenha setTitulo={setTitulo} />} />
+
+        <Route
+          path="/escolherapelido"
+          element={
+            <PrivateRoute>
+              <EscolherApelido />
+            </PrivateRoute>
+          }
+        />
 
         <Route
           path="/escolheridioma"

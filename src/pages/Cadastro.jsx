@@ -26,7 +26,6 @@ export default function Cadastro({ setTitulo }) {
 
     const [form, setForm] = useState({
         name: '',
-        apelido: '',
         email: '',
         password: '',
         confirm_password: ''
@@ -173,7 +172,6 @@ export default function Cadastro({ setTitulo }) {
             body: JSON.stringify({
                 action: 'register',
                 name: form.name,
-                apelido: form.apelido,
                 email: form.email,
                 password: form.password,
                 confirm_password: form.confirm_password
@@ -245,25 +243,6 @@ export default function Cadastro({ setTitulo }) {
                                     setErro('')
                                 }}
                             />
-                        </div>
-
-                        {/* Apelido */}
-                        <div>
-                            <div className="flex items-center border rounded-full overflow-hidden py-3">
-                                <input
-                                    type="text"
-                                    className="w-full px-4 outline-none bg-white flex-1 !bg-transparent text-white"
-                                    placeholder={t("nickname")}
-                                    name="apelido"
-                                    maxLength={20}
-                                    value={form.apelido}
-                                    onChange={(e) => {
-                                        handleChange(e)
-                                        setErro('')
-                                    }}
-                                />
-                            </div>
-                            <p className="text-xs text-gray-400 mt-1 px-2">{t("nickname_hint")}</p>
                         </div>
 
                         {/* Email */}

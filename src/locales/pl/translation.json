@@ -140,6 +140,7 @@
     "nickname": "Pseudonim",
     "nickname_hint": "Zostaw puste, aby wygenerować automatycznie. Widoczne dla innych użytkowników, gdy udostępniasz kategorię.",
     "nickname_invalid": "Pseudonim musi mieć od 3 do 20 znaków, tylko litery, cyfry i podkreślenia, bez spacji.",
+    "generic_user": "Użytkownik",
     "send": "Wyślij",
     "search": "Szukaj",
     "listen": "Słuchaj",

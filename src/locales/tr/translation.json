@@ -140,6 +140,7 @@
     "nickname": "Takma ad",
     "nickname_hint": "Otomatik oluşturmak için boş bırakın. Bir kategoriyi paylaştığınızda diğer kullanıcılara görünür.",
     "nickname_invalid": "Takma ad 3-20 karakter olmalı, sadece harf, rakam ve alt çizgi içerebilir, boşluk olamaz.",
+    "generic_user": "Kullanıcı",
     "send": "Gönder",
     "search": "Ara",
     "listen": "Dinle",

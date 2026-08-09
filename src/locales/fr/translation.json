@@ -140,6 +140,7 @@
     "nickname": "Pseudo",
     "nickname_hint": "Laissez vide pour en générer un automatiquement. Visible par les autres utilisateurs quand vous partagez une catégorie.",
     "nickname_invalid": "Le pseudo doit comporter entre 3 et 20 caractères, uniquement des lettres, chiffres et underscores, sans espaces.",
+    "generic_user": "Utilisateur",
     "send": "Envoyer",
     "search": "Rechercher",
     "listen": "Écouter",

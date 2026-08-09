@@ -141,6 +141,7 @@
     "nickname": "Apelido",
     "nickname_hint": "Deixe em branco pra gerar um automático. Fica visível pra outros usuários quando você compartilha uma categoria.",
     "nickname_invalid": "O apelido deve ter de 3 a 20 caracteres, só letras, números e underscore, sem espaços.",
+    "generic_user": "Usuário",
     "send": "Enviar",
     "search": "Buscar",
     "listen": "Ouvir",

@@ -140,6 +140,7 @@
     "nickname": "Soprannome",
     "nickname_hint": "Lascia vuoto per generarne uno automatico. Visibile ad altri utenti quando condividi una categoria.",
     "nickname_invalid": "Il soprannome deve avere da 3 a 20 caratteri, solo lettere, numeri e underscore, senza spazi.",
+    "generic_user": "Utente",
     "send": "Invia",
     "search": "Cerca",
     "listen": "Ascolta",

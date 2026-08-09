@@ -140,6 +140,7 @@
     "nickname": "Bijnaam",
     "nickname_hint": "Laat leeg om er automatisch een te genereren. Zichtbaar voor andere gebruikers als je een categorie deelt.",
     "nickname_invalid": "De bijnaam moet 3-20 tekens lang zijn, alleen letters, cijfers en underscores, geen spaties.",
+    "generic_user": "Gebruiker",
     "send": "Verzenden",
     "search": "Zoeken",
     "listen": "Luisteren",

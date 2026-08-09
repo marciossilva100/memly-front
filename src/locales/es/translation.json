@@ -141,6 +141,7 @@
     "nickname": "Apodo",
     "nickname_hint": "Déjalo en blanco para generar uno automático. Es visible para otros usuarios cuando compartes una categoría.",
     "nickname_invalid": "El apodo debe tener de 3 a 20 caracteres, solo letras, números y guion bajo, sin espacios.",
+    "generic_user": "Usuario",
     "send": "Enviar",
     "search": "Buscar",
     "listen": "Escuchar",

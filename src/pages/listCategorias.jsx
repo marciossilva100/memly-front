@@ -299,13 +299,13 @@ export default function ListCategoria() {
                                             {item.quantidade} {t("words")}
                                         </span>
                                     </div>
-                                    {item.usuario && (
-                                        <p className="text-xs text-gray-400 mt-1 flex items-center gap-1 whitespace-nowrap">
-                                            <UserRound size={12} className="text-blue-400 shrink-0" />
-                                            <span>{t("shared_by")}</span>
-                                            <span className="text-yellow-500 font-medium">{item.usuario.split(' ')[0]}</span>
-                                        </p>
-                                    )}
+                                    <p className="text-xs text-gray-400 mt-1 flex items-center gap-1 whitespace-nowrap">
+                                        <UserRound size={12} className="text-blue-400 shrink-0" />
+                                        <span>{t("shared_by")}</span>
+                                        <span className="text-yellow-500 font-medium">
+                                            {item.usuario ? item.usuario.split(' ')[0] : t("generic_user")}
+                                        </span>
+                                    </p>
                                 </div>
                             </div>
 

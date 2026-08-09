@@ -141,6 +141,7 @@
     "nickname": "Nickname",
     "nickname_hint": "Leave blank to generate one automatically. Visible to other users when you share a category.",
     "nickname_invalid": "Nickname must be 3-20 characters, only letters, numbers and underscore, no spaces.",
+    "generic_user": "User",
     "send": "Send",
     "search": "Search",
     "listen": "Listen",

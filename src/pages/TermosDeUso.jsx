@@ -68,8 +68,9 @@ export default function TermosDeUso() {
                             <p>
                                 As categorias e frases que você cria continuam sendo suas. Ao marcar uma categoria
                                 como pública/compartilhada, você autoriza que outros usuários do Zaldemy possam
-                                visualizá-la e adicioná-la à própria conta. Nesse caso, seu nome de cadastro é
-                                exibido para outros usuários como identificação de quem compartilhou o conteúdo.
+                                visualizá-la e adicioná-la à própria conta. Nesse caso, o apelido que você cadastrou
+                                fica visível para outros usuários como identificação de quem compartilhou o
+                                conteúdo - seu nome completo e demais dados pessoais não são exibidos.
                                 Reservamo-nos o direito de remover conteúdo que viole estes termos.
                             </p>
                         </section>
@@ -87,10 +88,14 @@ export default function TermosDeUso() {
                         <section>
                             <h2 className="text-lg font-semibold text-white mb-1">7. Serviços de terceiros</h2>
                             <p>
-                                O Zaldemy utiliza serviços de terceiros para funcionar corretamente, como login com
-                                Google, geração de áudio das frases, tradução automática e busca de vídeos e livros
-                                para prática de leitura e escuta. O uso desses recursos está sujeito também aos
-                                termos dos respectivos provedores.
+                                O Zaldemy utiliza serviços de terceiros para funcionar corretamente: Google (login
+                                social, tradução automática e voz padrão), OpenAI (voz natural premium, transcrição
+                                de áudio e recursos de IA como perguntas, correções e sugestões), Groq (recurso
+                                "Treino com IA"), Stripe (processamento de pagamento da assinatura Zaldemy+),
+                                ip-api.com (identificação de país por IP no cadastro), além de YouTube e Open
+                                Library (busca de vídeos e livros). O uso desses recursos está sujeito também aos
+                                termos dos respectivos provedores. Podemos adicionar ou trocar fornecedores
+                                conforme o app evolui.
                             </p>
                         </section>
 
@@ -117,9 +122,12 @@ export default function TermosDeUso() {
                         <section>
                             <h2 className="text-lg font-semibold text-white mb-1">10. Encerramento de conta</h2>
                             <p>
-                                Você pode encerrar sua conta a qualquer momento entrando em contato conosco.
-                                Podemos suspender ou encerrar contas que violem estes Termos de Uso, com ou sem
-                                aviso prévio, dependendo da gravidade da violação.
+                                Você pode encerrar sua conta a qualquer momento diretamente em Configurações &gt;
+                                Excluir Conta. Podemos suspender ou encerrar contas que violem estes Termos de Uso.
+                                Consideramos violações graves, sujeitas a suspensão ou encerramento imediato: envio
+                                de conteúdo ilegal ou discriminatório, tentativa de acesso não autorizado a contas
+                                de terceiros, uso de bots/scraping, e tentativas de fraude no plano pago. Violações
+                                leves poderão receber aviso prévio antes de qualquer suspensão.
                             </p>
                         </section>
 

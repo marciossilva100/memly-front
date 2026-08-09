@@ -74,12 +74,22 @@ export default function PoliticaPrivacidade() {
                                 que ajudam o Zaldemy a funcionar, entre eles:
                             </p>
                             <ul className="list-disc list-inside mt-1 space-y-1">
-                                <li>Google, para autenticação via login social;</li>
-                                <li>Serviço de síntese de voz, para gerar o áudio das frases praticadas;</li>
-                                <li>Serviço de transcrição e inteligência artificial, para converter em texto sua
-                                    resposta falada nos exercícios de IA e gerar a correção (nota e feedback) - o
-                                    áudio enviado não é retido por nós após a transcrição;</li>
-                                <li>Serviço de tradução automática, para sugestões de tradução;</li>
+                                <li><strong>Google</strong> (<a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#4cb8c4] underline">política de privacidade</a>),
+                                    para autenticação via login social, tradução automática e a geração da voz
+                                    padrão (não-IA) das frases praticadas;</li>
+                                <li><strong>OpenAI</strong> (<a href="https://openai.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#4cb8c4] underline">política de privacidade</a>),
+                                    para gerar a voz natural (premium) das frases, transcrever sua resposta falada
+                                    nos exercícios de IA (Perguntas e Frase do Dia) e gerar perguntas, correções,
+                                    sugestões de tradução e categorias por IA - o áudio enviado para transcrição
+                                    não é retido por nós nem pela OpenAI após o processamento;</li>
+                                <li><strong>Groq</strong> (<a href="https://groq.com/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-[#4cb8c4] underline">política de privacidade</a>),
+                                    usado na funcionalidade "Treino com IA" pra combinar frases que você já
+                                    estudou num parágrafo coeso de prática;</li>
+                                <li><strong>Stripe</strong> (<a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#4cb8c4] underline">política de privacidade</a>),
+                                    processador de pagamento da assinatura Zaldemy+ - dados de cartão são tratados
+                                    diretamente pelo Stripe, o Zaldemy não armazena número de cartão;</li>
+                                <li><strong>ip-api.com</strong>, para identificar o país do seu endereço IP no
+                                    momento do cadastro (usado só pra liberar ou não o cadastro por região);</li>
                                 <li>YouTube e Open Library, para buscar vídeos e livros usados nas práticas de
                                     leitura e escuta (nesse caso, apenas o termo de busca é enviado, sem dados
                                     pessoais identificáveis).</li>
@@ -87,15 +97,19 @@ export default function PoliticaPrivacidade() {
                                     tempo de uso) e melhorá-lo. Não usamos esses dados para identificar você
                                     pessoalmente.</li>
                             </ul>
+                            <p className="mt-1 text-xs text-gray-400">
+                                Podemos adicionar ou trocar fornecedores conforme o app evolui - esta lista é
+                                atualizada sempre que isso acontecer.
+                            </p>
                         </section>
 
                         <section>
                             <h2 className="text-lg font-semibold text-white mb-1">4. Compartilhamento entre usuários</h2>
                             <p>
-                                Quando você marca uma categoria como pública/compartilhada, o seu nome de cadastro
-                                fica visível para outros usuários do Zaldemy, como identificação de quem
-                                disponibilizou aquele conteúdo. Nenhum outro dado pessoal (como e-mail ou senha) é
-                                exibido nessa situação.
+                                Quando você marca uma categoria como pública/compartilhada, o apelido que você
+                                cadastrou fica visível para outros usuários do Zaldemy, como identificação de quem
+                                disponibilizou aquele conteúdo. Seu nome completo, e-mail e demais dados pessoais
+                                não são exibidos nessa situação.
                             </p>
                         </section>
 
@@ -129,17 +143,21 @@ export default function PoliticaPrivacidade() {
                                 <li>Retirar seu consentimento para o uso de dados, quando aplicável.</li>
                             </ul>
                             <p className="mt-1">
-                                Para exercer esses direitos, entre em contato pelos canais disponíveis em
-                                Configurações.
+                                Você pode excluir sua conta a qualquer momento diretamente em Configurações &gt;
+                                Excluir Conta. Para demais solicitações - acesso, correção ou portabilidade de
+                                dados - entre em contato pelos canais disponíveis em Configurações; responderemos
+                                em até 15 dias úteis.
                             </p>
                         </section>
 
                         <section>
                             <h2 className="text-lg font-semibold text-white mb-1">8. Retenção de dados</h2>
                             <p>
-                                Mantemos seus dados enquanto sua conta estiver ativa ou enquanto for necessário para
-                                cumprir obrigações legais. Ao excluir sua conta, seus dados pessoais são removidos ou
-                                anonimizados, exceto quando a lei exigir sua conservação por período adicional.
+                                Mantemos seus dados enquanto sua conta estiver ativa. Ao excluir sua conta, seu nome
+                                e e-mail são imediatamente anonimizados e o acesso é encerrado; o conteúdo associado
+                                (categorias, frases e histórico) pode permanecer armazenado, desvinculado da sua
+                                identidade, até ser removido em um processo periódico de limpeza, exceto quando a
+                                lei exigir conservação por período adicional.
                             </p>
                         </section>
 

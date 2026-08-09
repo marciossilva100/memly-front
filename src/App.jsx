@@ -457,6 +457,31 @@ function App() {
         alert(t("app_ready_offline"));
       }
     });
+
+    // Por padrão o service worker só checa por versão nova no registro
+    // inicial - num PWA instalado, que a maior parte do tempo é só
+    // retomado do segundo plano (não recarregado), isso podia deixar
+    // alguém preso numa versão antiga por dias sem nunca ver o aviso de
+    // atualização, precisando limpar o cache manualmente. Reforça a
+    // checagem toda vez que o app volta pro primeiro plano, além de uma
+    // verificação periódica de segurança pra quem nunca sai do app.
+    function verificarAtualizacao() {
+      navigator.serviceWorker?.getRegistration().then((reg) => reg?.update());
+    }
+
+    function aoVoltarParaPrimeiroPlano() {
+      if (document.visibilityState === "visible") {
+        verificarAtualizacao();
+      }
+    }
+
+    document.addEventListener("visibilitychange", aoVoltarParaPrimeiroPlano);
+    const intervalo = setInterval(verificarAtualizacao, 60 * 60 * 1000);
+
+    return () => {
+      document.removeEventListener("visibilitychange", aoVoltarParaPrimeiroPlano);
+      clearInterval(intervalo);
+    };
   }, []);
 
   return (

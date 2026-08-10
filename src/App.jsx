@@ -6,6 +6,7 @@ import { registerSW } from "virtual:pwa-register";
 import { useTranslation } from "react-i18next";
 
 import AuthGate from "./components/AuthGate";
+import ModalConfirm from "./components/ModalConfirm";
 import Login from './pages/Login'
 import Cadastro from './pages/Cadastro'
 import FrasesGeral from './pages/FrasesGeral'
@@ -439,6 +440,13 @@ function App() {
   const containerRef = useRef(null);
   const [hasOverflow, setHasOverflow] = useState(false);
   const [titulo, setTitulo] = useState('')
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const updateSWRef = useRef(null);
+
+  function confirmarAtualizacao() {
+    setShowUpdateModal(false);
+    updateSWRef.current?.(true);
+  }
 
   useEffect(() => {
     // Com registerType "prompt" (vite.config.js), o service worker novo só é
@@ -447,9 +455,7 @@ function App() {
     const updateSW = registerSW({
       onNeedRefresh() {
         console.log("Nova versão disponível");
-        if (window.confirm(t("new_version_available_confirm"))) {
-          updateSW(true);
-        }
+        setShowUpdateModal(true);
       },
       onOfflineReady() {
         console.log("App pronto para offline");
@@ -457,6 +463,7 @@ function App() {
         alert(t("app_ready_offline"));
       }
     });
+    updateSWRef.current = updateSW;
 
     // Por padrão o service worker só checa por versão nova no registro
     // inicial - num PWA instalado, que a maior parte do tempo é só
@@ -495,6 +502,12 @@ function App() {
           </BrowserRouter>
         </AuthProvider>
       </ConnectionProvider>
+      <ModalConfirm
+        openModalConfirm={showUpdateModal}
+        setOpenModalConfirm={setShowUpdateModal}
+        msg={t("new_version_available_confirm")}
+        onConfirm={confirmarAtualizacao}
+      />
     </GoogleOAuthProvider>
   )
 }

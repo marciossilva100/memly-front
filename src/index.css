@@ -356,6 +356,28 @@ input{
   animation: nave-pulso 1.4s ease-in-out infinite alternate;
 }
 
+/* Meteoros decorativos caindo de vez em quando no fundo do Tiro Certeiro -
+   só estética, position:absolute + pointer-events:none, nunca interage com
+   o jogo. --meteoro-drift/--meteoro-rot variam por instância (setados
+   inline no elemento) pra cada meteoro cair com um ângulo/rotação
+   diferente, em vez de todos seguirem a mesma trajetória. */
+@keyframes meteoro-cair {
+  0% { transform: translate(0, -20vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.85; }
+  85% { opacity: 0.85; }
+  100% { transform: translate(var(--meteoro-drift, -80px), 130vh) rotate(var(--meteoro-rot, 220deg)); opacity: 0; }
+}
+
+.meteoro-caindo {
+  position: absolute;
+  top: 0;
+  pointer-events: none;
+  animation-name: meteoro-cair;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  filter: drop-shadow(0 0 6px rgba(0,0,0,0.6));
+}
+
 
 
 

@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Target, Trophy, Loader2, AlertCircle, Crosshair, ChevronLeft, ChevronRight, Flame, Settings, X } from "lucide-react";
 import PremiumModal from "../components/PremiumModal";
+import imgMeteoro1 from "../assets/img/meteoro1.png";
+import imgMeteoro2 from "../assets/img/meteoro2.png";
+
+const IMAGENS_METEORO = [imgMeteoro1, imgMeteoro2];
 
 // Munição/vidas/dificuldade - mesma progressão de nível/formato de duração
 // de ChuvaFrases.jsx, adaptada pro par certa+errada por rodada em vez de
@@ -198,6 +202,52 @@ export default function TiroCerteiro() {
     const uidRef = useRef(0);
     const areaRef = useRef(null);
     const alvo = rodadas[indiceAtual] ?? null;
+
+    // Meteoros decorativos caindo de vez em quando no fundo - só estética,
+    // não interage com o jogo (mira/tiro continuam olhando só pra `caindo`,
+    // nunca pra `meteoros`). Roda em qualquer fase da tela (loading, jogo
+    // bloqueado etc), não só durante a partida.
+    const [meteoros, setMeteoros] = useState([]);
+    const meteoroUidRef = useRef(0);
+
+    useEffect(() => {
+        let cancelado = false;
+        let timeoutId;
+
+        function agendarProximo() {
+            const espera = 6000 + Math.random() * 9000; // 6 a 15s
+            timeoutId = setTimeout(() => {
+                if (cancelado) return;
+
+                meteoroUidRef.current += 1;
+                const duracao = 5000 + Math.random() * 3000;
+                setMeteoros((prev) => [
+                    ...prev,
+                    {
+                        uid: meteoroUidRef.current,
+                        img: IMAGENS_METEORO[Math.floor(Math.random() * IMAGENS_METEORO.length)],
+                        esquerda: Math.random() * 90,
+                        largura: 18 + Math.random() * 58,
+                        duracao,
+                        drift: (Math.random() - 0.5) * 220,
+                        rotacao: 120 + Math.random() * 300,
+                    },
+                ]);
+                agendarProximo();
+            }, espera);
+        }
+
+        agendarProximo();
+
+        return () => {
+            cancelado = true;
+            clearTimeout(timeoutId);
+        };
+    }, []);
+
+    function removerMeteoro(uid) {
+        setMeteoros((prev) => prev.filter((m) => m.uid !== uid));
+    }
 
     function iniciarPartida() {
         setFase("carregando");
@@ -471,6 +521,25 @@ export default function TiroCerteiro() {
 
     return (
         <div className="espaco-fundo px-5 h-dvh flex flex-col text-white">
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                {meteoros.map((m) => (
+                    <img
+                        key={m.uid}
+                        src={m.img}
+                        alt=""
+                        onAnimationEnd={() => removerMeteoro(m.uid)}
+                        className="meteoro-caindo"
+                        style={{
+                            left: `${m.esquerda}%`,
+                            width: `${m.largura}px`,
+                            animationDuration: `${m.duracao}ms`,
+                            '--meteoro-drift': `${m.drift}px`,
+                            '--meteoro-rot': `${m.rotacao}deg`,
+                        }}
+                    />
+                ))}
+            </div>
+
             <div className="relative flex items-center gap-3 mb-4 mt-4">
                 <div className="cursor-pointer" onClick={() => navigate(-1)}>
                     <i className="bi bi-arrow-left text-2xl text-white"></i>

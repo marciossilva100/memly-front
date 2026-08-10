@@ -436,6 +436,7 @@
     "learned": "öğrenilen",
     "days": "gün",
     "streak": "seri",
+    "study_level_tooltip": "Seviye {{nivel}} - {{total}} kelime öğrenildi",
     "average_grade": "Ortalama not",
     "ai_training_empty": "İstatistiklerini burada görmek için AI sorularını veya günün cümlesini yanıtla.",
     "daily_phrase_modal_desc": "Zaten çalışmakta olduğun içeriğe dayalı bir cümleyi dinle, yüksek sesle oku ve yapay zekadan düzeltme al",

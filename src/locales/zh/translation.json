@@ -436,6 +436,7 @@
     "learned": "已学习",
     "days": "天",
     "streak": "连续天数",
+    "study_level_tooltip": "等级 {{nivel}} - 已学会 {{total}} 个单词",
     "average_grade": "平均分",
     "ai_training_empty": "回答一些AI提问或每日一句，即可在此查看你的统计数据。",
     "daily_phrase_modal_desc": "听一句根据你正在学习的内容生成的句子，大声朗读，获得AI纠正",

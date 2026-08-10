@@ -436,6 +436,7 @@
     "learned": "Gelernt",
     "days": "Tage",
     "streak": "Serie",
+    "study_level_tooltip": "Stufe {{nivel}} - {{total}} gelernte Wörter",
     "average_grade": "Durchschnittsnote",
     "ai_training_empty": "Beantworte KI-Fragen oder den Satz des Tages, um hier deine Statistiken zu sehen.",
     "daily_phrase_modal_desc": "Hör dir einen Satz an, der auf dem basiert, was du schon lernst, lies ihn laut vor und erhalte eine KI-Korrektur",

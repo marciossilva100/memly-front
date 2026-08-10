@@ -436,6 +436,7 @@
     "learned": "nauczone",
     "days": "dni",
     "streak": "seria",
+    "study_level_tooltip": "Poziom {{nivel}} - {{total}} nauczonych słów",
     "average_grade": "Średnia ocena",
     "ai_training_empty": "Odpowiedz na pytania AI lub zdanie dnia, aby zobaczyć tu swoje statystyki.",
     "daily_phrase_modal_desc": "Wysłuchaj zdania opartego na tym, czego już się uczysz, przeczytaj je na głos i otrzymaj poprawkę od AI",

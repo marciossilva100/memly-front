@@ -436,6 +436,7 @@
     "learned": "geleerd",
     "days": "dagen",
     "streak": "reeks",
+    "study_level_tooltip": "Niveau {{nivel}} - {{total}} geleerde woorden",
     "average_grade": "Gemiddeld cijfer",
     "ai_training_empty": "Beantwoord AI-vragen of de zin van de dag om hier je statistieken te zien.",
     "daily_phrase_modal_desc": "Luister naar een zin gebaseerd op wat je al aan het leren bent, lees hem hardop voor en ontvang AI-correctie",

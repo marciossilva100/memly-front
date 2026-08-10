@@ -8,6 +8,7 @@ import ModalIA from '../components/ModalIA';
 import ModalSucesso from '../components/ModalSucesso';
 import PremiumModal from '../components/PremiumModal'
 import ModalConfirm from '../components/ModalConfirm';
+import TermometroEstudo from '../components/TermometroEstudo';
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 
@@ -518,8 +519,9 @@ export default function Home() {
                 </div> */}
             </div>
 
-            <div className="lista-categoria flex-1 overflow-y-auto py-4 scrollbar-hide mt-4" id="lista-categoria">
-                <div className=" items-center justify-center px-4 ">
+            <div className="flex-1 flex min-h-0 mt-4 mb-16 pl-4 pr-3 gap-1">
+                <div className="lista-categoria flex-1 overflow-y-auto py-4 scrollbar-hide" id="lista-categoria">
+                <div className=" items-center justify-center pr-4 ">
 
                     {/* Item */}
                     {categorias.map((item, index) => {
@@ -618,6 +620,9 @@ export default function Home() {
 
                 </div>
 
+            </div>
+
+                <TermometroEstudo totalAprendidas={totalAprendidas} streak={streak} />
             </div>
             {/* Fica FORA da barra de baixo (abaixo) de propósito - essa barra
                 usa mask-image pra dar o efeito de fade, e mask-image recorta

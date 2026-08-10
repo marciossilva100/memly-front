@@ -436,6 +436,7 @@
     "learned": "習得済み",
     "days": "日",
     "streak": "連続記録",
+    "study_level_tooltip": "レベル{{nivel}} - {{total}}単語習得済み",
     "average_grade": "平均点",
     "ai_training_empty": "AIの質問や今日のフレーズに答えると、ここに統計が表示されます。",
     "daily_phrase_modal_desc": "今学んでいる内容をもとにしたフレーズを聞いて音読し、AIの添削を受けましょう",

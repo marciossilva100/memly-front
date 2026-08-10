@@ -436,6 +436,7 @@
     "learned": "apprese",
     "days": "giorni",
     "streak": "serie",
+    "study_level_tooltip": "Livello {{nivel}} - {{total}} parole imparate",
     "average_grade": "Voto medio",
     "ai_training_empty": "Rispondi a domande o frasi del giorno con l'IA per vedere qui le tue statistiche.",
     "daily_phrase_modal_desc": "Ascolta una frase basata su ciò che stai già studiando, leggila ad alta voce e ricevi la correzione dell'IA",

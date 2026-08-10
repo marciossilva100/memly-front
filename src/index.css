@@ -257,6 +257,18 @@ input{
   animation: gentle-bounce 1.6s ease-in-out infinite;
 }
 
+/* Termômetro de estudo (Home) */
+@keyframes termometro-shimmer {
+  0% { transform: translateY(100%); opacity: 0; }
+  15% { opacity: 0.8; }
+  85% { opacity: 0.8; }
+  100% { transform: translateY(-450%); opacity: 0; }
+}
+
+.animate-termometro-shimmer {
+  animation: termometro-shimmer 3s ease-in-out infinite;
+}
+
 /* Minijogo Chuva de Frases - top em % relativo à .chuva-area (position:
    relative, altura definida pelo flex-1 do container), não vh, pra
    funcionar em qualquer tamanho de tela sem recalcular nada em JS. */

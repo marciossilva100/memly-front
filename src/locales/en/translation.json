@@ -438,6 +438,7 @@
     "learned": "learned",
     "days": "days",
     "streak": "streak",
+    "study_level_tooltip": "Level {{nivel}} - {{total}} words learned",
     "average_grade": "Average grade",
     "ai_training_empty": "Answer some AI questions or phrases of the day to see your stats here.",
     "daily_phrase_modal_desc": "Listen to a phrase based on what you're already studying, read it aloud and get AI correction",

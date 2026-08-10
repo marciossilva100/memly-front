@@ -436,6 +436,7 @@
     "learned": "학습됨",
     "days": "일",
     "streak": "연속 기록",
+    "study_level_tooltip": "레벨 {{nivel}} - {{total}}개 단어 학습 완료",
     "average_grade": "평균 점수",
     "ai_training_empty": "AI 질문이나 오늘의 문장에 답하면 여기에 통계가 표시됩니다.",
     "daily_phrase_modal_desc": "지금 공부하고 있는 내용을 바탕으로 한 문장을 듣고 소리 내어 읽으면 AI가 교정해 드려요",

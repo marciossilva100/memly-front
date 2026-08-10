@@ -246,7 +246,7 @@ export default function TreinoIA() {
 
     return (
         <div className="p-4 justify-center w-full px-6 h-screen flex flex-col h-dvh from-gray-900 to-gray-800 bg-gradient-to-br">
-            <div className="flex-1 overflow-y-auto scrollbar-hide">
+            <div className="flex-1 overflow-y-auto scrollbar-hide pb-40">
                 <div className="relative mb-6 flex items-center justify-between">
                     <div className="cursor-pointer" onClick={() => navigate(-1)}>
                         <i className="bi bi-arrow-left text-2xl text-white"></i>
@@ -392,7 +392,7 @@ export default function TreinoIA() {
             </div>
 
             {!resultado && !flipped && (
-                <div className="sticky bottom-0 py-4 flex flex-col items-center gap-4 ">
+                <div className="fixed bottom-0 left-0 w-full px-6 py-4 flex flex-col items-center gap-4 bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent">
                     {!audioUrl && !gravando && (
                         <button
                             onClick={() => { setError(null); setAudioVazio(false); iniciarGravacao(); }}

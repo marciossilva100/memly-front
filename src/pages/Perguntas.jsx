@@ -321,7 +321,7 @@ export default function Perguntas() {
 
     return (
         <div className="p-4 justify-center w-full px-6 h-screen flex flex-col h-dvh from-gray-900 to-gray-800 bg-gradient-to-br">
-            <div className="flex-1 overflow-y-auto scrollbar-hide ">
+            <div className="flex-1 overflow-y-auto scrollbar-hide pb-24">
                 <div className="relative mb-6 flex items-center justify-between">
                     <div
                         className="cursor-pointer"
@@ -550,7 +550,7 @@ export default function Perguntas() {
             </div>
 
             {!resultado &&
-                <div className="sticky bottom-0 py-4 text-center">
+                <div className="fixed bottom-0 left-0 w-full px-6 py-4 text-center bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent">
                     <button
                         onClick={handleSkip}
                         className="px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white w-full flex items-center justify-center gap-2 hover:bg-gray-700/50 transition-colors">
@@ -561,7 +561,7 @@ export default function Perguntas() {
             }
 
             {resultado && resultado.pode_tentar_novamente &&
-                <div className="sticky bottom-0 py-4 text-center">
+                <div className="fixed bottom-0 left-0 w-full px-6 py-4 text-center bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent">
                     <button
                         onClick={tentarNovamente}
                         className="px-6 py-3 w-full rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium flex items-center justify-center gap-2 transition-colors">
@@ -572,7 +572,7 @@ export default function Perguntas() {
             }
 
             {resultado && !resultado.pode_tentar_novamente &&
-                <div className="sticky bottom-0 py-4 text-center">
+                <div className="fixed bottom-0 left-0 w-full px-6 py-4 text-center bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent">
                     <button
                         onClick={proximaPergunta}
                         className="px-6 py-3 w-full rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors">

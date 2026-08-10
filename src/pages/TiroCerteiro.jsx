@@ -187,7 +187,9 @@ export default function TiroCerteiro() {
     // Frases, mas com chave própria de localStorage (jogo diferente).
     const [modalConfigAberto, setModalConfigAberto] = useState(false);
     const [velocidadeJogo, setVelocidadeJogo] = useState(
-        () => parseFloat(localStorage.getItem('zaldemy_velocidade_jogo_tiro')) || 1.0
+        // padrão "rápido" (0.35) pra quem nunca mexeu na configuração -
+        // último item de VELOCIDADES_JOGO.
+        () => parseFloat(localStorage.getItem('zaldemy_velocidade_jogo_tiro')) || VELOCIDADES_JOGO[VELOCIDADES_JOGO.length - 1].valor
     );
 
     function handleSelecionarVelocidadeJogo(velocidade) {

@@ -519,7 +519,7 @@ export default function Home() {
                 </div> */}
             </div>
 
-            <div className="flex-1 flex min-h-0 mt-4 mb-16 pl-4 pr-3 gap-1">
+            <div className="flex-1 flex min-h-0 mt-4 pl-4 pr-3 gap-1">
                 <div className="lista-categoria flex-1 overflow-y-auto py-4 scrollbar-hide" id="lista-categoria">
                 <div className=" items-center justify-center pr-4 ">
 
@@ -533,7 +533,7 @@ export default function Home() {
                         return (
                             <div key={item.id} onClick={() => validar(item.quantidade, item.id)} className="flex bg-gray-800/50   border border-gray-700 items-center justify-between py-3 px-4  rounded-xl  shadow-lg mb-4 ">
                                 <div className="flex items-center gap-3 min-w-0">
-                                    <div className={`flex items-center justify-center w-11 h-11 shrink-0 rounded-full text-white font-semibold text-lg ${AVATAR_COLORS[index % AVATAR_COLORS.length]}`}>
+                                    <div className={`flex items-center justify-center w-5 h-11 shrink-0 rounded-full text-white font-semibold text-lg ${AVATAR_COLORS[index % AVATAR_COLORS.length]}`}>
                                         {item.categoria?.charAt(0)?.toUpperCase()}
                                     </div>
                                     <div className="min-w-0">

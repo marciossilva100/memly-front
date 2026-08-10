@@ -21,7 +21,7 @@ export default function TermometroEstudo({ totalAprendidas = 0, streak = 0 }) {
 
     return (
         <div
-            className="flex flex-col items-center w-10 shrink-0 h-full py-1"
+            className="flex flex-col items-center w-10 shrink-0 h-full pt-1 pb-16"
             title={t("study_level_tooltip", { nivel, total: totalAprendidas })}
         >
             {/* topo: chama do streak */}

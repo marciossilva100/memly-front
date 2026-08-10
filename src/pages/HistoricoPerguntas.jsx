@@ -10,11 +10,15 @@ function corNota(nota) {
     return "text-red-400 border-red-400/30 bg-red-400/10";
 }
 
-// Data local (não UTC) no formato do <input type="date"> - evita virar o
-// dia errado perto da meia-noite conforme o fuso do navegador.
-function hojeLocal() {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+// "Hoje" no fuso de referência do backend (-03:00, ver server.php), não no
+// fuso do aparelho - um celular configurado noutro fuso/região nunca batia
+// com a data salva no servidor, deixando o filtro sempre vazio mesmo tendo
+// registro de hoje.
+function hojeBrasil() {
+    const agora = new Date();
+    const utcMs = agora.getTime() + agora.getTimezoneOffset() * 60000;
+    const brasil = new Date(utcMs - 3 * 60 * 60000);
+    return `${brasil.getFullYear()}-${String(brasil.getMonth() + 1).padStart(2, '0')}-${String(brasil.getDate()).padStart(2, '0')}`;
 }
 
 export default function HistoricoPerguntas() {
@@ -48,7 +52,7 @@ export default function HistoricoPerguntas() {
                     const lista = data.historico || [];
                     setHistorico(lista);
 
-                    const hoje = hojeLocal();
+                    const hoje = hojeBrasil();
                     if (lista.some(item => item.data_criacao?.slice(0, 10) === hoje)) {
                         setFiltroData(hoje);
                     }

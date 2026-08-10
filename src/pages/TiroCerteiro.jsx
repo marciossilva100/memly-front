@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Target, Trophy, Loader2, AlertCircle, Crosshair, ChevronLeft, ChevronRight, Flame, Settings, X } from "lucide-react";
 import PremiumModal from "../components/PremiumModal";
 import { useAuth } from "../context/AuthContext";
-import { playAudio, pararAudio } from "../utils/audioPlayer";
+import { playAudio, pararAudio, preloadAudio } from "../utils/audioPlayer";
 import { tocarSomTiro, tocarSomAcerto, tocarSomErro } from "../utils/somJogo";
 import imgMeteoro1 from "../assets/img/meteoro1.png";
 import imgMeteoro2 from "../assets/img/meteoro2.png";
@@ -363,6 +363,16 @@ export default function TiroCerteiro() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [vidas, municao]);
 
+    // Pré-carrega o áudio da tradução certa assim que o texto da rodada
+    // aparece (não só quando o jogador acerta) - sem isso, o TTS só começava
+    // a buscar o áudio no momento do acerto, com o atraso de rede/geração
+    // caindo bem na hora que devia ser instantâneo. Mesma voz padrão
+    // gratuita usada no playAudio() do acerto (forcarVozPadrao=true).
+    useEffect(() => {
+        if (fase !== "jogando" || !alvo) return;
+        preloadAudio(alvo.certa, user, null, true);
+    }, [fase, alvo, user]);
+
     // Spawna as 2 opções da rodada juntas, sempre uma em cada raia (nunca
     // duas na mesma raia ao mesmo tempo) - cada uma com sua própria
     // variação de duração, então caem em alturas diferentes uma da outra,
@@ -702,7 +712,7 @@ export default function TiroCerteiro() {
                         <Nave raia={naveLane} />
                     </div>
 
-                    <div className="flex items-center justify-center gap-8 shrink-0 pt-3">
+                    <div className="flex items-center justify-between shrink-0 pt-3 px-6">
                         <button
                             type="button"
                             onClick={() => moverNave(-1)}

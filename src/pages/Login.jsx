@@ -221,7 +221,11 @@ export default function Login({ setTitulo }) {
             }
 
             localStorage.setItem("token", data.token);
-            const loggedUser = await checkAuth();
+            // silent=true - essa tela já mostra o próprio spinner (loading
+            // local) durante o login inteiro; sem o silent, checkAuth liga o
+            // isAuthenticating global e o AuthGate troca pra tela de loading
+            // dele por cima, gerando duas telas de carregamento em sequência.
+            const loggedUser = await checkAuth(true);
 
             if (!loggedUser) {
                 setErro(t("login_error"));

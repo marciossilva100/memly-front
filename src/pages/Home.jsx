@@ -74,7 +74,6 @@ export default function Home() {
     const [totalAprendidas, setTotalAprendidas] = useState(0)
     const [treinoIaStats, setTreinoIaStats] = useState(null)
     const [jogoResumo, setJogoResumo] = useState(null)
-    const [jogoChuvaBloqueado, setJogoChuvaBloqueado] = useState(false)
     const [treinoIaBloqueado, setTreinoIaBloqueado] = useState(false)
     const { t } = useTranslation();
     const API_URL = import.meta.env.VITE_API_URL;
@@ -186,45 +185,6 @@ export default function Home() {
             .then(data => setJogoResumo(data?.success ? data : null))
             .catch(() => setJogoResumo(null));
     }, [user?.id]);
-
-    // Coroa no ícone de jogos quando AMBOS os jogos (Chuva de Frases e Tiro
-    // Certeiro) estão bloqueados - o ícone agora leva pro hub com as duas
-    // opções, não a um jogo só, então só faz sentido avisar bloqueio se
-    // nenhuma das duas estiver disponível. Free (sempre bloqueado nos dois)
-    // ou limitado que já gastou a cota diária dos dois. Premium nunca
-    // busca (nunca bloqueado). Usa 'status_acesso' (só consulta, não gasta
-    // cota) - nunca 'verificar_acesso' aqui, que registraria uma partida a
-    // cada vez que a Home carrega. Mesmo padrão de Promise.all já usado
-    // pro treinoIaBloqueado logo abaixo.
-    useEffect(() => {
-        if (!user?.id) return;
-
-        if (user.plano === 1) {
-            setJogoChuvaBloqueado(false);
-            return;
-        }
-
-        if (user.plano !== 3) {
-            setJogoChuvaBloqueado(true);
-            return;
-        }
-
-        const headers = {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + localStorage.getItem("token")
-        };
-
-        Promise.all([
-            fetch(`${API_URL}/controller/jogoChuvaFrases.php`, {
-                method: 'POST', headers, body: JSON.stringify({ action: 'status_acesso' })
-            }).then(res => res.json()).catch(() => ({ bloqueado: true })),
-            fetch(`${API_URL}/controller/tiroCerteiro.php`, {
-                method: 'POST', headers, body: JSON.stringify({ action: 'status_acesso' })
-            }).then(res => res.json()).catch(() => ({ bloqueado: true })),
-        ]).then(([chuva, tiro]) => {
-            setJogoChuvaBloqueado(Boolean(chuva?.bloqueado) && Boolean(tiro?.bloqueado));
-        });
-    }, [user?.id, user?.plano, API_URL]);
 
     // Coroa no ícone do Treino com IA quando AMBOS os recursos (Frase do dia
     // e Perguntas) estão bloqueados pro limitado - free já cai na outra
@@ -759,11 +719,8 @@ export default function Home() {
                             <span className="w-1 h-1 rounded-full bg-violet-400" />
                         </button>
 
-                        <button type="button" onClick={() => navigate('/jogos')} className="relative flex flex-col items-center gap-1">
+                        <button type="button" onClick={() => navigate('/jogos')} className="flex flex-col items-center gap-1">
                             <Gamepad2 width={26} height={26} className='text-blue-400' />
-                            {jogoChuvaBloqueado && (
-                                <Crown className="absolute -top-1 -right-2 w-4 h-4 text-yellow-400" />
-                            )}
                         </button>
 
                         <button type="button" onClick={() => navigate('/metricas')} className="flex flex-col items-center gap-1">

@@ -41,8 +41,12 @@ function Nave({ raia }) {
             className="absolute bottom-2 z-10 pointer-events-none flex flex-col items-center transition-[left] duration-200 ease-out"
             style={{ left: `${RAIAS[raia]}%`, transform: "translateX(-50%)" }}
         >
-            {/* silhueta simples de nave: nariz + asas varridas + entalhe atrás */}
+            {/* silhueta simples de nave: nariz + asas varridas + entalhe atrás.
+                data-nave-corpo dá o retângulo de referência pro cálculo de
+                onde exatamente fica o bico (topo-centro) e as asas (cantos
+                inferiores) na hora de atirar. */}
             <div
+                data-nave-corpo
                 className="w-8 h-8 bg-gradient-to-t from-cyan-300 via-fuchsia-400 to-white animate-nave-pulso"
                 style={{ clipPath: "polygon(50% 0%, 78% 62%, 100% 100%, 50% 78%, 0% 100%, 22% 62%)" }}
             />
@@ -72,12 +76,13 @@ function PainelAlvo({ texto, cor, errada }) {
     );
 }
 
-// Efeito de tiro: um traço/laser saindo da mira (base da tela) até o alvo
-// acertado, seguido de uma explosão de partículas neon no ponto de
-// impacto - mesmo princípio de Explosao em ChuvaFrases.jsx (CSS +
-// transition disparada após o primeiro paint), só que partículas em vez
-// de letras, e com o traço do tiro subindo antes da explosão.
-function EfeitoTiro({ top, left, cor, angulo, comprimento, origemX, particulas }) {
+// Efeito de tiro: 1 ou 2 traços/lasers saindo dos pontos reais da nave (bico
+// ou as duas asas, conforme tipoTiro) até o alvo acertado, seguido de uma
+// explosão de partículas neon no ponto de impacto - mesmo princípio de
+// Explosao em ChuvaFrases.jsx (CSS + transition disparada após o primeiro
+// paint), só que partículas em vez de letras, e com o(s) traço(s) subindo
+// antes da explosão.
+function EfeitoTiro({ top, left, cor, raios, particulas }) {
     const [animar, setAnimar] = useState(false);
 
     useEffect(() => {
@@ -87,31 +92,36 @@ function EfeitoTiro({ top, left, cor, angulo, comprimento, origemX, particulas }
 
     return (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            {/* clarão da nave disparando - sai da posição real dela (origemX),
-                não do centro fixo, senão o tiro parece vir de outro lugar
-                sempre que a nave se move pras raias da esquerda/direita. */}
-            <div
-                className="absolute bottom-2 -translate-x-1/2 w-8 h-8 rounded-full transition-opacity"
-                style={{
-                    left: origemX,
-                    backgroundColor: cor.glow,
-                    filter: "blur(6px)",
-                    opacity: animar ? 0 : 0.9,
-                    transitionDuration: "200ms",
-                }}
-            />
-            <div
-                className="absolute bottom-2 origin-bottom"
-                style={{
-                    left: origemX,
-                    width: "3px",
-                    height: animar ? `${comprimento}px` : "0px",
-                    background: `linear-gradient(to top, ${cor.glow}, transparent)`,
-                    boxShadow: `0 0 10px ${cor.glow}`,
-                    transform: `rotate(${angulo}deg)`,
-                    transition: "height 120ms ease-out",
-                }}
-            />
+            {raios.map((raio, i) => (
+                <div key={i}>
+                    {/* clarão de onde o tiro sai - posição real da nave
+                        (bico ou asa), não um ponto fixo. */}
+                    <div
+                        className="absolute -translate-x-1/2 w-6 h-6 rounded-full transition-opacity"
+                        style={{
+                            left: raio.origemX,
+                            bottom: raio.distanciaAteFundo,
+                            backgroundColor: cor.glow,
+                            filter: "blur(6px)",
+                            opacity: animar ? 0 : 0.9,
+                            transitionDuration: "200ms",
+                        }}
+                    />
+                    <div
+                        className="absolute origin-bottom"
+                        style={{
+                            left: raio.origemX,
+                            bottom: raio.distanciaAteFundo,
+                            width: "3px",
+                            height: animar ? `${raio.comprimento}px` : "0px",
+                            background: `linear-gradient(to top, ${cor.glow}, transparent)`,
+                            boxShadow: `0 0 10px ${cor.glow}`,
+                            transform: `rotate(${raio.angulo}deg)`,
+                            transition: "height 120ms ease-out",
+                        }}
+                    />
+                </div>
+            ))}
             <div className="absolute" style={{ top, left }}>
                 {particulas.map((p) => (
                     <span
@@ -172,6 +182,17 @@ export default function TiroCerteiro() {
         setVelocidadeJogo(velocidade);
         localStorage.setItem('zaldemy_velocidade_jogo_tiro', String(velocidade));
         setCaindo([]);
+    }
+
+    // Tipo de tiro: "bico" (um só feixe, saindo do nariz da nave) ou "asas"
+    // (dois feixes, um de cada asa, convergindo no mesmo alvo).
+    const [tipoTiro, setTipoTiro] = useState(
+        () => localStorage.getItem('zaldemy_tipo_tiro') || 'bico'
+    );
+
+    function handleSelecionarTipoTiro(tipo) {
+        setTipoTiro(tipo);
+        localStorage.setItem('zaldemy_tipo_tiro', tipo);
     }
 
     const uidRef = useRef(0);
@@ -342,6 +363,31 @@ export default function TiroCerteiro() {
         setNaveLane((prev) => Math.min(RAIAS.length - 1, Math.max(0, prev + direcao)));
     }
 
+    // Pontos reais de onde o tiro sai, lidos do DOM da nave (não calculados
+    // a partir da raia/porcentagem) - "bico" é o topo-centro do corpo da
+    // nave; "asas" são os dois cantos inferiores do mesmo elemento. Sem
+    // isso o tiro saía sempre de um ponto fixo, nunca batendo com a
+    // posição/forma visual real da nave.
+    function origensDaNave() {
+        const naveEl = areaRef.current?.querySelector('[data-nave-corpo]');
+        const naveRect = naveEl?.getBoundingClientRect();
+        const parentRect = areaRef.current?.getBoundingClientRect();
+
+        if (!naveRect || !parentRect) {
+            return [{ x: 0, y: parentRect?.height ?? 0 }];
+        }
+
+        if (tipoTiro === 'asas') {
+            const y = naveRect.bottom - parentRect.top;
+            return [
+                { x: naveRect.left - parentRect.left, y },
+                { x: naveRect.right - parentRect.left, y },
+            ];
+        }
+
+        return [{ x: naveRect.left - parentRect.left + naveRect.width / 2, y: naveRect.top - parentRect.top }];
+    }
+
     // Dispara na raia em que a nave está mirando (não mais tocando direto
     // no alvo) - só existe no máximo 1 alvo por raia por vez (as 2 opções
     // caem juntas, uma de cada lado). Sem alvo na raia, o tiro sobe reto
@@ -354,14 +400,26 @@ export default function TiroCerteiro() {
         const alvoAtingido = caindo.find((item) => item.raia === naveLane) ?? null;
 
         const parentRect = areaRef.current?.getBoundingClientRect();
-        const largura = parentRect?.width ?? 0;
         const altura = parentRect?.height ?? 0;
-        const origemX = (largura * RAIAS[naveLane]) / 100;
-        const origemY = altura;
+        const origens = origensDaNave();
         const corNave = CORES_RAIA[naveLane];
 
+        function montarRaios(alvoX, alvoY) {
+            return origens.map((o) => {
+                const dx = alvoX - o.x;
+                const dy = o.y - alvoY;
+                return {
+                    origemX: o.x,
+                    distanciaAteFundo: altura - o.y,
+                    comprimento: Math.sqrt(dx * dx + dy * dy),
+                    angulo: Math.atan2(dx, dy) * (180 / Math.PI),
+                };
+            });
+        }
+
         if (!alvoAtingido) {
-            setTiro({ top: 0, left: origemX, origemX, cor: corNave, angulo: 0, comprimento: altura, particulas: [] });
+            const primeiraOrigem = origens[0] ?? { x: 0, y: altura };
+            setTiro({ top: 0, left: primeiraOrigem.x, cor: corNave, raios: montarRaios(primeiraOrigem.x, 0), particulas: [] });
             setTimeout(() => setTiro(null), 500);
             return;
         }
@@ -369,12 +427,9 @@ export default function TiroCerteiro() {
         const el = areaRef.current?.querySelector(`[data-uid="${alvoAtingido.uid}"]`);
         const rect = el?.getBoundingClientRect();
         const top = rect && parentRect ? rect.top - parentRect.top : 0;
-        const left = rect && parentRect ? rect.left - parentRect.left + rect.width / 2 : origemX;
+        const left = rect && parentRect ? rect.left - parentRect.left + rect.width / 2 : (origens[0]?.x ?? 0);
 
-        const dxTiro = left - origemX;
-        const dyTiro = origemY - top;
-        const comprimentoTiro = Math.sqrt(dxTiro * dxTiro + dyTiro * dyTiro);
-        const anguloTiro = Math.atan2(dxTiro, dyTiro) * (180 / Math.PI);
+        const raios = montarRaios(left, top);
 
         if (!alvoAtingido.correta) {
             setCaindo((prev) =>
@@ -383,7 +438,7 @@ export default function TiroCerteiro() {
             if (!alvoAtingido.jaErrou) {
                 perderVida();
             }
-            setTiro({ top, left, origemX, cor: corNave, angulo: anguloTiro, comprimento: comprimentoTiro, particulas: [] });
+            setTiro({ top, left, cor: corNave, raios, particulas: [] });
             setTimeout(() => setTiro(null), 500);
             setTimeout(() => {
                 setCaindo((prev) =>
@@ -403,10 +458,8 @@ export default function TiroCerteiro() {
         setTiro({
             top,
             left,
-            origemX,
             cor: CORES_RAIA[alvoAtingido.raia % CORES_RAIA.length],
-            angulo: anguloTiro,
-            comprimento: comprimentoTiro,
+            raios,
             particulas,
         });
         setTimeout(() => setTiro(null), 750);
@@ -644,6 +697,32 @@ export default function TiroCerteiro() {
                                         </button>
                                     );
                                 })}
+                            </div>
+                        </div>
+
+                        <div className="mt-4">
+                            <p className="text-gray-300 text-sm mb-2">{t("shot_type")}</p>
+                            <div className="grid grid-cols-2 gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => handleSelecionarTipoTiro('bico')}
+                                    className={`rounded-lg border py-1.5 text-sm font-medium transition-colors ${tipoTiro === 'bico'
+                                        ? "border-cyan-400 bg-cyan-400/10 text-cyan-300"
+                                        : "border-gray-700 bg-gray-800/40 text-gray-300 hover:bg-gray-700/40"
+                                        }`}
+                                >
+                                    {t("shot_type_nose")}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => handleSelecionarTipoTiro('asas')}
+                                    className={`rounded-lg border py-1.5 text-sm font-medium transition-colors ${tipoTiro === 'asas'
+                                        ? "border-cyan-400 bg-cyan-400/10 text-cyan-300"
+                                        : "border-gray-700 bg-gray-800/40 text-gray-300 hover:bg-gray-700/40"
+                                        }`}
+                                >
+                                    {t("shot_type_wings")}
+                                </button>
                             </div>
                         </div>
                     </div>

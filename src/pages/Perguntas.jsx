@@ -348,7 +348,7 @@ export default function Perguntas() {
                 </p>
 
                 {questionDestacada && !resultado && (
-                    <div className="flex flex-col items-center mb-4 gap-1.5">
+                    <div className="flex flex-col items-center mt-4 mb-4 gap-1.5">
                         <button
                             type="button"
                             onClick={() => setMostrarVocabulario(prev => !prev)}
@@ -417,12 +417,23 @@ export default function Perguntas() {
 
                         <div className={`mt-10 flex flex-col items-center gap-4 ${flipped ? "hidden" : ""}`}>
                             {!modoTexto && !audioUrl && !gravando && (
-                                <button
-                                    onClick={() => { setError(null); setAudioVazio(false); iniciarGravacao(); }}
-                                    className="relative w-14 h-14 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] flex items-center justify-center shadow-lg shadow-[#4cb8c4]/20 transition"
-                                >
-                                    <Mic className="w-5 h-5 text-white" />
-                                </button>
+                                <div className="flex items-center gap-4">
+                                    <button
+                                        onClick={() => { setError(null); setAudioVazio(false); iniciarGravacao(); }}
+                                        className="relative w-14 h-14 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] flex items-center justify-center shadow-lg shadow-[#4cb8c4]/20 transition"
+                                    >
+                                        <Mic className="w-5 h-5 text-white" />
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => { setError(null); setModoTexto(true); }}
+                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-gray-300 text-xs hover:bg-gray-700/50 transition-colors"
+                                    >
+                                        <Keyboard className="w-3.5 h-3.5" />
+                                        {t("type_answer")}
+                                    </button>
+                                </div>
                             )}
 
                             {!modoTexto && gravando && (
@@ -441,17 +452,6 @@ export default function Perguntas() {
 
                             {!modoTexto && !gravando && !audioUrl && (
                                 <p className="text-gray-500 text-xs text-center max-w-[220px]">{t("tap_mic_to_answer")}</p>
-                            )}
-
-                            {!modoTexto && !gravando && !audioUrl && (
-                                <button
-                                    type="button"
-                                    onClick={() => { setError(null); setModoTexto(true); }}
-                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-gray-300 text-xs hover:bg-gray-700/50 transition-colors"
-                                >
-                                    <Keyboard className="w-3.5 h-3.5" />
-                                    {t("type_answer")}
-                                </button>
                             )}
 
                             {!modoTexto && audioUrl && !gravando && !perguntaEncerrada && (

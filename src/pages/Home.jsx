@@ -70,7 +70,10 @@ export default function Home() {
     const [msgModalConfirm, setMsgModalConfirm] = useState('')
     const [deleteId, setDeleteId] = useState(0)
     const [streak, setStreak] = useState(0)
+    const [diasAcesso, setDiasAcesso] = useState(0)
     const [totalAprendidas, setTotalAprendidas] = useState(0)
+    const [treinoIaStats, setTreinoIaStats] = useState(null)
+    const [jogoResumo, setJogoResumo] = useState(null)
     const [jogoChuvaBloqueado, setJogoChuvaBloqueado] = useState(false)
     const [treinoIaBloqueado, setTreinoIaBloqueado] = useState(false)
     const { t } = useTranslation();
@@ -143,9 +146,46 @@ export default function Home() {
             body: JSON.stringify({ action: 'streak' })
         })
             .then(res => res.json())
-            .then(data => setStreak(data?.streak ?? 0))
-            .catch(() => setStreak(0));
+            .then(data => {
+                setStreak(data?.streak ?? 0);
+                setDiasAcesso(data?.dias_acesso ?? 0);
+            })
+            .catch(() => {
+                setStreak(0);
+                setDiasAcesso(0);
+            });
     }, [user?.native_language, user?.learning_language, user?.id]);
+
+    // Estatísticas do treino com IA (frase do dia + perguntas) e do jogo
+    // Chuva de Frases - só pro popover explicativo do termômetro de
+    // progresso, não afetam o cálculo do nível/preenchimento dele.
+    useEffect(() => {
+        if (!user?.id) return;
+
+        fetch(`${API_URL}/controller/metricas.php`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({ action: 'treino_ia' })
+        })
+            .then(res => res.json())
+            .then(data => setTreinoIaStats(data ?? null))
+            .catch(() => setTreinoIaStats(null));
+
+        fetch(`${API_URL}/controller/jogoChuvaFrases.php`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({ action: 'resumo' })
+        })
+            .then(res => res.json())
+            .then(data => setJogoResumo(data?.success ? data : null))
+            .catch(() => setJogoResumo(null));
+    }, [user?.id]);
 
     // Coroa no ícone do jogo quando o acesso está bloqueado: free (sempre) ou
     // limitado que já gastou a amostra grátis. Premium nunca busca (nunca
@@ -622,7 +662,13 @@ export default function Home() {
 
             </div>
 
-                <TermometroEstudo totalAprendidas={totalAprendidas} streak={streak} />
+                <TermometroEstudo
+                    totalAprendidas={totalAprendidas}
+                    streak={streak}
+                    diasAcesso={diasAcesso}
+                    treinoIaStats={treinoIaStats}
+                    jogoResumo={jogoResumo}
+                />
             </div>
             {/* Fica FORA da barra de baixo (abaixo) de propósito - essa barra
                 usa mask-image pra dar o efeito de fade, e mask-image recorta

@@ -1,13 +1,20 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ClipboardList } from "lucide-react";
+import { ClipboardList, X } from "lucide-react";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
 function corNota(nota) {
     if (nota >= 8) return "text-green-400 border-green-400/30 bg-green-400/10";
     if (nota >= 5) return "text-amber-400 border-amber-400/30 bg-amber-400/10";
     return "text-red-400 border-red-400/30 bg-red-400/10";
+}
+
+// Data local (não UTC) no formato do <input type="date"> - evita virar o
+// dia errado perto da meia-noite conforme o fuso do navegador.
+function hojeLocal() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
 export default function HistoricoPerguntas() {
@@ -17,7 +24,13 @@ export default function HistoricoPerguntas() {
 
     const [loading, setLoading] = useState(true);
     const [historico, setHistorico] = useState([]);
+    const [filtroData, setFiltroData] = useState("");
     const jaBuscou = useRef(false);
+
+    const historicoFiltrado = useMemo(() => {
+        if (!filtroData) return historico;
+        return historico.filter(item => item.data_criacao?.slice(0, 10) === filtroData);
+    }, [historico, filtroData]);
 
     useEffect(() => {
         if (jaBuscou.current) return;
@@ -32,7 +45,13 @@ export default function HistoricoPerguntas() {
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    setHistorico(data.historico || []);
+                    const lista = data.historico || [];
+                    setHistorico(lista);
+
+                    const hoje = hojeLocal();
+                    if (lista.some(item => item.data_criacao?.slice(0, 10) === hoje)) {
+                        setFiltroData(hoje);
+                    }
                 }
             })
             .catch(err => console.error(err))
@@ -60,17 +79,40 @@ export default function HistoricoPerguntas() {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2 mb-6">
+                <div className="flex items-center gap-2 mb-4">
                     <ClipboardList className="w-6 h-6 text-[#4cb8c4]" />
-                    <h1 className="text-2xl font-bold text-white">{t("answer_history_title")}</h1>
+                    <h1 className="text-2xl font-bold text-white">{t("questions_history_title")}</h1>
                 </div>
 
+                {historico.length > 0 && (
+                    <div className="flex items-center gap-2 mb-6">
+                        <input
+                            type="date"
+                            value={filtroData}
+                            onChange={(e) => setFiltroData(e.target.value)}
+                            className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white text-sm rounded-lg px-3 py-1.5 [color-scheme:dark]"
+                        />
+                        {filtroData && (
+                            <button
+                                onClick={() => setFiltroData("")}
+                                className="p-1.5 rounded-full bg-gray-800/50 border border-gray-700 text-gray-400 hover:text-white transition-colors"
+                            >
+                                <X className="w-3.5 h-3.5" />
+                            </button>
+                        )}
+                    </div>
+                )}
+
                 {historico.length === 0 && (
-                    <p className="text-gray-400 text-center mt-10">{t("answer_history_empty")}</p>
+                    <p className="text-gray-400 text-center mt-10">{t("questions_history_empty")}</p>
+                )}
+
+                {historico.length > 0 && historicoFiltrado.length === 0 && (
+                    <p className="text-gray-400 text-center mt-10">{t("history_no_results_for_date")}</p>
                 )}
 
                 <div className="space-y-3">
-                    {historico.map((item, index) => (
+                    {historicoFiltrado.map((item, index) => (
                         <div
                             key={index}
                             className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4"

@@ -278,19 +278,6 @@ export default function Perguntas() {
     if (limitReached) {
         const limiteVitalicio = user?.plano === 3;
 
-        if (limiteVitalicio) {
-            return (
-                <div className="h-screen from-gray-900 to-gray-800 bg-gradient-to-br">
-                    <PremiumModal
-                        isOpen={isPremiumModalOpen}
-                        setIsPremiumModalOpen={setIsPremiumModalOpen}
-                        onClose={() => navigate('/home')}
-                        motivo={motivoPremium}
-                    />
-                </div>
-            );
-        }
-
         return (
             <div className="h-screen flex flex-col items-center justify-center text-center p-6 from-gray-900 to-gray-800 bg-gradient-to-br">
                 <div className="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center mb-5">
@@ -304,12 +291,30 @@ export default function Perguntas() {
                     {t("come_back_tomorrow")}
                 </p>
 
-                <button
-                    onClick={() => navigate(-1)}
-                    className="mt-8 px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors"
-                >
-                    {t("back")}
-                </button>
+                <div className="mt-8 flex flex-col gap-3 w-full max-w-xs">
+                    <button
+                        onClick={() => navigate('/perguntasia/historico')}
+                        className="px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors flex items-center justify-center gap-2"
+                    >
+                        <History className="w-4 h-4" />
+                        {t("view_history")}
+                    </button>
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white font-medium transition-colors"
+                    >
+                        {t("back")}
+                    </button>
+                </div>
+
+                {limiteVitalicio && (
+                    <PremiumModal
+                        isOpen={isPremiumModalOpen}
+                        setIsPremiumModalOpen={setIsPremiumModalOpen}
+                        onClose={() => setIsPremiumModalOpen(false)}
+                        motivo={motivoPremium}
+                    />
+                )}
             </div>
         );
     }

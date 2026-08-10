@@ -319,19 +319,32 @@ input{
     radial-gradient(1px 1px at 70% 10%, #fff 100%, transparent);
   background-size: 220px 220px;
   opacity: 0.55;
-  animation: estrelas-piscar 4s ease-in-out infinite alternate;
+  animation: estrelas-piscar 4s ease-in-out infinite alternate, estrelas-deriva-1 22s linear infinite;
 }
 
 .espaco-fundo::after {
   background-size: 160px 160px;
   background-position: 40px 60px;
   opacity: 0.3;
-  animation: estrelas-piscar 6s ease-in-out infinite alternate-reverse;
+  animation: estrelas-piscar 6s ease-in-out infinite alternate-reverse, estrelas-deriva-2 16s linear infinite;
 }
 
 @keyframes estrelas-piscar {
   from { opacity: 0.2; }
   to { opacity: 0.65; }
+}
+
+/* deriva só pra baixo - sensação de estar avançando pelo espaço, sem
+   chamar atenção sobre o jogo. O deslocamento é exatamente 1 tile
+   (background-size) pra fechar o loop sem salto visível. */
+@keyframes estrelas-deriva-1 {
+  from { background-position: 0 0; }
+  to { background-position: 0 220px; }
+}
+
+@keyframes estrelas-deriva-2 {
+  from { background-position: 40px 60px; }
+  to { background-position: 40px 220px; }
 }
 
 @keyframes nave-pulso {

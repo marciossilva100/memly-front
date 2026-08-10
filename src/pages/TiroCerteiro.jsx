@@ -1,25 +1,31 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Target, Trophy, Loader2, AlertCircle, Crosshair, ChevronLeft, ChevronRight, Flame } from "lucide-react";
+import { Target, Trophy, Loader2, AlertCircle, Crosshair, ChevronLeft, ChevronRight, Flame, Settings, X } from "lucide-react";
 import PremiumModal from "../components/PremiumModal";
 
-// Munição/vidas/dificuldade - mesma progressão de nível e fórmulas de
-// spawn/queda já validadas em ChuvaFrases.jsx (ver RAIAS/LARGURA_ITEM/
-// LIMIAR_QUEDA_SEGURA ali), reaproveitadas aqui tal e qual. A diferença é
-// que aqui cada rodada já vem com exatamente as 3 opções certas (a
-// pergunta da IA garante isso), não precisa sortear distratoras de um
-// pool grande.
+// Munição/vidas/dificuldade - mesma progressão de nível/formato de duração
+// de ChuvaFrases.jsx, adaptada pro par certa+errada por rodada em vez de
+// um fluxo contínuo sorteado de um pool.
 const VIDAS_INICIAIS = 3;
 const MUNICAO_INICIAL = 12;
-const RAIAS = [25, 50, 75];
-const LARGURA_ITEM = 38;
-const LIMIAR_QUEDA_SEGURA = 0.3;
+// Só 2 raias (certa + 1 errada) - decisão explícita de simplificar pra uma
+// escolha binária, mais rápida de resolver que 3 opções.
+const RAIAS = [33, 67];
+const LARGURA_ITEM = 30;
+
+// Mesmos valores/chave usados em ChuvaFrases.jsx/Configuracoes.jsx pra
+// velocidade do jogo, mas guardados numa chave própria (zaldemy_velocidade_jogo_tiro)
+// - são jogos diferentes, a preferência de um não deveria forçar o outro.
+const VELOCIDADES_JOGO = [
+    { valor: 1.3, labelKey: "speed_slow" },
+    { valor: 1.0, labelKey: "speed_normal" },
+    { valor: 0.35, labelKey: "speed_fast" },
+];
 
 const CORES_RAIA = [
     { bg: "bg-cyan-500/20", border: "border-cyan-400/70", shadow: "shadow-[0_0_16px_rgba(34,211,238,0.45)]", texto: "text-cyan-300", glow: "rgba(34,211,238,0.9)" },
     { bg: "bg-fuchsia-500/20", border: "border-fuchsia-400/70", shadow: "shadow-[0_0_16px_rgba(232,121,249,0.45)]", texto: "text-fuchsia-300", glow: "rgba(232,121,249,0.9)" },
-    { bg: "bg-lime-500/20", border: "border-lime-400/70", shadow: "shadow-[0_0_16px_rgba(163,230,53,0.45)]", texto: "text-lime-300", glow: "rgba(163,230,53,0.9)" },
 ];
 
 function nivelAtual(pontos) {
@@ -35,11 +41,12 @@ function Nave({ raia }) {
             className="absolute bottom-2 z-10 pointer-events-none flex flex-col items-center transition-[left] duration-200 ease-out"
             style={{ left: `${RAIAS[raia]}%`, transform: "translateX(-50%)" }}
         >
+            {/* silhueta simples de nave: nariz + asas varridas + entalhe atrás */}
             <div
-                className="w-7 h-8 bg-gradient-to-t from-cyan-300 via-fuchsia-400 to-white animate-nave-pulso"
-                style={{ clipPath: "polygon(50% 0%, 8% 100%, 92% 100%)" }}
+                className="w-8 h-8 bg-gradient-to-t from-cyan-300 via-fuchsia-400 to-white animate-nave-pulso"
+                style={{ clipPath: "polygon(50% 0%, 78% 62%, 100% 100%, 50% 78%, 0% 100%, 22% 62%)" }}
             />
-            <div className="w-12 h-1.5 -mt-1 rounded-full bg-fuchsia-400/80 shadow-[0_0_10px_3px_rgba(232,121,249,0.7)]" />
+            <div className="w-3 h-3 -mt-1 rounded-full bg-cyan-300/90 shadow-[0_0_10px_4px_rgba(34,211,238,0.8)]" />
         </div>
     );
 }
@@ -150,9 +157,22 @@ export default function TiroCerteiro() {
     const [municao, setMunicao] = useState(MUNICAO_INICIAL);
     const [tiro, setTiro] = useState(null);
     const [recorde, setRecorde] = useState(null);
-    // índice em RAIAS (0/1/2) - a nave começa centralizada e se move entre
-    // as 3 raias fixas com os botões, mesma faixa em que os alvos caem.
-    const [naveLane, setNaveLane] = useState(1);
+    // índice em RAIAS (0 ou 1) - a nave se move entre as 2 raias fixas com
+    // os botões, mesma faixa em que os alvos caem.
+    const [naveLane, setNaveLane] = useState(0);
+
+    // Configuração de velocidade - mesmo botão/modal do jogo da Chuva de
+    // Frases, mas com chave própria de localStorage (jogo diferente).
+    const [modalConfigAberto, setModalConfigAberto] = useState(false);
+    const [velocidadeJogo, setVelocidadeJogo] = useState(
+        () => parseFloat(localStorage.getItem('zaldemy_velocidade_jogo_tiro')) || 1.0
+    );
+
+    function handleSelecionarVelocidadeJogo(velocidade) {
+        setVelocidadeJogo(velocidade);
+        localStorage.setItem('zaldemy_velocidade_jogo_tiro', String(velocidade));
+        setCaindo([]);
+    }
 
     const uidRef = useRef(0);
     const areaRef = useRef(null);
@@ -262,65 +282,48 @@ export default function TiroCerteiro() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [vidas, municao]);
 
-    // spawn dos alvos caindo - mesma mecânica de colisão de raia de
-    // ChuvaFrases.jsx, mas as 2 distratoras já vêm prontas da rodada (a IA
-    // já garante que são plausíveis), não precisa escolher de um pool.
+    // Spawna as 2 opções da rodada juntas, sempre uma em cada raia (nunca
+    // duas na mesma raia ao mesmo tempo) - cada uma com sua própria
+    // variação de duração, então caem em alturas diferentes uma da outra,
+    // não sincronizadas. Um par só, não um fluxo contínuo como em
+    // ChuvaFrases.jsx - cada rodada é as 2 opções da IA, não um pool
+    // grande de frases pra sortear.
     useEffect(() => {
         if (fase !== "jogando" || !alvo) return;
 
         const nivel = nivelAtual(pontos);
-        const intervaloSpawn = Math.max(4500 - nivel * 150, 3000);
+        const duracaoBase = Math.max(30000 - nivel * 800, 16000) * velocidadeJogo;
+        const agora = Date.now();
 
-        function spawnUmAlvo() {
-            setCaindo((prev) => {
-                const agora = Date.now();
+        const raiaCorreta = Math.random() < 0.5 ? 0 : 1;
+        const raiaErrada = raiaCorreta === 0 ? 1 : 0;
 
-                const raiasCandidatas = RAIAS.map((_, i) => i).filter((i) => {
-                    return !prev.some((item) => {
-                        const progresso = Math.min(1, Math.max(0, (agora - item.spawnTime) / item.duracao));
-                        if (progresso >= LIMIAR_QUEDA_SEGURA) return false;
-                        return Math.abs(RAIAS[i] - RAIAS[item.raia]) < LARGURA_ITEM;
-                    });
-                });
+        uidRef.current += 1;
+        const itemCorreto = {
+            uid: uidRef.current,
+            texto: alvo.certa,
+            correta: true,
+            raia: raiaCorreta,
+            duracao: duracaoBase * (0.75 + Math.random() * 0.5),
+            spawnTime: agora,
+            estado: "normal",
+            jaErrou: false,
+        };
 
-                if (raiasCandidatas.length === 0) return prev;
+        uidRef.current += 1;
+        const itemErrado = {
+            uid: uidRef.current,
+            texto: alvo.errada,
+            correta: false,
+            raia: raiaErrada,
+            duracao: duracaoBase * (0.75 + Math.random() * 0.5),
+            spawnTime: agora,
+            estado: "normal",
+            jaErrou: false,
+        };
 
-                const temCorreta = prev.some((item) => item.correta);
-                const ultimaRaiaLivre = raiasCandidatas.length === 1;
-                const vaiSerCorreta = !temCorreta && (ultimaRaiaLivre || Math.random() < 0.35);
-
-                const texto = vaiSerCorreta
-                    ? alvo.certa
-                    : alvo.erradas[Math.floor(Math.random() * alvo.erradas.length)];
-
-                const duracaoBase = Math.max(30000 - nivel * 800, 16000);
-                const duracao = duracaoBase * (0.7 + Math.random() * 0.6);
-
-                const raia = raiasCandidatas[Math.floor(Math.random() * raiasCandidatas.length)];
-
-                uidRef.current += 1;
-
-                return [
-                    ...prev,
-                    {
-                        uid: uidRef.current,
-                        texto,
-                        correta: vaiSerCorreta,
-                        raia,
-                        duracao,
-                        spawnTime: agora,
-                        estado: "normal",
-                        jaErrou: false,
-                    },
-                ];
-            });
-        }
-
-        spawnUmAlvo();
-        const interval = setInterval(spawnUmAlvo, intervaloSpawn);
-
-        return () => clearInterval(interval);
-    }, [fase, alvo, pontos]);
+        setCaindo([itemCorreto, itemErrado]);
+    }, [fase, alvo, pontos, velocidadeJogo]);
 
     function removerCaindo(uid) {
         setCaindo((prev) => prev.filter((item) => item.uid !== uid));
@@ -336,29 +339,19 @@ export default function TiroCerteiro() {
     }
 
     function moverNave(direcao) {
-        setNaveLane((prev) => Math.min(2, Math.max(0, prev + direcao)));
+        setNaveLane((prev) => Math.min(RAIAS.length - 1, Math.max(0, prev + direcao)));
     }
 
     // Dispara na raia em que a nave está mirando (não mais tocando direto
-    // no alvo) - acha o alvo mais avançado (mais perto da nave) nessa raia,
-    // se houver algum. Sem alvo na raia, o tiro sobe reto até o topo sem
-    // acertar nada (erra por má mira, não custa vida, só munição).
+    // no alvo) - só existe no máximo 1 alvo por raia por vez (as 2 opções
+    // caem juntas, uma de cada lado). Sem alvo na raia, o tiro sobe reto
+    // até o topo sem acertar nada (erra por má mira, não custa vida, só
+    // munição).
     function atirar() {
         if (municao <= 0) return;
         usarMunicao();
 
-        const agora = Date.now();
-        let alvoAtingido = null;
-        let melhorProgresso = -1;
-
-        for (const item of caindo) {
-            if (item.raia !== naveLane) continue;
-            const progresso = Math.min(1, Math.max(0, (agora - item.spawnTime) / item.duracao));
-            if (progresso > melhorProgresso) {
-                melhorProgresso = progresso;
-                alvoAtingido = item;
-            }
-        }
+        const alvoAtingido = caindo.find((item) => item.raia === naveLane) ?? null;
 
         const parentRect = areaRef.current?.getBoundingClientRect();
         const largura = parentRect?.width ?? 0;
@@ -437,6 +430,15 @@ export default function TiroCerteiro() {
                         {t("sure_shot_title")}
                     </h1>
                 </div>
+                {fase === "jogando" && (
+                    <button
+                        type="button"
+                        onClick={() => setModalConfigAberto(true)}
+                        className="shrink-0 flex items-center justify-center w-9 h-9 rounded-xl bg-gray-800/50 border border-gray-700 text-gray-300 hover:bg-gray-700/50 transition-colors"
+                    >
+                        <Settings className="w-4 h-4" />
+                    </button>
+                )}
             </div>
 
             {fase === "carregando" && !bloqueado && !conteudoInsuficiente && !erro && (
@@ -536,6 +538,7 @@ export default function TiroCerteiro() {
                                         transform: "translateX(-50%)",
                                         width: `${LARGURA_ITEM}%`,
                                         animationDuration: `${item.duracao}ms`,
+                                        animationPlayState: modalConfigAberto ? "paused" : "running",
                                         boxShadow: errada ? "0 0 14px rgba(248,113,113,0.5)" : `0 0 14px ${cor.glow.replace('0.9', '0.35')}`,
                                     }}
                                 >
@@ -567,7 +570,7 @@ export default function TiroCerteiro() {
                         <button
                             type="button"
                             onClick={() => moverNave(1)}
-                            disabled={naveLane === 2}
+                            disabled={naveLane === RAIAS.length - 1}
                             className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-800/70 border border-cyan-400/30 text-cyan-300 disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-transform"
                         >
                             <ChevronRight className="w-6 h-6" />
@@ -600,6 +603,49 @@ export default function TiroCerteiro() {
                         >
                             {t("back")}
                         </button>
+                    </div>
+                </div>
+            )}
+
+            {modalConfigAberto && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/60" onClick={() => setModalConfigAberto(false)} />
+                    <div className="relative w-full max-w-xs rounded-2xl border border-gray-700 bg-gray-900 p-5 shadow-xl">
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-white font-semibold text-base flex items-center gap-2">
+                                <Settings className="w-4 h-4 text-cyan-300" />
+                                {t("game_settings")}
+                            </h2>
+                            <button
+                                type="button"
+                                onClick={() => setModalConfigAberto(false)}
+                                className="text-gray-400 hover:text-white"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        <div>
+                            <p className="text-gray-300 text-sm mb-2">{t("game_speed")}</p>
+                            <div className="grid grid-cols-3 gap-2">
+                                {VELOCIDADES_JOGO.map(({ valor, labelKey }) => {
+                                    const selecionada = velocidadeJogo === valor;
+                                    return (
+                                        <button
+                                            key={valor}
+                                            type="button"
+                                            onClick={() => handleSelecionarVelocidadeJogo(valor)}
+                                            className={`rounded-lg border py-1.5 text-sm font-medium transition-colors ${selecionada
+                                                ? "border-cyan-400 bg-cyan-400/10 text-cyan-300"
+                                                : "border-gray-700 bg-gray-800/40 text-gray-300 hover:bg-gray-700/40"
+                                                }`}
+                                        >
+                                            {t(labelKey)}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}

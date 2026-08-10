@@ -26,7 +26,7 @@ const VIDAS_INICIAIS = 3;
 const VELOCIDADES_JOGO = [
     { valor: 1.3, labelKey: "speed_slow" },
     { valor: 1.0, labelKey: "speed_normal" },
-    { valor: 0.5, labelKey: "speed_fast" },
+    { valor: 0.35, labelKey: "speed_fast" },
 ];
 // Raias fixas (centro em %), largura fixa pra todas (LARGURA_ITEM). As
 // raias vizinhas SE SOBREPÕEM em X (largura > espaço entre centros) - isso

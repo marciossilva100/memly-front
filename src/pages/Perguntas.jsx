@@ -408,19 +408,19 @@ export default function Perguntas() {
                             {!modoTexto && !audioUrl && !gravando && (
                                 <button
                                     onClick={() => { setError(null); setAudioVazio(false); iniciarGravacao(); }}
-                                    className="relative w-20 h-20 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] flex items-center justify-center shadow-lg shadow-[#4cb8c4]/20 transition"
+                                    className="relative w-14 h-14 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] flex items-center justify-center shadow-lg shadow-[#4cb8c4]/20 transition"
                                 >
-                                    <Mic className="w-7 h-7 text-white" />
+                                    <Mic className="w-5 h-5 text-white" />
                                 </button>
                             )}
 
                             {!modoTexto && gravando && (
                                 <button
                                     onClick={pararGravacao}
-                                    className="relative w-20 h-20 rounded-full bg-red-600 flex items-center justify-center shadow-lg"
+                                    className="relative w-14 h-14 rounded-full bg-red-600 flex items-center justify-center shadow-lg"
                                 >
                                     <span className="absolute inset-0 rounded-full bg-red-500 animate-ping opacity-75"></span>
-                                    <Square className="w-6 h-6 text-white relative z-10" />
+                                    <Square className="w-5 h-5 text-white relative z-10" />
                                 </button>
                             )}
 

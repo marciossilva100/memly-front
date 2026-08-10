@@ -672,12 +672,11 @@ export default function TiroCerteiro() {
                         <Nave raia={naveLane} />
                     </div>
 
-                    <div className="flex items-center justify-center gap-4 shrink-0 pt-3">
+                    <div className="flex items-center justify-center gap-8 shrink-0 pt-3">
                         <button
                             type="button"
                             onClick={() => moverNave(-1)}
-                            disabled={naveLane === 0}
-                            className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-800/70 border border-cyan-400/30 text-cyan-300 disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-transform"
+                            className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-800/70 border border-cyan-400/30 text-cyan-300 active:scale-95 transition-transform"
                         >
                             <ChevronLeft className="w-6 h-6" />
                         </button>
@@ -692,8 +691,7 @@ export default function TiroCerteiro() {
                         <button
                             type="button"
                             onClick={() => moverNave(1)}
-                            disabled={naveLane === RAIAS.length - 1}
-                            className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-800/70 border border-cyan-400/30 text-cyan-300 disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-transform"
+                            className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-800/70 border border-cyan-400/30 text-cyan-300 active:scale-95 transition-transform"
                         >
                             <ChevronRight className="w-6 h-6" />
                         </button>

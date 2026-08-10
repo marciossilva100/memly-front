@@ -339,6 +339,14 @@ export default function Perguntas() {
                     </button>
                 </div>
 
+                <h1 className="flex items-center justify-center gap-2 text-lg font-semibold text-white text-center mb-1">
+                    <MessageCircleQuestion className="w-5 h-5 text-[#4cb8c4]" />
+                    {t("questions_training")}
+                </h1>
+                <p className="text-gray-400 text-xs text-center mb-2 px-4">
+                    {t("questions_training_desc")}
+                </p>
+
                 {questionDestacada && !resultado && (
                     <div className="flex flex-col items-center mb-4 gap-1.5">
                         <button
@@ -385,18 +393,6 @@ export default function Perguntas() {
                                                 <TextoDestacado tokens={mostrarVocabulario ? questionDestacada : null} texto={question} />
                                             </p>
                                         </div>
-
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                e.preventDefault();
-                                                playAudio(question, user, true);
-                                            }}
-                                            className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors"
-                                        >
-                                            <Volume2 className="w-3.5 h-3.5" />
-                                            {t("listen")}
-                                        </button>
                                     </div>
 
                                     <div className="card-back rounded-2xl border border-gray-700 bg-gradient-to-br from-[#0d1425] to-[#233245] px-6 py-5 shadow-md flex flex-col items-center gap-2">
@@ -408,6 +404,16 @@ export default function Perguntas() {
                             </div>
                         </div>
                         <p className="text-center text-gray-500 text-xs mt-2">{t("tap_card_to_flip")}</p>
+
+                        <div className={`flex justify-center mt-3 ${flipped ? "hidden" : ""}`}>
+                            <button
+                                onClick={() => playAudio(question, user, true)}
+                                className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors"
+                            >
+                                <Volume2 className="w-3.5 h-3.5" />
+                                {t("listen")}
+                            </button>
+                        </div>
 
                         <div className={`mt-10 flex flex-col items-center gap-4 ${flipped ? "hidden" : ""}`}>
                             {!modoTexto && !audioUrl && !gravando && (

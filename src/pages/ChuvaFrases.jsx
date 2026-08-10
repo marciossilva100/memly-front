@@ -6,6 +6,7 @@ import { playAudio, pararAudio } from "../utils/audioPlayer";
 import { tocarSomAcerto } from "../utils/somJogo";
 import { Heart, Trophy, Loader2, CloudRain, Check, Volume2, Settings, X } from "lucide-react";
 import PremiumModal from "../components/PremiumModal";
+import LimiteDiarioModal from "../components/LimiteDiarioModal";
 
 const AVATAR_COLORS = [
     'bg-emerald-500',
@@ -120,6 +121,7 @@ export default function ChuvaFrases() {
     const [explodindo, setExplodindo] = useState(null);
 
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+    const [limiteModalOpen, setLimiteModalOpen] = useState(false);
     const [motivoPremium, setMotivoPremium] = useState(null);
 
     // Configurações do jogo (velocidade de queda + áudio automático),
@@ -187,8 +189,17 @@ export default function ChuvaFrases() {
                 setAcessoBloqueado(bloqueado);
                 if (bloqueado) {
                     setMensagemBloqueio(data?.message ?? null);
-                    setMotivoPremium("jogo_chuva");
-                    setIsPremiumModalOpen(true);
+
+                    // Cota diária acabou (limitado) é diferente de precisar
+                    // virar premium do zero (free) - o primeiro já é um
+                    // usuário engajado que só bateu no teto de hoje, não
+                    // precisa da vitrine completa de novo.
+                    if (data?.limite_atingido) {
+                        setLimiteModalOpen(true);
+                    } else {
+                        setMotivoPremium("jogo_chuva");
+                        setIsPremiumModalOpen(true);
+                    }
                 }
             })
             .catch(() => setAcessoBloqueado(false));
@@ -239,8 +250,14 @@ export default function ChuvaFrases() {
             .then((r) => r.json())
             .then((data) => {
                 if (!data.success) {
-                    setMotivoPremium("jogo_chuva");
-                    setIsPremiumModalOpen(true);
+                    setMensagemBloqueio(data?.message ?? null);
+
+                    if (data.limite_atingido) {
+                        setLimiteModalOpen(true);
+                    } else {
+                        setMotivoPremium("jogo_chuva");
+                        setIsPremiumModalOpen(true);
+                    }
                     return;
                 }
                 iniciarJogo(categoriasParaJogar);
@@ -826,6 +843,23 @@ export default function ChuvaFrases() {
                     setMotivoPremium(null);
                 }}
                 motivo={motivoPremium}
+            />
+
+            <LimiteDiarioModal
+                isOpen={limiteModalOpen}
+                mensagem={mensagemBloqueio}
+                onClose={() => {
+                    setLimiteModalOpen(false);
+                    if (acessoBloqueado === true) {
+                        setSaindoParaHome(true);
+                        navigate("/home");
+                    }
+                }}
+                onAssinarPremium={() => {
+                    setLimiteModalOpen(false);
+                    setMotivoPremium("jogo_chuva");
+                    setIsPremiumModalOpen(true);
+                }}
             />
         </div>
     );

@@ -473,6 +473,8 @@
     "premium_reason_categoria_ia": "Yapay zeka ile kategori oluşturma ücretsiz denemeni kullandın. Sınırsız oluşturmak için premium'a geç.",
     "premium_reason_jogo_chuva": "Bugünkü oyunlarını oynadın. Sınırsız oynamak için premium'a geç.",
     "premium_reason_tiro_certeiro": "Bugünkü Keskin Nişan oyunlarını oynadın. Sınırsız oynamak için premium'a geç.",
+    "daily_limit_reached_title": "Günlük krediler bitti",
+    "daily_limit_premium_cta": "Premium'a abone ol",
     "premium_reason_perguntas_ia": "Bugünkü sorunu kullandın. Günde daha fazla soru için premium'a geç.",
     "premium_reason_frase_dia_ia": "Günlük telaffuz antrenmanı ücretsiz denemeni kullandın. Günlük erişim için premium'a geç.",
     "question_counter": "Soru {{numero}}/{{total}}",

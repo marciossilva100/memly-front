@@ -473,6 +473,8 @@
     "premium_reason_categoria_ia": "AIカテゴリ作成の無料体験を使い切りました。無制限に作成するにはプレミアムにアップグレードしてください。",
     "premium_reason_jogo_chuva": "本日分のプレイ回数を使い切りました。無制限にプレイするにはプレミアムにアップグレードしてください。",
     "premium_reason_tiro_certeiro": "今日のねらい撃ちのプレイ回数を使い切りました。プレミアムで無制限にプレイできます。",
+    "daily_limit_reached_title": "本日分のクレジットを使い切りました",
+    "daily_limit_premium_cta": "プレミアムに登録",
     "premium_reason_perguntas_ia": "本日分の質問を使い切りました。1日により多くの質問をするにはプレミアムにアップグレードしてください。",
     "premium_reason_frase_dia_ia": "毎日の発音トレーニングの無料体験を使い切りました。毎日利用するにはプレミアムにアップグレードしてください。",
     "question_counter": "質問 {{numero}}/{{total}}",

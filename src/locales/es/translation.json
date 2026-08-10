@@ -474,6 +474,8 @@
     "premium_reason_categoria_ia": "Ya usaste tu muestra gratuita para crear categorías con IA. Hazte premium para crear sin límites.",
     "premium_reason_jogo_chuva": "Ya jugaste tus partidas de hoy. Hazte premium para jugar sin límites.",
     "premium_reason_tiro_certeiro": "Ya jugaste tus partidas de hoy del juego Tiro Certero. Hazte premium para jugar sin límite.",
+    "daily_limit_reached_title": "Créditos diarios agotados",
+    "daily_limit_premium_cta": "Suscribirse a Premium",
     "premium_reason_perguntas_ia": "Ya usaste tu pregunta de hoy. Hazte premium para tener más preguntas por día.",
     "premium_reason_frase_dia_ia": "Ya usaste tu muestra gratuita del Entrenamiento diario de pronunciación. Hazte premium para tener acceso diario.",
     "question_counter": "Pregunta {{numero}} de {{total}}",

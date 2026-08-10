@@ -475,6 +475,8 @@
     "premium_reason_categoria_ia": "Você já usou sua amostra grátis de criar categoria com IA. Vire premium para criar sem limite.",
     "premium_reason_jogo_chuva": "Você já jogou suas partidas de hoje do jogo Chuva de Frases. Vire premium para jogar sem limite.",
     "premium_reason_tiro_certeiro": "Você já jogou suas partidas de hoje do jogo Tiro Certeiro. Vire premium para jogar sem limite.",
+    "daily_limit_reached_title": "Créditos diários esgotados",
+    "daily_limit_premium_cta": "Assinar Premium",
     "premium_reason_perguntas_ia": "Você já usou sua pergunta de hoje. Vire premium para ter mais perguntas por dia.",
     "premium_reason_frase_dia_ia": "Você já usou sua amostra grátis do Treino diário de pronúncia. Vire premium para ter acesso diário.",
     "question_counter": "Pergunta {{numero}} de {{total}}",

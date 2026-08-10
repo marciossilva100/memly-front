@@ -473,6 +473,8 @@
     "premium_reason_categoria_ia": "Hai esaurito la tua prova gratuita per creare categorie con IA. Passa a premium per crearne senza limiti.",
     "premium_reason_jogo_chuva": "Hai giocato le tue partite di oggi. Passa a premium per giocare senza limiti.",
     "premium_reason_tiro_certeiro": "Hai già giocato le tue partite di oggi di Tiro Preciso. Passa a premium per giocare senza limiti.",
+    "daily_limit_reached_title": "Crediti giornalieri esauriti",
+    "daily_limit_premium_cta": "Abbonati a Premium",
     "premium_reason_perguntas_ia": "Hai usato la tua domanda di oggi. Passa a premium per più domande al giorno.",
     "premium_reason_frase_dia_ia": "Hai esaurito la tua prova gratuita dell'allenamento quotidiano di pronuncia. Passa a premium per l'accesso giornaliero.",
     "question_counter": "Domanda {{numero}} di {{total}}",

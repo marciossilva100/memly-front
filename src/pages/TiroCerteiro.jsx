@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Target, Trophy, Loader2, AlertCircle, Crosshair, ChevronLeft, ChevronRight, Flame, Settings, X } from "lucide-react";
 import PremiumModal from "../components/PremiumModal";
+import LimiteDiarioModal from "../components/LimiteDiarioModal";
 import { useAuth } from "../context/AuthContext";
 import { playAudio, pararAudio, preloadAudio } from "../utils/audioPlayer";
 import { tocarSomTiro, tocarSomAcerto, tocarSomErro } from "../utils/somJogo";
@@ -168,6 +169,7 @@ export default function TiroCerteiro() {
     const [conteudoInsuficiente, setConteudoInsuficiente] = useState(false);
     const [erro, setErro] = useState(null);
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+    const [limiteModalOpen, setLimiteModalOpen] = useState(false);
     const [motivoPremium, setMotivoPremium] = useState(null);
     const [saindoParaHome, setSaindoParaHome] = useState(false);
 
@@ -283,8 +285,17 @@ export default function TiroCerteiro() {
 
         setBloqueado(true);
         setMensagemBloqueio(data?.message ?? null);
-        setMotivoPremium("tiro_certeiro");
-        setIsPremiumModalOpen(true);
+
+        // Cota diária acabou (usuário limitado) é diferente de precisar
+        // virar premium do zero (free) - aqui já é um usuário engajado que
+        // só bateu no teto de hoje, não precisa da vitrine completa de
+        // funcionalidades de novo, só um aviso claro + opção de assinar.
+        if (data.limite_atingido) {
+            setLimiteModalOpen(true);
+        } else {
+            setMotivoPremium("tiro_certeiro");
+            setIsPremiumModalOpen(true);
+        }
         return true;
     }
 
@@ -873,6 +884,23 @@ export default function TiroCerteiro() {
                     setMotivoPremium(null);
                 }}
                 motivo={motivoPremium}
+            />
+
+            <LimiteDiarioModal
+                isOpen={limiteModalOpen}
+                mensagem={mensagemBloqueio}
+                onClose={() => {
+                    setLimiteModalOpen(false);
+                    if (bloqueado) {
+                        setSaindoParaHome(true);
+                        navigate("/jogos");
+                    }
+                }}
+                onAssinarPremium={() => {
+                    setLimiteModalOpen(false);
+                    setMotivoPremium("tiro_certeiro");
+                    setIsPremiumModalOpen(true);
+                }}
             />
         </div>
     );

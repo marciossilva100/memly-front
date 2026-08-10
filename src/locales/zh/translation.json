@@ -473,6 +473,8 @@
     "premium_reason_categoria_ia": "你已用完AI创建分类的免费试用。升级高级版即可无限创建。",
     "premium_reason_jogo_chuva": "你已用完今天的游戏次数。升级高级版即可无限畅玩。",
     "premium_reason_tiro_certeiro": "你今天的精准射击游戏次数已经用完了。升级高级版即可无限畅玩。",
+    "daily_limit_reached_title": "今日次数已用完",
+    "daily_limit_premium_cta": "订阅高级版",
     "premium_reason_perguntas_ia": "你已用完今天的提问次数。升级高级版即可每天提出更多问题。",
     "premium_reason_frase_dia_ia": "你已用完每日发音训练的免费试用。升级高级版即可每日使用。",
     "question_counter": "第 {{numero}} 题 / 共 {{total}} 题",

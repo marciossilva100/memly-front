@@ -473,6 +473,8 @@
     "premium_reason_categoria_ia": "Wykorzystałeś darmową próbkę tworzenia kategorii z AI. Przejdź na premium, aby tworzyć bez limitu.",
     "premium_reason_jogo_chuva": "Wykorzystałeś dzisiejsze gry. Przejdź na premium, aby grać bez limitu.",
     "premium_reason_tiro_certeiro": "Rozegrałeś już dzisiejsze partie Celnego Strzału. Przejdź na premium, żeby grać bez limitu.",
+    "daily_limit_reached_title": "Dzienne kredyty wyczerpane",
+    "daily_limit_premium_cta": "Subskrybuj Premium",
     "premium_reason_perguntas_ia": "Wykorzystałeś dzisiejsze pytanie. Przejdź na premium, aby mieć więcej pytań dziennie.",
     "premium_reason_frase_dia_ia": "Wykorzystałeś darmową próbkę codziennego treningu wymowy. Przejdź na premium, aby mieć codzienny dostęp.",
     "question_counter": "Pytanie {{numero}} z {{total}}",

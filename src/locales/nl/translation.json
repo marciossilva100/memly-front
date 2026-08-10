@@ -473,6 +473,8 @@
     "premium_reason_categoria_ia": "Je hebt je gratis proefversie van het maken van AI-categorieën gebruikt. Ga premium om onbeperkt te maken.",
     "premium_reason_jogo_chuva": "Je hebt je potjes van vandaag gespeeld. Ga premium om onbeperkt te spelen.",
     "premium_reason_tiro_certeiro": "Je hebt je potjes Zeker Schot van vandaag al gespeeld. Word premium om zonder limiet te spelen.",
+    "daily_limit_reached_title": "Dagelijkse credits op",
+    "daily_limit_premium_cta": "Abonneer op Premium",
     "premium_reason_perguntas_ia": "Je hebt je vraag van vandaag gebruikt. Ga premium voor meer vragen per dag.",
     "premium_reason_frase_dia_ia": "Je hebt je gratis proefversie van de dagelijkse uitspraaktraining gebruikt. Ga premium voor dagelijkse toegang.",
     "question_counter": "Vraag {{numero}} van {{total}}",

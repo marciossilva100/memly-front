@@ -25,13 +25,15 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA }) {
     // null = ainda não sabe (só importa pro limitado - free/premium são
     // sempre bloqueado/liberado, sem precisar checar o servidor)
     const [acessoFrase, setAcessoFrase] = useState(null);
-    const [acessoPerguntas, setAcessoPerguntas] = useState(null);
 
     // Limitado tem amostra vitalícia de cada recurso, mas ela expira se não
-    // for usada no mesmo dia em que a frase/pergunta foi gerada - só o
-    // servidor sabe se ainda está disponível, então consulta ao abrir o
-    // modal pra já mostrar a coroa antes do usuário clicar (em vez de deixar
-    // ele navegar e só descobrir na tela seguinte).
+    // for usada no mesmo dia em que a frase foi gerada - só o servidor sabe
+    // se ainda está disponível, então consulta ao abrir o modal pra já
+    // mostrar a coroa antes do usuário clicar (em vez de deixar ele navegar
+    // e só descobrir na tela seguinte). Perguntas não entra aqui - cota
+    // diária esgotada não mostra coroa nem abre o modal completo de premium
+    // (ver "opcoes" abaixo); quem trata isso é a própria Perguntas.jsx, com
+    // seu modal enxuto específico pra esse caso.
     useEffect(() => {
         if (!openTreinoIA || user?.plano !== 3) return;
 
@@ -45,12 +47,6 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA }) {
             .then(res => res.json())
             .then(data => setAcessoFrase(!!data.acesso))
             .catch(() => setAcessoFrase(true));
-
-        fetch(`${API_URL}/controller/DailyQuestionController.php?action=verificar_acesso`, { headers })
-            .then(res => res.json())
-            .then(data => setAcessoPerguntas(!!data.acesso))
-            .catch(() => setAcessoPerguntas(true));
-
     }, [openTreinoIA, user?.plano, API_URL]);
 
     function temAcesso(acessoLimitado) {
@@ -77,7 +73,11 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA }) {
             titulo: t("questions_training"),
             descricao: t("questions_training_desc"),
             rota: "/perguntasia",
-            temAcesso: temAcesso(acessoPerguntas),
+            // Limitado sempre "tem acesso" aqui, mesmo com a cota diária
+            // zerada - sem coroa, sem modal completo de premium. Deixa
+            // navegar pra Perguntas.jsx, que já trata cota esgotada com sua
+            // própria tela + modal enxuto específico pra esse caso.
+            temAcesso: user?.plano === 3 ? true : temAcesso(),
             motivo: "perguntas_ia"
         }
     ];

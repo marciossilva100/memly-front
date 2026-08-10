@@ -74,7 +74,6 @@ export default function Home() {
     const [totalAprendidas, setTotalAprendidas] = useState(0)
     const [treinoIaStats, setTreinoIaStats] = useState(null)
     const [jogoResumo, setJogoResumo] = useState(null)
-    const [treinoIaBloqueado, setTreinoIaBloqueado] = useState(false)
     const { t } = useTranslation();
     const API_URL = import.meta.env.VITE_API_URL;
 
@@ -185,39 +184,6 @@ export default function Home() {
             .then(data => setJogoResumo(data?.success ? data : null))
             .catch(() => setJogoResumo(null));
     }, [user?.id]);
-
-    // Coroa no ícone do Treino com IA quando AMBOS os recursos (Frase do dia
-    // e Perguntas) estão bloqueados pro limitado - free já cai na outra
-    // condição (user.plano !== 1 && !== 3) na hora de renderizar a coroa, e
-    // premium nunca bloqueia. 'verificar_acesso' já retorna acesso=true
-    // enquanto existir uma frase/pergunta pendente (gerada mas ainda não
-    // respondida) do próprio dia, mesmo com a amostra vitalícia já contada -
-    // é assim que o usuário continua vendo essa tela por até 24h depois de
-    // gerada, sem precisar de nenhuma lógica extra aqui.
-    useEffect(() => {
-        if (!user?.id || user.plano !== 3) {
-            setTreinoIaBloqueado(false);
-            return;
-        }
-
-        const headers = {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + localStorage.getItem("token")
-        };
-
-        Promise.all([
-            fetch(`${API_URL}/controller/fraseDoDia.php`, {
-                method: 'POST',
-                headers,
-                body: JSON.stringify({ action: 'verificar_acesso' })
-            }).then(res => res.json()).catch(() => ({ acesso: true })),
-            fetch(`${API_URL}/controller/DailyQuestionController.php?action=verificar_acesso`, {
-                headers
-            }).then(res => res.json()).catch(() => ({ acesso: true })),
-        ]).then(([frase, perguntas]) => {
-            setTreinoIaBloqueado(!frase?.acesso && !perguntas?.acesso);
-        });
-    }, [user?.id, user?.plano, API_URL]);
 
     const carregarCategorias = () => {
         const nativeLanguage = user?.native_language ?? user?.nativeLanguage ?? user?.idioma_nativo ?? user?.idiomaNativo ?? null;
@@ -729,7 +695,11 @@ export default function Home() {
 
                         <button type="button" onClick={() => verifyPlan()} className="relative flex flex-col items-center gap-1">
                             <Bot width={28} height={28} className="text-orange-400" />
-                            {((user?.plano !== 1 && user?.plano !== 3) || treinoIaBloqueado) && (
+                            {/* Coroa só pro free (nunca teve acesso, precisa virar
+                                premium pra usar) - cota diária esgotada (limitado)
+                                não mostra mais coroa nem abre o modal completo de
+                                premium, só o modal enxuto dentro de Perguntas.jsx. */}
+                            {user?.plano !== 1 && user?.plano !== 3 && (
                                 <Crown className="absolute -top-1 -right-2 w-4 h-4 text-yellow-400" />
                             )}
                         </button>

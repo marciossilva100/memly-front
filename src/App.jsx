@@ -50,6 +50,8 @@ import Metricas from './pages/Metricas';
 import DashboardAdmin from './pages/DashboardAdmin';
 import Configuracoes from './pages/Configuracoes';
 import ChuvaFrases from './pages/ChuvaFrases';
+import Jogos from './pages/Jogos';
+import TiroCerteiro from './pages/TiroCerteiro';
 import TermosDeUso from './pages/TermosDeUso';
 import PoliticaPrivacidade from './pages/PoliticaPrivacidade';
 import Contato from './pages/Contato';
@@ -269,10 +271,28 @@ function Layout({ titulo, setTitulo }) {
         />
 
         <Route
+          path="/jogos"
+          element={
+            <PrivateRoute>
+              <Jogos />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
           path="/chuvadefrases"
           element={
             <PrivateRoute>
               <ChuvaFrases />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/tirocerteiro"
+          element={
+            <PrivateRoute>
+              <TiroCerteiro />
             </PrivateRoute>
           }
         />

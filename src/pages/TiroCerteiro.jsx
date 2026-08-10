@@ -1,0 +1,496 @@
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { Target, Trophy, Loader2, AlertCircle, Crosshair } from "lucide-react";
+import PremiumModal from "../components/PremiumModal";
+
+// Munição/vidas/dificuldade - mesma progressão de nível e fórmulas de
+// spawn/queda já validadas em ChuvaFrases.jsx (ver RAIAS/LARGURA_ITEM/
+// LIMIAR_QUEDA_SEGURA ali), reaproveitadas aqui tal e qual. A diferença é
+// que aqui cada rodada já vem com exatamente as 3 opções certas (a
+// pergunta da IA garante isso), não precisa sortear distratoras de um
+// pool grande.
+const VIDAS_INICIAIS = 3;
+const MUNICAO_INICIAL = 12;
+const RAIAS = [25, 50, 75];
+const LARGURA_ITEM = 38;
+const LIMIAR_QUEDA_SEGURA = 0.3;
+
+const CORES_RAIA = [
+    { bg: "bg-cyan-500/20", border: "border-cyan-400/70", shadow: "shadow-[0_0_16px_rgba(34,211,238,0.45)]", texto: "text-cyan-300", glow: "rgba(34,211,238,0.9)" },
+    { bg: "bg-fuchsia-500/20", border: "border-fuchsia-400/70", shadow: "shadow-[0_0_16px_rgba(232,121,249,0.45)]", texto: "text-fuchsia-300", glow: "rgba(232,121,249,0.9)" },
+    { bg: "bg-lime-500/20", border: "border-lime-400/70", shadow: "shadow-[0_0_16px_rgba(163,230,53,0.45)]", texto: "text-lime-300", glow: "rgba(163,230,53,0.9)" },
+];
+
+function nivelAtual(pontos) {
+    return Math.floor(pontos / 50) + 1;
+}
+
+// Efeito de tiro: um traço/laser saindo da mira (base da tela) até o alvo
+// acertado, seguido de uma explosão de partículas neon no ponto de
+// impacto - mesmo princípio de Explosao em ChuvaFrases.jsx (CSS +
+// transition disparada após o primeiro paint), só que partículas em vez
+// de letras, e com o traço do tiro subindo antes da explosão.
+function EfeitoTiro({ top, left, cor, origemLeft, particulas }) {
+    const [animar, setAnimar] = useState(false);
+
+    useEffect(() => {
+        const raf = requestAnimationFrame(() => setAnimar(true));
+        return () => cancelAnimationFrame(raf);
+    }, []);
+
+    return (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div
+                className="absolute bottom-0 origin-bottom"
+                style={{
+                    left: `${origemLeft}%`,
+                    width: "2px",
+                    height: animar ? `calc(100% - ${top}px)` : "0px",
+                    background: `linear-gradient(to top, ${cor.glow}, transparent)`,
+                    boxShadow: `0 0 8px ${cor.glow}`,
+                    transition: "height 140ms ease-out",
+                }}
+            />
+            <div className="absolute" style={{ top, left }}>
+                {particulas.map((p) => (
+                    <span
+                        key={p.i}
+                        className="absolute w-1.5 h-1.5 rounded-full transition-all ease-out"
+                        style={{
+                            backgroundColor: cor.glow,
+                            boxShadow: `0 0 6px ${cor.glow}`,
+                            transitionDuration: "700ms",
+                            transitionDelay: `${p.atraso}ms`,
+                            transform: animar
+                                ? `translate(${p.dx}px, ${p.dy}px) scale(0.3)`
+                                : "translate(0px, 0px) scale(1)",
+                            opacity: animar ? 0 : 1,
+                        }}
+                    />
+                ))}
+            </div>
+        </div>
+    );
+}
+
+export default function TiroCerteiro() {
+    const { t } = useTranslation();
+    const navigate = useNavigate();
+    const API_URL = import.meta.env.VITE_API_URL;
+
+    // carregando | jogando | fimDeJogo
+    const [fase, setFase] = useState("carregando");
+    const [bloqueado, setBloqueado] = useState(false);
+    const [mensagemBloqueio, setMensagemBloqueio] = useState(null);
+    const [conteudoInsuficiente, setConteudoInsuficiente] = useState(false);
+    const [erro, setErro] = useState(null);
+    const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+    const [motivoPremium, setMotivoPremium] = useState(null);
+    const [saindoParaHome, setSaindoParaHome] = useState(false);
+
+    const [rodadas, setRodadas] = useState([]);
+    const [indiceAtual, setIndiceAtual] = useState(0);
+    const [caindo, setCaindo] = useState([]);
+    const [pontos, setPontos] = useState(0);
+    const [vidas, setVidas] = useState(VIDAS_INICIAIS);
+    const [municao, setMunicao] = useState(MUNICAO_INICIAL);
+    const [tiro, setTiro] = useState(null);
+    const [recorde, setRecorde] = useState(null);
+
+    const uidRef = useRef(0);
+    const areaRef = useRef(null);
+    const alvo = rodadas[indiceAtual] ?? null;
+
+    function iniciarPartida() {
+        setFase("carregando");
+        setErro(null);
+        setConteudoInsuficiente(false);
+
+        const headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem("token"),
+        };
+
+        fetch(`${API_URL}/controller/tiroCerteiro.php`, {
+            method: "POST",
+            headers,
+            body: JSON.stringify({ action: "verificar_acesso" }),
+        })
+            .then((r) => r.json())
+            .then((data) => {
+                if (!data.success) {
+                    setBloqueado(true);
+                    setMensagemBloqueio(data?.message ?? null);
+                    setMotivoPremium("tiro_certeiro");
+                    setIsPremiumModalOpen(true);
+                    return null;
+                }
+
+                return fetch(`${API_URL}/controller/tiroCerteiro.php`, {
+                    method: "POST",
+                    headers,
+                    body: JSON.stringify({ action: "obter_rodadas" }),
+                }).then((r) => r.json());
+            })
+            .then((data) => {
+                if (!data) return; // já tratado como bloqueio acima
+
+                if (!data.success) {
+                    if (data.conteudo_insuficiente) {
+                        setConteudoInsuficiente(true);
+                    } else {
+                        setErro(data.message || t("unexpected_error"));
+                    }
+                    return;
+                }
+
+                setRodadas(data.rodadas);
+                setIndiceAtual(0);
+                setPontos(0);
+                setVidas(VIDAS_INICIAIS);
+                setMunicao(MUNICAO_INICIAL);
+                setCaindo([]);
+                setFase("jogando");
+            })
+            .catch(() => setErro(t("server_connection_error")));
+
+        fetch(`${API_URL}/controller/tiroCerteiro.php`, {
+            method: "POST",
+            headers,
+            body: JSON.stringify({ action: "buscar_recorde" }),
+        })
+            .then((r) => r.json())
+            .then((data) => setRecorde(data?.recorde ?? null))
+            .catch(() => { });
+    }
+
+    useEffect(() => {
+        iniciarPartida();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    function avancarRodada() {
+        setIndiceAtual((prev) => (prev + 1 < rodadas.length ? prev + 1 : 0));
+        setCaindo([]);
+    }
+
+    function perderVida() {
+        setVidas((prev) => Math.max(prev - 1, 0));
+    }
+
+    function usarMunicao() {
+        setMunicao((prev) => Math.max(prev - 1, 0));
+    }
+
+    // fim de jogo quando vidas OU munição zeram - via effect, mesmo padrão
+    // de ChuvaFrases.jsx, pra não disparar setState/fetch de dentro de
+    // outro setState.
+    useEffect(() => {
+        if (fase === "jogando" && (vidas <= 0 || municao <= 0)) {
+            setCaindo([]);
+            setFase("fimDeJogo");
+
+            fetch(`${API_URL}/controller/tiroCerteiro.php`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token"),
+                },
+                body: JSON.stringify({ action: "salvar_pontuacao", pontuacao: pontos }),
+            })
+                .then((res) => res.json())
+                .then((data) => setRecorde((prev) => data?.recorde ?? prev))
+                .catch(() => { });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [vidas, municao]);
+
+    // spawn dos alvos caindo - mesma mecânica de colisão de raia de
+    // ChuvaFrases.jsx, mas as 2 distratoras já vêm prontas da rodada (a IA
+    // já garante que são plausíveis), não precisa escolher de um pool.
+    useEffect(() => {
+        if (fase !== "jogando" || !alvo) return;
+
+        const nivel = nivelAtual(pontos);
+        const intervaloSpawn = Math.max(4500 - nivel * 150, 3000);
+
+        function spawnUmAlvo() {
+            setCaindo((prev) => {
+                const agora = Date.now();
+
+                const raiasCandidatas = RAIAS.map((_, i) => i).filter((i) => {
+                    return !prev.some((item) => {
+                        const progresso = Math.min(1, Math.max(0, (agora - item.spawnTime) / item.duracao));
+                        if (progresso >= LIMIAR_QUEDA_SEGURA) return false;
+                        return Math.abs(RAIAS[i] - RAIAS[item.raia]) < LARGURA_ITEM;
+                    });
+                });
+
+                if (raiasCandidatas.length === 0) return prev;
+
+                const temCorreta = prev.some((item) => item.correta);
+                const ultimaRaiaLivre = raiasCandidatas.length === 1;
+                const vaiSerCorreta = !temCorreta && (ultimaRaiaLivre || Math.random() < 0.35);
+
+                const texto = vaiSerCorreta
+                    ? alvo.certa
+                    : alvo.erradas[Math.floor(Math.random() * alvo.erradas.length)];
+
+                const duracaoBase = Math.max(30000 - nivel * 800, 16000);
+                const duracao = duracaoBase * (0.7 + Math.random() * 0.6);
+
+                const raia = raiasCandidatas[Math.floor(Math.random() * raiasCandidatas.length)];
+
+                uidRef.current += 1;
+
+                return [
+                    ...prev,
+                    {
+                        uid: uidRef.current,
+                        texto,
+                        correta: vaiSerCorreta,
+                        raia,
+                        duracao,
+                        spawnTime: agora,
+                        estado: "normal",
+                        jaErrou: false,
+                    },
+                ];
+            });
+        }
+
+        spawnUmAlvo();
+        const interval = setInterval(spawnUmAlvo, intervaloSpawn);
+
+        return () => clearInterval(interval);
+    }, [fase, alvo, pontos]);
+
+    function removerCaindo(uid) {
+        setCaindo((prev) => prev.filter((item) => item.uid !== uid));
+    }
+
+    function handleFimDaQueda(item) {
+        if (item.correta) {
+            perderVida();
+            avancarRodada();
+        } else {
+            removerCaindo(item.uid);
+        }
+    }
+
+    function handleTiroErrado(item) {
+        setCaindo((prev) =>
+            prev.map((i) => (i.uid === item.uid ? { ...i, estado: "errada", jaErrou: true } : i))
+        );
+
+        if (!item.jaErrou) {
+            perderVida();
+        }
+
+        setTimeout(() => {
+            setCaindo((prev) =>
+                prev.map((i) => (i.uid === item.uid ? { ...i, estado: "normal" } : i))
+            );
+        }, 500);
+    }
+
+    function handleTiro(item, event) {
+        usarMunicao();
+
+        if (!item.correta) {
+            handleTiroErrado(item);
+            return;
+        }
+
+        const el = event.currentTarget;
+        const rect = el.getBoundingClientRect();
+        const parentRect = areaRef.current?.getBoundingClientRect();
+        const top = parentRect ? rect.top - parentRect.top : 0;
+        const left = parentRect ? rect.left - parentRect.left + rect.width / 2 : 0;
+
+        const particulas = Array.from({ length: 10 }, (_, i) => ({
+            i,
+            dx: (Math.random() - 0.5) * 220,
+            dy: (Math.random() - 0.5) * 220 - 60,
+            atraso: Math.random() * 80,
+        }));
+
+        setTiro({ top, left, cor: CORES_RAIA[item.raia % CORES_RAIA.length], origemLeft: RAIAS[item.raia], particulas });
+        setTimeout(() => setTiro(null), 750);
+
+        removerCaindo(item.uid);
+        setPontos((prev) => prev + 10 + nivelAtual(prev));
+        avancarRodada();
+    }
+
+    return (
+        <div className="espaco-fundo px-5 h-dvh flex flex-col text-white">
+            <div className="relative flex items-center gap-3 mb-4 mt-4">
+                <div className="cursor-pointer" onClick={() => navigate(-1)}>
+                    <i className="bi bi-arrow-left text-2xl text-white"></i>
+                </div>
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <span className="flex items-center justify-center w-9 h-9 shrink-0 rounded-xl bg-gradient-to-br from-fuchsia-500/20 to-cyan-500/20 text-cyan-300">
+                        <Target className="w-5 h-5" />
+                    </span>
+                    <h1 className="text-lg font-semibold text-white leading-tight truncate">
+                        {t("sure_shot_title")}
+                    </h1>
+                </div>
+            </div>
+
+            {fase === "carregando" && !bloqueado && !conteudoInsuficiente && !erro && (
+                <div className="relative flex-1 flex flex-col items-center justify-center text-center gap-3">
+                    <Loader2 className="w-8 h-8 text-cyan-300 animate-spin" />
+                    <p className="text-gray-300 text-sm">{t("ia_gerando_conteudo")}</p>
+                </div>
+            )}
+
+            {bloqueado && !saindoParaHome && (
+                <div className="relative flex-1 flex flex-col items-center justify-center text-center px-4">
+                    <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center">
+                        <Trophy className="w-6 h-6 text-yellow-400" />
+                    </div>
+                    <p className="text-gray-300 mb-4">{mensagemBloqueio}</p>
+                    <button
+                        onClick={() => { setSaindoParaHome(true); navigate("/jogos"); }}
+                        className="px-6 py-3 rounded-full bg-gray-800/50 border border-gray-700 text-white font-medium hover:bg-gray-700/50 transition-colors"
+                    >
+                        {t("back")}
+                    </button>
+                </div>
+            )}
+
+            {conteudoInsuficiente && (
+                <div className="relative flex-1 flex flex-col items-center justify-center text-center px-4">
+                    <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mb-5">
+                        <AlertCircle className="w-8 h-8 text-amber-400" />
+                    </div>
+                    <h1 className="text-xl font-semibold text-white mb-2">{t("insufficient_content")}</h1>
+                    <p className="text-gray-400 text-sm max-w-xs">{t("add_more_phrases_hint")}</p>
+                    <button
+                        onClick={() => navigate("/jogos")}
+                        className="mt-8 px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors"
+                    >
+                        {t("back")}
+                    </button>
+                </div>
+            )}
+
+            {erro && (
+                <div className="relative flex-1 flex flex-col items-center justify-center text-center px-4">
+                    <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mb-5">
+                        <AlertCircle className="w-8 h-8 text-amber-400" />
+                    </div>
+                    <h1 className="text-xl font-semibold text-white mb-2">{t("unexpected_error")}</h1>
+                    <p className="text-gray-400 text-sm max-w-xs">{erro}</p>
+                    <div className="mt-8 flex flex-col gap-3 w-full max-w-xs">
+                        <button
+                            onClick={iniciarPartida}
+                            className="px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors"
+                        >
+                            {t("try_again")}
+                        </button>
+                        <button
+                            onClick={() => navigate("/jogos")}
+                            className="px-6 py-3 rounded-full bg-gray-800/50 border border-gray-700 text-white font-medium hover:bg-gray-700/50 transition-colors"
+                        >
+                            {t("back")}
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {fase === "jogando" && alvo && (
+                <div className="relative flex-1 flex flex-col min-h-0">
+                    <div className="flex items-center justify-between gap-2 mb-3 shrink-0 text-sm">
+                        <span className="text-gray-300">{t("score")}: <span className="text-white font-semibold">{pontos}</span></span>
+                        <span className="flex items-center gap-1 text-red-400">
+                            {"❤".repeat(vidas)}
+                        </span>
+                        <span className="flex items-center gap-1 text-cyan-300 font-semibold">
+                            <Crosshair className="w-3.5 h-3.5" /> {municao}
+                        </span>
+                    </div>
+
+                    <div className="relative rounded-2xl border border-fuchsia-400/30 bg-gradient-to-br from-fuchsia-500/10 via-gray-900/60 to-cyan-500/10 px-4 py-3 text-center mb-3 shrink-0">
+                        <p className="text-cyan-300 text-[11px] font-semibold uppercase tracking-wider mb-1">
+                            {t("translate_this")}
+                        </p>
+                        <p className="text-base font-bold text-white">{alvo.alvo}</p>
+                    </div>
+
+                    <div ref={areaRef} className="chuva-area relative flex-1 overflow-hidden rounded-2xl border border-cyan-900/50 bg-black/30">
+                        {caindo.map((item) => {
+                            const cor = CORES_RAIA[item.raia % CORES_RAIA.length];
+                            return (
+                                <button
+                                    key={item.uid}
+                                    onClick={(e) => handleTiro(item, e)}
+                                    onAnimationEnd={() => handleFimDaQueda(item)}
+                                    className={`chuva-item px-3 py-2 rounded-xl border text-sm font-medium text-center transition-colors ${item.estado === "errada"
+                                        ? "bg-red-500/80 border-red-400 text-white"
+                                        : `${cor.bg} ${cor.border} ${cor.shadow} text-white`
+                                        }`}
+                                    style={{
+                                        left: `${RAIAS[item.raia]}%`,
+                                        transform: "translateX(-50%)",
+                                        width: `${LARGURA_ITEM}%`,
+                                        animationDuration: `${item.duracao}ms`,
+                                    }}
+                                >
+                                    {item.texto}
+                                </button>
+                            );
+                        })}
+                        {tiro && <EfeitoTiro {...tiro} />}
+                    </div>
+                </div>
+            )}
+
+            {fase === "fimDeJogo" && (
+                <div className="relative flex-1 flex flex-col items-center justify-center text-center">
+                    <div className="w-16 h-16 rounded-full bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center mb-5">
+                        <Trophy className="w-8 h-8 text-cyan-300" />
+                    </div>
+                    <h1 className="text-xl font-semibold text-white mb-2">{t("game_over_title")}</h1>
+                    <p className="text-gray-300 mb-1">{t("score")}: {pontos}</p>
+                    {recorde !== null && (
+                        <p className="text-gray-400 text-sm mb-8">{t("best_score")}: {recorde}</p>
+                    )}
+
+                    <div className="flex flex-col gap-3 w-full max-w-xs">
+                        <button
+                            onClick={iniciarPartida}
+                            className="w-full px-6 py-3 rounded-full bg-gradient-to-r from-fuchsia-500 to-cyan-400 hover:opacity-90 text-white font-medium transition-opacity"
+                        >
+                            {t("play_again")}
+                        </button>
+                        <button
+                            onClick={() => navigate("/jogos")}
+                            className="w-full px-6 py-3 rounded-full text-gray-400 hover:text-white transition-colors"
+                        >
+                            {t("back")}
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            <PremiumModal
+                isOpen={isPremiumModalOpen}
+                setIsPremiumModalOpen={setIsPremiumModalOpen}
+                onClose={() => {
+                    if (bloqueado) {
+                        setSaindoParaHome(true);
+                        navigate("/jogos");
+                        return;
+                    }
+                    setIsPremiumModalOpen(false);
+                    setMotivoPremium(null);
+                }}
+                motivo={motivoPremium}
+            />
+        </div>
+    );
+}

@@ -149,6 +149,7 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
                 {motivo === "categorias" ? t("premium_reason_categorias") : null}
                 {motivo === "categoria_ia" ? t("premium_reason_categoria_ia") : null}
                 {motivo === "jogo_chuva" ? t("premium_reason_jogo_chuva") : null}
+                {motivo === "tiro_certeiro" ? t("premium_reason_tiro_certeiro") : null}
                 {motivo === "perguntas_ia" ? t("premium_reason_perguntas_ia") : null}
                 {motivo === "frase_dia_ia" ? t("premium_reason_frase_dia_ia") : null}
               </div>

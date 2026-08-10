@@ -25,6 +25,7 @@ export default function TreinoIA() {
     const [fraseEncerrada, setFraseEncerrada] = useState(false);
     const [premiumRequired, setPremiumRequired] = useState(false);
     const [limitReached, setLimitReached] = useState(false);
+    const [insufficientContent, setInsufficientContent] = useState(false);
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
     const [motivoPremium, setMotivoPremium] = useState(null);
 
@@ -57,6 +58,7 @@ export default function TreinoIA() {
     function buscarFraseDoDia() {
         setLoading(true);
         setError(null);
+        setInsufficientContent(false);
         setFlipped(false);
 
         fetch(`${API_URL}/controller/fraseDoDia.php`, {
@@ -82,6 +84,10 @@ export default function TreinoIA() {
                             setMotivoPremium("frase_dia_ia");
                             setIsPremiumModalOpen(true);
                         }
+                        return;
+                    }
+                    if (data.conteudo_insuficiente) {
+                        setInsufficientContent(true);
                         return;
                     }
                     setError(data.message || t("unexpected_error"));
@@ -220,7 +226,7 @@ export default function TreinoIA() {
         );
     }
 
-    if (error && !frase) {
+    if (insufficientContent) {
         return (
             <div className="h-screen flex flex-col items-center justify-center text-center p-6 from-gray-900 to-gray-800 bg-gradient-to-br">
                 <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mb-5">
@@ -240,6 +246,38 @@ export default function TreinoIA() {
                 >
                     {t("back")}
                 </button>
+            </div>
+        );
+    }
+
+    if (error && !frase) {
+        return (
+            <div className="h-screen flex flex-col items-center justify-center text-center p-6 from-gray-900 to-gray-800 bg-gradient-to-br">
+                <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mb-5">
+                    <AlertCircle className="w-8 h-8 text-amber-400" />
+                </div>
+
+                <h1 className="text-xl font-semibold text-white mb-2">
+                    {t("unexpected_error")}
+                </h1>
+                <p className="text-gray-400 text-sm max-w-xs">
+                    {error}
+                </p>
+
+                <div className="mt-8 flex flex-col gap-3 w-full max-w-xs">
+                    <button
+                        onClick={buscarFraseDoDia}
+                        className="px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors"
+                    >
+                        {t("try_again")}
+                    </button>
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white font-medium transition-colors"
+                    >
+                        {t("back")}
+                    </button>
+                </div>
             </div>
         );
     }

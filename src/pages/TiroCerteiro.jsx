@@ -277,6 +277,16 @@ export default function TiroCerteiro() {
             .then((r) => r.json())
             .then((data) => {
                 if (!data.success) {
+                    // Cooldown não é bloqueio de plano - não faz sentido abrir o
+                    // modal de "vire premium" pra quem já é premium e só está
+                    // clicando rápido demais em "jogar de novo". Usa a mesma
+                    // tela de erro genérica (com "tentar novamente"), que já
+                    // existe pra outras falhas.
+                    if (data.cooldown) {
+                        setErro(data.message || t("unexpected_error"));
+                        return null;
+                    }
+
                     setBloqueado(true);
                     setMensagemBloqueio(data?.message ?? null);
                     setMotivoPremium("tiro_certeiro");
@@ -322,7 +332,16 @@ export default function TiroCerteiro() {
             .catch(() => { });
     }
 
+    // Guarda em ref (não estado) pra sobreviver ao efeito de montagem
+    // duplicado do StrictMode em dev - sem isso, "verificar_acesso" disparava
+    // 2x quase simultâneas logo na primeira entrada, e a segunda já caía no
+    // cooldown (a primeira tinha acabado de registrar o uso), abrindo o
+    // modal de premium indevidamente pra quem nem chegou a jogar ainda.
+    const partidaIniciadaRef = useRef(false);
+
     useEffect(() => {
+        if (partidaIniciadaRef.current) return;
+        partidaIniciadaRef.current = true;
         iniciarPartida();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);

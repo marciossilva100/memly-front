@@ -334,6 +334,15 @@ input{
   to { opacity: 0.65; }
 }
 
+@keyframes nave-pulso {
+  from { filter: brightness(1) drop-shadow(0 0 6px rgba(34,211,238,0.7)); }
+  to { filter: brightness(1.3) drop-shadow(0 0 12px rgba(232,121,249,0.9)); }
+}
+
+.animate-nave-pulso {
+  animation: nave-pulso 1.4s ease-in-out infinite alternate;
+}
+
 
 
 

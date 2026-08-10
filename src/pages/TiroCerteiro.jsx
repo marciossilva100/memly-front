@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Target, Trophy, Loader2, AlertCircle, Crosshair } from "lucide-react";
+import { Target, Trophy, Loader2, AlertCircle, Crosshair, ChevronLeft, ChevronRight, Flame } from "lucide-react";
 import PremiumModal from "../components/PremiumModal";
 
 // Munição/vidas/dificuldade - mesma progressão de nível e fórmulas de
@@ -26,12 +26,51 @@ function nivelAtual(pontos) {
     return Math.floor(pontos / 50) + 1;
 }
 
+// Nave controlável (botões esquerda/direita movem entre as 3 raias fixas,
+// mesmas raias em que os alvos caem) - o jogador mira posicionando a nave,
+// não tocando direto no alvo. Transição suave de "left" entre raias.
+function Nave({ raia }) {
+    return (
+        <div
+            className="absolute bottom-2 z-10 pointer-events-none flex flex-col items-center transition-[left] duration-200 ease-out"
+            style={{ left: `${RAIAS[raia]}%`, transform: "translateX(-50%)" }}
+        >
+            <div
+                className="w-7 h-8 bg-gradient-to-t from-cyan-300 via-fuchsia-400 to-white animate-nave-pulso"
+                style={{ clipPath: "polygon(50% 0%, 8% 100%, 92% 100%)" }}
+            />
+            <div className="w-12 h-1.5 -mt-1 rounded-full bg-fuchsia-400/80 shadow-[0_0_10px_3px_rgba(232,121,249,0.7)]" />
+        </div>
+    );
+}
+
+// Painel HUD de um alvo: cantos tipo mira de trava (bracket), não a bolha
+// arredondada da Chuva de Frases - lê como "algo pra travar mira e atirar",
+// não como um botão de responder.
+function PainelAlvo({ texto, cor, errada }) {
+    const corBorda = errada ? "#f87171" : cor.glow;
+
+    return (
+        <span className="relative inline-flex items-center justify-center px-3 py-2 w-full h-full">
+            <span
+                className={`relative z-10 text-xs font-semibold text-center leading-tight ${errada ? "text-white" : cor.texto}`}
+            >
+                {texto}
+            </span>
+            <span className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2" style={{ borderColor: corBorda }} />
+            <span className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2" style={{ borderColor: corBorda }} />
+            <span className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2" style={{ borderColor: corBorda }} />
+            <span className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2" style={{ borderColor: corBorda }} />
+        </span>
+    );
+}
+
 // Efeito de tiro: um traço/laser saindo da mira (base da tela) até o alvo
 // acertado, seguido de uma explosão de partículas neon no ponto de
 // impacto - mesmo princípio de Explosao em ChuvaFrases.jsx (CSS +
 // transition disparada após o primeiro paint), só que partículas em vez
 // de letras, e com o traço do tiro subindo antes da explosão.
-function EfeitoTiro({ top, left, cor, origemLeft, particulas }) {
+function EfeitoTiro({ top, left, cor, angulo, comprimento, origemX, particulas }) {
     const [animar, setAnimar] = useState(false);
 
     useEffect(() => {
@@ -41,15 +80,29 @@ function EfeitoTiro({ top, left, cor, origemLeft, particulas }) {
 
     return (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {/* clarão da nave disparando - sai da posição real dela (origemX),
+                não do centro fixo, senão o tiro parece vir de outro lugar
+                sempre que a nave se move pras raias da esquerda/direita. */}
             <div
-                className="absolute bottom-0 origin-bottom"
+                className="absolute bottom-2 -translate-x-1/2 w-8 h-8 rounded-full transition-opacity"
                 style={{
-                    left: `${origemLeft}%`,
-                    width: "2px",
-                    height: animar ? `calc(100% - ${top}px)` : "0px",
+                    left: origemX,
+                    backgroundColor: cor.glow,
+                    filter: "blur(6px)",
+                    opacity: animar ? 0 : 0.9,
+                    transitionDuration: "200ms",
+                }}
+            />
+            <div
+                className="absolute bottom-2 origin-bottom"
+                style={{
+                    left: origemX,
+                    width: "3px",
+                    height: animar ? `${comprimento}px` : "0px",
                     background: `linear-gradient(to top, ${cor.glow}, transparent)`,
-                    boxShadow: `0 0 8px ${cor.glow}`,
-                    transition: "height 140ms ease-out",
+                    boxShadow: `0 0 10px ${cor.glow}`,
+                    transform: `rotate(${angulo}deg)`,
+                    transition: "height 120ms ease-out",
                 }}
             />
             <div className="absolute" style={{ top, left }}>
@@ -97,6 +150,9 @@ export default function TiroCerteiro() {
     const [municao, setMunicao] = useState(MUNICAO_INICIAL);
     const [tiro, setTiro] = useState(null);
     const [recorde, setRecorde] = useState(null);
+    // índice em RAIAS (0/1/2) - a nave começa centralizada e se move entre
+    // as 3 raias fixas com os botões, mesma faixa em que os alvos caem.
+    const [naveLane, setNaveLane] = useState(1);
 
     const uidRef = useRef(0);
     const areaRef = useRef(null);
@@ -279,35 +335,70 @@ export default function TiroCerteiro() {
         }
     }
 
-    function handleTiroErrado(item) {
-        setCaindo((prev) =>
-            prev.map((i) => (i.uid === item.uid ? { ...i, estado: "errada", jaErrou: true } : i))
-        );
-
-        if (!item.jaErrou) {
-            perderVida();
-        }
-
-        setTimeout(() => {
-            setCaindo((prev) =>
-                prev.map((i) => (i.uid === item.uid ? { ...i, estado: "normal" } : i))
-            );
-        }, 500);
+    function moverNave(direcao) {
+        setNaveLane((prev) => Math.min(2, Math.max(0, prev + direcao)));
     }
 
-    function handleTiro(item, event) {
+    // Dispara na raia em que a nave está mirando (não mais tocando direto
+    // no alvo) - acha o alvo mais avançado (mais perto da nave) nessa raia,
+    // se houver algum. Sem alvo na raia, o tiro sobe reto até o topo sem
+    // acertar nada (erra por má mira, não custa vida, só munição).
+    function atirar() {
+        if (municao <= 0) return;
         usarMunicao();
 
-        if (!item.correta) {
-            handleTiroErrado(item);
+        const agora = Date.now();
+        let alvoAtingido = null;
+        let melhorProgresso = -1;
+
+        for (const item of caindo) {
+            if (item.raia !== naveLane) continue;
+            const progresso = Math.min(1, Math.max(0, (agora - item.spawnTime) / item.duracao));
+            if (progresso > melhorProgresso) {
+                melhorProgresso = progresso;
+                alvoAtingido = item;
+            }
+        }
+
+        const parentRect = areaRef.current?.getBoundingClientRect();
+        const largura = parentRect?.width ?? 0;
+        const altura = parentRect?.height ?? 0;
+        const origemX = (largura * RAIAS[naveLane]) / 100;
+        const origemY = altura;
+        const corNave = CORES_RAIA[naveLane];
+
+        if (!alvoAtingido) {
+            setTiro({ top: 0, left: origemX, origemX, cor: corNave, angulo: 0, comprimento: altura, particulas: [] });
+            setTimeout(() => setTiro(null), 500);
             return;
         }
 
-        const el = event.currentTarget;
-        const rect = el.getBoundingClientRect();
-        const parentRect = areaRef.current?.getBoundingClientRect();
-        const top = parentRect ? rect.top - parentRect.top : 0;
-        const left = parentRect ? rect.left - parentRect.left + rect.width / 2 : 0;
+        const el = areaRef.current?.querySelector(`[data-uid="${alvoAtingido.uid}"]`);
+        const rect = el?.getBoundingClientRect();
+        const top = rect && parentRect ? rect.top - parentRect.top : 0;
+        const left = rect && parentRect ? rect.left - parentRect.left + rect.width / 2 : origemX;
+
+        const dxTiro = left - origemX;
+        const dyTiro = origemY - top;
+        const comprimentoTiro = Math.sqrt(dxTiro * dxTiro + dyTiro * dyTiro);
+        const anguloTiro = Math.atan2(dxTiro, dyTiro) * (180 / Math.PI);
+
+        if (!alvoAtingido.correta) {
+            setCaindo((prev) =>
+                prev.map((i) => (i.uid === alvoAtingido.uid ? { ...i, estado: "errada", jaErrou: true } : i))
+            );
+            if (!alvoAtingido.jaErrou) {
+                perderVida();
+            }
+            setTiro({ top, left, origemX, cor: corNave, angulo: anguloTiro, comprimento: comprimentoTiro, particulas: [] });
+            setTimeout(() => setTiro(null), 500);
+            setTimeout(() => {
+                setCaindo((prev) =>
+                    prev.map((i) => (i.uid === alvoAtingido.uid ? { ...i, estado: "normal" } : i))
+                );
+            }, 500);
+            return;
+        }
 
         const particulas = Array.from({ length: 10 }, (_, i) => ({
             i,
@@ -316,10 +407,18 @@ export default function TiroCerteiro() {
             atraso: Math.random() * 80,
         }));
 
-        setTiro({ top, left, cor: CORES_RAIA[item.raia % CORES_RAIA.length], origemLeft: RAIAS[item.raia], particulas });
+        setTiro({
+            top,
+            left,
+            origemX,
+            cor: CORES_RAIA[alvoAtingido.raia % CORES_RAIA.length],
+            angulo: anguloTiro,
+            comprimento: comprimentoTiro,
+            particulas,
+        });
         setTimeout(() => setTiro(null), 750);
 
-        removerCaindo(item.uid);
+        removerCaindo(alvoAtingido.uid);
         setPontos((prev) => prev + 10 + nivelAtual(prev));
         avancarRodada();
     }
@@ -424,27 +523,55 @@ export default function TiroCerteiro() {
                     <div ref={areaRef} className="chuva-area relative flex-1 overflow-hidden rounded-2xl border border-cyan-900/50 bg-black/30">
                         {caindo.map((item) => {
                             const cor = CORES_RAIA[item.raia % CORES_RAIA.length];
+                            const errada = item.estado === "errada";
                             return (
-                                <button
+                                <div
                                     key={item.uid}
-                                    onClick={(e) => handleTiro(item, e)}
+                                    data-uid={item.uid}
                                     onAnimationEnd={() => handleFimDaQueda(item)}
-                                    className={`chuva-item px-3 py-2 rounded-xl border text-sm font-medium text-center transition-colors ${item.estado === "errada"
-                                        ? "bg-red-500/80 border-red-400 text-white"
-                                        : `${cor.bg} ${cor.border} ${cor.shadow} text-white`
+                                    className={`chuva-item rounded-md backdrop-blur-sm transition-colors ${errada ? "bg-red-500/30" : "bg-black/50"
                                         }`}
                                     style={{
                                         left: `${RAIAS[item.raia]}%`,
                                         transform: "translateX(-50%)",
                                         width: `${LARGURA_ITEM}%`,
                                         animationDuration: `${item.duracao}ms`,
+                                        boxShadow: errada ? "0 0 14px rgba(248,113,113,0.5)" : `0 0 14px ${cor.glow.replace('0.9', '0.35')}`,
                                     }}
                                 >
-                                    {item.texto}
-                                </button>
+                                    <PainelAlvo texto={item.texto} cor={cor} errada={errada} />
+                                </div>
                             );
                         })}
                         {tiro && <EfeitoTiro {...tiro} />}
+                        <Nave raia={naveLane} />
+                    </div>
+
+                    <div className="flex items-center justify-center gap-4 shrink-0 pt-3">
+                        <button
+                            type="button"
+                            onClick={() => moverNave(-1)}
+                            disabled={naveLane === 0}
+                            className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-800/70 border border-cyan-400/30 text-cyan-300 disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-transform"
+                        >
+                            <ChevronLeft className="w-6 h-6" />
+                        </button>
+                        <button
+                            type="button"
+                            onClick={atirar}
+                            disabled={municao <= 0}
+                            className="flex items-center justify-center gap-1.5 w-20 h-14 rounded-2xl bg-gradient-to-br from-fuchsia-500 to-cyan-400 text-white font-bold shadow-[0_0_18px_rgba(232,121,249,0.5)] disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-transform"
+                        >
+                            <Flame className="w-5 h-5" />
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => moverNave(1)}
+                            disabled={naveLane === 2}
+                            className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-800/70 border border-cyan-400/30 text-cyan-300 disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-transform"
+                        >
+                            <ChevronRight className="w-6 h-6" />
+                        </button>
                     </div>
                 </div>
             )}

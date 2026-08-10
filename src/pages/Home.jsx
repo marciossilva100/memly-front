@@ -519,9 +519,9 @@ export default function Home() {
                 </div> */}
             </div>
 
-            <div className="flex-1 flex min-h-0 mt-4 pl-4 pr-3 gap-1">
+            <div className="flex-1 flex min-h-0 mt-4 pl-4 pr-2 gap-0">
                 <div className="lista-categoria flex-1 overflow-y-auto py-4 scrollbar-hide" id="lista-categoria">
-                <div className=" items-center justify-center pr-4 ">
+                <div className=" items-center justify-center pr-2 ">
 
                     {/* Item */}
                     {categorias.map((item, index) => {

@@ -374,6 +374,13 @@ export default function TiroCerteiro() {
         const duracaoBase = Math.max(30000 - nivel * 800, 16000) * velocidadeJogo;
         const agora = Date.now();
 
+        // Altura real da área em px, lida uma única vez aqui (não a cada
+        // frame) - dá o alcance da queda em transform (px), não em % de
+        // "top" (que forçaria reflow contínuo, ver comentário no CSS).
+        const alturaArea = areaRef.current?.getBoundingClientRect().height ?? 600;
+        const yInicio = -0.12 * alturaArea;
+        const yFim = 1.08 * alturaArea;
+
         const raiaCorreta = Math.random() < 0.5 ? 0 : 1;
         const raiaErrada = raiaCorreta === 0 ? 1 : 0;
 
@@ -387,6 +394,8 @@ export default function TiroCerteiro() {
             spawnTime: agora,
             estado: "normal",
             jaErrou: false,
+            yInicio,
+            yFim,
         };
 
         uidRef.current += 1;
@@ -399,6 +408,8 @@ export default function TiroCerteiro() {
             spawnTime: agora,
             estado: "normal",
             jaErrou: false,
+            yInicio,
+            yFim,
         };
 
         setCaindo([itemCorreto, itemErrado]);
@@ -669,15 +680,16 @@ export default function TiroCerteiro() {
                                     key={item.uid}
                                     data-uid={item.uid}
                                     onAnimationEnd={() => handleFimDaQueda(item)}
-                                    className={`chuva-item rounded-md backdrop-blur-sm transition-colors ${errada ? "bg-red-500/30" : "bg-black/50"
+                                    className={`tiro-item-caindo rounded-md backdrop-blur-sm transition-colors ${errada ? "bg-red-500/30" : "bg-black/50"
                                         }`}
                                     style={{
                                         left: `${RAIAS[item.raia]}%`,
-                                        transform: "translateX(-50%)",
                                         width: `${LARGURA_ITEM}%`,
                                         animationDuration: `${item.duracao}ms`,
                                         animationPlayState: modalConfigAberto ? "paused" : "running",
                                         boxShadow: errada ? "0 0 14px rgba(248,113,113,0.5)" : `0 0 14px ${cor.glow.replace('0.9', '0.35')}`,
+                                        '--tiro-y-inicio': `${item.yInicio}px`,
+                                        '--tiro-y-fim': `${item.yFim}px`,
                                     }}
                                 >
                                     <PainelAlvo texto={item.texto} cor={cor} errada={errada} />

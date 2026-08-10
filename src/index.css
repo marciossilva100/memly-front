@@ -288,6 +288,26 @@ input{
   animation-fill-mode: forwards;
 }
 
+/* Queda do Tiro Certeiro - mesma ideia da Chuva de Frases, mas animando
+   transform (translateY em px, calculado em JS a partir da altura real da
+   área) em vez de "top" em %. Animar "top" invalida o layout a cada frame -
+   qualquer leitura de posição no meio disso (ex: getBoundingClientRect() ao
+   atirar) força um reflow síncrono, causando o atraso perceptível ao
+   disparar. transform não invalida layout (só composição/GPU), resolve os
+   dois problemas de uma vez (fluidez geral + atraso no tiro). */
+@keyframes tiro-item-cair {
+  from { transform: translate(-50%, var(--tiro-y-inicio, -80px)); }
+  to { transform: translate(-50%, var(--tiro-y-fim, 600px)); }
+}
+
+.tiro-item-caindo {
+  position: absolute;
+  animation-name: tiro-item-cair;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  will-change: transform;
+}
+
 /* Fundo "espaço sideral" do Tiro Certeiro - CSS puro (sem imagem), dois
    campos de estrela em tiles de tamanho diferente pra não parecer um
    padrão repetido óbvio, cada um piscando num ritmo levemente diferente. */
@@ -319,14 +339,16 @@ input{
     radial-gradient(1px 1px at 70% 10%, #fff 100%, transparent);
   background-size: 220px 220px;
   opacity: 0.55;
-  animation: estrelas-piscar 4s ease-in-out infinite alternate, estrelas-deriva-1 22s linear infinite;
+  will-change: transform, opacity;
+  animation: estrelas-piscar 4s ease-in-out infinite alternate, estrelas-deriva-1 16s linear infinite;
 }
 
 .espaco-fundo::after {
   background-size: 160px 160px;
   background-position: 40px 60px;
   opacity: 0.3;
-  animation: estrelas-piscar 6s ease-in-out infinite alternate-reverse, estrelas-deriva-2 16s linear infinite;
+  will-change: transform, opacity;
+  animation: estrelas-piscar 6s ease-in-out infinite alternate-reverse, estrelas-deriva-2 11s linear infinite;
 }
 
 @keyframes estrelas-piscar {
@@ -335,21 +357,25 @@ input{
 }
 
 /* deriva só pra baixo - sensação de estar avançando pelo espaço, sem
-   chamar atenção sobre o jogo. O deslocamento é exatamente 1 tile
+   chamar atenção sobre o jogo. Anima transform (acelerado por composição,
+   não força repintura a cada frame como animar background-position fazia -
+   principal causa dos travamentos) - o deslocamento é exatamente 1 tile
    (background-size) pra fechar o loop sem salto visível. */
 @keyframes estrelas-deriva-1 {
-  from { background-position: 0 0; }
-  to { background-position: 0 220px; }
+  from { transform: translateY(0); }
+  to { transform: translateY(220px); }
 }
 
 @keyframes estrelas-deriva-2 {
-  from { background-position: 40px 60px; }
-  to { background-position: 40px 220px; }
+  from { transform: translateY(0); }
+  to { transform: translateY(160px); }
 }
 
+/* Pulso da nave via opacity/scale (acelerado por composição) em vez de
+   filter (brightness/drop-shadow), que força repintura a cada frame. */
 @keyframes nave-pulso {
-  from { filter: brightness(1) drop-shadow(0 0 6px rgba(34,211,238,0.7)); }
-  to { filter: brightness(1.3) drop-shadow(0 0 12px rgba(232,121,249,0.9)); }
+  from { opacity: 0.85; transform: scale(1); }
+  to { opacity: 1; transform: scale(1.06); }
 }
 
 .animate-nave-pulso {
@@ -375,7 +401,7 @@ input{
   animation-name: meteoro-cair;
   animation-timing-function: linear;
   animation-fill-mode: forwards;
-  filter: drop-shadow(0 0 6px rgba(0,0,0,0.6));
+  will-change: transform, opacity;
 }
 
 

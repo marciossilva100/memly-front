@@ -259,6 +259,35 @@ export default function TiroCerteiro() {
         setMeteoros((prev) => prev.filter((m) => m.uid !== uid));
     }
 
+    // 'verificar_acesso' e 'obter_rodadas' podem os dois devolver um bloqueio
+    // de plano/cota/cooldown (o segundo reconfere porque é uma chamada
+    // separada, que pode acontecer alguns segundos depois da primeira).
+    // Retorna true se tratou a resposta como bloqueio (chamador não deve
+    // seguir processando).
+    function tratarBloqueio(data) {
+        if (data.success) return false;
+
+        // Cooldown não é bloqueio de plano - não faz sentido abrir o modal de
+        // "vire premium" pra quem já é premium e só está clicando rápido
+        // demais em "jogar de novo". Usa a mesma tela de erro genérica (com
+        // "tentar novamente"), que já existe pra outras falhas.
+        if (data.cooldown) {
+            setErro(data.message || t("unexpected_error"));
+            return true;
+        }
+
+        if (data.conteudo_insuficiente) {
+            setConteudoInsuficiente(true);
+            return true;
+        }
+
+        setBloqueado(true);
+        setMensagemBloqueio(data?.message ?? null);
+        setMotivoPremium("tiro_certeiro");
+        setIsPremiumModalOpen(true);
+        return true;
+    }
+
     function iniciarPartida() {
         setFase("carregando");
         setErro(null);
@@ -276,23 +305,7 @@ export default function TiroCerteiro() {
         })
             .then((r) => r.json())
             .then((data) => {
-                if (!data.success) {
-                    // Cooldown não é bloqueio de plano - não faz sentido abrir o
-                    // modal de "vire premium" pra quem já é premium e só está
-                    // clicando rápido demais em "jogar de novo". Usa a mesma
-                    // tela de erro genérica (com "tentar novamente"), que já
-                    // existe pra outras falhas.
-                    if (data.cooldown) {
-                        setErro(data.message || t("unexpected_error"));
-                        return null;
-                    }
-
-                    setBloqueado(true);
-                    setMensagemBloqueio(data?.message ?? null);
-                    setMotivoPremium("tiro_certeiro");
-                    setIsPremiumModalOpen(true);
-                    return null;
-                }
+                if (tratarBloqueio(data)) return null;
 
                 return fetch(`${API_URL}/controller/tiroCerteiro.php`, {
                     method: "POST",
@@ -302,15 +315,7 @@ export default function TiroCerteiro() {
             })
             .then((data) => {
                 if (!data) return; // já tratado como bloqueio acima
-
-                if (!data.success) {
-                    if (data.conteudo_insuficiente) {
-                        setConteudoInsuficiente(true);
-                    } else {
-                        setErro(data.message || t("unexpected_error"));
-                    }
-                    return;
-                }
+                if (tratarBloqueio(data)) return;
 
                 setRodadas(data.rodadas);
                 setIndiceAtual(0);

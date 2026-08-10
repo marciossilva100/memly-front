@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Target, Trophy, Loader2, AlertCircle, Crosshair, ChevronLeft, ChevronRight, Flame, Settings, X } from "lucide-react";
 import PremiumModal from "../components/PremiumModal";
+import { useAuth } from "../context/AuthContext";
+import { playAudio, pararAudio } from "../utils/audioPlayer";
+import { tocarSomTiro, tocarSomAcerto, tocarSomErro } from "../utils/somJogo";
 import imgMeteoro1 from "../assets/img/meteoro1.png";
 import imgMeteoro2 from "../assets/img/meteoro2.png";
 
@@ -151,7 +154,12 @@ function EfeitoTiro({ top, left, cor, raios, particulas }) {
 export default function TiroCerteiro() {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const { user } = useAuth();
     const API_URL = import.meta.env.VITE_API_URL;
+
+    // Para o áudio em reprodução ao sair da tela (troca de rota) - mesmo
+    // motivo de ChuvaFrases.jsx.
+    useEffect(() => () => pararAudio(), []);
 
     // carregando | jogando | fimDeJogo
     const [fase, setFase] = useState("carregando");
@@ -446,6 +454,7 @@ export default function TiroCerteiro() {
     function atirar() {
         if (municao <= 0) return;
         usarMunicao();
+        tocarSomTiro();
 
         const alvoAtingido = caindo.find((item) => item.raia === naveLane) ?? null;
 
@@ -482,6 +491,7 @@ export default function TiroCerteiro() {
         const raios = montarRaios(left, top);
 
         if (!alvoAtingido.correta) {
+            tocarSomErro();
             setCaindo((prev) =>
                 prev.map((i) => (i.uid === alvoAtingido.uid ? { ...i, estado: "errada", jaErrou: true } : i))
             );
@@ -504,6 +514,12 @@ export default function TiroCerteiro() {
             dy: (Math.random() - 0.5) * 220 - 60,
             atraso: Math.random() * 80,
         }));
+
+        tocarSomAcerto();
+        // Sempre a voz padrão gratuita (nunca a natural/premium), mesmo
+        // padrão de ChuvaFrases.jsx - reforça a pronúncia certa assim que
+        // o jogador acerta, sem depender do plano dele.
+        playAudio(alvoAtingido.texto, user, false, null, true, true).catch(() => { });
 
         setTiro({
             top,

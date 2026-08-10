@@ -248,12 +248,16 @@ export default function TreinoIA() {
                     </button>
                 </div>
 
-                <h1 className="text-lg font-semibold text-white text-center mb-2">
+                <h1 className="flex items-center justify-center gap-2 text-lg font-semibold text-white text-center mb-1">
+                    <BookOpenText className="w-5 h-5 text-[#4cb8c4]" />
                     {t("daily_phrase_title")}
                 </h1>
+                <p className="text-gray-400 text-xs text-center mb-2 px-4">
+                    {t("daily_phrase_subtitle")}
+                </p>
 
                 {fraseDestacada && !resultado && (
-                    <div className="flex flex-col items-center mb-4 gap-1.5">
+                    <div className="flex flex-col items-center mb-2 mt-4 gap-1.5">
                         <button
                             type="button"
                             onClick={() => setMostrarVocabulario(prev => !prev)}
@@ -278,37 +282,22 @@ export default function TreinoIA() {
                             diminuir a fonte - o espaço em volta do texto encolhe, e se mesmo
                             assim a frase for longa demais pro espaço, o texto rola dentro do
                             card em vez de disputar espaço com o ícone/botão e quebrar o layout. */}
-                        <div className="perspective flex justify-center h-[360px] [@media(max-height:700px)]:h-[300px]">
+                        <div className="perspective flex justify-center h-[220px] [@media(max-height:700px)]:h-[180px]">
                             <div className="flashcard w-full h-full">
                                 <div
                                     className={`card w-full h-full ${flipped ? "flip" : ""}`}
                                     onClick={() => setFlipped(!flipped)}
                                     style={{ cursor: "pointer" }}
                                 >
-                                    <div className="card-front rounded-2xl border border-gray-700 bg-gradient-to-br from-[#233245] to-[#0d1425] px-6 py-7 [@media(max-height:700px)]:py-3 shadow-md flex flex-col items-center gap-2">
-                                        <div className="w-10 h-10 shrink-0 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 flex items-center justify-center [@media(max-height:700px)]:w-8 [@media(max-height:700px)]:h-8">
-                                            <BookOpenText className="w-5 h-5 text-[#4cb8c4]" />
-                                        </div>
-
+                                    <div className="card-front rounded-2xl border border-gray-700 bg-gradient-to-br from-[#233245] to-[#0d1425] px-6 py-2 [@media(max-height:800px)]:py-3 shadow-md flex flex-col items-center gap-2">
                                         <div className="flex-1 w-full min-h-0 overflow-y-auto scrollbar-hide flex items-center">
                                             <p className="text-base text-white leading-relaxed text-center w-full">
                                                 <TextoDestacado tokens={mostrarVocabulario ? fraseDestacada : null} texto={frase} />
                                             </p>
                                         </div>
-
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                playAudio(frase, user, true);
-                                            }}
-                                            className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors"
-                                        >
-                                            <Volume2 className="w-3.5 h-3.5" />
-                                            {t("listen")}
-                                        </button>
                                     </div>
 
-                                    <div className="card-back rounded-2xl border border-gray-700 bg-gradient-to-br from-[#0d1425] to-[#233245] px-6 py-7 [@media(max-height:700px)]:py-3 shadow-md flex flex-col items-center gap-2">
+                                    <div className="card-back rounded-2xl border border-gray-700 bg-gradient-to-br from-[#0d1425] to-[#233245] px-6  [@media(max-height:800px)]:py-3 shadow-md flex flex-col items-center gap-2">
                                         <div className="flex-1 w-full min-h-0 overflow-y-auto scrollbar-hide flex items-center">
                                             <p className="text-base text-white leading-relaxed text-center w-full">{fraseTraducao}</p>
                                         </div>
@@ -317,6 +306,18 @@ export default function TreinoIA() {
                             </div>
                         </div>
                         <p className="text-center text-gray-500 text-xs mt-2">{t("tap_card_to_flip")}</p>
+
+                        {!flipped && (
+                            <div className="flex justify-center mt-3">
+                                <button
+                                    onClick={() => playAudio(frase, user, true)}
+                                    className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors"
+                                >
+                                    <Volume2 className="w-3.5 h-3.5" />
+                                    {t("listen")}
+                                </button>
+                            </div>
+                        )}
                     </>
                 )}
 
@@ -364,19 +365,19 @@ export default function TreinoIA() {
                     {!audioUrl && !gravando && (
                         <button
                             onClick={() => { setError(null); setAudioVazio(false); iniciarGravacao(); }}
-                            className="relative w-20 h-20 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] flex items-center justify-center shadow-lg shadow-[#4cb8c4]/20 transition"
+                            className="relative w-14 h-14 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] flex items-center justify-center shadow-lg shadow-[#4cb8c4]/20 transition"
                         >
-                            <Mic className="w-7 h-7 text-white" />
+                            <Mic className="w-5 h-5 text-white" />
                         </button>
                     )}
 
                     {gravando && (
                         <button
                             onClick={pararGravacao}
-                            className="relative w-20 h-20 rounded-full bg-red-600 flex items-center justify-center shadow-lg"
+                            className="relative w-14 h-14 rounded-full bg-red-600 flex items-center justify-center shadow-lg"
                         >
                             <span className="absolute inset-0 rounded-full bg-red-500 animate-ping opacity-75"></span>
-                            <Square className="w-6 h-6 text-white relative z-10" />
+                            <Square className="w-5 h-5 text-white relative z-10" />
                         </button>
                     )}
 

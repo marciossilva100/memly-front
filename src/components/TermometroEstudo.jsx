@@ -51,7 +51,12 @@ export default function TermometroEstudo({ totalAprendidas = 0, streak = 0, dias
             <button
                 type="button"
                 onClick={() => setAberto(true)}
-                className="flex flex-col items-center w-10 shrink-0 h-full  pb-6"
+                // relative + z-20: a barra fixa de baixo (Home.jsx) usa
+                // margin-top negativo pra sobrepor visualmente a área acima
+                // dela (efeito de fade), e sem um z-index maior aqui essa
+                // área invisível da barra captura o clique antes de chegar
+                // no ícone de nível (parte de baixo do termômetro).
+                className="relative z-20 flex flex-col items-center w-10 shrink-0 h-full  pb-6"
                 aria-label={t("study_level_tooltip", { nivel, total: totalAprendidas })}
             >
                 {/* topo: chama do streak */}

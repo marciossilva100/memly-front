@@ -425,10 +425,15 @@ export default function Home() {
         navigate(`/frases/${id}`)
     }
 
-    function abrirAdicionarCategoria() {
-        setOpen(true);
+    // Guarda em ref (não só no estado do usuário) porque o clique fora
+    // (abaixo) precisa de uma checagem síncrona pra não disparar o fetch de
+    // dispensa duas vezes quando o próprio clique no botão "adicionar
+    // categoria" também aciona o listener global de clique fora.
+    const guiaCategoriaDispensadaRef = useRef(false);
 
-        if (user?.guia_categoria_dispensado) return;
+    function dispensarGuiaCategoria() {
+        if (guiaCategoriaDispensadaRef.current || user?.guia_categoria_dispensado) return;
+        guiaCategoriaDispensadaRef.current = true;
 
         setUser((prev) => prev && { ...prev, guia_categoria_dispensado: true });
 
@@ -441,6 +446,25 @@ export default function Home() {
             body: JSON.stringify({ action: 'dispensar_guia_primeira_categoria' })
         }).catch((error) => console.error('Erro ao dispensar guia de categoria:', error));
     }
+
+    function abrirAdicionarCategoria() {
+        setOpen(true);
+        dispensarGuiaCategoria();
+    }
+
+    // Some também se o usuário interagir com qualquer outro botão da tela ou
+    // clicar fora dele, não só ao clicar exatamente no botão indicado.
+    useEffect(() => {
+        if (!mostrarGuiaCategoria) return;
+
+        function handleCliqueFora() {
+            dispensarGuiaCategoria();
+        }
+
+        document.addEventListener('click', handleCliqueFora);
+        return () => document.removeEventListener('click', handleCliqueFora);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [mostrarGuiaCategoria]);
 
     function saudacaoPorHorario() {
         const hora = new Date().getHours();

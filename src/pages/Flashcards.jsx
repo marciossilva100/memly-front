@@ -1,6 +1,6 @@
 import { useParams, useNavigate,useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import { playAudio, pararAudio } from "../utils/audioPlayer";
+import { playAudio, preloadAudio, pararAudio } from "../utils/audioPlayer";
 import { Volume, RefreshCw } from "lucide-react";
 
 // import { gerarAudio } from "../services/elevenlabs";
@@ -111,6 +111,17 @@ export default function Flashcards() {
       });
 
   }, [id, mode]);
+
+  // Pré-carrega o áudio do verso (texto_traduzido) assim que o card atual
+  // fica disponível - não só quando o usuário vira o card. Sem isso, o
+  // playAudio() em flipCard() só começava a buscar/gerar o áudio no
+  // momento do flip, com o atraso de rede/geração caindo bem na hora que
+  // devia ser instantâneo. Mesmos parâmetros (lang/forcarVozPadrao) do
+  // playAudio chamado no flip, pra cair no mesmo cache.
+  useEffect(() => {
+    if (!frases[index]?.texto_traduzido || !user) return;
+    preloadAudio(frases[index].texto_traduzido, user);
+  }, [index, frases, user]);
 
   // progresso e flip automático
   useEffect(() => {

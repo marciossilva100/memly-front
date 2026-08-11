@@ -336,7 +336,7 @@ input{
   background-size: 220px 220px;
   opacity: 0.55;
   will-change: transform, opacity;
-  animation: estrelas-piscar 4s ease-in-out infinite alternate, estrelas-deriva-1 16s linear infinite;
+  animation: estrelas-piscar 4s ease-in-out infinite alternate, estrelas-deriva-1 8s linear infinite;
 }
 
 .espaco-fundo::after {
@@ -344,7 +344,7 @@ input{
   background-position: 40px 60px;
   opacity: 0.3;
   will-change: transform, opacity;
-  animation: estrelas-piscar 6s ease-in-out infinite alternate-reverse, estrelas-deriva-2 11s linear infinite;
+  animation: estrelas-piscar 6s ease-in-out infinite alternate-reverse, estrelas-deriva-2 5s linear infinite;
 }
 
 @keyframes estrelas-piscar {

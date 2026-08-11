@@ -25,17 +25,21 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA }) {
     // null = ainda não sabe (só importa pro limitado - free/premium são
     // sempre bloqueado/liberado, sem precisar checar o servidor)
     const [acessoFrase, setAcessoFrase] = useState(null);
+    // Só pra mostrar a bolinha de "disponível hoje" (ver "opcoes" abaixo) -
+    // diferente de acessoFrase, nunca bloqueia nem abre o modal de premium
+    // pra Perguntas (cota esgotada é tratado dentro da própria
+    // Perguntas.jsx, com o modal enxuto específico pra esse caso).
+    const [acessoPerguntas, setAcessoPerguntas] = useState(null);
 
-    // Limitado tem amostra vitalícia de cada recurso, mas ela expira se não
-    // for usada no mesmo dia em que a frase foi gerada - só o servidor sabe
-    // se ainda está disponível, então consulta ao abrir o modal pra já
-    // mostrar a coroa antes do usuário clicar (em vez de deixar ele navegar
-    // e só descobrir na tela seguinte). Perguntas não entra aqui - cota
-    // diária esgotada não mostra coroa nem abre o modal completo de premium
-    // (ver "opcoes" abaixo); quem trata isso é a própria Perguntas.jsx, com
-    // seu modal enxuto específico pra esse caso.
+    // Limitado tem amostra vitalícia da frase do dia, mas ela expira se não
+    // for usada no mesmo dia em que foi gerada - só o servidor sabe se
+    // ainda está disponível, então consulta ao abrir o modal pra já mostrar
+    // a coroa antes do usuário clicar (em vez de deixar ele navegar e só
+    // descobrir na tela seguinte). Busca pros dois recursos, em premium e
+    // limitado (ambos têm cota diária real) - mesma fonte usada pra bolinha
+    // de notificação do ícone de Treino com IA na Home.
     useEffect(() => {
-        if (!openTreinoIA || user?.plano !== 3) return;
+        if (!openTreinoIA || (user?.plano !== 3 && user?.plano !== 1)) return;
 
         const headers = { "Authorization": "Bearer " + localStorage.getItem("token") };
 
@@ -47,6 +51,11 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA }) {
             .then(res => res.json())
             .then(data => setAcessoFrase(!!data.acesso))
             .catch(() => setAcessoFrase(true));
+
+        fetch(`${API_URL}/controller/DailyQuestionController.php?action=verificar_acesso`, { headers })
+            .then(res => res.json())
+            .then(data => setAcessoPerguntas(!!data.acesso))
+            .catch(() => setAcessoPerguntas(true));
     }, [openTreinoIA, user?.plano, API_URL]);
 
     function temAcesso(acessoLimitado) {
@@ -54,6 +63,11 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA }) {
         if (user?.plano === 3) return acessoLimitado !== false;
         return false;
     }
+
+    // Bolinha de "disponível hoje" - só pra quem realmente tem acesso ao
+    // recurso (premium/limitado), nunca junto com a coroa (planos free
+    // nunca calculam isso, e quando falta acesso o crown já cobre o aviso).
+    const podeVerDisponibilidade = user?.plano === 1 || user?.plano === 3;
 
     const opcoes = [
         {
@@ -64,6 +78,7 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA }) {
             descricao: t("daily_phrase_modal_desc"),
             rota: "/treinoia",
             temAcesso: temAcesso(acessoFrase),
+            disponivel: podeVerDisponibilidade && Boolean(acessoFrase),
             motivo: "frase_dia_ia"
         },
         {
@@ -78,6 +93,7 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA }) {
             // navegar pra Perguntas.jsx, que já trata cota esgotada com sua
             // própria tela + modal enxuto específico pra esse caso.
             temAcesso: user?.plano === 3 ? true : temAcesso(),
+            disponivel: podeVerDisponibilidade && Boolean(acessoPerguntas),
             motivo: "perguntas_ia"
         }
     ];
@@ -125,6 +141,12 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA }) {
                             >
                                 {!opcao.temAcesso && (
                                     <Crown className="absolute -top-1.5 -right-1.5 w-4 h-4 text-yellow-400" />
+                                )}
+                                {opcao.temAcesso && opcao.disponivel && (
+                                    <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                                        <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-400 border border-gray-900" />
+                                    </span>
                                 )}
                                 <div className={`flex items-center justify-center w-11 h-11 shrink-0 rounded-full border ${opcao.fundo}`}>
                                     <opcao.icon className={`w-5 h-5 ${opcao.cor}`} />

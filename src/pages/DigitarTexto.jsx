@@ -170,12 +170,27 @@ export default function DigitarTexto() {
     // usuário vira o card, e essa busca demora o suficiente pra ser sentida.
     // Se o limite da voz natural tiver acabado, preloadAudio já busca a voz
     // padrão como fallback, então mesmo nesse caso a reprodução fica pronta.
+    //
+    // texto_traduzido nunca força voz padrão, e texto_nativo só força fora
+    // do modo "learn" - pré-carregar qualquer um dos dois em voz natural pro
+    // limitado gastaria a amostra VITALÍCIA dele (só 10 áudios naturais no
+    // total, ver AUDIO_IA_LIMITE_VITALICIO_LIMITADO em tts.php) em todo card
+    // que aparece na tela, mesmo sem o usuário nunca virar/ouvir. Por isso o
+    // preload em voz natural só roda pro premium (cota diária de 50, renova
+    // todo dia) - o texto_nativo no modo "learn" já força voz padrão
+    // (gratuita, sem risco de cota) e continua pré-carregando pra todo
+    // mundo, independente do plano.
     useEffect(() => {
         const frase = frases[index];
         if (!frase || !user) return;
 
-        preloadAudio(frase.texto_nativo, user, user?.native_language || user?.learning_language, mode === "learn");
-        preloadAudio(frase.texto_traduzido, user);
+        const forcarPadraoNativo = mode === "learn";
+        if (forcarPadraoNativo || user.plano === 1) {
+            preloadAudio(frase.texto_nativo, user, user?.native_language || user?.learning_language, forcarPadraoNativo);
+        }
+        if (user.plano === 1) {
+            preloadAudio(frase.texto_traduzido, user);
+        }
     }, [index, frases, user, mode]);
 
 

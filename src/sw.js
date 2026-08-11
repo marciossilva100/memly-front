@@ -105,7 +105,11 @@ self.addEventListener("push", (event) => {
         self.registration.showNotification(dados.titulo || "Zaldemy", {
             body: dados.corpo || "",
             icon: "/icon-512.png",
-            badge: "/icon-192.png",
+            // O badge (ícone pequeno) o Android renderiza só pelo canal alfa,
+            // ignorando cor - precisa ser silhueta branca em fundo
+            // transparente, senão vira um quadrado sólido sem forma (era o
+            // que acontecia usando icon-192.png, que tem fundo opaco).
+            badge: "/icon-badge.png",
             data: { url: dados.url || "/home" },
         })
     );

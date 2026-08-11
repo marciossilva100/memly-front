@@ -947,7 +947,13 @@ export default function TiroCerteiro() {
                             {t("play_again")}
                         </button>
                         <button
-                            onClick={() => navigate("/jogos")}
+                            // navigate(-1), não navigate("/jogos"): a rota
+                            // anterior no histórico já É o hub de jogos (único
+                            // jeito de entrar aqui) - empilhar um /jogos NOVO por
+                            // cima fazia o botão físico de voltar do celular
+                            // (que volta 1 passo no histórico) cair de novo nessa
+                            // tela de fim de jogo em vez de ir pra Home.
+                            onClick={() => navigate(-1)}
                             className="w-full px-6 py-3 rounded-full text-gray-400 hover:text-white transition-colors"
                         >
                             {t("back")}

@@ -755,7 +755,13 @@ export default function ChuvaFrases() {
                             {t("choose_category_to_play")}
                         </button>
                         <button
-                            onClick={() => navigate("/home")}
+                            // navigate(-1), não navigate("/home"): a rota
+                            // anterior no histórico já É o hub de jogos (único
+                            // jeito de entrar aqui) - empilhar um /home novo por
+                            // cima fazia o botão físico de voltar do celular
+                            // (que volta 1 passo no histórico) cair de novo
+                            // nessa tela de fim de jogo em vez de seguir saindo.
+                            onClick={() => navigate(-1)}
                             className="w-full px-6 py-3 rounded-full text-gray-400 hover:text-white transition-colors"
                         >
                             {t("back_to_home")}

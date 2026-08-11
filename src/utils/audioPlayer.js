@@ -200,7 +200,7 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
     // que usa esse parâmetro) - lá o áudio é sempre no tom normal de
     // propósito, então a dica de velocidade não faz sentido nesse contexto.
     if (!velocidadeNormal) {
-        dispatchPrimeiroAudio();
+        dispatchPrimeiroAudio(user);
     }
 
     const voiceLang = lang || user?.learning_language;

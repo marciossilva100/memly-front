@@ -190,54 +190,74 @@ function EfeitoTiro({ top, left, cor, raios, particulas, tipoTiro }) {
                     )}
                 </div>
             ))}
-            <div className="absolute" style={{ top, left }}>
-                {/* Flash + onda de choque só existem quando há partículas de
-                    verdade (acerto) - miss/erro passam particulas:[] e não
-                    ganham esse extra, só o(s) traço(s)/míssil. */}
-                {particulas.length > 0 && (
-                    <>
-                        <span
-                            className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full transition-all ease-out"
-                            style={{
-                                backgroundColor: "#fff",
-                                filter: "blur(4px)",
-                                width: impacto ? "6px" : "40px",
-                                height: impacto ? "6px" : "40px",
-                                opacity: impacto ? 0 : 0.9,
-                                transitionDuration: "220ms",
-                            }}
-                        />
-                        <span
-                            className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 transition-all ease-out"
-                            style={{
-                                borderColor: cor.glow,
-                                width: impacto ? "100px" : "6px",
-                                height: impacto ? "100px" : "6px",
-                                opacity: impacto ? 0 : 0.85,
-                                transitionDuration: "480ms",
-                            }}
-                        />
-                    </>
-                )}
-                {particulas.map((p) => (
+            {/* Só MONTA no DOM quando o impacto de verdade acontece - antes
+                disso, nem existe (não é só invisível via opacity). Um flash/
+                onda/partículas sempre presentes desde o clique, só com a
+                transição esperando "impacto", ainda pintava a explosão
+                inteira montada (grande, visível) no ponto do alvo desde o
+                primeiro frame - a transição só reagia numa mudança de
+                estado que nunca chegava a acontecer antes do impacto. */}
+            {impacto && <ExplosaoImpacto top={top} left={left} cor={cor} particulas={particulas} />}
+        </div>
+    );
+}
+
+function ExplosaoImpacto({ top, left, cor, particulas }) {
+    const [explodindo, setExplodindo] = useState(false);
+
+    useEffect(() => {
+        const raf = requestAnimationFrame(() => setExplodindo(true));
+        return () => cancelAnimationFrame(raf);
+    }, []);
+
+    return (
+        <div className="absolute" style={{ top, left }}>
+            {/* Flash + onda de choque só existem quando há partículas de
+                verdade (acerto) - miss/erro passam particulas:[] e não
+                ganham esse extra, só o(s) traço(s)/míssil. */}
+            {particulas.length > 0 && (
+                <>
                     <span
-                        key={p.i}
-                        className="absolute rounded-full transition-all ease-out"
+                        className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full transition-all ease-out"
                         style={{
-                            width: `${p.tamanho ?? 6}px`,
-                            height: `${p.tamanho ?? 6}px`,
-                            backgroundColor: p.cor ?? cor.glow,
-                            boxShadow: `0 0 6px ${p.cor ?? cor.glow}`,
-                            transitionDuration: "750ms",
-                            transitionDelay: `${p.atraso}ms`,
-                            transform: impacto
-                                ? `translate(${p.dx}px, ${p.dy}px) scale(0.3) rotate(${p.rotacao ?? 0}deg)`
-                                : "translate(0px, 0px) scale(1)",
-                            opacity: impacto ? 0 : 1,
+                            backgroundColor: "#fff",
+                            filter: "blur(4px)",
+                            width: explodindo ? "6px" : "40px",
+                            height: explodindo ? "6px" : "40px",
+                            opacity: explodindo ? 0 : 0.9,
+                            transitionDuration: "220ms",
                         }}
                     />
-                ))}
-            </div>
+                    <span
+                        className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 transition-all ease-out"
+                        style={{
+                            borderColor: cor.glow,
+                            width: explodindo ? "100px" : "6px",
+                            height: explodindo ? "100px" : "6px",
+                            opacity: explodindo ? 0 : 0.85,
+                            transitionDuration: "480ms",
+                        }}
+                    />
+                </>
+            )}
+            {particulas.map((p) => (
+                <span
+                    key={p.i}
+                    className="absolute rounded-full transition-all ease-out"
+                    style={{
+                        width: `${p.tamanho ?? 6}px`,
+                        height: `${p.tamanho ?? 6}px`,
+                        backgroundColor: p.cor ?? cor.glow,
+                        boxShadow: `0 0 6px ${p.cor ?? cor.glow}`,
+                        transitionDuration: "750ms",
+                        transitionDelay: `${p.atraso}ms`,
+                        transform: explodindo
+                            ? `translate(${p.dx}px, ${p.dy}px) scale(0.3) rotate(${p.rotacao ?? 0}deg)`
+                            : "translate(0px, 0px) scale(1)",
+                        opacity: explodindo ? 0 : 1,
+                    }}
+                />
+            ))}
         </div>
     );
 }

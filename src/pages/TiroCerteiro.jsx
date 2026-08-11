@@ -31,6 +31,20 @@ const VELOCIDADES_JOGO = [
     { valor: 0.35, labelKey: "speed_fast" },
 ];
 
+// Alterna durante a tela de carregamento (~3-5s reais de chamada à IA) pra
+// dar sensação de progresso em vez de um texto parado.
+const MENSAGENS_CARREGANDO = [
+    "tiro_loading_msg_1",
+    "tiro_loading_msg_2",
+    "tiro_loading_msg_3",
+    "tiro_loading_msg_4",
+];
+
+// Tempo (ms) que cada tipo de tiro leva pra VIAJAR da nave até o alvo -
+// mesmo valor usado na transição CSS do traço/míssil (ver EfeitoTiro) e no
+// atraso antes da explosão disparar, pra nunca dessincronizar um do outro.
+const DURACAO_VIAGEM_TIRO = { missil: 260, padrao: 120 };
+
 const CORES_RAIA = [
     { bg: "bg-cyan-500/20", border: "border-cyan-400/70", shadow: "shadow-[0_0_16px_rgba(34,211,238,0.45)]", texto: "text-cyan-300", glow: "rgba(34,211,238,0.9)" },
     { bg: "bg-fuchsia-500/20", border: "border-fuchsia-400/70", shadow: "shadow-[0_0_16px_rgba(232,121,249,0.45)]", texto: "text-fuchsia-300", glow: "rgba(232,121,249,0.9)" },
@@ -92,11 +106,21 @@ function PainelAlvo({ texto, cor, errada }) {
 // antes da explosão.
 function EfeitoTiro({ top, left, cor, raios, particulas, tipoTiro }) {
     const [animar, setAnimar] = useState(false);
+    // Só true depois que o tiro (laser ou míssil) termina de VIAJAR até o
+    // alvo - antes disso a explosão/flash/onda de choque ficava disparando
+    // junto com o disparo, "acertando" antes do tiro visualmente chegar lá.
+    const [impacto, setImpacto] = useState(false);
 
     useEffect(() => {
         const raf = requestAnimationFrame(() => setAnimar(true));
         return () => cancelAnimationFrame(raf);
     }, []);
+
+    useEffect(() => {
+        const duracaoViagem = DURACAO_VIAGEM_TIRO[tipoTiro] ?? DURACAO_VIAGEM_TIRO.padrao;
+        const timer = setTimeout(() => setImpacto(true), duracaoViagem);
+        return () => clearTimeout(timer);
+    }, [tipoTiro]);
 
     return (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -136,7 +160,7 @@ function EfeitoTiro({ top, left, cor, raios, particulas, tipoTiro }) {
                                 style={{
                                     left: 0,
                                     bottom: animar ? `${raio.comprimento}px` : "0px",
-                                    transitionDuration: "260ms",
+                                    transitionDuration: `${DURACAO_VIAGEM_TIRO.missil}ms`,
                                 }}
                             >
                                 <div
@@ -160,7 +184,7 @@ function EfeitoTiro({ top, left, cor, raios, particulas, tipoTiro }) {
                                 background: `linear-gradient(to top, ${cor.glow}, transparent)`,
                                 boxShadow: `0 0 10px ${cor.glow}`,
                                 transform: `rotate(${raio.angulo}deg)`,
-                                transition: "height 120ms ease-out",
+                                transition: `height ${DURACAO_VIAGEM_TIRO.padrao}ms ease-out`,
                             }}
                         />
                     )}
@@ -177,9 +201,9 @@ function EfeitoTiro({ top, left, cor, raios, particulas, tipoTiro }) {
                             style={{
                                 backgroundColor: "#fff",
                                 filter: "blur(4px)",
-                                width: animar ? "6px" : "40px",
-                                height: animar ? "6px" : "40px",
-                                opacity: animar ? 0 : 0.9,
+                                width: impacto ? "6px" : "40px",
+                                height: impacto ? "6px" : "40px",
+                                opacity: impacto ? 0 : 0.9,
                                 transitionDuration: "220ms",
                             }}
                         />
@@ -187,9 +211,9 @@ function EfeitoTiro({ top, left, cor, raios, particulas, tipoTiro }) {
                             className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 transition-all ease-out"
                             style={{
                                 borderColor: cor.glow,
-                                width: animar ? "100px" : "6px",
-                                height: animar ? "100px" : "6px",
-                                opacity: animar ? 0 : 0.85,
+                                width: impacto ? "100px" : "6px",
+                                height: impacto ? "100px" : "6px",
+                                opacity: impacto ? 0 : 0.85,
                                 transitionDuration: "480ms",
                             }}
                         />
@@ -206,10 +230,10 @@ function EfeitoTiro({ top, left, cor, raios, particulas, tipoTiro }) {
                             boxShadow: `0 0 6px ${p.cor ?? cor.glow}`,
                             transitionDuration: "750ms",
                             transitionDelay: `${p.atraso}ms`,
-                            transform: animar
+                            transform: impacto
                                 ? `translate(${p.dx}px, ${p.dy}px) scale(0.3) rotate(${p.rotacao ?? 0}deg)`
                                 : "translate(0px, 0px) scale(1)",
-                            opacity: animar ? 0 : 1,
+                            opacity: impacto ? 0 : 1,
                         }}
                     />
                 ))}
@@ -230,6 +254,10 @@ export default function TiroCerteiro() {
 
     // carregando | jogando | fimDeJogo
     const [fase, setFase] = useState("carregando");
+    // Alterna a mensagem da tela de carregamento pra dar sensação de
+    // progresso durante os ~3-5s reais da geração por IA, em vez de um texto
+    // parado (que parece travado quando a chamada demora mais que o normal).
+    const [mensagemCarregandoIdx, setMensagemCarregandoIdx] = useState(0);
     const [bloqueado, setBloqueado] = useState(false);
     const [mensagemBloqueio, setMensagemBloqueio] = useState(null);
     const [conteudoInsuficiente, setConteudoInsuficiente] = useState(false);
@@ -427,6 +455,17 @@ export default function TiroCerteiro() {
         iniciarPartida();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useEffect(() => {
+        if (fase !== "carregando") return;
+
+        setMensagemCarregandoIdx(0);
+        const intervalo = setInterval(() => {
+            setMensagemCarregandoIdx((prev) => (prev + 1) % MENSAGENS_CARREGANDO.length);
+        }, 1400);
+
+        return () => clearInterval(intervalo);
+    }, [fase]);
 
     function avancarRodada() {
         setIndiceAtual((prev) => (prev + 1 < rodadas.length ? prev + 1 : 0));
@@ -665,7 +704,10 @@ export default function TiroCerteiro() {
             particulas,
             tipoTiro,
         });
-        setTimeout(() => setTiro(null), 900);
+        // Precisa cobrir: viagem do tiro (até 260ms no míssil) + atraso
+        // escalonado das partículas (até 100ms) + duração da explosão
+        // (750ms) - com folga, senão a limpeza corta a explosão no meio.
+        setTimeout(() => setTiro(null), 1200);
 
         removerCaindo(alvoAtingido.uid);
         setPontos((prev) => prev + 10 + nivelAtual(prev));
@@ -719,7 +761,9 @@ export default function TiroCerteiro() {
             {fase === "carregando" && !bloqueado && !conteudoInsuficiente && !erro && (
                 <div className="relative flex-1 flex flex-col items-center justify-center text-center gap-3">
                     <Loader2 className="w-8 h-8 text-cyan-300 animate-spin" />
-                    <p className="text-gray-300 text-sm">{t("ia_gerando_conteudo")}</p>
+                    <p className="text-gray-300 text-sm transition-opacity duration-300">
+                        {t(MENSAGENS_CARREGANDO[mensagemCarregandoIdx])}
+                    </p>
                 </div>
             )}
 

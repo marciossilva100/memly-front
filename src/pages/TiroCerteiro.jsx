@@ -629,6 +629,12 @@ export default function TiroCerteiro() {
         const altura = parentRect?.height ?? 0;
         const origens = origensDaNave();
         const corNave = CORES_RAIA[naveLane];
+        // Tudo que representa o IMPACTO (remover o bloco, tocar o som de
+        // acerto/erro, perder vida, pontuar, avançar rodada) precisa
+        // esperar o mesmo tempo que o tiro leva pra chegar lá (ver
+        // DURACAO_VIAGEM_TIRO) - sem isso o bloco sumia/"explodia" no
+        // instante do clique, antes do laser/míssil visualmente alcançá-lo.
+        const duracaoViagem = DURACAO_VIAGEM_TIRO[tipoTiro] ?? DURACAO_VIAGEM_TIRO.padrao;
 
         function montarRaios(alvoX, alvoY) {
             return origens.map((o) => {
@@ -658,20 +664,23 @@ export default function TiroCerteiro() {
         const raios = montarRaios(left, top);
 
         if (!alvoAtingido.correta) {
-            tocarSomErro();
-            setCaindo((prev) =>
-                prev.map((i) => (i.uid === alvoAtingido.uid ? { ...i, estado: "errada", jaErrou: true } : i))
-            );
-            if (!alvoAtingido.jaErrou) {
-                perderVida();
-            }
             setTiro({ top, left, cor: corNave, raios, particulas: [], tipoTiro });
-            setTimeout(() => setTiro(null), 500);
+            setTimeout(() => setTiro(null), duracaoViagem + 500);
+
             setTimeout(() => {
+                tocarSomErro();
                 setCaindo((prev) =>
-                    prev.map((i) => (i.uid === alvoAtingido.uid ? { ...i, estado: "normal" } : i))
+                    prev.map((i) => (i.uid === alvoAtingido.uid ? { ...i, estado: "errada", jaErrou: true } : i))
                 );
-            }, 500);
+                if (!alvoAtingido.jaErrou) {
+                    perderVida();
+                }
+                setTimeout(() => {
+                    setCaindo((prev) =>
+                        prev.map((i) => (i.uid === alvoAtingido.uid ? { ...i, estado: "normal" } : i))
+                    );
+                }, 500);
+            }, duracaoViagem);
             return;
         }
 
@@ -690,12 +699,6 @@ export default function TiroCerteiro() {
             cor: Math.random() < 0.4 ? "#fbbf24" : corRaia.glow,
         }));
 
-        tocarSomAcerto();
-        // Sempre a voz padrão gratuita (nunca a natural/premium), mesmo
-        // padrão de ChuvaFrases.jsx - reforça a pronúncia certa assim que
-        // o jogador acerta, sem depender do plano dele.
-        playAudio(alvoAtingido.texto, user, false, null, true, true).catch(() => { });
-
         setTiro({
             top,
             left,
@@ -707,11 +710,19 @@ export default function TiroCerteiro() {
         // Precisa cobrir: viagem do tiro (até 260ms no míssil) + atraso
         // escalonado das partículas (até 100ms) + duração da explosão
         // (750ms) - com folga, senão a limpeza corta a explosão no meio.
-        setTimeout(() => setTiro(null), 1200);
+        setTimeout(() => setTiro(null), duracaoViagem + 950);
 
-        removerCaindo(alvoAtingido.uid);
-        setPontos((prev) => prev + 10 + nivelAtual(prev));
-        avancarRodada();
+        setTimeout(() => {
+            tocarSomAcerto();
+            // Sempre a voz padrão gratuita (nunca a natural/premium), mesmo
+            // padrão de ChuvaFrases.jsx - reforça a pronúncia certa assim
+            // que o jogador acerta, sem depender do plano dele.
+            playAudio(alvoAtingido.texto, user, false, null, true, true).catch(() => { });
+
+            removerCaindo(alvoAtingido.uid);
+            setPontos((prev) => prev + 10 + nivelAtual(prev));
+            avancarRodada();
+        }, duracaoViagem);
     }
 
     return (

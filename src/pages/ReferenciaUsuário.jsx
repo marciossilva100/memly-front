@@ -16,7 +16,8 @@ import { useTranslation } from "react-i18next";
 export default function ReferenciaUsuario({ setTitulo }) {
     const { t } = useTranslation();
 
-    const { user, setUser } = useAuth();
+    const { user, setUser, checkAuth } = useAuth();
+    const [erro, setErro] = useState('');
     const [finishStep, setFinishStep] = useState(false)
     const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
@@ -63,17 +64,33 @@ export default function ReferenciaUsuario({ setTitulo }) {
             }
         )
             .then(res => res.json())
-            .then(data => {
+            .then(async (data) => {
+                // Sem essa checagem, uma resposta success:false (ex: canal já
+                // registrado antes, corrida de clique duplo) ainda avançava a
+                // tela normalmente - o step=3 só existia no estado local dessa
+                // aba, nunca era persistido. Fechar e reabrir o app buscava o
+                // step de verdade do servidor (ainda o antigo) e mandava o
+                // usuário de volta pra essa mesma tela, mesmo já tendo
+                // "passado" por ela na sessão anterior.
+                if (!data.success) {
+                    setErro(data.message || t("server_connection_error"));
+                    return;
+                }
+
                 setUser(prev => ({
                     ...prev,
                     step: 3
                 }));
-                navigate("/onboarding-tutorial")
+                // Mesmo padrão das outras telas de onboarding (EscolherNivel,
+                // EscolherIdiomaAprender, EscolherCategoriasInteresse):
+                // resincroniza com o servidor antes de seguir, em vez de só
+                // confiar no patch local.
+                await checkAuth(true);
 
-                console.log(data)
+                navigate("/onboarding-tutorial")
             })
             .catch(() => {
-                console.log('Erro ao conectar com o servidor');
+                setErro(t("server_connection_error"));
             });
 
     }
@@ -168,6 +185,12 @@ export default function ReferenciaUsuario({ setTitulo }) {
                     </button>
 
                 </div>
+
+                {erro && (
+                    <div className="bg-red-100 text-red-700 text-sm px-3 py-2 rounded mt-4">
+                        {erro}
+                    </div>
+                )}
             </div>
 
         </div>

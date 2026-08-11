@@ -578,7 +578,7 @@ export default function ChuvaFrases() {
                                 <button
                                     onClick={() => {
                                         setSaindoParaHome(true);
-                                        navigate("/home");
+                                        navigate(-1);
                                     }}
                                     className="px-6 py-3 rounded-full bg-gray-800/50 border border-gray-700 text-white font-medium hover:bg-gray-700/50 transition-colors"
                                 >
@@ -836,7 +836,7 @@ export default function ChuvaFrases() {
                     // página inteira desmonta na troca de rota de qualquer forma.
                     if (acessoBloqueado === true) {
                         setSaindoParaHome(true);
-                        navigate("/home");
+                        navigate(-1);
                         return;
                     }
                     setIsPremiumModalOpen(false);
@@ -852,7 +852,7 @@ export default function ChuvaFrases() {
                     setLimiteModalOpen(false);
                     if (acessoBloqueado === true) {
                         setSaindoParaHome(true);
-                        navigate("/home");
+                        navigate(-1);
                     }
                 }}
                 onAssinarPremium={() => {

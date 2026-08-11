@@ -651,7 +651,7 @@ export default function TiroCerteiro() {
                     </div>
                     <p className="text-gray-300 mb-4">{mensagemBloqueio}</p>
                     <button
-                        onClick={() => { setSaindoParaHome(true); navigate("/jogos"); }}
+                        onClick={() => { setSaindoParaHome(true); navigate(-1); }}
                         className="px-6 py-3 rounded-full bg-gray-800/50 border border-gray-700 text-white font-medium hover:bg-gray-700/50 transition-colors"
                     >
                         {t("back")}
@@ -667,7 +667,7 @@ export default function TiroCerteiro() {
                     <h1 className="text-xl font-semibold text-white mb-2">{t("insufficient_content")}</h1>
                     <p className="text-gray-400 text-sm max-w-xs">{t("add_more_phrases_hint")}</p>
                     <button
-                        onClick={() => navigate("/jogos")}
+                        onClick={() => navigate(-1)}
                         className="mt-8 px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors"
                     >
                         {t("back")}
@@ -690,7 +690,7 @@ export default function TiroCerteiro() {
                             {t("try_again")}
                         </button>
                         <button
-                            onClick={() => navigate("/jogos")}
+                            onClick={() => navigate(-1)}
                             className="px-6 py-3 rounded-full bg-gray-800/50 border border-gray-700 text-white font-medium hover:bg-gray-700/50 transition-colors"
                         >
                             {t("back")}
@@ -877,7 +877,7 @@ export default function TiroCerteiro() {
                 onClose={() => {
                     if (bloqueado) {
                         setSaindoParaHome(true);
-                        navigate("/jogos");
+                        navigate(-1);
                         return;
                     }
                     setIsPremiumModalOpen(false);
@@ -893,7 +893,7 @@ export default function TiroCerteiro() {
                     setLimiteModalOpen(false);
                     if (bloqueado) {
                         setSaindoParaHome(true);
-                        navigate("/jogos");
+                        navigate(-1);
                     }
                 }}
                 onAssinarPremium={() => {

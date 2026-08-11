@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, useMemo, useCallback } from "react";
 import { hasGoogleRedirectToken } from "../utils/googleRedirectAuth";
 import { sincronizarCotaNatural } from "../utils/audioPlayer";
+import { fetchComTimeout } from "../utils/fetchComTimeout";
 
 const AuthContext = createContext();
 
@@ -30,7 +31,7 @@ export function AuthProvider({ children }) {
     }
 
     try {
-      const res = await fetch(`${API_URL}/controller/me.php`, {
+      const res = await fetchComTimeout(`${API_URL}/controller/me.php`, {
         method: "GET",
         headers: {
           "Authorization": "Bearer " + token

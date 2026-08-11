@@ -1,5 +1,6 @@
 import { dispatchPremiumLimitHit } from "../hooks/usePremiumLimitListener";
 import { dispatchPrimeiroAudio } from "../hooks/useAudioSpeedHintListener";
+import { fetchComTimeout } from "./fetchComTimeout";
 
 let currentAudio = null;
 let currentToken = 0;
@@ -79,7 +80,7 @@ export async function sincronizarCotaNatural(user) {
     const API_URL = import.meta.env.VITE_API_URL;
 
     try {
-        const res = await fetch(`${API_URL}/controller/tts.php?action=verificar_limite`, {
+        const res = await fetchComTimeout(`${API_URL}/controller/tts.php?action=verificar_limite`, {
             headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
         });
         const data = await res.json();

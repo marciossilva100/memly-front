@@ -479,8 +479,6 @@ function App() {
       },
       onOfflineReady() {
         console.log("App pronto para offline");
-        // Notifica o usuário que o app está disponível offline
-        alert(t("app_ready_offline"));
       }
     });
     updateSWRef.current = updateSW;

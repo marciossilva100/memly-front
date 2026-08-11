@@ -543,6 +543,7 @@
     "shot_type": "Schusstyp",
     "shot_type_nose": "Nase",
     "shot_type_wings": "Flügel",
+    "shot_type_missile": "Rakete",
     "sure_shot_card_desc": "Triff das richtige, von der KI generierte Ziel, mit begrenzter Munition",
     "choose_category_to_play": "Wähle eine Kategorie zum Spielen",
     "need_min_phrases_hint": "Du brauchst Kategorien mit mindestens {{minimo}} Sätzen, um zu spielen. Füge einer Kategorie mehr Sätze hinzu und komm zurück.",

@@ -6,7 +6,7 @@ import PremiumModal from "../components/PremiumModal";
 import LimiteDiarioModal from "../components/LimiteDiarioModal";
 import { useAuth } from "../context/AuthContext";
 import { playAudio, pararAudio, preloadAudio } from "../utils/audioPlayer";
-import { tocarSomTiro, tocarSomAcerto, tocarSomErro } from "../utils/somJogo";
+import { tocarSomTiro, tocarSomMissil, tocarSomAcerto, tocarSomErro } from "../utils/somJogo";
 import imgMeteoro1 from "../assets/img/meteoro1.png";
 import imgMeteoro2 from "../assets/img/meteoro2.png";
 
@@ -90,7 +90,7 @@ function PainelAlvo({ texto, cor, errada }) {
 // Explosao em ChuvaFrases.jsx (CSS + transition disparada após o primeiro
 // paint), só que partículas em vez de letras, e com o(s) traço(s) subindo
 // antes da explosão.
-function EfeitoTiro({ top, left, cor, raios, particulas }) {
+function EfeitoTiro({ top, left, cor, raios, particulas, tipoTiro }) {
     const [animar, setAnimar] = useState(false);
 
     useEffect(() => {
@@ -115,33 +115,99 @@ function EfeitoTiro({ top, left, cor, raios, particulas }) {
                             transitionDuration: "200ms",
                         }}
                     />
-                    <div
-                        className="absolute origin-bottom"
-                        style={{
-                            left: raio.origemX,
-                            bottom: raio.distanciaAteFundo,
-                            width: "3px",
-                            height: animar ? `${raio.comprimento}px` : "0px",
-                            background: `linear-gradient(to top, ${cor.glow}, transparent)`,
-                            boxShadow: `0 0 10px ${cor.glow}`,
-                            transform: `rotate(${raio.angulo}deg)`,
-                            transition: "height 120ms ease-out",
-                        }}
-                    />
+                    {tipoTiro === "missil" ? (
+                        // Míssil: projétil que VIAJA até o alvo (não é um
+                        // feixe instantâneo) - reaproveita o mesmo vetor
+                        // origem→alvo do laser (rotate + eixo local), mas
+                        // anima a posição de um corpo pequeno ao longo desse
+                        // eixo em vez de "crescer" uma linha, com um rastro
+                        // de chama atrás pra reforçar a sensação de projétil.
+                        <div
+                            className="absolute origin-bottom"
+                            style={{
+                                left: raio.origemX,
+                                bottom: raio.distanciaAteFundo,
+                                height: `${raio.comprimento}px`,
+                                transform: `rotate(${raio.angulo}deg)`,
+                            }}
+                        >
+                            <div
+                                className="absolute -translate-x-1/2 transition-[bottom] ease-in"
+                                style={{
+                                    left: 0,
+                                    bottom: animar ? `${raio.comprimento}px` : "0px",
+                                    transitionDuration: "260ms",
+                                }}
+                            >
+                                <div
+                                    className="absolute left-1/2 -translate-x-1/2 top-1.5 w-1 h-4 rounded-full blur-[1px] opacity-80"
+                                    style={{ background: `linear-gradient(to top, transparent, ${cor.glow})` }}
+                                />
+                                <div
+                                    className="relative w-2 h-3.5 rounded-t-full rounded-b-sm"
+                                    style={{ backgroundColor: cor.glow, boxShadow: `0 0 8px 2px ${cor.glow}` }}
+                                />
+                            </div>
+                        </div>
+                    ) : (
+                        <div
+                            className="absolute origin-bottom"
+                            style={{
+                                left: raio.origemX,
+                                bottom: raio.distanciaAteFundo,
+                                width: "3px",
+                                height: animar ? `${raio.comprimento}px` : "0px",
+                                background: `linear-gradient(to top, ${cor.glow}, transparent)`,
+                                boxShadow: `0 0 10px ${cor.glow}`,
+                                transform: `rotate(${raio.angulo}deg)`,
+                                transition: "height 120ms ease-out",
+                            }}
+                        />
+                    )}
                 </div>
             ))}
             <div className="absolute" style={{ top, left }}>
+                {/* Flash + onda de choque só existem quando há partículas de
+                    verdade (acerto) - miss/erro passam particulas:[] e não
+                    ganham esse extra, só o(s) traço(s)/míssil. */}
+                {particulas.length > 0 && (
+                    <>
+                        <span
+                            className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full transition-all ease-out"
+                            style={{
+                                backgroundColor: "#fff",
+                                filter: "blur(4px)",
+                                width: animar ? "6px" : "40px",
+                                height: animar ? "6px" : "40px",
+                                opacity: animar ? 0 : 0.9,
+                                transitionDuration: "220ms",
+                            }}
+                        />
+                        <span
+                            className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 transition-all ease-out"
+                            style={{
+                                borderColor: cor.glow,
+                                width: animar ? "100px" : "6px",
+                                height: animar ? "100px" : "6px",
+                                opacity: animar ? 0 : 0.85,
+                                transitionDuration: "480ms",
+                            }}
+                        />
+                    </>
+                )}
                 {particulas.map((p) => (
                     <span
                         key={p.i}
-                        className="absolute w-1.5 h-1.5 rounded-full transition-all ease-out"
+                        className="absolute rounded-full transition-all ease-out"
                         style={{
-                            backgroundColor: cor.glow,
-                            boxShadow: `0 0 6px ${cor.glow}`,
-                            transitionDuration: "700ms",
+                            width: `${p.tamanho ?? 6}px`,
+                            height: `${p.tamanho ?? 6}px`,
+                            backgroundColor: p.cor ?? cor.glow,
+                            boxShadow: `0 0 6px ${p.cor ?? cor.glow}`,
+                            transitionDuration: "750ms",
                             transitionDelay: `${p.atraso}ms`,
                             transform: animar
-                                ? `translate(${p.dx}px, ${p.dy}px) scale(0.3)`
+                                ? `translate(${p.dx}px, ${p.dy}px) scale(0.3) rotate(${p.rotacao ?? 0}deg)`
                                 : "translate(0px, 0px) scale(1)",
                             opacity: animar ? 0 : 1,
                         }}
@@ -512,7 +578,11 @@ export default function TiroCerteiro() {
     function atirar() {
         if (municao <= 0) return;
         usarMunicao();
-        tocarSomTiro();
+        if (tipoTiro === "missil") {
+            tocarSomMissil();
+        } else {
+            tocarSomTiro();
+        }
 
         const alvoAtingido = caindo.find((item) => item.raia === naveLane) ?? null;
 
@@ -536,7 +606,7 @@ export default function TiroCerteiro() {
 
         if (!alvoAtingido) {
             const primeiraOrigem = origens[0] ?? { x: 0, y: altura };
-            setTiro({ top: 0, left: primeiraOrigem.x, cor: corNave, raios: montarRaios(primeiraOrigem.x, 0), particulas: [] });
+            setTiro({ top: 0, left: primeiraOrigem.x, cor: corNave, raios: montarRaios(primeiraOrigem.x, 0), particulas: [], tipoTiro });
             setTimeout(() => setTiro(null), 500);
             return;
         }
@@ -556,7 +626,7 @@ export default function TiroCerteiro() {
             if (!alvoAtingido.jaErrou) {
                 perderVida();
             }
-            setTiro({ top, left, cor: corNave, raios, particulas: [] });
+            setTiro({ top, left, cor: corNave, raios, particulas: [], tipoTiro });
             setTimeout(() => setTiro(null), 500);
             setTimeout(() => {
                 setCaindo((prev) =>
@@ -566,11 +636,19 @@ export default function TiroCerteiro() {
             return;
         }
 
-        const particulas = Array.from({ length: 10 }, (_, i) => ({
+        // Explosão de acerto bem mais cheia que a de erro/miss (que não tem
+        // partículas nenhuma) - mais fragmentos, tamanhos e cores variados
+        // (mistura a cor da raia com um dourado/âmbar de "faísca"), plus
+        // flash + onda de choque (ver EfeitoTiro) só nesse caso.
+        const corRaia = CORES_RAIA[alvoAtingido.raia % CORES_RAIA.length];
+        const particulas = Array.from({ length: 18 }, (_, i) => ({
             i,
-            dx: (Math.random() - 0.5) * 220,
-            dy: (Math.random() - 0.5) * 220 - 60,
-            atraso: Math.random() * 80,
+            dx: (Math.random() - 0.5) * 260,
+            dy: (Math.random() - 0.5) * 260 - 70,
+            atraso: Math.random() * 100,
+            tamanho: 3 + Math.random() * 6,
+            rotacao: Math.random() * 360,
+            cor: Math.random() < 0.4 ? "#fbbf24" : corRaia.glow,
         }));
 
         tocarSomAcerto();
@@ -582,11 +660,12 @@ export default function TiroCerteiro() {
         setTiro({
             top,
             left,
-            cor: CORES_RAIA[alvoAtingido.raia % CORES_RAIA.length],
+            cor: corRaia,
             raios,
             particulas,
+            tipoTiro,
         });
-        setTimeout(() => setTiro(null), 750);
+        setTimeout(() => setTiro(null), 900);
 
         removerCaindo(alvoAtingido.uid);
         setPontos((prev) => prev + 10 + nivelAtual(prev));
@@ -844,7 +923,7 @@ export default function TiroCerteiro() {
 
                         <div className="mt-4">
                             <p className="text-gray-300 text-sm mb-2">{t("shot_type")}</p>
-                            <div className="grid grid-cols-2 gap-2">
+                            <div className="grid grid-cols-3 gap-2">
                                 <button
                                     type="button"
                                     onClick={() => handleSelecionarTipoTiro('bico')}
@@ -864,6 +943,16 @@ export default function TiroCerteiro() {
                                         }`}
                                 >
                                     {t("shot_type_wings")}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => handleSelecionarTipoTiro('missil')}
+                                    className={`rounded-lg border py-1.5 text-sm font-medium transition-colors ${tipoTiro === 'missil'
+                                        ? "border-cyan-400 bg-cyan-400/10 text-cyan-300"
+                                        : "border-gray-700 bg-gray-800/40 text-gray-300 hover:bg-gray-700/40"
+                                        }`}
+                                >
+                                    {t("shot_type_missile")}
                                 </button>
                             </div>
                         </div>

@@ -544,6 +544,7 @@
     "shot_type": "Tipo de disparo",
     "shot_type_nose": "Morro",
     "shot_type_wings": "Alas",
+    "shot_type_missile": "Misil",
     "sure_shot_card_desc": "Dispara al objetivo correcto generado por IA, con munición limitada",
     "choose_category_to_play": "Elige una categoría para jugar",
     "need_min_phrases_hint": "Necesitas categorías con al menos {{minimo}} frases para jugar. Agrega más frases a una categoría y vuelve aquí.",

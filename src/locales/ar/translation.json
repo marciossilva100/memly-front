@@ -543,6 +543,7 @@
     "shot_type": "نوع الطلقة",
     "shot_type_nose": "المقدمة",
     "shot_type_wings": "الأجنحة",
+    "shot_type_missile": "صاروخ",
     "sure_shot_card_desc": "أطلق النار على الهدف الصحيح الذي يولّده الذكاء الاصطناعي، بذخيرة محدودة",
     "choose_category_to_play": "اختر فئة للعب",
     "need_min_phrases_hint": "تحتاج إلى فئات تحتوي على {{minimo}} جملة على الأقل للعب. أضف المزيد من الجمل إلى فئة وعد إلى هنا.",

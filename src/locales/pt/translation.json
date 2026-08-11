@@ -545,6 +545,7 @@
     "shot_type": "Tipo de tiro",
     "shot_type_nose": "Bico",
     "shot_type_wings": "Asas",
+    "shot_type_missile": "Míssil",
     "sure_shot_card_desc": "Atire no alvo certo gerado pela IA, com munição limitada",
     "choose_category_to_play": "Escolha uma categoria pra jogar",
     "need_min_phrases_hint": "Você precisa de categorias com pelo menos {{minimo}} frases pra jogar. Adicione mais frases numa categoria e volte aqui.",

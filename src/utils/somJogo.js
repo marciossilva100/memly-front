@@ -84,6 +84,40 @@ export function tocarSomTiro() {
     }
 }
 
+// Míssil do Tiro Certeiro: "whoosh" grave de lançamento - onda senoidal
+// baixa e mais longa que o "pew" do laser (frequência subindo devagar em vez
+// de caindo rápido), timbre bem diferente pra combinar com o projétil que
+// viaja até o alvo em vez de acertar na hora.
+export function tocarSomMissil() {
+    try {
+        const ctx = getAudioCtx();
+        if (!ctx) return;
+        if (ctx.state === "suspended") ctx.resume();
+
+        const agora = ctx.currentTime;
+        const duracao = 0.32;
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(90, agora);
+        osc.frequency.exponentialRampToValueAtTime(260, agora + duracao);
+
+        gain.gain.setValueAtTime(0.001, agora);
+        gain.gain.linearRampToValueAtTime(0.16, agora + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.001, agora + duracao);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(agora);
+        osc.stop(agora + duracao + 0.02);
+    } catch {
+        // som é só reforço, não essencial ao funcionamento do jogo.
+    }
+}
+
 // Erro do Tiro Certeiro: buzz curto e grave (2 notas descendo), bem
 // diferente do "pew" do tiro e do arpejo agudo do acerto, pra dar feedback
 // negativo claro sem soar agressivo demais.

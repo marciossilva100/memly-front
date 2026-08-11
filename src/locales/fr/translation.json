@@ -543,6 +543,7 @@
     "shot_type": "Type de tir",
     "shot_type_nose": "Nez",
     "shot_type_wings": "Ailes",
+    "shot_type_missile": "Missile",
     "sure_shot_card_desc": "Tirez sur la bonne cible générée par l'IA, avec des munitions limitées",
     "choose_category_to_play": "Choisissez une catégorie pour jouer",
     "need_min_phrases_hint": "Vous avez besoin de catégories avec au moins {{minimo}} phrases pour jouer. Ajoutez plus de phrases à une catégorie et revenez ici.",

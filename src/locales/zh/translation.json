@@ -543,6 +543,7 @@
     "shot_type": "射击类型",
     "shot_type_nose": "机头",
     "shot_type_wings": "机翼",
+    "shot_type_missile": "导弹",
     "sure_shot_card_desc": "用有限的弹药射击AI生成的正确目标",
     "choose_category_to_play": "选择一个分类开始游戏",
     "need_min_phrases_hint": "你需要至少有{{minimo}}个句子的分类才能玩。给分类添加更多句子后再回来吧。",

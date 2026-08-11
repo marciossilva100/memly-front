@@ -74,6 +74,7 @@ export default function Home() {
     const [totalAprendidas, setTotalAprendidas] = useState(0)
     const [treinoIaStats, setTreinoIaStats] = useState(null)
     const [jogoResumo, setJogoResumo] = useState(null)
+    const [treinoIaDisponivel, setTreinoIaDisponivel] = useState(false)
     const { t } = useTranslation();
     const API_URL = import.meta.env.VITE_API_URL;
 
@@ -184,6 +185,40 @@ export default function Home() {
             .then(data => setJogoResumo(data?.success ? data : null))
             .catch(() => setJogoResumo(null));
     }, [user?.id]);
+
+    // Bolinha de notificação no ícone de Treino com IA quando ainda sobra
+    // frase do dia OU pergunta disponível hoje - 'acesso' já cobre os dois
+    // casos que importam pro usuário (ainda não fez hoje, ou começou e
+    // ficou com uma pendência sem responder), sem precisar de lógica extra
+    // aqui (ver comentário em FraseDoDia::getPendente). Free nunca busca
+    // (nunca tem acesso mesmo, mostrar "disponível" pra quem é bloqueado
+    // seria enganoso) - premium também tem teto diário aqui (diferente da
+    // coroa que foi removida), então a bolinha some sozinha depois que ele
+    // usa a cota do dia.
+    useEffect(() => {
+        if (!user?.id || (user.plano !== 1 && user.plano !== 3)) {
+            setTreinoIaDisponivel(false);
+            return;
+        }
+
+        const headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem("token")
+        };
+
+        Promise.all([
+            fetch(`${API_URL}/controller/fraseDoDia.php`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ action: 'verificar_acesso' })
+            }).then(res => res.json()).catch(() => ({ acesso: false })),
+            fetch(`${API_URL}/controller/DailyQuestionController.php?action=verificar_acesso`, {
+                headers
+            }).then(res => res.json()).catch(() => ({ acesso: false })),
+        ]).then(([frase, perguntas]) => {
+            setTreinoIaDisponivel(Boolean(frase?.acesso) || Boolean(perguntas?.acesso));
+        });
+    }, [user?.id, user?.plano, API_URL]);
 
     const carregarCategorias = () => {
         const nativeLanguage = user?.native_language ?? user?.nativeLanguage ?? user?.idioma_nativo ?? user?.idiomaNativo ?? null;
@@ -701,6 +736,15 @@ export default function Home() {
                                 premium, só o modal enxuto dentro de Perguntas.jsx. */}
                             {user?.plano !== 1 && user?.plano !== 3 && (
                                 <Crown className="absolute -top-1 -right-2 w-4 h-4 text-yellow-400" />
+                            )}
+                            {/* Bolinha de notificação - ainda sobra frase do dia ou
+                                pergunta disponível hoje (nunca junto com a coroa,
+                                planos são mutuamente exclusivos nas duas condições). */}
+                            {treinoIaDisponivel && (
+                                <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-400 border border-gray-900" />
+                                </span>
                             )}
                         </button>
                     </div>

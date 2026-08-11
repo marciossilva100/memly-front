@@ -480,6 +480,8 @@
     "question_counter": "Vraag {{numero}} van {{total}}",
     "grade_label": "Cijfer",
     "autoplay_front_card": "Audio automatisch afspelen op de voorkant van de kaart",
+    "notifications_title": "Meldingen",
+    "notifications_desc": "Ontvang herinneringen wanneer er training beschikbaar is of je reeks in gevaar is.",
     "onboarding_slide_ai_title": "🤖 AI afgestemd op jouw inhoud",
     "onboarding_slide_ai_subtitle": "Vragen en zinnen worden gegenereerd op basis van wat JIJ aan het leren bent — nooit generiek, altijd jouw eigen woordenschat.",
     "tap_card_to_flip": "Tik op de kaart om de vertaling te zien",

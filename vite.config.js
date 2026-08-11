@@ -13,6 +13,17 @@ export default defineConfig(({ mode }) => {
       react(),
 
       VitePWA({
+        // injectManifest (SW próprio em src/sw.js) em vez de generateSW: as
+        // notificações push precisam de listeners de "push"/"notificationclick"
+        // de verdade, que o modo generateSW (SW inteiro auto-gerado a partir
+        // de config, sem arquivo próprio) não permite adicionar. As mesmas
+        // regras de cache que existiam aqui em runtimeCaching foram portadas
+        // pra src/sw.js (workbox-routing/workbox-strategies) - esse bloco
+        // `workbox` não é mais lido nesse modo.
+        strategies: "injectManifest",
+        srcDir: "src",
+        filename: "sw.js",
+
         // "prompt" em vez de "autoUpdate" - com autoUpdate, o app recarrega
         // sozinho assim que detecta um build novo, sem aviso e a qualquer
         // momento (inclusive no meio de uma requisição em andamento, tipo
@@ -22,129 +33,11 @@ export default defineConfig(({ mode }) => {
         // modo, porque o reload automático já acontecia por conta própria.
         registerType: "prompt",
 
-        workbox: {
-          // skipWaiting explicitamente false (o default do workbox-build é
-          // true, mesmo sem declarar a opção): com skipWaiting, o service
-          // worker novo pula direto pro estado ativo sozinho, sem nunca
-          // passar pelo estado "esperando" - e é justamente esse estado que
-          // o registerType "prompt" precisa pra funcionar (é o que dispara a
-          // pergunta pro usuário antes de ativar). clientsClaim continua
-          // true - só troca quem atende as próximas requisições após a
-          // ativação confirmada, não força nada sozinho.
-          skipWaiting: false,
-          clientsClaim: true,
+        injectManifest: {
           maximumFileSizeToCacheInBytes: 5000000,
-
           globPatterns: [
             "**/*.{js,css,html,ico,png,svg,jpg,jpeg,webp}"
           ],
-
-          runtimeCaching: [
-
-            // 🔊 CACHE DO TTS (voz padrão) - precisa vir ANTES da regra "API
-            // sem cache" abaixo. O Workbox usa a primeira regra que casar
-            // com a URL, e essa era registrada depois de uma regra mais
-            // ampla que já cobre o mesmo hostname - a de cache nunca
-            // chegava a rodar de verdade, então nenhum áudio ficava
-            // salvo (bug: a promessa de "cache inteligente" no modal
-            // premium não se cumpria).
-            {
-              urlPattern: ({ url }) =>
-                (
-                  url.hostname === "api.zaldemy.com" ||
-                  url.hostname === "hml-api.zaldemy.com"
-                ) &&
-                url.pathname.includes("/controller/treino.php") &&
-                url.searchParams.get("action") === "voice",
-
-              handler: "CacheFirst",
-
-              options: {
-                cacheName: "tts-cache",
-                expiration: {
-                  maxEntries: 500,
-                  maxAgeSeconds: 60 * 60 * 24 * 365
-                },
-                cacheableResponse: {
-                  statuses: [200]
-                }
-              }
-            },
-
-            // 🔊 CACHE DO TTS (voz natural/premium) - stream_audio agora vai
-            // por GET (texto na querystring) exatamente pra poder cachear
-            // por URL igual à voz padrão acima. Um replay da mesma frase
-            // nem chega no servidor (não gasta cota nem gera custo de novo -
-            // o backend já tem seu próprio cache de arquivo, mas isso evita
-            // até a viagem de rede).
-            {
-              urlPattern: ({ url }) =>
-                (
-                  url.hostname === "api.zaldemy.com" ||
-                  url.hostname === "hml-api.zaldemy.com"
-                ) &&
-                url.pathname.includes("/controller/tts.php") &&
-                url.searchParams.get("action") === "stream_audio",
-
-              handler: "CacheFirst",
-
-              options: {
-                cacheName: "tts-cache-natural",
-                expiration: {
-                  maxEntries: 500,
-                  maxAgeSeconds: 60 * 60 * 24 * 365
-                },
-                cacheableResponse: {
-                  statuses: [200]
-                }
-              }
-            },
-
-            // 🔥 API SEM CACHE (tudo mais nesses hosts)
-            {
-              urlPattern: ({ url }) =>
-                url.hostname === "api.zaldemy.com" ||
-                url.hostname === "hml-api.zaldemy.com",
-
-              handler: "NetworkOnly"
-            },
-
-            // 🖼️ CACHE DE IMAGENS
-            {
-              urlPattern: ({ request }) =>
-                request.destination === "image",
-
-              handler: "CacheFirst",
-
-              options: {
-                cacheName: "images-cache",
-                expiration: {
-                  maxEntries: 100,
-                  maxAgeSeconds: 60 * 60 * 24 * 30
-                }
-              }
-            },
-
-            // 📚 CACHE OPENLIBRARY
-            {
-              urlPattern: ({ url }) =>
-                url.hostname === "openlibrary.org",
-
-              handler: "StaleWhileRevalidate",
-
-              options: {
-                cacheName: "books-api-cache",
-                expiration: {
-                  maxEntries: 50,
-                  maxAgeSeconds: 60 * 60 * 24
-                },
-                cacheableResponse: {
-                  statuses: [0, 200]
-                }
-              }
-            }
-
-          ]
         },
 
         manifest: {

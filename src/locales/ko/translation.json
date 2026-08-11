@@ -480,6 +480,8 @@
     "question_counter": "질문 {{numero}}/{{total}}",
     "grade_label": "점수",
     "autoplay_front_card": "카드 앞면에서 오디오 자동 재생",
+    "notifications_title": "알림",
+    "notifications_desc": "훈련이 가능하거나 스트릭이 위험할 때 알림을 받아보세요.",
     "onboarding_slide_ai_title": "🤖 당신의 학습 내용 기반 AI",
     "onboarding_slide_ai_subtitle": "질문과 문장 모두 당신이 실제로 공부하는 내용에서 생성돼요 — 뻔한 내용이 아니라 항상 당신만의 어휘예요.",
     "tap_card_to_flip": "카드를 눌러 번역을 확인하세요",

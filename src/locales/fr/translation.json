@@ -480,6 +480,8 @@
     "question_counter": "Question {{numero}} sur {{total}}",
     "grade_label": "Note",
     "autoplay_front_card": "Lire l'audio automatiquement au recto de la carte",
+    "notifications_title": "Notifications",
+    "notifications_desc": "Recevez des rappels quand un entraînement est disponible ou que votre série est en péril.",
     "onboarding_slide_ai_title": "🤖 Une IA basée sur votre contenu",
     "onboarding_slide_ai_subtitle": "Questions et phrases générées à partir de ce que VOUS étudiez — jamais générique, toujours votre propre vocabulaire.",
     "tap_card_to_flip": "Touchez la carte pour voir la traduction",

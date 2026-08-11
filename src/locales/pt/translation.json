@@ -482,6 +482,8 @@
     "question_counter": "Pergunta {{numero}} de {{total}}",
     "grade_label": "Nota",
     "autoplay_front_card": "Tocar áudio automaticamente na frente do cartão",
+    "notifications_title": "Notificações",
+    "notifications_desc": "Receba lembretes quando tiver treino disponível ou sua sequência estiver em risco.",
     "onboarding_slide_ai_title": "🤖 IA feita pro seu conteúdo",
     "onboarding_slide_ai_subtitle": "Perguntas e frases geradas a partir do que VOCÊ está estudando — nada genérico, sempre o seu vocabulário.",
     "tap_card_to_flip": "Toque no cartão para ver a tradução",

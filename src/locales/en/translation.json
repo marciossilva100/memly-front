@@ -482,6 +482,8 @@
     "question_counter": "Question {{numero}} of {{total}}",
     "grade_label": "Grade",
     "autoplay_front_card": "Auto-play audio on card front",
+    "notifications_title": "Notifications",
+    "notifications_desc": "Get reminders when there's training available or your streak is at risk.",
     "onboarding_slide_ai_title": "🤖 AI built around your content",
     "onboarding_slide_ai_subtitle": "Questions and phrases generated from what YOU are studying — never generic, always your own vocabulary.",
     "tap_card_to_flip": "Tap the card to see the translation",

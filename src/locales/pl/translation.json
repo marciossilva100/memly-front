@@ -480,6 +480,8 @@
     "question_counter": "Pytanie {{numero}} z {{total}}",
     "grade_label": "Ocena",
     "autoplay_front_card": "Automatycznie odtwarzaj dźwięk na przedniej stronie karty",
+    "notifications_title": "Powiadomienia",
+    "notifications_desc": "Otrzymuj przypomnienia, gdy dostępny jest trening lub Twoja seria jest zagrożona.",
     "onboarding_slide_ai_title": "🤖 AI dopasowana do Twoich treści",
     "onboarding_slide_ai_subtitle": "Pytania i zdania powstają na podstawie tego, czego TY się uczysz — nigdy ogólnikowo, zawsze Twoje własne słownictwo.",
     "tap_card_to_flip": "Dotknij karty, aby zobaczyć tłumaczenie",

@@ -480,6 +480,8 @@
     "question_counter": "質問 {{numero}}/{{total}}",
     "grade_label": "点数",
     "autoplay_front_card": "カードの表面で音声を自動再生",
+    "notifications_title": "通知",
+    "notifications_desc": "トレーニングが利用可能なときや連続記録が途切れそうなときにリマインダーを受け取れます。",
     "onboarding_slide_ai_title": "🤖 あなたの学習内容に基づくAI",
     "onboarding_slide_ai_subtitle": "質問もフレーズも、あなたが実際に学んでいる内容から生成されます。ありきたりな内容ではなく、常にあなた自身の語彙です。",
     "tap_card_to_flip": "カードをタップして翻訳を見る",

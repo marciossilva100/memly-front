@@ -480,6 +480,8 @@
     "question_counter": "第 {{numero}} 题 / 共 {{total}} 题",
     "grade_label": "分数",
     "autoplay_front_card": "自动播放卡片正面音频",
+    "notifications_title": "通知",
+    "notifications_desc": "有可用的训练或连续记录面临中断风险时收到提醒。",
     "onboarding_slide_ai_title": "🤖 基于你学习内容的AI",
     "onboarding_slide_ai_subtitle": "问题和短语都根据你正在学习的内容生成——绝不千篇一律，始终是你自己的词汇。",
     "tap_card_to_flip": "点击卡片查看翻译",

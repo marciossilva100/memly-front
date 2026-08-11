@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
-import { FileText, Shield, ShieldCheck, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2, Volume2, Check, Gauge, Bot, Crown, Play, CreditCard, RotateCcw, User } from "lucide-react";
+import { FileText, Shield, ShieldCheck, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2, Volume2, Check, Gauge, Bot, Crown, Play, CreditCard, RotateCcw, User, Bell } from "lucide-react";
+import { notificacoesDisponiveis, statusNotificacoes, ativarNotificacoes, desativarNotificacoes } from "../utils/pushNotifications";
 import ModalConfirm from "../components/ModalConfirm";
 import ModalIA from "../components/ModalIA";
 import PremiumModal from "../components/PremiumModal";
@@ -154,6 +155,40 @@ export default function Configuracoes() {
     function handleSelecionarVelocidadeJogoChuva(velocidade) {
         setVelocidadeJogoChuva(velocidade);
         localStorage.setItem('zaldemy_velocidade_jogo_chuva', String(velocidade));
+    }
+
+    // Notificações push - só existe (feature-detect + PWA instalada, ver
+    // notificacoesDisponiveis) fora do navegador comum e fora do app nativo
+    // (Capacitor ainda não tem push nativo configurado).
+    const [notifDisponivel, setNotifDisponivel] = useState(false);
+    const [notifAtivada, setNotifAtivada] = useState(false);
+    const [notifCarregando, setNotifCarregando] = useState(false);
+    const [notifErro, setNotifErro] = useState('');
+
+    useEffect(() => {
+        if (!notificacoesDisponiveis()) return;
+
+        setNotifDisponivel(true);
+        statusNotificacoes().then((status) => setNotifAtivada(status.ativado));
+    }, []);
+
+    async function handleToggleNotificacoes() {
+        setNotifErro('');
+        setNotifCarregando(true);
+
+        try {
+            if (notifAtivada) {
+                await desativarNotificacoes();
+                setNotifAtivada(false);
+            } else {
+                await ativarNotificacoes();
+                setNotifAtivada(true);
+            }
+        } catch (error) {
+            setNotifErro(error.message || t("server_connection_error"));
+        } finally {
+            setNotifCarregando(false);
+        }
     }
 
     const [openModalExcluirConta, setOpenModalExcluirConta] = useState(false);
@@ -609,6 +644,35 @@ export default function Configuracoes() {
                             </button>
                         </div>
                     </div>
+
+                    {notifDisponivel && (
+                        <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 mb-3">
+                            <div className="flex items-center justify-between gap-3">
+                                <div className="flex items-center gap-2">
+                                    <Bell className="w-5 h-5 text-[#4cb8c4]" />
+                                    <span className="text-white text-base">{t("notifications_title")}</span>
+                                </div>
+                                <button
+                                    type="button"
+                                    role="switch"
+                                    aria-checked={notifAtivada}
+                                    disabled={notifCarregando}
+                                    onClick={handleToggleNotificacoes}
+                                    className={`relative inline-flex h-5 w-10 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${notifAtivada ? "bg-[#4cb8c4]" : "bg-gray-700"
+                                        }`}
+                                >
+                                    <span
+                                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${notifAtivada ? "translate-x-5" : "translate-x-0.5"
+                                            }`}
+                                    />
+                                </button>
+                            </div>
+                            <p className="text-gray-400 text-sm mt-2">{t("notifications_desc")}</p>
+                            {notifErro && (
+                                <p className="text-red-400 text-xs mt-2">{notifErro}</p>
+                            )}
+                        </div>
+                    )}
 
                     {isPremium && (
                         <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 mb-3">

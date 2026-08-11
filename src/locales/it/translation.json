@@ -480,6 +480,8 @@
     "question_counter": "Domanda {{numero}} di {{total}}",
     "grade_label": "Voto",
     "autoplay_front_card": "Riproduci automaticamente l'audio sul fronte della carta",
+    "notifications_title": "Notifiche",
+    "notifications_desc": "Ricevi promemoria quando c'è un allenamento disponibile o la tua serie è a rischio.",
     "onboarding_slide_ai_title": "🤖 IA basata sui tuoi contenuti",
     "onboarding_slide_ai_subtitle": "Domande e frasi generate da ciò che TU stai studiando — mai generiche, sempre il tuo vocabolario.",
     "tap_card_to_flip": "Tocca la carta per vedere la traduzione",

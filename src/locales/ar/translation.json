@@ -480,6 +480,8 @@
     "question_counter": "السؤال {{numero}} من {{total}}",
     "grade_label": "الدرجة",
     "autoplay_front_card": "تشغيل الصوت تلقائيًا على واجهة البطاقة",
+    "notifications_title": "الإشعارات",
+    "notifications_desc": "احصل على تذكيرات عند توفر تدريب جديد أو عندما تكون سلسلتك في خطر.",
     "onboarding_slide_ai_title": "🤖 ذكاء اصطناعي مبني على محتواك",
     "onboarding_slide_ai_subtitle": "الأسئلة والجمل تُولَّد مما تدرسه أنت فعلاً — أبدًا عامة، دائمًا مفرداتك الخاصة.",
     "tap_card_to_flip": "اضغط على البطاقة لرؤية الترجمة",

@@ -480,6 +480,8 @@
     "question_counter": "Soru {{numero}}/{{total}}",
     "grade_label": "Not",
     "autoplay_front_card": "Kartın ön yüzünde sesi otomatik oynat",
+    "notifications_title": "Bildirimler",
+    "notifications_desc": "Antrenman mevcut olduğunda veya serin risk altındayken hatırlatmalar al.",
     "onboarding_slide_ai_title": "🤖 İçeriğine göre şekillenen AI",
     "onboarding_slide_ai_subtitle": "Sorular ve cümleler SENİN çalıştığın içerikten üretilir — asla genel geçer değil, her zaman kendi kelime dağarcığın.",
     "tap_card_to_flip": "Çeviriyi görmek için karta dokun",

@@ -480,6 +480,8 @@
     "question_counter": "सवाल {{numero}} / {{total}}",
     "grade_label": "स्कोर",
     "autoplay_front_card": "कार्ड के अगले हिस्से में ऑडियो अपने आप चलाएं",
+    "notifications_title": "सूचनाएं",
+    "notifications_desc": "जब कोई अभ्यास उपलब्ध हो या आपकी स्ट्रीक खतरे में हो तो रिमाइंडर पाएं।",
     "onboarding_slide_ai_title": "🤖 आपकी सामग्री पर आधारित AI",
     "onboarding_slide_ai_subtitle": "सवाल और वाक्य उसी से बनते हैं जो आप खुद पढ़ रहे हैं — कभी सामान्य नहीं, हमेशा आपकी अपनी शब्दावली।",
     "tap_card_to_flip": "अनुवाद देखने के लिए कार्ड पर टैप करें",

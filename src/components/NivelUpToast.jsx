@@ -103,7 +103,7 @@ export default function NivelUpToast() {
                 }`}
             style={{ transitionDuration: `${DURACAO_TRANSICAO_MS}ms` }}
         >
-            <div className="bg-gray-800/95 backdrop-blur-sm border border-[#4cb8c4]/40 text-white text-sm px-4 py-3 rounded-xl shadow-lg">
+            <div className="bg-gray-800/95 backdrop-blur-sm border border-white/15 text-white text-sm px-4 py-3 rounded-xl shadow-lg">
                 <div className="flex items-start gap-2">
                     <TrendingUp className="w-4 h-4 shrink-0 mt-0.5 text-[#4cb8c4]" />
                     <div className="flex-1">

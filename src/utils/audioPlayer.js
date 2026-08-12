@@ -67,6 +67,39 @@ function marcarCotaNaturalEsgotada(user) {
     localStorage.setItem(chaveCotaNaturalEsgotada(user), hoje);
 }
 
+// Trava dura, só pro plano limitado (amostra grátis) - conta REPRODUÇÕES de
+// voz natural de verdade, não gerações. O service worker cacheia o áudio
+// natural por 1 ano (tts-cache-natural em src/sw.js) pra não gastar cota
+// gerando de novo a mesma frase - mas isso também significa que repetir uma
+// frase já ouvida nunca bate no backend outra vez, então o contador de cota
+// do backend (que só vê gerações) nunca percebe replays infinitos da mesma
+// frase pelo cache. Por isso essa trava vive aqui, na função que efetivamente
+// toca o áudio (playAudio), contando local e independente de cache - é o
+// único lugar por onde toda reprodução de voz natural realmente passa,
+// não importa a tela que chamou.
+const LIMITE_REPRODUCOES_NATURAL_LIMITADO = 10;
+
+function chaveReproducoesNaturalLimitado(user) {
+    return `zaldemy_reproducoes_natural_limitado_${user?.id ?? "anon"}`;
+}
+
+function limiteReproducoesLimitadoAtingido(user) {
+    if (user?.plano !== 3) return false;
+    const contagem = parseInt(localStorage.getItem(chaveReproducoesNaturalLimitado(user)) || "0", 10);
+    return contagem >= LIMITE_REPRODUCOES_NATURAL_LIMITADO;
+}
+
+// Chamado só depois de uma reprodução de voz natural realmente acontecer
+// (nunca em preload, que só busca sem tocar). Retorna true quando essa
+// reprodução acabou de atingir o limite.
+function registrarReproducaoNaturalLimitado(user) {
+    if (user?.plano !== 3) return false;
+    const chave = chaveReproducoesNaturalLimitado(user);
+    const contagem = parseInt(localStorage.getItem(chave) || "0", 10) + 1;
+    localStorage.setItem(chave, String(contagem));
+    return contagem >= LIMITE_REPRODUCOES_NATURAL_LIMITADO;
+}
+
 // Confirma com o servidor se a cota de voz natural já está esgotada, ANTES
 // de qualquer tentativa de tocar áudio - sem isso, se a primeira coisa que o
 // usuário faz é repetir uma frase que o service worker já tem em cache (de
@@ -170,7 +203,7 @@ export function preloadAudio(text, user, lang = null, forcarVozPadrao = false) {
 
     const voiceLang = lang || user?.learning_language;
 
-    if (!forcarVozPadrao && !cotaNaturalEsgotada(user) && (user.plano === 1 || user.plano === 3)) {
+    if (!forcarVozPadrao && !cotaNaturalEsgotada(user) && !limiteReproducoesLimitadoAtingido(user) && (user.plano === 1 || user.plano === 3)) {
         const chaveNatural = chaveCacheAudio("natural", voiceLang, text);
         const promiseNatural = obterOuBuscarAudio(chaveNatural, () => gerarAudio(text));
 
@@ -215,7 +248,7 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
     // reproduz nada - só mostra o modal premium.
     // forcarVozPadrao ignora o plano e usa sempre a voz gratuita (ex: frente
     // do flashcard em DigitarTexto.jsx, que não deve gastar cota de voz premium).
-    if (!forcarVozPadrao && !cotaNaturalEsgotada(user) && (user.plano === 1 || user.plano === 3)) {
+    if (!forcarVozPadrao && !cotaNaturalEsgotada(user) && !limiteReproducoesLimitadoAtingido(user) && (user.plano === 1 || user.plano === 3)) {
         const chaveNatural = chaveCacheAudio("natural", voiceLang, text);
         const resultado = await obterOuBuscarAudio(chaveNatural, () => gerarAudio(text));
 
@@ -242,6 +275,14 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
             if (myToken !== currentToken) {
                 URL.revokeObjectURL(resultado.url);
                 return;
+            }
+
+            // Conta a reprodução em si (não a geração) - cache-independente,
+            // então continua contando mesmo quando o áudio veio do cache do
+            // service worker sem custar cota nenhuma de geração no backend.
+            if (registrarReproducaoNaturalLimitado(user)) {
+                marcarCotaNaturalEsgotada(user);
+                avisarLimiteAudioSeNecessario(user);
             }
 
             const audio = new Audio(resultado.url);

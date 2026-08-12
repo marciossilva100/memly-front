@@ -4,14 +4,26 @@ import { useTranslation } from "react-i18next";
 import imgZaldemy from "../assets/img/zaldemy.png";
 import useEnableBodyScroll from "../hooks/useEnableBodyScroll";
 import { useAuth } from "../context/AuthContext";
+import { ativarNotificacoes, notificacoesDisponiveis } from "../utils/pushNotifications";
 
-const slides = [
+const slidesBase = [
     { emoji: "📚", titleKey: "onboarding_slide1_title", subtitleKey: "onboarding_slide1_subtitle" },
     { emoji: "🤖", titleKey: "onboarding_slide_ai_title", subtitleKey: "onboarding_slide_ai_subtitle" },
     { emoji: "🌍", titleKey: "onboarding_slide2_title", subtitleKey: "onboarding_slide2_subtitle" },
     { emoji: "🧠", titleKey: "onboarding_slide3_title", subtitleKey: "onboarding_slide3_subtitle" },
     { emoji: "🎮", titleKey: "onboarding_slide_game_title", subtitleKey: "onboarding_slide_game_subtitle" },
 ];
+
+// Slide extra, só entra na lista quando dá pra ativar notificação de verdade
+// (PWA instalado - todo mundo que chega aqui já passou pelo InstallPwaNotice,
+// então isso cobre praticamente todo mundo, mas ainda assim não faz sentido
+// mostrar o slide pra quem por algum motivo não tem suporte).
+const slideNotificacoes = {
+    emoji: "🔔",
+    titleKey: "onboarding_slide_notifications_title",
+    subtitleKey: "onboarding_slide_notifications_subtitle",
+    isNotificationSlide: true,
+};
 
 export default function OnboardingTutorial() {
     const { t } = useTranslation();
@@ -21,6 +33,7 @@ export default function OnboardingTutorial() {
     const API_URL = import.meta.env.VITE_API_URL;
     const [step, setStep] = useState(0);
     const [enviando, setEnviando] = useState(false);
+    const slides = notificacoesDisponiveis() ? [...slidesBase, slideNotificacoes] : slidesBase;
 
     useEffect(() => {
         if (user?.step > 3) {
@@ -28,10 +41,7 @@ export default function OnboardingTutorial() {
         }
     }, [user]);
 
-    async function finalizar() {
-        if (enviando) return;
-        setEnviando(true);
-
+    async function concluirOnboarding() {
         try {
             await fetch(`${API_URL}/controller/onboarding.php`, {
                 method: "POST",
@@ -49,6 +59,28 @@ export default function OnboardingTutorial() {
         navigate("/home", { replace: true });
     }
 
+    async function finalizar() {
+        if (enviando) return;
+        setEnviando(true);
+        await concluirOnboarding();
+    }
+
+    // Pedir a permissão nunca pode travar quem recusa (ou dá erro) - segue
+    // pro app do mesmo jeito, só sem notificação ativada (dá pra ativar
+    // depois em Configurações).
+    async function ativarNotificacoesEContinuar() {
+        if (enviando) return;
+        setEnviando(true);
+
+        try {
+            await ativarNotificacoes(user);
+        } catch {
+            // permissão negada ou erro - segue mesmo assim
+        }
+
+        await concluirOnboarding();
+    }
+
     function proximo() {
         if (step < slides.length - 1) {
             setStep(step + 1);
@@ -59,18 +91,19 @@ export default function OnboardingTutorial() {
 
     const ultimaTela = step === slides.length - 1;
     const slideAtual = slides[step];
+    const isSlideNotificacoes = !!slideAtual.isNotificationSlide;
 
     return (
         <div className="min-h-screen flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br px-8">
             <div className="flex justify-between items-center pt-6">
                 <img src={imgZaldemy} alt="Zaldemy" className="h-8" />
-                {!ultimaTela && (
+                {(!ultimaTela || isSlideNotificacoes) && (
                     <button
                         type="button"
                         onClick={finalizar}
                         className="text-sm text-gray-400 hover:text-white transition-colors"
                     >
-                        {t("onboarding_skip")}
+                        {t(isSlideNotificacoes ? "notifications_onboarding_skip" : "onboarding_skip")}
                     </button>
                 )}
             </div>
@@ -99,11 +132,11 @@ export default function OnboardingTutorial() {
 
             <button
                 type="button"
-                onClick={proximo}
+                onClick={isSlideNotificacoes ? ativarNotificacoesEContinuar : proximo}
                 disabled={enviando}
                 className="mb-10 w-full bg-[#4cb8c4] text-white py-3 rounded-full text-lg font-semibold hover:brightness-110 transition disabled:opacity-60"
             >
-                {ultimaTela ? t("onboarding_start") : t("next")}
+                {isSlideNotificacoes ? t("notifications_onboarding_activate") : (ultimaTela ? t("onboarding_start") : t("next"))}
             </button>
         </div>
     );

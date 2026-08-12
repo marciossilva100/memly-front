@@ -146,6 +146,7 @@
   "send": "Send",
   "search": "Search",
   "listen": "Listen",
+  "generating_audio": "Generating audio...",
   "back": "Back",
   "next": "Next",
   "sign_in": "Sign In",

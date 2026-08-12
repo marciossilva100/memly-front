@@ -145,6 +145,7 @@
   "send": "送信",
   "search": "検索",
   "listen": "聞く",
+  "generating_audio": "音声を生成中...",
   "back": "戻る",
   "next": "次へ",
   "sign_in": "ログイン",

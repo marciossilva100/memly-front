@@ -1,7 +1,7 @@
 import { useParams, useNavigate,useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { playAudio, preloadAudio, pararAudio } from "../utils/audioPlayer";
-import { Volume, RefreshCw } from "lucide-react";
+import { Volume, RefreshCw, Loader2 } from "lucide-react";
 
 // import { gerarAudio } from "../services/elevenlabs";
 import { useAuth } from "../context/AuthContext";
@@ -31,6 +31,10 @@ export default function Flashcards() {
   const correctIds = location.state?.correctIds || [];
   const [vh, setVh] = useState(window.innerHeight);
   const [viewportTop, setViewportTop] = useState(0);
+  // Só pro limitado (sem preload do verso, ver useEffect abaixo) - mostra
+  // que a pronúncia natural está sendo gerada de verdade em vez de parecer
+  // travado durante a espera de rede/geração.
+  const [buscandoAudioVerso, setBuscandoAudioVerso] = useState(false);
 
   // Para o áudio em reprodução ao sair da tela (troca de rota) - sem isso,
   // o áudio seguia tocando mesmo depois do usuário já ter navegado embora.
@@ -189,7 +193,9 @@ export default function Flashcards() {
 
       const currentIndex = index;
       flipTimeoutRef.current = setTimeout(() => {
-        playAudio(frases[currentIndex].texto_traduzido, user);
+        setBuscandoAudioVerso(true);
+        playAudio(frases[currentIndex].texto_traduzido, user, false, null, false, false, () => setBuscandoAudioVerso(false))
+          .finally(() => setBuscandoAudioVerso(false));
         flipTimeoutRef.current = null;
       }, FLIP_DURATION / 2);
     }
@@ -487,12 +493,20 @@ export default function Flashcards() {
               juntos, já que hasBeenFlipped nunca volta a false) */}
           {isFlipped && (
             <div className="text-center flex justify-center mt-5">
-              <button onClick={(e) => {
-                e.preventDefault();
-                playAudio(frases[index].texto_traduzido, user);
-              }} className="px-4 py-2 rounded-md bg-slate-500 text-white text-sm  transition flex">
-                <Volume className="w-5 h-5" />
-                {t("listen")}
+              <button
+                disabled={buscandoAudioVerso}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setBuscandoAudioVerso(true);
+                  playAudio(frases[index].texto_traduzido, user, false, null, false, false, () => setBuscandoAudioVerso(false))
+                    .finally(() => setBuscandoAudioVerso(false));
+                }} className="px-4 py-2 rounded-md bg-slate-500 text-white text-sm transition flex disabled:opacity-70">
+                {buscandoAudioVerso ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Volume className="w-5 h-5" />
+                )}
+                {buscandoAudioVerso ? t("generating_audio") : t("listen")}
               </button>
             </div>
           )}

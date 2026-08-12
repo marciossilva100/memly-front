@@ -145,6 +145,7 @@
   "send": "보내기",
   "search": "검색",
   "listen": "듣기",
+  "generating_audio": "오디오 생성 중...",
   "back": "뒤로",
   "next": "다음",
   "sign_in": "로그인",

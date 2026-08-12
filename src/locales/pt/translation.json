@@ -146,6 +146,7 @@
   "send": "Enviar",
   "search": "Buscar",
   "listen": "Ouvir",
+  "generating_audio": "Gerando áudio...",
   "back": "Voltar",
   "next": "Próximo",
   "sign_in": "Entrar",

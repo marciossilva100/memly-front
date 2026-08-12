@@ -224,7 +224,13 @@ export function preloadAudio(text, user, lang = null, forcarVozPadrao = false) {
     }
 }
 
-export const playAudio = async (text, user, ia = false, lang = null, forcarVozPadrao = false, velocidadeNormal = false) => {
+// onAudioIniciado (opcional): chamado no instante em que a reprodução
+// realmente começa (depois de qualquer busca/geração) - permite quem chamou
+// mostrar um indicador de "gerando áudio..." só durante a espera de rede,
+// sem precisar duplicar a lógica de busca em cada tela (útil sobretudo pro
+// limitado, que não pré-carrega o verso do flashcard - ver Flashcards.jsx -
+// então a geração acontece na hora do flip, de forma perceptível).
+export const playAudio = async (text, user, ia = false, lang = null, forcarVozPadrao = false, velocidadeNormal = false, onAudioIniciado = null) => {
     const API_URL = import.meta.env.VITE_API_URL;
     if (!text) return;
 
@@ -294,6 +300,7 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
             currentAudio = audio;
 
             audio.playbackRate = velocidadeNormal ? 1.0 : 0.9;
+            onAudioIniciado?.();
 
             // Espera o áudio terminar de verdade antes de resolver - quem
             // chama (ex: jogo Chuva de Frases) precisa saber quando a
@@ -325,6 +332,7 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
 
         // controle de execução
         currentAudio = { playing: true };
+        onAudioIniciado?.();
 
         for (const base64 of audios) {
 

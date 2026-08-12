@@ -145,6 +145,7 @@
   "send": "Envoyer",
   "search": "Rechercher",
   "listen": "Écouter",
+  "generating_audio": "Génération de l'audio...",
   "back": "Retour",
   "next": "Suivant",
   "sign_in": "Se connecter",

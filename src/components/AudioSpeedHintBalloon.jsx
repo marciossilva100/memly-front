@@ -52,9 +52,9 @@ export default function AudioSpeedHintBalloon() {
             <button
                 type="button"
                 onClick={() => { setEstado("saindo"); navigate("/configuracoes"); }}
-                className="w-full flex items-start gap-2 bg-[#4cb8c4] text-white text-sm font-medium px-4 py-3 rounded-xl shadow-lg text-left"
+                className="w-full flex items-start gap-2 bg-orange-400 border border-orange-600/40 text-gray-900 text-sm font-medium px-4 py-3 rounded-xl shadow-lg text-left"
             >
-                <Volume2 className="w-4 h-4 shrink-0 mt-0.5" />
+                <Volume2 className="w-4 h-4 shrink-0 mt-0.5 text-gray-900" />
                 <span>{t("audio_speed_hint")}</span>
             </button>
         </div>

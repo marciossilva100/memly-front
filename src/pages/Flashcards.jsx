@@ -123,14 +123,14 @@ export default function Flashcards() {
   // devia ser instantâneo. Mesmos parâmetros (lang/forcarVozPadrao) do
   // playAudio chamado no flip, pra cair no mesmo cache.
   //
-  // Só pro premium (cota diária de 50, renova todo dia) - o limitado tem
-  // amostra VITALÍCIA de só 10 áudios naturais no total (ver
-  // AUDIO_IA_LIMITE_VITALICIO_LIMITADO em tts.php). Pré-carregar todo card
-  // que aparece na tela (mesmo sem o usuário nunca virar/ouvir) gastava
-  // essa amostra só de passar pelos cards, esgotando o limitado bem antes
-  // dele ouvir de propósito uma única vez.
+  // Vale pra premium e limitado (decisão explícita do usuário - prioriza
+  // reprodução instantânea sobre economizar a amostra vitalícia navegando
+  // sem ouvir) - a própria preloadAudio() já para de tentar voz natural
+  // sozinha assim que a cota do limitado (10 reproduções, ver
+  // limiteReproducoesLimitadoAtingido em audioPlayer.js) ou o limite diário
+  // do backend (AUDIO_IA_LIMITE_VITALICIO_LIMITADO em tts.php) acabar.
   useEffect(() => {
-    if (!frases[index]?.texto_traduzido || !user || user.plano !== 1) return;
+    if (!frases[index]?.texto_traduzido || !user) return;
     preloadAudio(frases[index].texto_traduzido, user);
   }, [index, frases, user]);
 

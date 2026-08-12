@@ -249,6 +249,19 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
     // forcarVozPadrao ignora o plano e usa sempre a voz gratuita (ex: frente
     // do flashcard em DigitarTexto.jsx, que não deve gastar cota de voz premium).
     if (!forcarVozPadrao && !cotaNaturalEsgotada(user) && !limiteReproducoesLimitadoAtingido(user) && (user.plano === 1 || user.plano === 3)) {
+        // Reserva o slot ANTES do fetch (que é assíncrono) - contar só depois
+        // de buscar o áudio permitia que múltiplas chamadas simultâneas (ex:
+        // acertar vários pares rápido em Emparelhar.jsx, ou tocar frases
+        // diferentes em sequência rápida em Frases.jsx) todas enxergassem a
+        // MESMA contagem ainda não incrementada e passassem juntas, furando
+        // o teto de 10 em paralelo. Reservar aqui é conservador (uma
+        // tentativa que falha depois ainda consome o slot), mas nunca deixa
+        // passar do limite - a prioridade é o teto ser confiável.
+        if (user.plano === 3 && registrarReproducaoNaturalLimitado(user)) {
+            marcarCotaNaturalEsgotada(user);
+            avisarLimiteAudioSeNecessario(user);
+        }
+
         const chaveNatural = chaveCacheAudio("natural", voiceLang, text);
         const resultado = await obterOuBuscarAudio(chaveNatural, () => gerarAudio(text));
 
@@ -275,14 +288,6 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
             if (myToken !== currentToken) {
                 URL.revokeObjectURL(resultado.url);
                 return;
-            }
-
-            // Conta a reprodução em si (não a geração) - cache-independente,
-            // então continua contando mesmo quando o áudio veio do cache do
-            // service worker sem custar cota nenhuma de geração no backend.
-            if (registrarReproducaoNaturalLimitado(user)) {
-                marcarCotaNaturalEsgotada(user);
-                avisarLimiteAudioSeNecessario(user);
             }
 
             const audio = new Audio(resultado.url);

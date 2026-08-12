@@ -103,16 +103,16 @@ export default function NivelUpToast() {
                 }`}
             style={{ transitionDuration: `${DURACAO_TRANSICAO_MS}ms` }}
         >
-            <div className="bg-orange-400 border border-orange-600/40 text-gray-900 text-sm px-4 py-3 rounded-xl shadow-lg">
+            <div className="bg-orange-400 border border-white/15 text-white text-sm px-4 py-3 rounded-xl shadow-lg">
                 <div className="flex items-start gap-2">
-                    <TrendingUp className="w-4 h-4 shrink-0 mt-0.5 text-gray-900" />
+                    <TrendingUp className="w-4 h-4 shrink-0 mt-0.5 text-white" />
                     <div className="flex-1">
-                        <p className="font-medium">
+                        <p className="font-bold">
                             {t("level_up_suggestion_title", { nivel: t(nomeNivelKey) })}
                         </p>
-                        <p className="text-gray-800 text-xs mt-1">{t("level_up_suggestion_body")}</p>
+                        <p className="text-white/90 text-xs mt-1">{t("level_up_suggestion_body")}</p>
                     </div>
-                    <button type="button" onClick={recusar} className="text-gray-900/60 hover:text-gray-900 shrink-0">
+                    <button type="button" onClick={recusar} className="text-white/70 hover:text-white shrink-0">
                         <X className="w-4 h-4" />
                     </button>
                 </div>

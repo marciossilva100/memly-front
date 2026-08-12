@@ -51,9 +51,9 @@ export default function AudioLimitToast() {
                     <button
                         type="button"
                         onClick={() => { setEstado("escondido"); setIsPremiumModalOpen(true); }}
-                        className="w-full flex items-start gap-2 bg-orange-400 border border-orange-600/40 text-gray-900 text-sm font-medium px-4 py-3 rounded-xl shadow-lg text-left"
+                        className="w-full flex items-start gap-2 bg-orange-400 border border-white/15 text-white text-sm font-bold px-4 py-3 rounded-xl shadow-lg text-left"
                     >
-                        <Crown className="w-4 h-4 shrink-0 mt-0.5 text-gray-900" />
+                        <Crown className="w-4 h-4 shrink-0 mt-0.5 text-white" />
                         <span>{t("premium_reason_audio")}</span>
                     </button>
                 </div>

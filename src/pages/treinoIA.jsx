@@ -7,6 +7,7 @@ import { playAudio, pararAudio } from "../utils/audioPlayer";
 import useAudioRecorder from "../hooks/useAudioRecorder";
 import AudioPreviewPlayer from "../components/AudioPreviewPlayer";
 import PremiumModal from "../components/PremiumModal";
+import LimiteDiarioModal from "../components/LimiteDiarioModal";
 import TextoDestacado from "../components/TextoDestacado";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
@@ -28,6 +29,8 @@ export default function TreinoIA() {
     const [insufficientContent, setInsufficientContent] = useState(false);
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
     const [motivoPremium, setMotivoPremium] = useState(null);
+    const [limiteModalOpen, setLimiteModalOpen] = useState(false);
+    const [mensagemLimite, setMensagemLimite] = useState(null);
 
     const [fraseId, setFraseId] = useState(null);
     const [frase, setFrase] = useState('');
@@ -80,9 +83,13 @@ export default function TreinoIA() {
                     }
                     if (data.limite_atingido) {
                         setLimitReached(true);
+                        setMensagemLimite(data.message || null);
+                        // Cota esgotada (limitado) é diferente de precisar virar
+                        // premium do zero - já é um usuário engajado que só bateu
+                        // no teto de hoje/da amostra, não precisa da vitrine
+                        // completa logo de cara (mesmo padrão de Perguntas.jsx).
                         if (user?.plano === 3) {
-                            setMotivoPremium("frase_dia_ia");
-                            setIsPremiumModalOpen(true);
+                            setLimiteModalOpen(true);
                         }
                         return;
                     }
@@ -215,12 +222,24 @@ export default function TreinoIA() {
                 </div>
 
                 {limiteVitalicio && (
-                    <PremiumModal
-                        isOpen={isPremiumModalOpen}
-                        setIsPremiumModalOpen={setIsPremiumModalOpen}
-                        onClose={() => setIsPremiumModalOpen(false)}
-                        motivo={motivoPremium}
-                    />
+                    <>
+                        <LimiteDiarioModal
+                            isOpen={limiteModalOpen}
+                            mensagem={mensagemLimite || t("come_back_tomorrow")}
+                            onClose={() => setLimiteModalOpen(false)}
+                            onAssinarPremium={() => {
+                                setLimiteModalOpen(false);
+                                setMotivoPremium("frase_dia_ia");
+                                setIsPremiumModalOpen(true);
+                            }}
+                        />
+                        <PremiumModal
+                            isOpen={isPremiumModalOpen}
+                            setIsPremiumModalOpen={setIsPremiumModalOpen}
+                            onClose={() => setIsPremiumModalOpen(false)}
+                            motivo={motivoPremium}
+                        />
+                    </>
                 )}
             </div>
         );

@@ -59,10 +59,15 @@ export default function Home() {
     // dispensada), pra não empilhar dois avisos ao mesmo tempo.
     const totalFrases = categorias.reduce((soma, cat) => soma + (cat.quantidade || 0), 0);
     const mostrarGuiaAdicionarFrases = !categoriasLoading && !mostrarGuiaCategoria && categorias.length > 0 && totalFrases === 0;
-    // Mesmo padrão de guia_categoria_dispensado (persistido no backend via
-    // controller/treino.php ação dispensar_guia_treino) - some ao clicar no
-    // CTA do card e nunca mais volta.
-    const mostrarGuiaTreinar = !categoriasLoading && !mostrarGuiaCategoria && totalFrases > 0 && !user?.guia_treino_dispensado;
+    // Some se QUALQUER frase já passou por um treino de verdade (id_treino
+    // >= 2, ver total_treinadas em Categorias::listarComQuantidade) - não
+    // depende só da flag guia_treino_dispensado (persistida via
+    // controller/treino.php ação dispensar_guia_treino, setada ao clicar no
+    // CTA do card), que nunca seria marcada pra quem já treinou por outro
+    // caminho (ex: clicando direto no botão Treinar de uma categoria, antes
+    // desse guia existir).
+    const totalTreinadas = categorias.reduce((soma, cat) => soma + (cat.treinadas || 0), 0);
+    const mostrarGuiaTreinar = !categoriasLoading && !mostrarGuiaCategoria && totalFrases > 0 && totalTreinadas === 0 && !user?.guia_treino_dispensado;
     const categoriaComConteudo = categorias.find((cat) => cat.quantidade > 0);
     const [revisarPorCategoria, setRevisarPorCategoria] = useState({});
     const [openTreinoAdvinhar, setOpenTreinoAdvinhar] = useState(false)
@@ -281,6 +286,7 @@ export default function Home() {
                     id: cat.id ?? cat.categoria_id ?? cat.categoriaId,
                     categoria: cat.categoria ?? cat.nome,
                     quantidade: cat.total_frases ?? cat.quantidade ?? 0,
+                    treinadas: cat.total_treinadas ?? 0,
                     idiomaNativo: cat.idioma_nativo ?? cat.idiomaNativo ?? cat.idioma_nativo_data ?? null,
                     idiomaAprendendo: cat.idioma_aprendendo ?? cat.idiomaAprendendo ?? cat.idioma_aprendendo_data ?? null,
                     categoriaPublica: Number(cat.public ?? cat.categoria_publica ?? 0),

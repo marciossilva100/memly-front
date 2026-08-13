@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../context/AuthContext";
 
-const CHAVE = "zaldemy_dica_vocabulario_exibida";
+// Inclui o user_id porque o localStorage é por aparelho, não por conta -
+// sem isso, uma conta nova testada no mesmo aparelho de uma conta que já
+// viu o balão nunca seria avisada na própria primeira vez (mesmo motivo já
+// documentado em utils/audioPlayer.js pros avisos de lá).
+function chaveDicaVocabulario(user) {
+    return `zaldemy_dica_vocabulario_exibida_${user?.id ?? "anon"}`;
+}
 
 // Dica contextual apontando pro botão "Ver palavras que já estudo" - some
 // pra sempre depois da primeira exibição (localStorage, não por sessão),
@@ -18,11 +25,14 @@ const CHAVE = "zaldemy_dica_vocabulario_exibida";
 // até o usuário tocar nele pra fechar.
 export default function VocabularioHintBalloon() {
     const { t } = useTranslation();
+    const { user } = useAuth();
     const [visivel, setVisivel] = useState(false);
 
     useEffect(() => {
-        if (localStorage.getItem(CHAVE)) return;
-        localStorage.setItem(CHAVE, "1");
+        if (!user) return;
+        const chave = chaveDicaVocabulario(user);
+        if (localStorage.getItem(chave)) return;
+        localStorage.setItem(chave, "1");
 
         // setState fora do corpo síncrono do efeito (mesmo padrão usado nos
         // outros balões desse tipo, ver AudioSpeedHintBalloon.jsx) - evita o
@@ -30,7 +40,7 @@ export default function VocabularioHintBalloon() {
         // corpo do useEffect.
         const raf = requestAnimationFrame(() => setVisivel(true));
         return () => cancelAnimationFrame(raf);
-    }, []);
+    }, [user]);
 
     if (!visivel) return null;
 

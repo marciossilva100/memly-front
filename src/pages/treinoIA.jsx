@@ -9,6 +9,7 @@ import AudioPreviewPlayer from "../components/AudioPreviewPlayer";
 import PremiumModal from "../components/PremiumModal";
 import LimiteDiarioModal from "../components/LimiteDiarioModal";
 import TextoDestacado from "../components/TextoDestacado";
+import VocabularioHintBalloon from "../components/VocabularioHintBalloon";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
 function corNota(nota) {
@@ -328,18 +329,21 @@ export default function TreinoIA() {
 
                 {fraseDestacada && !resultado && (
                     <div className="flex flex-col items-center mb-2 mt-4 gap-1.5">
-                        <button
-                            type="button"
-                            onClick={() => setMostrarVocabulario(prev => !prev)}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs transition-colors ${
-                                mostrarVocabulario
-                                    ? "bg-[#4cb8c4]/10 border-[#4cb8c4]/30 text-[#4cb8c4]"
-                                    : "bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-700/50"
-                            }`}
-                        >
-                            {mostrarVocabulario ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                            {t("toggle_vocabulary_hint")}
-                        </button>
+                        <div className="relative">
+                            <button
+                                type="button"
+                                onClick={() => setMostrarVocabulario(prev => !prev)}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs transition-colors ${
+                                    mostrarVocabulario
+                                        ? "bg-[#4cb8c4]/10 border-[#4cb8c4]/30 text-[#4cb8c4]"
+                                        : "bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-700/50"
+                                }`}
+                            >
+                                {mostrarVocabulario ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                                {t("toggle_vocabulary_hint")}
+                            </button>
+                            <VocabularioHintBalloon />
+                        </div>
                         {mostrarVocabulario && !fraseDestacada.some(t => t.destaque) && (
                             <p className="text-gray-500 text-xs">{t("no_vocabulary_matched")}</p>
                         )}
@@ -430,7 +434,7 @@ export default function TreinoIA() {
                                     {t("try_again")}
                                 </button>
                                 <button
-                                    onClick={() => navigate(-1)}
+                                    onClick={tentarNovamente}
                                     className="px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white font-medium transition-colors"
                                 >
                                     {t("back")}

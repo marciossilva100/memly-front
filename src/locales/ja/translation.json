@@ -539,6 +539,7 @@
   "based_on_vocabulary_desc": "AIが生成するコンテンツは主にあなたがすでに学習している単語を使います",
   "toggle_vocabulary_hint": "学習中の単語を表示",
   "no_vocabulary_matched": "この文にはあなたの語彙の単語は見つかりませんでした",
+  "vocabulary_hint_balloon": "ここをタップすると、すでに学習している単語を確認できます。",
   "ia_gerando_conteudo": "AIがコンテンツを生成しています...",
   "tiro_loading_msg_1": "AIがラウンドを作成しています...",
   "tiro_loading_msg_2": "あなたの単語から選んでいます...",

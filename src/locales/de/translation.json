@@ -539,6 +539,7 @@
   "based_on_vocabulary_desc": "KI-generierte Inhalte verwenden hauptsächlich Wörter, die du bereits lernst",
   "toggle_vocabulary_hint": "Wörter anzeigen, die ich schon lerne",
   "no_vocabulary_matched": "In diesem Satz wurde kein Wort aus deinem Wortschatz erkannt",
+  "vocabulary_hint_balloon": "Du kannst hier tippen, um die Wörter zu sehen, die du bereits lernst.",
   "ia_gerando_conteudo": "Die KI generiert deinen Inhalt...",
   "tiro_loading_msg_1": "Die KI erstellt deine Runden...",
   "tiro_loading_msg_2": "Wörter aus deinem Vokabular werden ausgewählt...",

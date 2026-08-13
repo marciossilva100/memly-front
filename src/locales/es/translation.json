@@ -540,6 +540,7 @@
   "based_on_vocabulary_desc": "El contenido generado por IA usa principalmente palabras que ya estudias",
   "toggle_vocabulary_hint": "Ver palabras que ya estudio",
   "no_vocabulary_matched": "No se reconoció ninguna palabra de tu vocabulario en esta frase",
+  "vocabulary_hint_balloon": "Puedes tocar aquí para ver las palabras que ya estás estudiando.",
   "ia_gerando_conteudo": "La IA está generando tu contenido...",
   "tiro_loading_msg_1": "La IA está creando tus rondas...",
   "tiro_loading_msg_2": "Eligiendo palabras de tu vocabulario...",

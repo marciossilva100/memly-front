@@ -539,6 +539,7 @@
   "based_on_vocabulary_desc": "AI 生成的内容主要使用你已经在学习的单词",
   "toggle_vocabulary_hint": "显示我正在学习的单词",
   "no_vocabulary_matched": "这句话中没有识别到你词汇表中的任何单词",
+  "vocabulary_hint_balloon": "点击这里可以查看你已经在学习的单词。",
   "ia_gerando_conteudo": "AI 正在生成您的内容...",
   "tiro_loading_msg_1": "AI 正在生成你的题目...",
   "tiro_loading_msg_2": "正在从你的词汇中挑选单词...",

@@ -9,6 +9,7 @@ import AudioPreviewPlayer from "../components/AudioPreviewPlayer";
 import PremiumModal from "../components/PremiumModal";
 import LimiteDiarioModal from "../components/LimiteDiarioModal";
 import TextoDestacado from "../components/TextoDestacado";
+import VocabularioHintBalloon from "../components/VocabularioHintBalloon";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
 function corNota(nota) {
@@ -408,18 +409,21 @@ export default function Perguntas() {
 
                 {questionDestacada && !resultado && (
                     <div className="flex flex-col items-center mt-4 mb-4 gap-1.5">
-                        <button
-                            type="button"
-                            onClick={() => setMostrarVocabulario(prev => !prev)}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs transition-colors ${
-                                mostrarVocabulario
-                                    ? "bg-[#4cb8c4]/10 border-[#4cb8c4]/30 text-[#4cb8c4]"
-                                    : "bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-700/50"
-                            }`}
-                        >
-                            {mostrarVocabulario ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                            {t("toggle_vocabulary_hint")}
-                        </button>
+                        <div className="relative">
+                            <button
+                                type="button"
+                                onClick={() => setMostrarVocabulario(prev => !prev)}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs transition-colors ${
+                                    mostrarVocabulario
+                                        ? "bg-[#4cb8c4]/10 border-[#4cb8c4]/30 text-[#4cb8c4]"
+                                        : "bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-700/50"
+                                }`}
+                            >
+                                {mostrarVocabulario ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                                {t("toggle_vocabulary_hint")}
+                            </button>
+                            <VocabularioHintBalloon />
+                        </div>
                         {mostrarVocabulario && !questionDestacada.some(t => t.destaque) && (
                             <p className="text-gray-500 text-xs">{t("no_vocabulary_matched")}</p>
                         )}

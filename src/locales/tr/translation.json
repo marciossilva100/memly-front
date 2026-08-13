@@ -539,6 +539,7 @@
   "based_on_vocabulary_desc": "Yapay zekanın oluşturduğu içerik ağırlıklı olarak zaten çalıştığın kelimeleri kullanır",
   "toggle_vocabulary_hint": "Zaten çalıştığım kelimeleri göster",
   "no_vocabulary_matched": "Bu cümlede kelime dağarcığından hiçbir kelime tanınmadı",
+  "vocabulary_hint_balloon": "Zaten çalıştığın kelimeleri görmek için buraya dokunabilirsin.",
   "ia_gerando_conteudo": "Yapay zeka içeriğinizi oluşturuyor...",
   "tiro_loading_msg_1": "Yapay zekâ turlarını oluşturuyor...",
   "tiro_loading_msg_2": "Kelime dağarcığından kelimeler seçiliyor...",

@@ -539,6 +539,7 @@
   "based_on_vocabulary_desc": "Treści generowane przez AI wykorzystują głównie słowa, których już się uczysz",
   "toggle_vocabulary_hint": "Pokaż słowa, których się uczę",
   "no_vocabulary_matched": "Żadne słowo z twojego słownictwa nie zostało rozpoznane w tym zdaniu",
+  "vocabulary_hint_balloon": "Możesz tu dotknąć, aby zobaczyć słowa, których już się uczysz.",
   "ia_gerando_conteudo": "AI generuje Twoją treść...",
   "tiro_loading_msg_1": "AI tworzy Twoje rundy...",
   "tiro_loading_msg_2": "Wybieranie słów z Twojego słownictwa...",

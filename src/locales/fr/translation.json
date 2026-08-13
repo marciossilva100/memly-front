@@ -539,6 +539,7 @@
   "based_on_vocabulary_desc": "Le contenu généré par IA utilise surtout des mots que vous étudiez déjà",
   "toggle_vocabulary_hint": "Voir les mots que j'étudie déjà",
   "no_vocabulary_matched": "Aucun mot de votre vocabulaire n'a été reconnu dans cette phrase",
+  "vocabulary_hint_balloon": "Vous pouvez appuyer ici pour voir les mots que vous étudiez déjà.",
   "ia_gerando_conteudo": "L'IA génère votre contenu...",
   "tiro_loading_msg_1": "L'IA crée vos manches...",
   "tiro_loading_msg_2": "Sélection de mots de votre vocabulaire...",

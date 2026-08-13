@@ -541,6 +541,7 @@
   "based_on_vocabulary_desc": "AI-generated content mostly uses words you're already studying",
   "toggle_vocabulary_hint": "Show words I'm studying",
   "no_vocabulary_matched": "No words from your vocabulary were recognized in this phrase",
+  "vocabulary_hint_balloon": "You can tap here to see the words you're already studying.",
   "ia_gerando_conteudo": "The AI is generating your content...",
   "tiro_loading_msg_1": "The AI is creating your rounds...",
   "tiro_loading_msg_2": "Picking words from your vocabulary...",

@@ -539,6 +539,7 @@
   "based_on_vocabulary_desc": "AI-gegenereerde content gebruikt vooral woorden die je al leert",
   "toggle_vocabulary_hint": "Woorden tonen die ik al leer",
   "no_vocabulary_matched": "Er is geen woord uit jouw woordenschat herkend in deze zin",
+  "vocabulary_hint_balloon": "Je kunt hier tikken om de woorden te zien die je al aan het leren bent.",
   "ia_gerando_conteudo": "De AI genereert je inhoud...",
   "tiro_loading_msg_1": "De AI maakt je rondes...",
   "tiro_loading_msg_2": "Woorden uit je woordenschat kiezen...",

@@ -539,6 +539,7 @@
   "based_on_vocabulary_desc": "AI가 생성하는 콘텐츠는 주로 당신이 이미 공부하고 있는 단어를 사용해요",
   "toggle_vocabulary_hint": "공부 중인 단어 보기",
   "no_vocabulary_matched": "이 문장에서 당신의 어휘 단어가 인식되지 않았습니다",
+  "vocabulary_hint_balloon": "여기를 눌러 이미 학습 중인 단어를 확인할 수 있어요.",
   "ia_gerando_conteudo": "AI가 콘텐츠를 생성하고 있습니다...",
   "tiro_loading_msg_1": "AI가 라운드를 만들고 있어요...",
   "tiro_loading_msg_2": "당신의 단어에서 골라내는 중...",

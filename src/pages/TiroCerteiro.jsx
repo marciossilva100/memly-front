@@ -15,8 +15,10 @@ const IMAGENS_METEORO = [imgMeteoro1, imgMeteoro2];
 // Munição/vidas/dificuldade - mesma progressão de nível/formato de duração
 // de ChuvaFrases.jsx, adaptada pro par certa+errada por rodada em vez de
 // um fluxo contínuo sorteado de um pool.
-const VIDAS_INICIAIS = 3;
-const MUNICAO_INICIAL = 12;
+// Premium joga partidas mais longas (mais vidas/munição pra começar) - free/
+// limitado continua no valor original.
+const VIDAS_INICIAIS = { padrao: 3, premium: 5 };
+const MUNICAO_INICIAL = { padrao: 12, premium: 18 };
 // Só 2 raias (certa + 1 errada) - decisão explícita de simplificar pra uma
 // escolha binária, mais rápida de resolver que 3 opções.
 const RAIAS = [33, 67];
@@ -271,6 +273,8 @@ export default function TiroCerteiro() {
     const navigate = useNavigate();
     const { user } = useAuth();
     const API_URL = import.meta.env.VITE_API_URL;
+    const vidasIniciais = user?.plano === 1 ? VIDAS_INICIAIS.premium : VIDAS_INICIAIS.padrao;
+    const municaoInicial = user?.plano === 1 ? MUNICAO_INICIAL.premium : MUNICAO_INICIAL.padrao;
 
     // Para o áudio em reprodução ao sair da tela (troca de rota) - mesmo
     // motivo de ChuvaFrases.jsx.
@@ -295,8 +299,8 @@ export default function TiroCerteiro() {
     const [indiceAtual, setIndiceAtual] = useState(0);
     const [caindo, setCaindo] = useState([]);
     const [pontos, setPontos] = useState(0);
-    const [vidas, setVidas] = useState(VIDAS_INICIAIS);
-    const [municao, setMunicao] = useState(MUNICAO_INICIAL);
+    const [vidas, setVidas] = useState(vidasIniciais);
+    const [municao, setMunicao] = useState(municaoInicial);
     const [tiro, setTiro] = useState(null);
     const [recorde, setRecorde] = useState(null);
     // índice em RAIAS (0 ou 1) - a nave se move entre as 2 raias fixas com
@@ -449,8 +453,8 @@ export default function TiroCerteiro() {
                 setRodadas(data.rodadas);
                 setIndiceAtual(0);
                 setPontos(0);
-                setVidas(VIDAS_INICIAIS);
-                setMunicao(MUNICAO_INICIAL);
+                setVidas(vidasIniciais);
+                setMunicao(municaoInicial);
                 setCaindo([]);
                 setFase("jogando");
             })

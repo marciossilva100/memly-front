@@ -20,7 +20,9 @@ const AVATAR_COLORS = [
 ];
 
 const MIN_FRASES = 5;
-const VIDAS_INICIAIS = 3;
+// Premium joga partidas mais longas (mais vidas pra começar) - free/limitado
+// continua no valor original.
+const VIDAS_INICIAIS = { padrao: 3, premium: 5 };
 
 // Mesmos valores/chave usados em Configuracoes.jsx pra velocidade do jogo -
 // mudar num lugar reflete no outro (mesmo localStorage).
@@ -100,6 +102,7 @@ export default function ChuvaFrases() {
     const { user } = useAuth();
     const navigate = useNavigate();
     const API_URL = import.meta.env.VITE_API_URL;
+    const vidasIniciais = user?.plano === 1 ? VIDAS_INICIAIS.premium : VIDAS_INICIAIS.padrao;
 
     const [fase, setFase] = useState("escolher"); // escolher | jogando | fimDeJogo
 
@@ -117,7 +120,7 @@ export default function ChuvaFrases() {
     const [alvo, setAlvo] = useState(null);
     const [caindo, setCaindo] = useState([]);
     const [pontos, setPontos] = useState(0);
-    const [vidas, setVidas] = useState(VIDAS_INICIAIS);
+    const [vidas, setVidas] = useState(vidasIniciais);
     const [explodindo, setExplodindo] = useState(null);
 
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
@@ -308,7 +311,7 @@ export default function ChuvaFrases() {
                 setFrases(listaFrases);
                 setRecorde(recordeData?.recorde ?? null);
                 setPontos(0);
-                setVidas(VIDAS_INICIAIS);
+                setVidas(vidasIniciais);
                 usadasRef.current = [];
                 setCaindo([]);
                 setAlvo(escolherProximoAlvo(listaFrases, []));
@@ -660,7 +663,7 @@ export default function ChuvaFrases() {
                 <div className="flex-1 flex flex-col min-h-0 pb-4">
                     <div className="flex items-center justify-between mb-2 shrink-0">
                         <div className="flex items-center gap-1">
-                            {Array.from({ length: VIDAS_INICIAIS }).map((_, i) => (
+                            {Array.from({ length: vidasIniciais }).map((_, i) => (
                                 <Heart
                                     key={i}
                                     className={`w-5 h-5 ${i < vidas ? "text-red-500 fill-red-500" : "text-gray-700"}`}

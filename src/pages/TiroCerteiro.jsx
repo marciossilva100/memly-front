@@ -146,7 +146,11 @@ function EfeitoTiro({ top, left, cor, raios, particulas, tipoTiro }) {
                         // anima a posição de um corpo pequeno ao longo desse
                         // eixo em vez de "crescer" uma linha, com um rastro
                         // de chama atrás pra reforçar a sensação de projétil.
-                        <div
+                        // !impacto - sem isso o corpo do míssil ficava parado
+                        // no ponto do alvo depois de chegar lá, visível por
+                        // cima da explosão, em vez de sumir na hora do
+                        // impacto.
+                        !impacto && <div
                             className="absolute origin-bottom"
                             style={{
                                 left: raio.origemX,

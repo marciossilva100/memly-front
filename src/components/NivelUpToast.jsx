@@ -103,7 +103,7 @@ export default function NivelUpToast() {
                 }`}
             style={{ transitionDuration: `${DURACAO_TRANSICAO_MS}ms` }}
         >
-            <div className="bg-orange-400 border border-white/15 text-white text-sm px-4 py-3 rounded-xl shadow-lg">
+            <div className="bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 border border-white/15 text-white text-sm px-4 py-3 rounded-xl shadow-lg">
                 <div className="flex items-start gap-2">
                     <TrendingUp className="w-4 h-4 shrink-0 mt-0.5 text-white" />
                     <div className="flex-1">

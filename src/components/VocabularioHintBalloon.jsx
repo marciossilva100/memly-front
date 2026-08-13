@@ -37,11 +37,11 @@ export default function VocabularioHintBalloon() {
 
     return (
         <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2.5 z-40 w-56 max-w-[75vw]">
-            <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-orange-400 rotate-45" />
+            <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-orange-500 rotate-45" />
             <button
                 type="button"
                 onClick={() => setVisivel(false)}
-                className="relative w-full bg-orange-400 border border-white/15 text-white text-xs font-bold rounded-xl px-3 py-2 text-center shadow-lg"
+                className="relative w-full bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 border border-white/15 text-white text-xs font-bold rounded-xl px-3 py-2 text-center shadow-lg"
             >
                 {t("vocabulary_hint_balloon")}
             </button>

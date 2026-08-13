@@ -41,7 +41,7 @@ export default function VocabularioHintBalloon() {
             <button
                 type="button"
                 onClick={() => setVisivel(false)}
-                className="relative w-full bg-orange-400 border border-orange-600/40 text-gray-900 text-xs font-bold rounded-xl px-3 py-2 text-center shadow-lg"
+                className="relative w-full bg-orange-400 border border-white/15 text-white text-xs font-bold rounded-xl px-3 py-2 text-center shadow-lg"
             >
                 {t("vocabulary_hint_balloon")}
             </button>

@@ -52,6 +52,18 @@ export default function Home() {
     // servidor, um estado só em memória fazia o balão reaparecer a cada
     // recarregamento da página.
     const mostrarGuiaCategoria = !categoriasLoading && !temCategoriaPropria && !user?.guia_categoria_dispensado;
+    // Guia de "próximo passo" - continuação do guia acima, cobrindo os
+    // estágios seguintes (usuário já tem categoria mas ainda fica perdido
+    // sobre o que fazer). Nunca aparece junto com mostrarGuiaCategoria -
+    // fica em silêncio até esse primeiro guia sumir (categoria criada ou
+    // dispensada), pra não empilhar dois avisos ao mesmo tempo.
+    const totalFrases = categorias.reduce((soma, cat) => soma + (cat.quantidade || 0), 0);
+    const mostrarGuiaAdicionarFrases = !categoriasLoading && !mostrarGuiaCategoria && categorias.length > 0 && totalFrases === 0;
+    // Mesmo padrão de guia_categoria_dispensado (persistido no backend via
+    // controller/treino.php ação dispensar_guia_treino) - some ao clicar no
+    // CTA do card e nunca mais volta.
+    const mostrarGuiaTreinar = !categoriasLoading && !mostrarGuiaCategoria && totalFrases > 0 && !user?.guia_treino_dispensado;
+    const categoriaComConteudo = categorias.find((cat) => cat.quantidade > 0);
     const [revisarPorCategoria, setRevisarPorCategoria] = useState({});
     const [openTreinoAdvinhar, setOpenTreinoAdvinhar] = useState(false)
     const [openTreinoIA, setOpenTreinoIA] = useState(false)
@@ -413,6 +425,31 @@ export default function Home() {
         dispensarGuiaCategoria();
     }
 
+    const guiaTreinoDispensadoRef = useRef(false);
+
+    function dispensarGuiaTreino() {
+        if (guiaTreinoDispensadoRef.current || user?.guia_treino_dispensado) return;
+        guiaTreinoDispensadoRef.current = true;
+
+        setUser((prev) => prev && { ...prev, guia_treino_dispensado: true });
+
+        fetch(`${API_URL}/controller/treino.php`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({ action: 'dispensar_guia_treino' })
+        }).catch((error) => console.error('Erro ao dispensar guia de treino:', error));
+    }
+
+    function irParaPrimeiraCategoriaComConteudo() {
+        if (!categoriaComConteudo) return;
+        dispensarGuiaTreino();
+        setCategoriaId(categoriaComConteudo.id);
+        setOpenTreino(true);
+    }
+
     // Some também se o usuário interagir com qualquer outro botão da tela ou
     // clicar fora dele, não só ao clicar exatamente no botão indicado.
     useEffect(() => {
@@ -551,6 +588,35 @@ export default function Home() {
 
                 </div> */}
             </div>
+
+            {(mostrarGuiaAdicionarFrases || mostrarGuiaTreinar) && (
+                <div className="px-4 pt-4">
+                    <div className="bg-orange-400 border border-white/15 rounded-xl px-4 py-3 flex items-center gap-3">
+                        <div className="flex-1 min-w-0">
+                            <p className="text-white text-sm font-bold leading-snug">
+                                {mostrarGuiaAdicionarFrases ? t("home_next_step_add_phrases") : t("home_next_step_train")}
+                            </p>
+                        </div>
+                        {mostrarGuiaAdicionarFrases ? (
+                            <button
+                                type="button"
+                                onClick={() => navigate(`/frases/${categorias[0].id}`)}
+                                className="shrink-0 px-3 py-1.5 rounded-full bg-gray-900 text-white text-xs font-semibold whitespace-nowrap"
+                            >
+                                {t("home_next_step_add_phrases_cta")}
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={irParaPrimeiraCategoriaComConteudo}
+                                className="shrink-0 px-3 py-1.5 rounded-full bg-gray-900 text-white text-xs font-semibold whitespace-nowrap"
+                            >
+                                {t("home_next_step_train_cta")}
+                            </button>
+                        )}
+                    </div>
+                </div>
+            )}
 
             <div className="flex-1 flex min-h-0 mt-4 pl-4 pr-2 gap-0">
                 <div className="lista-categoria flex-1 overflow-y-auto  scrollbar-hide" id="lista-categoria">

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const CHAVE = "zaldemy_dica_vocabulario_exibida";
-const DURACAO_VISIVEL_MS = 6000;
 
 // Dica contextual apontando pro botão "Ver palavras que já estudo" - some
 // pra sempre depois da primeira exibição (localStorage, não por sessão),
@@ -11,6 +10,12 @@ const DURACAO_VISIVEL_MS = 6000;
 // precisa ver de novo na outra). Precisa ser renderizado dentro de um
 // container com position:relative (o wrapper do botão) pra se posicionar
 // certo.
+//
+// Sem timer de auto-esconder de propósito - um balão secundário abaixo de
+// um botão que não é o foco principal da tela, sumindo sozinho em poucos
+// segundos, passava despercebido fácil (confirmado testando: até com o
+// balão renderizando certinho, a janela curta fazia perder o momento). Fica
+// até o usuário tocar nele pra fechar.
 export default function VocabularioHintBalloon() {
     const { t } = useTranslation();
     const [visivel, setVisivel] = useState(false);
@@ -26,12 +31,6 @@ export default function VocabularioHintBalloon() {
         const raf = requestAnimationFrame(() => setVisivel(true));
         return () => cancelAnimationFrame(raf);
     }, []);
-
-    useEffect(() => {
-        if (!visivel) return;
-        const timer = setTimeout(() => setVisivel(false), DURACAO_VISIVEL_MS);
-        return () => clearTimeout(timer);
-    }, [visivel]);
 
     if (!visivel) return null;
 

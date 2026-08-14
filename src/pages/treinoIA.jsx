@@ -230,6 +230,12 @@ export default function TreinoIA() {
                             {t("back")}
                         </button>
                     )}
+                    <button
+                        onClick={() => navigate('/home')}
+                        className="px-6 py-3 rounded-full text-gray-400 hover:text-white transition-colors"
+                    >
+                        {t("back_to_home")}
+                    </button>
                 </div>
 
                 <PremiumModal

@@ -77,7 +77,13 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA }) {
             titulo: t("daily_pronunciation_training_title"),
             descricao: t("daily_phrase_modal_desc"),
             rota: "/treinoia",
-            temAcesso: temAcesso(acessoFrase),
+            // Limitado sempre "tem acesso" aqui, mesmo com a amostra
+            // vitalícia esgotada - sem coroa, sem modal completo de premium.
+            // Deixa navegar pra treinoIA.jsx, que já trata cota esgotada com
+            // sua própria tela ("Ver histórico" + "Voltar") + LimiteDiarioModal
+            // enxuto específico pra esse caso (mesmo tratamento que Perguntas
+            // já tinha abaixo).
+            temAcesso: user?.plano === 3 ? true : temAcesso(acessoFrase),
             disponivel: podeVerDisponibilidade && Boolean(acessoFrase),
             motivo: "frase_dia_ia"
         },

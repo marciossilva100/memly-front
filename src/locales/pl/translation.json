@@ -248,6 +248,8 @@
   "attempts_abbr": "Prób.",
   "not_started": "Nierozpoczęte",
   "no_phrase_found": "Nie znaleziono zwrotu",
+  "no_phrase_registered_yet": "Nie masz jeszcze żadnych zwrotów w tej kategorii.",
+  "add_phrase_hint_balloon": "Dotknij tutaj, aby dodać pierwszy zwrot.",
   "access_from_phone": "Uzyskaj dostęp z telefonu",
   "scan_qr_instructions": "Zeskanuj poniższy kod QR aparatem swojego telefonu, aby zainstalować aplikację i się zalogować",
   "how_to_install_mobile": "Jak zainstalować na telefonie:",

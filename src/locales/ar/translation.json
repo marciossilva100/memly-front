@@ -248,6 +248,8 @@
   "attempts_abbr": "محاولات",
   "not_started": "لم تبدأ",
   "no_phrase_found": "لم يتم العثور على أي عبارة",
+  "no_phrase_registered_yet": "ليس لديك أي عبارة في هذه الفئة بعد.",
+  "add_phrase_hint_balloon": "اضغط هنا لإضافة أول عبارة لك.",
   "access_from_phone": "ادخل من هاتفك",
   "scan_qr_instructions": "امسح رمز QR أدناه بكاميرا هاتفك لتثبيت التطبيق وتسجيل الدخول",
   "how_to_install_mobile": "كيفية التثبيت على الهاتف:",

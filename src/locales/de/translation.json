@@ -248,6 +248,8 @@
   "attempts_abbr": "Vers.",
   "not_started": "Nicht begonnen",
   "no_phrase_found": "Kein Satz gefunden",
+  "no_phrase_registered_yet": "Du hast noch keine Sätze in dieser Kategorie.",
+  "add_phrase_hint_balloon": "Tippe hier, um deinen ersten Satz hinzuzufügen.",
   "access_from_phone": "Von deinem Handy aus zugreifen",
   "scan_qr_instructions": "Scanne den QR-Code unten mit der Kamera deines Handys, um die App zu installieren und dich anzumelden",
   "how_to_install_mobile": "So installierst du die App auf dem Handy:",

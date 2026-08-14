@@ -248,6 +248,8 @@
   "attempts_abbr": "尝试",
   "not_started": "尚未开始",
   "no_phrase_found": "未找到短语",
+  "no_phrase_registered_yet": "这个分类里还没有任何短语。",
+  "add_phrase_hint_balloon": "点击这里添加你的第一个短语。",
   "access_from_phone": "用手机访问",
   "scan_qr_instructions": "用手机摄像头扫描下方二维码，即可安装应用并登录",
   "how_to_install_mobile": "如何在手机上安装：",

@@ -248,6 +248,8 @@
   "attempts_abbr": "시도",
   "not_started": "시작 안 함",
   "no_phrase_found": "문장을 찾을 수 없습니다",
+  "no_phrase_registered_yet": "이 카테고리에는 아직 문장이 없어요.",
+  "add_phrase_hint_balloon": "여기를 눌러 첫 문장을 추가하세요.",
   "access_from_phone": "휴대폰으로 접속하기",
   "scan_qr_instructions": "휴대폰 카메라로 아래 QR 코드를 스캔해 앱을 설치하고 로그인하세요",
   "how_to_install_mobile": "휴대폰에 설치하는 방법:",

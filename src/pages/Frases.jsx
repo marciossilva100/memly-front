@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import ModalFrase from "../components/ModalFrase";
+import HintBalloon from "../components/HintBalloon";
 import { useAuth } from "../context/AuthContext";
 import PremiumModal from '../components/PremiumModal';
 import ModalConfirm from '../components/ModalConfirm';
@@ -171,7 +172,7 @@ export default function Frases() {
 
                 {frasesFiltradas.length === 0 && (
                     <div className="text-center py-10 text-gray-400 text-sm">
-                        {t("no_phrase_found")}
+                        {frases.length === 0 ? t("no_phrase_registered_yet") : t("no_phrase_found")}
                     </div>
                 )}
 
@@ -230,13 +231,18 @@ export default function Frases() {
                 por trás dela ao rolar. Também faltava a classe "flex" pra
                 justify-center/items-center funcionarem. */}
             <div className="fixed bottom-0 left-0 w-full flex justify-center items-center py-4 px-6 bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent">
-                <button className="px-6 py-3 w-full rounded-full bg-gradient-to-r from-[#4cb8c4] to-[#085078] hover:from-[#3da5b0] hover:to-[#064060] text-white text-lg font-medium transition-colors"
-                    onClick={() => {
-                        setFraseEditando(null);
-                        setOpenFrase(true);
-                    }}>
-                    {t("add")}
-                </button>
+                <div className="relative w-full">
+                    <button className="px-6 py-3 w-full rounded-full bg-gradient-to-r from-[#4cb8c4] to-[#085078] hover:from-[#3da5b0] hover:to-[#064060] text-white text-lg font-medium transition-colors"
+                        onClick={() => {
+                            setFraseEditando(null);
+                            setOpenFrase(true);
+                        }}>
+                        {t("add")}
+                    </button>
+                    <HintBalloon storageKey="zaldemy_dica_adicionar_frase_exibida" direcao="cima">
+                        {t("add_phrase_hint_balloon")}
+                    </HintBalloon>
+                </div>
             </div>
 
             <ModalFrase openPhrase={openFrase} setOpenPhrase={setOpenFrase} category={id} listPhrase={listPhrase}

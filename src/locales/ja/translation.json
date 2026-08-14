@@ -248,6 +248,8 @@
   "attempts_abbr": "試行",
   "not_started": "未開始",
   "no_phrase_found": "フレーズが見つかりません",
+  "no_phrase_registered_yet": "このカテゴリーにはまだフレーズがありません。",
+  "add_phrase_hint_balloon": "ここをタップして最初のフレーズを追加しましょう。",
   "access_from_phone": "スマートフォンからアクセス",
   "scan_qr_instructions": "アプリをインストールしてログインするには、スマートフォンのカメラで以下のQRコードをスキャンしてください",
   "how_to_install_mobile": "スマートフォンへのインストール方法：",

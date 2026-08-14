@@ -248,6 +248,8 @@
   "attempts_abbr": "Den.",
   "not_started": "Başlanmadı",
   "no_phrase_found": "İfade bulunamadı",
+  "no_phrase_registered_yet": "Bu kategoride henüz hiç cümlen yok.",
+  "add_phrase_hint_balloon": "İlk cümleni eklemek için buraya dokun.",
   "access_from_phone": "Telefonundan eriş",
   "scan_qr_instructions": "Uygulamayı yükleyip giriş yapmak için aşağıdaki QR kodu telefonunun kamerasıyla tara",
   "how_to_install_mobile": "Telefona nasıl yüklenir:",

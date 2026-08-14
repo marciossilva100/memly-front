@@ -249,6 +249,8 @@
   "attempts_abbr": "Att.",
   "not_started": "Not started",
   "no_phrase_found": "No phrase found",
+  "no_phrase_registered_yet": "You don't have any phrases in this category yet.",
+  "add_phrase_hint_balloon": "Tap here to add your first phrase.",
   "access_from_phone": "Access from your phone",
   "scan_qr_instructions": "Scan the QR Code below with your phone's camera to install the app and log in",
   "how_to_install_mobile": "How to install on mobile:",

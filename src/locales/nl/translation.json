@@ -248,6 +248,8 @@
   "attempts_abbr": "Pog.",
   "not_started": "Niet gestart",
   "no_phrase_found": "Geen zin gevonden",
+  "no_phrase_registered_yet": "Je hebt nog geen zinnen in deze categorie.",
+  "add_phrase_hint_balloon": "Tik hier om je eerste zin toe te voegen.",
   "access_from_phone": "Open via je telefoon",
   "scan_qr_instructions": "Scan de onderstaande QR-code met de camera van je telefoon om de app te installeren en in te loggen",
   "how_to_install_mobile": "Hoe installeer je de app op je telefoon:",

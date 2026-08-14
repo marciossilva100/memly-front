@@ -249,6 +249,8 @@
   "attempts_abbr": "Int.",
   "not_started": "No iniciada",
   "no_phrase_found": "No se encontró ninguna frase",
+  "no_phrase_registered_yet": "Todavía no tienes ninguna frase en esta categoría.",
+  "add_phrase_hint_balloon": "Toca aquí para añadir tu primera frase.",
   "access_from_phone": "Accede desde tu celular",
   "scan_qr_instructions": "Escanea el código QR de abajo con la cámara de tu celular para instalar la app e iniciar sesión",
   "how_to_install_mobile": "Cómo instalar en el celular:",

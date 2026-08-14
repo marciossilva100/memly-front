@@ -248,6 +248,8 @@
   "attempts_abbr": "Tent.",
   "not_started": "Non commencée",
   "no_phrase_found": "Aucune phrase trouvée",
+  "no_phrase_registered_yet": "Vous n'avez encore aucune phrase dans cette catégorie.",
+  "add_phrase_hint_balloon": "Appuyez ici pour ajouter votre première phrase.",
   "access_from_phone": "Accédez depuis votre téléphone",
   "scan_qr_instructions": "Scannez le QR Code ci-dessous avec l'appareil photo de votre téléphone pour installer l'application et vous connecter",
   "how_to_install_mobile": "Comment installer sur mobile :",

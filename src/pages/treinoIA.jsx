@@ -7,7 +7,6 @@ import { playAudio, pararAudio } from "../utils/audioPlayer";
 import useAudioRecorder from "../hooks/useAudioRecorder";
 import AudioPreviewPlayer from "../components/AudioPreviewPlayer";
 import PremiumModal from "../components/PremiumModal";
-import LimiteDiarioModal from "../components/LimiteDiarioModal";
 import TextoDestacado from "../components/TextoDestacado";
 import VocabularioHintBalloon from "../components/VocabularioHintBalloon";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
@@ -30,7 +29,6 @@ export default function TreinoIA() {
     const [insufficientContent, setInsufficientContent] = useState(false);
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
     const [motivoPremium, setMotivoPremium] = useState(null);
-    const [limiteModalOpen, setLimiteModalOpen] = useState(false);
     const [mensagemLimite, setMensagemLimite] = useState(null);
 
     const [fraseId, setFraseId] = useState(null);
@@ -85,13 +83,6 @@ export default function TreinoIA() {
                     if (data.limite_atingido) {
                         setLimitReached(true);
                         setMensagemLimite(data.message || null);
-                        // Cota esgotada (limitado) é diferente de precisar virar
-                        // premium do zero - já é um usuário engajado que só bateu
-                        // no teto de hoje/da amostra, não precisa da vitrine
-                        // completa logo de cara (mesmo padrão de Perguntas.jsx).
-                        if (user?.plano === 3) {
-                            setLimiteModalOpen(true);
-                        }
                         return;
                     }
                     if (data.conteudo_insuficiente) {
@@ -203,9 +194,16 @@ export default function TreinoIA() {
                     {t("daily_limit_reached")}
                 </h1>
                 <p className="text-gray-400 text-sm max-w-xs">
-                    {limiteVitalicio ? t("free_sample_available_in_history_hint") : t("come_back_tomorrow")}
+                    {mensagemLimite || (limiteVitalicio ? t("free_sample_available_in_history_hint") : t("come_back_tomorrow"))}
                 </p>
 
+                {/* Uma tela só, sem modal separado por cima - o limitado via o
+                    mesmo aviso duas vezes (um modal "Créditos esgotados" logo
+                    de cara, e essa mesma tela por trás dele). Pro limitado, o
+                    segundo botão já vira direto pra "assinar premium" (o
+                    motivo de estar aqui); pro premium com cota diária normal,
+                    continua "Voltar" - já é premium, não faz sentido oferecer
+                    upsell. */}
                 <div className="mt-8 flex flex-col gap-3 w-full max-w-xs">
                     <button
                         onClick={() => navigate('/treinoia/historico')}
@@ -214,34 +212,32 @@ export default function TreinoIA() {
                         <History className="w-4 h-4" />
                         {t("view_history")}
                     </button>
-                    <button
-                        onClick={() => navigate(-1)}
-                        className="px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white font-medium transition-colors"
-                    >
-                        {t("back")}
-                    </button>
-                </div>
-
-                {limiteVitalicio && (
-                    <>
-                        <LimiteDiarioModal
-                            isOpen={limiteModalOpen}
-                            mensagem={mensagemLimite || t("come_back_tomorrow")}
-                            onClose={() => setLimiteModalOpen(false)}
-                            onAssinarPremium={() => {
-                                setLimiteModalOpen(false);
+                    {limiteVitalicio ? (
+                        <button
+                            onClick={() => {
                                 setMotivoPremium("frase_dia_ia");
                                 setIsPremiumModalOpen(true);
                             }}
-                        />
-                        <PremiumModal
-                            isOpen={isPremiumModalOpen}
-                            setIsPremiumModalOpen={setIsPremiumModalOpen}
-                            onClose={() => setIsPremiumModalOpen(false)}
-                            motivo={motivoPremium}
-                        />
-                    </>
-                )}
+                            className="px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white font-medium transition-colors"
+                        >
+                            {t("daily_limit_premium_cta")}
+                        </button>
+                    ) : (
+                        <button
+                            onClick={() => navigate(-1)}
+                            className="px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white font-medium transition-colors"
+                        >
+                            {t("back")}
+                        </button>
+                    )}
+                </div>
+
+                <PremiumModal
+                    isOpen={isPremiumModalOpen}
+                    setIsPremiumModalOpen={setIsPremiumModalOpen}
+                    onClose={() => setIsPremiumModalOpen(false)}
+                    motivo={motivoPremium}
+                />
             </div>
         );
     }

@@ -32,7 +32,7 @@ const decisaoNestaCarga = new Map();
 // um elemento que não é o foco principal da tela, sumindo sozinho em poucos
 // segundos, passava despercebido fácil. Fica até o usuário tocar nele pra
 // fechar.
-export default function HintBalloon({ storageKey, children, direcao = "baixo" }) {
+export default function HintBalloon({ storageKey, children, direcao = "baixo", fecharAoInteragir = false }) {
     const { user } = useAuth();
     const userId = user?.id;
 
@@ -57,6 +57,22 @@ export default function HintBalloon({ storageKey, children, direcao = "baixo" })
             localStorage.setItem(chaveDica(storageKey, userId), "1");
         }
     }, [userId, visivel, storageKey]);
+
+    // fecharAoInteragir - some também com qualquer clique na tela, não só
+    // tocando o balão em si (mesmo padrão já usado no guia de "criar
+    // primeira categoria" na Home). Opcional (default false) pra não mudar
+    // o comportamento de quem já usa esse componente esperando só o toque
+    // direto fechar (Perguntas.jsx/treinoIA.jsx).
+    useEffect(() => {
+        if (!fecharAoInteragir || !visivel) return;
+
+        function handleInteracao() {
+            setVisivel(false);
+        }
+
+        document.addEventListener("click", handleInteracao);
+        return () => document.removeEventListener("click", handleInteracao);
+    }, [fecharAoInteragir, visivel]);
 
     if (!visivel) return null;
 

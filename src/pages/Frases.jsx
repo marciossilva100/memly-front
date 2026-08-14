@@ -239,7 +239,7 @@ export default function Frases() {
                         }}>
                         {t("add")}
                     </button>
-                    <HintBalloon storageKey="zaldemy_dica_adicionar_frase_exibida" direcao="cima">
+                    <HintBalloon storageKey="zaldemy_dica_adicionar_frase_exibida" direcao="cima" fecharAoInteragir>
                         {t("add_phrase_hint_balloon")}
                     </HintBalloon>
                 </div>

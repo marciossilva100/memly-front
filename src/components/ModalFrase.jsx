@@ -96,6 +96,21 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
         }
     }
 
+    // Os dois botões (sugerir/melhorar) funcionam nos dois sentidos - se o
+    // campo de cima (nativo) estiver vazio e o de baixo (tradução) tiver
+    // conteúdo, traduz de baixo pra cima em vez do sentido padrão. Sempre
+    // preenche o campo que está vazio a partir do que já foi digitado no
+    // outro, nunca sobrescreve os dois já preenchidos.
+    function direcaoTraducao() {
+        const modoReverso = !phrase && !!translatedPhrase;
+        return {
+            modoReverso,
+            textoOrigem: modoReverso ? translatedPhrase : phrase,
+            sourceLang: modoReverso ? user.learning_language : user.native_language,
+            targetLang: modoReverso ? user.native_language : user.learning_language,
+        };
+    }
+
     // Sugestão gratuita (Google Translate via LibreTranslate.php) - disponível
     // pra todos os planos, tradução literal/instantânea.
     async function sugerirTraducao(e) {
@@ -103,8 +118,12 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
 
         if (loadingSugestao || loadingMelhorar) return;
 
+        const { modoReverso, textoOrigem, sourceLang, targetLang } = direcaoTraducao();
+        if (!textoOrigem) return;
+
         setLoadingSugestao(true);
         setErrorTranslatedPhrase('');
+        setErrorPhrase('');
 
         try {
             const res = await fetch(`${API_URL}/controller/libreTranslate.php`, {
@@ -113,23 +132,24 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 },
                 body: JSON.stringify({
-                    phrase: phrase,
-                    sourceLang: user.native_language,
-                    targetLang: user.learning_language
+                    phrase: textoOrigem,
+                    sourceLang,
+                    targetLang
                 })
             });
 
             const data = await res.json();
 
             if (!data.success) {
-                setErrorTranslatedPhrase(data.message);
+                modoReverso ? setErrorPhrase(data.message) : setErrorTranslatedPhrase(data.message);
                 return;
             }
 
-            setTranslatedPhrase(data.message)
+            modoReverso ? setPhrase(data.message) : setTranslatedPhrase(data.message);
 
         } catch (error) {
-            setErrorTranslatedPhrase(error?.message || t("unexpected_error"))
+            const mensagem = error?.message || t("unexpected_error");
+            modoReverso ? setErrorPhrase(mensagem) : setErrorTranslatedPhrase(mensagem);
         } finally {
             setLoadingSugestao(false);
         }
@@ -143,8 +163,12 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
 
         if (loadingSugestao || loadingMelhorar) return;
 
+        const { modoReverso, textoOrigem, sourceLang, targetLang } = direcaoTraducao();
+        if (!textoOrigem) return;
+
         setLoadingMelhorar(true);
         setErrorTranslatedPhrase('');
+        setErrorPhrase('');
 
         try {
             const res = await fetch(`${API_URL}/controller/traducaoIA.php`, {
@@ -154,9 +178,9 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                 },
                 body: JSON.stringify({
                     action: 'melhorar',
-                    phrase: phrase,
-                    sourceLang: user.native_language,
-                    targetLang: user.learning_language
+                    phrase: textoOrigem,
+                    sourceLang,
+                    targetLang
                 })
             });
 
@@ -167,14 +191,15 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                     onOpenPremium?.();
                     return;
                 }
-                setErrorTranslatedPhrase(data.message);
+                modoReverso ? setErrorPhrase(data.message) : setErrorTranslatedPhrase(data.message);
                 return;
             }
 
-            setTranslatedPhrase(data.traducao)
+            modoReverso ? setPhrase(data.traducao) : setTranslatedPhrase(data.traducao);
 
         } catch (error) {
-            setErrorTranslatedPhrase(error?.message || t("unexpected_error"))
+            const mensagem = error?.message || t("unexpected_error");
+            modoReverso ? setErrorPhrase(mensagem) : setErrorTranslatedPhrase(mensagem);
         } finally {
             setLoadingMelhorar(false);
         }
@@ -241,7 +266,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                                     outline-none"
                             ></textarea>
 
-                            {phrase?.length > 1 && (
+                            {(phrase?.length > 1 || translatedPhrase?.length > 1) && (
                                 <div className="flex flex-wrap gap-2 mt-3">
                                     <button
                                         type="button"

@@ -9,7 +9,7 @@ export default function VocabularioHintBalloon() {
     const { t } = useTranslation();
 
     return (
-        <HintBalloon storageKey="zaldemy_dica_vocabulario_exibida">
+        <HintBalloon storageKey="zaldemy_dica_vocabulario_exibida" fecharAoInteragir>
             {t("vocabulary_hint_balloon")}
         </HintBalloon>
     );

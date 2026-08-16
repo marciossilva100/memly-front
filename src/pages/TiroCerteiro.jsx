@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Target, Trophy, Loader2, AlertCircle, Crosshair, ChevronLeft, ChevronRight, Flame, Settings, X } from "lucide-react";
+import { Target, Trophy, Loader2, AlertCircle, Crosshair, ChevronLeft, ChevronRight, Flame, Settings, X, Check } from "lucide-react";
 import PremiumModal from "../components/PremiumModal";
 import LimiteDiarioModal from "../components/LimiteDiarioModal";
 import { useAuth } from "../context/AuthContext";
@@ -11,6 +11,25 @@ import imgMeteoro1 from "../assets/img/meteoro1.png";
 import imgMeteoro2 from "../assets/img/meteoro2.png";
 
 const IMAGENS_METEORO = [imgMeteoro1, imgMeteoro2];
+
+// Mesma paleta/critério de ChuvaFrases.jsx pro picker de categorias -
+// duplicado (não importado de lá) porque são telas independentes, sem
+// nenhum módulo compartilhado de "seleção de categoria" hoje.
+const AVATAR_COLORS = [
+    'bg-emerald-500',
+    'bg-blue-500',
+    'bg-purple-500',
+    'bg-pink-500',
+    'bg-orange-500',
+    'bg-teal-500',
+    'bg-indigo-500',
+    'bg-rose-500',
+];
+// Mesmo valor de ChuvaFrases.jsx - a IA precisa de vocabulário variado o
+// bastante pra gerar 12 rodadas sem repetir, categorias muito pequenas
+// dão pouca matéria-prima pro prompt (ver TiroCerteiro::gerarRodadas no
+// backend).
+const MIN_FRASES = 5;
 
 // Munição/vidas/dificuldade - mesma progressão de nível/formato de duração
 // de ChuvaFrases.jsx, adaptada pro par certa+errada por rodada em vez de
@@ -280,8 +299,8 @@ export default function TiroCerteiro() {
     // motivo de ChuvaFrases.jsx.
     useEffect(() => () => pararAudio(), []);
 
-    // carregando | jogando | fimDeJogo
-    const [fase, setFase] = useState("carregando");
+    // escolher | carregando | jogando | fimDeJogo
+    const [fase, setFase] = useState("escolher");
     // Alterna a mensagem da tela de carregamento pra dar sensação de
     // progresso durante os ~3-5s reais da geração por IA, em vez de um texto
     // parado (que parece travado quando a chamada demora mais que o normal).
@@ -294,6 +313,15 @@ export default function TiroCerteiro() {
     const [limiteModalOpen, setLimiteModalOpen] = useState(false);
     const [motivoPremium, setMotivoPremium] = useState(null);
     const [saindoParaHome, setSaindoParaHome] = useState(false);
+
+    // null = checando, true = bloqueado (free ou cota do limitado
+    // esgotada), false = liberado - checa ANTES de mostrar o picker de
+    // categorias, mesmo padrão de ChuvaFrases.jsx.
+    const [acessoBloqueado, setAcessoBloqueado] = useState(null);
+    const [categorias, setCategorias] = useState([]);
+    const [loadingCategorias, setLoadingCategorias] = useState(true);
+    const [selecionadas, setSelecionadas] = useState([]); // ids marcados no picker
+    const [categoriasEscolhidas, setCategoriasEscolhidas] = useState([]); // confirmadas pra partida atual
 
     const [rodadas, setRodadas] = useState([]);
     const [indiceAtual, setIndiceAtual] = useState(0);
@@ -421,7 +449,12 @@ export default function TiroCerteiro() {
         return true;
     }
 
-    function iniciarPartida() {
+    // categoriasParaJogar: array de categorias (objetos com id) escolhidas
+    // no picker - category_ids vazio (nenhuma seleção, não deveria acontecer
+    // já que o botão "Jogar" só aparece com >=1 marcada) equivale a "todas as
+    // categorias" no backend, mesmo comportamento de antes do picker existir.
+    function iniciarPartida(categoriasParaJogar) {
+        setCategoriasEscolhidas(categoriasParaJogar);
         setFase("carregando");
         setErro(null);
         setConteudoInsuficiente(false);
@@ -443,7 +476,10 @@ export default function TiroCerteiro() {
                 return fetch(`${API_URL}/controller/tiroCerteiro.php`, {
                     method: "POST",
                     headers,
-                    body: JSON.stringify({ action: "obter_rodadas" }),
+                    body: JSON.stringify({
+                        action: "obter_rodadas",
+                        category_ids: categoriasParaJogar.map((c) => c.id),
+                    }),
                 }).then((r) => r.json());
             })
             .then((data) => {
@@ -470,19 +506,65 @@ export default function TiroCerteiro() {
             .catch(() => { });
     }
 
-    // Guarda em ref (não estado) pra sobreviver ao efeito de montagem
-    // duplicado do StrictMode em dev - sem isso, "verificar_acesso" disparava
-    // 2x quase simultâneas logo na primeira entrada, e a segunda já caía no
-    // cooldown (a primeira tinha acabado de registrar o uso), abrindo o
-    // modal de premium indevidamente pra quem nem chegou a jogar ainda.
-    const partidaIniciadaRef = useRef(false);
-
+    // Checa bloqueio de plano/cota ANTES de mostrar o picker de categorias -
+    // só consulta, não registra uso (seguro chamar a qualquer momento).
+    // Mesmo padrão de ChuvaFrases.jsx.
     useEffect(() => {
-        if (partidaIniciadaRef.current) return;
-        partidaIniciadaRef.current = true;
-        iniciarPartida();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        fetch(`${API_URL}/controller/tiroCerteiro.php`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token"),
+            },
+            body: JSON.stringify({ action: "status_acesso" }),
+        })
+            .then((r) => r.json())
+            .then((data) => {
+                const acessoBloqueadoAgora = Boolean(data?.bloqueado);
+                setAcessoBloqueado(acessoBloqueadoAgora);
+                if (acessoBloqueadoAgora) {
+                    setMensagemBloqueio(data?.message ?? null);
+                    if (data?.limite_atingido) {
+                        setLimiteModalOpen(true);
+                    } else {
+                        setMotivoPremium("tiro_certeiro");
+                        setIsPremiumModalOpen(true);
+                    }
+                }
+            })
+            .catch(() => setAcessoBloqueado(false));
+    }, [API_URL]);
+
+    // Categorias do usuário com frases suficientes pra alimentar a IA - só
+    // busca depois de confirmar que o acesso não está bloqueado.
+    useEffect(() => {
+        if (fase !== "escolher" || acessoBloqueado !== false) return;
+
+        setLoadingCategorias(true);
+        fetch(`${API_URL}/controller/categorias.php`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token"),
+            },
+            body: JSON.stringify({ action: "listar-com-quantidade" }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                const lista = Array.isArray(data) ? data : [];
+                setCategorias(lista.filter((c) => (c.total_frases ?? 0) >= MIN_FRASES));
+            })
+            .catch(() => setCategorias([]))
+            .finally(() => setLoadingCategorias(false));
+    }, [fase, API_URL, acessoBloqueado]);
+
+    function alternarSelecao(categoria) {
+        setSelecionadas((prev) =>
+            prev.includes(categoria.id)
+                ? prev.filter((id) => id !== categoria.id)
+                : [...prev, categoria.id]
+        );
+    }
 
     useEffect(() => {
         if (fase !== "carregando") return;
@@ -797,6 +879,99 @@ export default function TiroCerteiro() {
                 )}
             </div>
 
+            {fase === "escolher" && (
+                <div className="relative flex-1 flex flex-col min-h-0">
+                    <div className="flex-1 overflow-y-auto scrollbar-hide pb-4">
+                        {acessoBloqueado === null && (
+                            <div className="flex justify-center py-10">
+                                <Loader2 className="w-6 h-6 text-cyan-300 animate-spin" />
+                            </div>
+                        )}
+
+                        {acessoBloqueado === true && !saindoParaHome && (
+                            <div className="text-center py-10">
+                                <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center">
+                                    <Trophy className="w-6 h-6 text-yellow-400" />
+                                </div>
+                                <p className="text-gray-300 mb-4">{mensagemBloqueio}</p>
+                                <button
+                                    onClick={() => { setSaindoParaHome(true); navigate(-1); }}
+                                    className="px-6 py-3 rounded-full bg-gray-800/50 border border-gray-700 text-white font-medium hover:bg-gray-700/50 transition-colors"
+                                >
+                                    {t("back_to_home")}
+                                </button>
+                            </div>
+                        )}
+
+                        {acessoBloqueado === false && loadingCategorias && (
+                            <div className="flex justify-center py-10">
+                                <Loader2 className="w-6 h-6 text-cyan-300 animate-spin" />
+                            </div>
+                        )}
+
+                        {acessoBloqueado === false && !loadingCategorias && categorias.length === 0 && (
+                            <div className="text-center py-10">
+                                <p className="text-gray-300 mb-4">
+                                    {t("need_min_phrases_hint", { minimo: MIN_FRASES })}
+                                </p>
+                                <button
+                                    onClick={() => navigate("/listcategorias")}
+                                    className="px-6 py-3 rounded-full bg-gradient-to-r from-fuchsia-500 to-cyan-400 text-white font-medium hover:opacity-90 transition-opacity"
+                                >
+                                    {t("view_categories")}
+                                </button>
+                            </div>
+                        )}
+
+                        {!loadingCategorias && categorias.length > 0 && (
+                            <>
+                                <p className="text-gray-400 text-sm mb-3">{t("choose_category_to_play")}</p>
+                                {categorias.map((item, index) => {
+                                    const marcada = selecionadas.includes(item.id);
+                                    return (
+                                        <div
+                                            key={item.id}
+                                            onClick={() => alternarSelecao(item)}
+                                            className={`flex bg-gray-800/50 backdrop-blur-sm items-center gap-3 py-3 px-4 rounded-xl border shadow-lg mb-3 cursor-pointer transition-colors ${marcada ? "border-cyan-400 bg-cyan-400/10" : "border-gray-700 hover:bg-gray-700/50"
+                                                }`}
+                                        >
+                                            <div
+                                                className={`flex items-center justify-center w-11 h-11 shrink-0 rounded-full text-white font-semibold text-lg ${AVATAR_COLORS[index % AVATAR_COLORS.length]}`}
+                                            >
+                                                {item.categoria?.charAt(0)?.toUpperCase()}
+                                            </div>
+                                            <div className="min-w-0 flex-1">
+                                                <p className="text-white font-medium truncate">{item.categoria}</p>
+                                                <p className="text-xs text-gray-400">
+                                                    {item.total_frases} {t("words")}
+                                                </p>
+                                            </div>
+                                            <div
+                                                className={`w-6 h-6 shrink-0 rounded-full border flex items-center justify-center ${marcada ? "bg-cyan-400 border-cyan-400" : "border-gray-600"
+                                                    }`}
+                                            >
+                                                {marcada && <Check className="w-4 h-4 text-white" />}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </>
+                        )}
+                    </div>
+
+                    {selecionadas.length > 0 && (
+                        <button
+                            onClick={() =>
+                                iniciarPartida(categorias.filter((c) => selecionadas.includes(c.id)))
+                            }
+                            className="w-full px-6 py-3 mb-4 rounded-full bg-gradient-to-r from-fuchsia-500 to-cyan-400 hover:opacity-90 text-white font-medium transition-opacity shrink-0"
+                        >
+                            {t("play")}
+                        </button>
+                    )}
+                </div>
+            )}
+
             {fase === "carregando" && !bloqueado && !conteudoInsuficiente && !erro && (
                 <div className="relative flex-1 flex flex-col items-center justify-center text-center gap-3">
                     <Loader2 className="w-8 h-8 text-cyan-300 animate-spin" />
@@ -846,7 +1021,7 @@ export default function TiroCerteiro() {
                     <p className="text-gray-400 text-sm max-w-xs">{erro}</p>
                     <div className="mt-8 flex flex-col gap-3 w-full max-w-xs">
                         <button
-                            onClick={iniciarPartida}
+                            onClick={() => iniciarPartida(categoriasEscolhidas)}
                             className="px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors"
                         >
                             {t("try_again")}
@@ -949,10 +1124,19 @@ export default function TiroCerteiro() {
 
                     <div className="flex flex-col gap-3 w-full max-w-xs">
                         <button
-                            onClick={iniciarPartida}
+                            onClick={() => iniciarPartida(categoriasEscolhidas)}
                             className="w-full px-6 py-3 rounded-full bg-gradient-to-r from-fuchsia-500 to-cyan-400 hover:opacity-90 text-white font-medium transition-opacity"
                         >
                             {t("play_again")}
+                        </button>
+                        <button
+                            onClick={() => {
+                                setSelecionadas([]);
+                                setFase("escolher");
+                            }}
+                            className="w-full px-6 py-3 rounded-full bg-gray-800/50 border border-gray-700 text-white font-medium hover:bg-gray-700/50 transition-colors"
+                        >
+                            {t("choose_category_to_play")}
                         </button>
                         <button
                             // navigate(-1), não navigate("/jogos"): a rota

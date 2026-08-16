@@ -163,7 +163,11 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
                 body: JSON.stringify({
                     action: 'criar',
                     categoria: categoria,
-                    categoria_publica: categoriaPublica
+                    // Categoria criada por IA nunca é compartilhada - o
+                    // conteúdo gerado não passou pela revisão que uma
+                    // categoria manual tem antes de ficar visível pra outros
+                    // usuários.
+                    categoria_publica: 0
                 })
             });
 
@@ -334,15 +338,6 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
                                 {error &&
                                     <span className="text-sm text-red-500">{error}</span>
                                 }
-                                <div className="space-y-3">
-
-                                    <ToggleItem
-                                        label={t("share_category")}
-                                        helpText={t("share_category_description")}
-                                        checked={categoriaPublica === 1}
-                                        onChange={onChange}
-                                    />
-                                </div>
                             </div>
 
                             <div className="mt-6 flex justify-end gap-2">

@@ -58,6 +58,22 @@ export default function HintBalloon({ storageKey, children, direcao = "baixo", f
         }
     }, [userId, visivel, storageKey]);
 
+    // Fecha e já atualiza decisaoNestaCarga - sem isso, fechar só mudava o
+    // estado do React (visivel=false), mas o mapa de módulo continuava com
+    // o valor "true" gravado na 1ª montagem. Se esse componente remontasse
+    // de novo depois (mesma remontagem inexplicada sem desmonte visível já
+    // documentada acima), a montagem nova lia decisaoNestaCarga (não o
+    // localStorage, que só é reconsultado quando a chave ainda não está no
+    // mapa) e reabria o balão que o usuário tinha acabado de fechar -
+    // reproduzido de verdade: balão fechado ao clicar "Adicionar", volta
+    // depois de salvar a frase.
+    function fechar() {
+        if (userId) {
+            decisaoNestaCarga.set(chaveDica(storageKey, userId), false);
+        }
+        setVisivel(false);
+    }
+
     // fecharAoInteragir - some também com qualquer clique na tela, não só
     // tocando o balão em si (mesmo padrão já usado no guia de "criar
     // primeira categoria" na Home). Opcional (default false) pra não mudar
@@ -66,12 +82,9 @@ export default function HintBalloon({ storageKey, children, direcao = "baixo", f
     useEffect(() => {
         if (!fecharAoInteragir || !visivel) return;
 
-        function handleInteracao() {
-            setVisivel(false);
-        }
-
-        document.addEventListener("click", handleInteracao);
-        return () => document.removeEventListener("click", handleInteracao);
+        document.addEventListener("click", fechar);
+        return () => document.removeEventListener("click", fechar);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fecharAoInteragir, visivel]);
 
     if (!visivel) return null;
@@ -91,7 +104,7 @@ export default function HintBalloon({ storageKey, children, direcao = "baixo", f
             <div className={`absolute ${setaPosicao} left-1/2 -translate-x-1/2 w-3 h-3 bg-orange-500 rotate-45`} />
             <button
                 type="button"
-                onClick={() => setVisivel(false)}
+                onClick={fechar}
                 className="relative w-full bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 border border-white/15 text-white text-xs font-bold rounded-xl px-3 py-2 text-center shadow-lg"
             >
                 {children}

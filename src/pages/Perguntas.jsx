@@ -44,6 +44,7 @@ export default function Perguntas() {
     const [limitReached, setLimitReached] = useState(false);
     const [mensagemLimite, setMensagemLimite] = useState(null);
     const [insufficientContent, setInsufficientContent] = useState(false);
+    const [mensagemConteudoInsuficiente, setMensagemConteudoInsuficiente] = useState(null);
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
     const [limiteModalOpen, setLimiteModalOpen] = useState(false);
     const [motivoPremium, setMotivoPremium] = useState(null);
@@ -101,6 +102,14 @@ export default function Perguntas() {
                     }
                     if (data.conteudo_insuficiente) {
                         setInsufficientContent(true);
+                        // O backend distingue "menos de 3 frases treinadas"
+                        // de "treinou 3+, mas curtas demais pra gerar uma
+                        // boa pergunta" com mensagens diferentes - usar o
+                        // texto genérico fixo pras duas confundia quem já
+                        // tinha frases treinadas o bastante, só que curtas
+                        // (reportado de verdade: usuário com 3 frases em
+                        // treino via a mesma mensagem de "revise 3 frases").
+                        setMensagemConteudoInsuficiente(data.message || null);
                         setQuestion('');
                         return;
                     }
@@ -277,7 +286,7 @@ export default function Perguntas() {
                     {t("insufficient_content")}
                 </h1>
                 <p className="text-gray-400 text-sm max-w-xs">
-                    {t("add_more_phrases_hint")}
+                    {mensagemConteudoInsuficiente || t("add_more_phrases_hint")}
                 </p>
 
                 <button

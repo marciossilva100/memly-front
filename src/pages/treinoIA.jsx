@@ -27,6 +27,7 @@ export default function TreinoIA() {
     const [premiumRequired, setPremiumRequired] = useState(false);
     const [limitReached, setLimitReached] = useState(false);
     const [insufficientContent, setInsufficientContent] = useState(false);
+    const [mensagemConteudoInsuficiente, setMensagemConteudoInsuficiente] = useState(null);
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
     const [motivoPremium, setMotivoPremium] = useState(null);
     const [mensagemLimite, setMensagemLimite] = useState(null);
@@ -87,6 +88,7 @@ export default function TreinoIA() {
                     }
                     if (data.conteudo_insuficiente) {
                         setInsufficientContent(true);
+                        setMensagemConteudoInsuficiente(data.message || null);
                         return;
                     }
                     setError(data.message || t("unexpected_error"));
@@ -259,7 +261,7 @@ export default function TreinoIA() {
                     {t("insufficient_content")}
                 </h1>
                 <p className="text-gray-400 text-sm max-w-xs">
-                    {t("add_more_phrases_hint")}
+                    {mensagemConteudoInsuficiente || t("add_more_phrases_hint")}
                 </p>
 
                 <button

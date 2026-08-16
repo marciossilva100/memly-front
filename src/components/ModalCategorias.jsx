@@ -6,6 +6,53 @@ import { useAuth } from "../context/AuthContext";
 
 import { HelpCircle, List, FolderPlus, ChevronRight, Sparkles, Crown } from 'lucide-react';
 import { containsProfanity } from '../utils/contentFilter';
+
+// Precisa ficar FORA de ModalCategorias - definido dentro do corpo do
+// componente pai, uma função nova era criada a cada render (ex: a cada
+// letra digitada no campo de nome, que já muda o estado do pai). O React
+// identifica componente pelo tipo/referência da função, então via isso como
+// um componente DIFERENTE a cada render e remontava o checkbox inteiro -
+// como ele usava defaultChecked (não controlado), a remontagem sempre
+// voltava pro valor padrão, desfazendo qualquer toque do usuário no toggle
+// assim que ele digitava qualquer coisa no campo ao lado.
+function ToggleItem({ label, helpText, checked, onChange }) {
+    const [showTooltip, setShowTooltip] = useState(false);
+
+    return (
+        <div className="flex items-center mt-4 ">
+            <label className="relative inline-flex items-center cursor-pointer me-2 ">
+                <input type="checkbox" className="sr-only peer " checked={checked} onChange={(e) => onChange(e.target.checked)} />
+                <div className="w-10 h-5 bg-gray-200 rounded-full peer peer-checked:bg-[#4cb8c4] peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
+            </label>
+            <div className="flex items-center gap-2 flex-1 ">
+                <span className="text-md font-medium text-white">{label}</span>
+                <div className="relative">
+                    <button
+                        type="button"
+                        onClick={() => setShowTooltip(!showTooltip)}
+                        className="focus:outline-none mt-1"
+                    >
+                        <HelpCircle size={16} className="text-gray-400 hover:text-blue-500 transition-colors cursor-pointer" />
+                    </button>
+
+                    {showTooltip && (
+                        <>
+                            <div
+                                className="fixed inset-0 z-40"
+                                onClick={() => setShowTooltip(false)}
+                            />
+                            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg z-50 max-w-[200px] w-max">
+                                <p className="break-words">{helpText}</p>
+                                <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                            </div>
+                        </>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onSuccess, onOpenPremium }) {
     const { t } = useTranslation();
     const navigate = useNavigate();
@@ -14,7 +61,10 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [modo, setModo] = useState('inicial') // 'inicial' | 'manual' | 'ia'
-    const [categoriaPublica, setCategoriaPublica] = useState(1)
+    // Desabilitado por padrão de propósito - compartilhar categoria deve ser
+    // uma escolha deliberada do usuário, não algo que ele descobre depois
+    // que já ficou público sem querer.
+    const [categoriaPublica, setCategoriaPublica] = useState(0)
     const API_URL = import.meta.env.VITE_API_URL;
 
     // Bloqueia de cara (antes de abrir o formulário) quem não tem plano
@@ -146,44 +196,6 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
         }
     }
 
-    function ToggleItem({ label, helpText, defaultChecked = true }) {
-        const [showTooltip, setShowTooltip] = useState(false);
-
-        return (
-            <div className="flex items-center mt-4 ">
-                <label className="relative inline-flex items-center cursor-pointer me-2 ">
-                    <input type="checkbox" className="sr-only peer " defaultChecked={defaultChecked} onChange={(e) => onChange(e.target.checked)} />
-                    <div className="w-10 h-5 bg-gray-200 rounded-full peer peer-checked:bg-[#4cb8c4] peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
-                </label>
-                <div className="flex items-center gap-2 flex-1 ">
-                    <span className="text-md font-medium text-white">{label}</span>
-                    <div className="relative">
-                        <button
-                            type="button"
-                            onClick={() => setShowTooltip(!showTooltip)}
-                            className="focus:outline-none mt-1"
-                        >
-                            <HelpCircle size={16} className="text-gray-400 hover:text-blue-500 transition-colors cursor-pointer" />
-                        </button>
-
-                        {showTooltip && (
-                            <>
-                                <div
-                                    className="fixed inset-0 z-40"
-                                    onClick={() => setShowTooltip(false)}
-                                />
-                                <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg z-50 max-w-[200px] w-max">
-                                    <p className="break-words">{helpText}</p>
-                                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
-                                </div>
-                            </>
-                        )}
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
     return (
         <Dialog
             open={open}
@@ -285,6 +297,8 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
                                     <ToggleItem
                                         label={t("share_category")}
                                         helpText={t("share_category_description")}
+                                        checked={categoriaPublica === 1}
+                                        onChange={onChange}
                                     />
                                 </div>
                             </div>
@@ -325,6 +339,8 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
                                     <ToggleItem
                                         label={t("share_category")}
                                         helpText={t("share_category_description")}
+                                        checked={categoriaPublica === 1}
+                                        onChange={onChange}
                                     />
                                 </div>
                             </div>

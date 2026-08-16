@@ -743,10 +743,14 @@ export default function Home() {
             {mostrarGuiaCategoria && (
                 <div className="fixed bottom-40 left-1/2 -translate-x-1/2 w-52 max-w-[85vw] z-20 pointer-events-none">
                     <div className="animate-gentle-bounce">
-                        <div className="bg-orange-600 text-white text-sm font-medium px-4 py-2 rounded-xl shadow-lg text-center">
+                        {/* Mesma paleta do balão de HintBalloon.jsx (usado em
+                            Frases.jsx) - gradiente âmbar/laranja/vermelho com
+                            borda branca sutil, em vez do laranja sólido de
+                            antes. */}
+                        <div className="bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 border border-white/15 text-white text-sm font-medium px-4 py-2 rounded-xl shadow-lg text-center">
                             {t("first_category_hint")}
                         </div>
-                        <div className="w-3 h-3 bg-orange-600 rotate-45 mx-auto -mt-1.5" />
+                        <div className="w-3 h-3 bg-orange-500 rotate-45 mx-auto -mt-1.5" />
                     </div>
                 </div>
             )}

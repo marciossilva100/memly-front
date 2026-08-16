@@ -201,6 +201,7 @@
   "processing_answer": "Elaborazione risposta...",
   "insufficient_content": "⚠️ Contenuto insufficiente",
   "add_more_phrases_hint": "Ripassa almeno 3 frasi nelle tue flashcard finché non le ricordi bene per sbloccare questa funzione.",
+  "add_longer_phrases_hint": "Allena frasi più complete nelle tue flashcard (non solo parole isolate) per sbloccare questa funzione.",
   "daily_limit_reached": "Limite giornaliero raggiunto",
   "already_did_questions_today": "Hai già fatto {{count}} domande oggi.",
   "come_back_tomorrow": "Torna domani per continuare a esercitarti",

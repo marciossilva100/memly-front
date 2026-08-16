@@ -201,6 +201,7 @@
   "processing_answer": "Przetwarzanie odpowiedzi...",
   "insufficient_content": "⚠️ Niewystarczająca zawartość",
   "add_more_phrases_hint": "Powtórz co najmniej 3 zdania w swoich fiszkach, aż dobrze je zapamiętasz, aby odblokować tę funkcję.",
+  "add_longer_phrases_hint": "Ćwicz pełniejsze zdania w swoich fiszkach (nie tylko pojedyncze słowa), aby odblokować tę funkcję.",
   "daily_limit_reached": "Osiągnięto dzienny limit",
   "already_did_questions_today": "Odpowiedziałeś już na {{count}} pytań dzisiaj.",
   "come_back_tomorrow": "Wróć jutro, aby kontynuować ćwiczenia",

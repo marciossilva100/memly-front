@@ -201,6 +201,7 @@
   "processing_answer": "回答を処理しています...",
   "insufficient_content": "⚠️ コンテンツが不足しています",
   "add_more_phrases_hint": "この機能を利用するには、フラッシュカードで少なくとも3つのフレーズをしっかり覚えるまで復習してください。",
+  "add_longer_phrases_hint": "この機能を利用するには、フラッシュカードでもっと完全な文（単語だけでなく）を練習してください。",
   "daily_limit_reached": "1日の上限に達しました",
   "already_did_questions_today": "今日はすでに {{count}} 問の質問を行いました。",
   "come_back_tomorrow": "また明日、練習を続けに来てください",

@@ -202,6 +202,7 @@
   "processing_answer": "Processando resposta...",
   "insufficient_content": "⚠️ Conteúdo insuficiente",
   "add_more_phrases_hint": "Revise pelo menos 3 frases nos seus flashcards até elas ficarem bem lembradas para liberar esse recurso.",
+  "add_longer_phrases_hint": "Treine frases mais completas nos flashcards (não só palavras soltas) para desbloquear esse recurso.",
   "daily_limit_reached": "Limite diário atingido",
   "already_did_questions_today": "Você já fez {{count}} perguntas hoje.",
   "come_back_tomorrow": "Volte amanhã para continuar praticando",

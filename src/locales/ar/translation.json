@@ -201,6 +201,7 @@
   "processing_answer": "جارٍ معالجة الإجابة...",
   "insufficient_content": "⚠️ محتوى غير كافٍ",
   "add_more_phrases_hint": "راجع 3 جمل على الأقل في بطاقاتك التعليمية حتى تحفظها جيدًا لفتح هذه الميزة.",
+  "add_longer_phrases_hint": "درّب جملاً أكثر اكتمالاً في بطاقاتك التعليمية (وليس مجرد كلمات مفردة) لفتح هذه الميزة.",
   "daily_limit_reached": "تم بلوغ الحد اليومي",
   "already_did_questions_today": "لقد أجبت بالفعل على {{count}} أسئلة اليوم.",
   "come_back_tomorrow": "عد غدًا لمواصلة التدريب",

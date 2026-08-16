@@ -201,6 +201,7 @@
   "processing_answer": "답변을 처리하는 중...",
   "insufficient_content": "⚠️ 콘텐츠가 부족합니다",
   "add_more_phrases_hint": "이 기능을 잠금 해제하려면 플래시카드에서 최소 3개의 문장을 완전히 익힐 때까지 복습하세요.",
+  "add_longer_phrases_hint": "이 기능을 잠금 해제하려면 플래시카드에서 단어만이 아니라 더 완전한 문장을 연습하세요.",
   "daily_limit_reached": "일일 한도에 도달했습니다",
   "already_did_questions_today": "오늘 이미 질문 {{count}}개를 풀었습니다.",
   "come_back_tomorrow": "내일 다시 와서 계속 연습해 보세요",

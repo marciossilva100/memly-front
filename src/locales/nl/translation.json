@@ -201,6 +201,7 @@
   "processing_answer": "Antwoord verwerken...",
   "insufficient_content": "⚠️ Onvoldoende content",
   "add_more_phrases_hint": "Herhaal minstens 3 zinnen in je flashcards totdat je ze goed kent om deze functie te ontgrendelen.",
+  "add_longer_phrases_hint": "Oefen met meer complete zinnen in je flashcards (niet alleen losse woorden) om deze functie te ontgrendelen.",
   "daily_limit_reached": "Dagelijkse limiet bereikt",
   "already_did_questions_today": "Je hebt vandaag al {{count}} vragen gedaan.",
   "come_back_tomorrow": "Kom morgen terug om verder te oefenen",

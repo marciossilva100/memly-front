@@ -27,7 +27,10 @@ export default function TreinoIA() {
     const [premiumRequired, setPremiumRequired] = useState(false);
     const [limitReached, setLimitReached] = useState(false);
     const [insufficientContent, setInsufficientContent] = useState(false);
-    const [mensagemConteudoInsuficiente, setMensagemConteudoInsuficiente] = useState(null);
+    // Mesmo campo/motivo de Perguntas.jsx - FraseDoDia hoje não manda esse
+    // motivo (só tem 1 checagem de conteúdo insuficiente), mas mantém o
+    // mesmo padrão pra não divergir se isso mudar.
+    const [frasesCurtas, setFrasesCurtas] = useState(false);
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
     const [motivoPremium, setMotivoPremium] = useState(null);
     const [mensagemLimite, setMensagemLimite] = useState(null);
@@ -88,7 +91,7 @@ export default function TreinoIA() {
                     }
                     if (data.conteudo_insuficiente) {
                         setInsufficientContent(true);
-                        setMensagemConteudoInsuficiente(data.message || null);
+                        setFrasesCurtas(Boolean(data.frases_curtas));
                         return;
                     }
                     setError(data.message || t("unexpected_error"));
@@ -261,7 +264,7 @@ export default function TreinoIA() {
                     {t("insufficient_content")}
                 </h1>
                 <p className="text-gray-400 text-sm max-w-xs">
-                    {mensagemConteudoInsuficiente || t("add_more_phrases_hint")}
+                    {frasesCurtas ? t("add_longer_phrases_hint") : t("add_more_phrases_hint")}
                 </p>
 
                 <button

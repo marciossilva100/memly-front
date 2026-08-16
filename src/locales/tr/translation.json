@@ -201,6 +201,7 @@
   "processing_answer": "Cevap işleniyor...",
   "insufficient_content": "⚠️ Yetersiz içerik",
   "add_more_phrases_hint": "Bu özelliği açmak için kartlarınızdaki en az 3 cümleyi iyice öğrenene kadar tekrar edin.",
+  "add_longer_phrases_hint": "Bu özelliği açmak için kartlarınızda daha eksiksiz cümleler çalışın (sadece tek kelimeler değil).",
   "daily_limit_reached": "Günlük limite ulaşıldı",
   "already_did_questions_today": "Bugün zaten {{count}} soru yaptın.",
   "come_back_tomorrow": "Pratik yapmaya devam etmek için yarın tekrar gel",

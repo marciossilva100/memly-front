@@ -201,6 +201,7 @@
   "processing_answer": "Antwort wird verarbeitet...",
   "insufficient_content": "⚠️ Nicht genügend Inhalt",
   "add_more_phrases_hint": "Wiederhole mindestens 3 Sätze in deinen Karteikarten, bis du sie gut kannst, um diese Funktion freizuschalten.",
+  "add_longer_phrases_hint": "Übe vollständigere Sätze in deinen Karteikarten (nicht nur einzelne Wörter), um diese Funktion freizuschalten.",
   "daily_limit_reached": "Tageslimit erreicht",
   "already_did_questions_today": "Du hast heute bereits {{count}} Fragen beantwortet.",
   "come_back_tomorrow": "Komm morgen wieder, um weiter zu üben",

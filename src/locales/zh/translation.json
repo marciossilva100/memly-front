@@ -201,6 +201,7 @@
   "processing_answer": "正在处理答案...",
   "insufficient_content": "⚠️ 内容不足",
   "add_more_phrases_hint": "在你的抽认卡中至少复习3个句子，直到熟练记住为止，才能解锁此功能。",
+  "add_longer_phrases_hint": "在你的抽认卡中练习更完整的句子（不只是单个单词），才能解锁此功能。",
   "daily_limit_reached": "已达每日上限",
   "already_did_questions_today": "你今天已完成 {{count}} 道题。",
   "come_back_tomorrow": "明天再来继续练习吧",

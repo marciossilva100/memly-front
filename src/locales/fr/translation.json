@@ -201,6 +201,7 @@
   "processing_answer": "Traitement de la réponse...",
   "insufficient_content": "⚠️ Contenu insuffisant",
   "add_more_phrases_hint": "Révisez au moins 3 phrases dans vos flashcards jusqu'à bien les connaître pour débloquer cette fonctionnalité.",
+  "add_longer_phrases_hint": "Entraînez des phrases plus complètes dans vos flashcards (pas seulement des mots isolés) pour débloquer cette fonctionnalité.",
   "daily_limit_reached": "Limite quotidienne atteinte",
   "already_did_questions_today": "Vous avez déjà répondu à {{count}} questions aujourd'hui.",
   "come_back_tomorrow": "Revenez demain pour continuer à vous entraîner",

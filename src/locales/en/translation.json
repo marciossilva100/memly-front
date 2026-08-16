@@ -202,6 +202,7 @@
   "processing_answer": "Processing answer...",
   "insufficient_content": "⚠️ Insufficient content",
   "add_more_phrases_hint": "Review at least 3 phrases in your flashcards until you know them well to unlock this feature.",
+  "add_longer_phrases_hint": "Train longer, more complete phrases in your flashcards (not just single words) to unlock this feature.",
   "daily_limit_reached": "Daily limit reached",
   "already_did_questions_today": "You've already done {{count}} questions today.",
   "come_back_tomorrow": "Come back tomorrow to keep practicing",

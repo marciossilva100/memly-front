@@ -8,7 +8,6 @@ import {
   FileText,
   MessageSquare,
   CheckCircle,
-  Zap,
   ChevronRight,
   Shield,
   Target,
@@ -16,14 +15,64 @@ import {
   Volume2,
   Mic2,
   WavesIcon,
+  FolderPlus,
+  Languages,
+  Gamepad2,
   X
 } from 'lucide-react';
 
+// Fusos horários oficiais do Brasil (IANA tz database) - usados só pra
+// decidir qual preço de referência mostrar no modal (R$ vs US$), sem
+// nenhuma chamada externa nem serviço de geolocalização pago. Não é 100%
+// preciso (alguém de fuso BR fisicamente fora do país veria R$, e
+// vice-versa), mas resolve o caso real que motivou isso: cliente brasileiro
+// via um preço em dólar, tentou assinar e teve o pagamento recusado porque
+// a cobrança de verdade cai na moeda de liquidação da conta (BRL) - mostrar
+// o preço certo de cara evita essa confusão pra a maioria dos casos.
+const FUSOS_BRASIL = new Set([
+  'America/Noronha', 'America/Belem', 'America/Fortaleza', 'America/Recife',
+  'America/Araguaina', 'America/Maceio', 'America/Bahia', 'America/Sao_Paulo',
+  'America/Campo_Grande', 'America/Cuiaba', 'America/Santarem',
+  'America/Porto_Velho', 'America/Boa_Vista', 'America/Manaus',
+  'America/Eirunepe', 'America/Rio_Branco',
+]);
+
+// Não dá pra replicar com precisão o cálculo de conversão do Stripe
+// (Adaptive Pricing usa taxa de câmbio em tempo real + a taxa de conversão
+// própria dele) pras outras ~150 moedas que ele já converte sozinho no
+// checkout - por isso só diferencia Brasil (preço real, em BRL, a moeda de
+// liquidação da conta) do resto do mundo (preço de referência em USD, que é
+// a moeda base a partir da qual o Stripe converte pra cada país). Usa
+// Intl.NumberFormat com o idioma atual do app pra formatar (separador
+// decimal, posição do símbolo) do jeito certo por idioma, em vez de uma
+// string fixa - sem isso, quem usa o app em inglês veria "US$ 4,90" com
+// vírgula (formato BR), quando o certo em inglês é "US$ 4.90" com ponto.
+function precoReferencia(idioma) {
+  let noBrasil = false;
+  try {
+    noBrasil = FUSOS_BRASIL.has(Intl.DateTimeFormat().resolvedOptions().timeZone);
+  } catch {
+    noBrasil = false;
+  }
+
+  const moeda = noBrasil ? 'BRL' : 'USD';
+  const valorNumerico = noBrasil ? 24.90 : 4.90;
+
+  try {
+    return { valor: new Intl.NumberFormat(idioma, { style: 'currency', currency: moeda }).format(valorNumerico) };
+  } catch {
+    return { valor: noBrasil ? 'R$ 24,90' : 'US$ 4,90' };
+  }
+}
+
 const PremiumModal = ({ isOpen, onClose, motivo }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [assinando, setAssinando] = useState(false);
   const [erroAssinatura, setErroAssinatura] = useState('');
   const API_URL = import.meta.env.VITE_API_URL;
+  // Calculado 1x (não muda durante a vida do modal) - evita reconsultar
+  // Intl.DateTimeFormat a cada render.
+  const [preco] = useState(() => precoReferencia(i18n.language));
 
   // Vender assinatura de dentro do app Android (mesmo abrindo o checkout do
   // Stripe num navegador embutido) conta como "venda dentro do app" pra
@@ -112,9 +161,19 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
       description: t("based_on_vocabulary_desc")
     },
     {
-      icon: <Zap className="w-5 h-5" />,
-      title: t("smart_cache_title"),
-      description: t("smart_cache_desc")
+      icon: <FolderPlus className="w-5 h-5" />,
+      title: t("category_ai_feature_title"),
+      description: t("category_ai_feature_desc")
+    },
+    {
+      icon: <Languages className="w-5 h-5" />,
+      title: t("translation_ai_feature_title"),
+      description: t("translation_ai_feature_desc")
+    },
+    {
+      icon: <Gamepad2 className="w-5 h-5" />,
+      title: t("games_feature_title"),
+      description: t("games_feature_desc")
     }
   ];
 
@@ -174,7 +233,7 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
 
             {/* Preço */}
             <div className="text-center mb-6">
-              <span className="text-4xl font-bold text-white">US$ 4,90</span>
+              <span className="text-4xl font-bold text-white">{preco.valor}</span>
               <span className="text-gray-300 ml-1">{t("per_month")}</span>
             </div>
 
@@ -251,7 +310,7 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
                 className="w-full bg-gradient-to-r from-[#4cb8c4] to-[#085078] hover:from-[#3da5b0] hover:to-[#064060] disabled:opacity-60 text-white font-bold py-3.5 px-6 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 group mb-4"
               >
                 <Sparkles className="w-4 h-4" />
-                <span>{assinando ? t("redirecting_to_checkout") : t("activate_premium_button")}</span>
+                <span>{assinando ? t("redirecting_to_checkout") : t("activate_premium_button", { preco: preco.valor })}</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
             )}

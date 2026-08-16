@@ -49,13 +49,15 @@ export default function ListCategoria() {
 
     const navigate = useNavigate();
 
+    // O bloqueio (limitado sem nenhum dos dois recursos disponível, ou free
+    // sem acesso a nenhum) fica por conta do próprio ModalIA - uma coroa em
+    // cada opção bloqueada, que só abre o modal premium quando o usuário
+    // tenta entrar naquela opção específica (ver ModalIA.jsx). Sempre abre
+    // o ModalIA aqui, pra qualquer plano - pular direto pro premium pro
+    // plano free era o mesmo bug já corrigido na Home (commit c6041fe),
+    // só que esse arquivo tinha o código duplicado e ninguém tinha mexido.
     function verifyPlan() {
-        if (user?.plano === 1 || user?.plano === 3) {
-            setOpenTreinoIA(true);
-            return;
-        }
-        setMotivoPremium(null);
-        setIsPremiumModalOpen(true);
+        setOpenTreinoIA(true);
     }
 
     const carregarCategorias = async (pageAtual = 1, reset = false) => {

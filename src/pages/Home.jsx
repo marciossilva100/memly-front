@@ -478,19 +478,15 @@ export default function Home() {
     }
 
     function verifyPlan(e) {
-        // O bloqueio do limitado sem nenhum dos dois recursos disponível
-        // fica por conta do próprio ModalIA (uma coroa em cada opção
-        // bloqueada, que abre o modal premium só quando o usuário tenta
-        // entrar naquela opção específica) - aqui sempre abre o ModalIA,
-        // mesmo com treinoIaBloqueado true (usado só pra coroa neste botão).
-        if (user.plano === 1 || user.plano === 3) {
-            setOpenTreinoIA(true)
-            return
-        }
-        setMotivoPremium(null)
-        setIsPremiumModalOpen(true)
-        // navigate('/premiumplan');
-
+        // O bloqueio (limitado sem nenhum dos dois recursos disponível, ou
+        // free sem acesso a nenhum) fica por conta do próprio ModalIA - uma
+        // coroa em cada opção bloqueada, que só abre o modal premium quando
+        // o usuário tenta entrar naquela opção específica (ver
+        // ModalIA.jsx). Sempre abre o ModalIA aqui, pra qualquer plano -
+        // pular direto pro premium pro plano free (como fazia antes) é o
+        // mesmo bug já corrigido pro limitado no commit c6041fe, só que
+        // nesse branch ninguém tinha mexido ainda.
+        setOpenTreinoIA(true)
     }
 
     async function translateString(phrase) {

@@ -552,13 +552,22 @@ export default function TiroCerteiro() {
             .then((res) => res.json())
             .then((data) => {
                 const lista = Array.isArray(data) ? data : [];
-                setCategorias(lista.filter((c) => (c.total_frases ?? 0) >= MIN_FRASES));
+                // Mostra TODAS as categorias, mesmo as que ainda não batem
+                // o mínimo - escondê-las sem explicação deixava o usuário
+                // sem saber por que uma categoria recém-criada (0 frases)
+                // simplesmente não aparecia. As que não batem o mínimo
+                // aparecem desabilitadas, com quantas frases ainda faltam.
+                setCategorias(lista);
             })
             .catch(() => setCategorias([]))
             .finally(() => setLoadingCategorias(false));
     }, [fase, API_URL, acessoBloqueado]);
 
     function alternarSelecao(categoria) {
+        // Categoria abaixo do mínimo de frases fica visível mas desabilitada
+        // (ver comentário acima) - clique nela não faz nada.
+        if ((categoria.total_frases ?? 0) < MIN_FRASES) return;
+
         setSelecionadas((prev) =>
             prev.includes(categoria.id)
                 ? prev.filter((id) => id !== categoria.id)
@@ -928,11 +937,17 @@ export default function TiroCerteiro() {
                                 <p className="text-gray-400 text-sm mb-3">{t("choose_category_to_play")}</p>
                                 {categorias.map((item, index) => {
                                     const marcada = selecionadas.includes(item.id);
+                                    const faltam = MIN_FRASES - (item.total_frases ?? 0);
+                                    const bloqueada = faltam > 0;
                                     return (
                                         <div
                                             key={item.id}
                                             onClick={() => alternarSelecao(item)}
-                                            className={`flex bg-gray-800/50 backdrop-blur-sm items-center gap-3 py-3 px-4 rounded-xl border shadow-lg mb-3 cursor-pointer transition-colors ${marcada ? "border-cyan-400 bg-cyan-400/10" : "border-gray-700 hover:bg-gray-700/50"
+                                            className={`flex bg-gray-800/50 backdrop-blur-sm items-center gap-3 py-3 px-4 rounded-xl border shadow-lg mb-3 transition-colors ${bloqueada
+                                                    ? "border-gray-700 opacity-50 cursor-not-allowed"
+                                                    : marcada
+                                                        ? "border-cyan-400 bg-cyan-400/10 cursor-pointer"
+                                                        : "border-gray-700 hover:bg-gray-700/50 cursor-pointer"
                                                 }`}
                                         >
                                             <div
@@ -943,15 +958,19 @@ export default function TiroCerteiro() {
                                             <div className="min-w-0 flex-1">
                                                 <p className="text-white font-medium truncate">{item.categoria}</p>
                                                 <p className="text-xs text-gray-400">
-                                                    {item.total_frases} {t("words")}
+                                                    {bloqueada
+                                                        ? t("missing_phrases_count", { count: faltam })
+                                                        : `${item.total_frases} ${t("words")}`}
                                                 </p>
                                             </div>
-                                            <div
-                                                className={`w-6 h-6 shrink-0 rounded-full border flex items-center justify-center ${marcada ? "bg-cyan-400 border-cyan-400" : "border-gray-600"
-                                                    }`}
-                                            >
-                                                {marcada && <Check className="w-4 h-4 text-white" />}
-                                            </div>
+                                            {!bloqueada && (
+                                                <div
+                                                    className={`w-6 h-6 shrink-0 rounded-full border flex items-center justify-center ${marcada ? "bg-cyan-400 border-cyan-400" : "border-gray-600"
+                                                        }`}
+                                                >
+                                                    {marcada && <Check className="w-4 h-4 text-white" />}
+                                                </div>
+                                            )}
                                         </div>
                                     );
                                 })}

@@ -571,6 +571,7 @@
   "sure_shot_card_desc": "Sınırlı cephaneyle yapay zekânın oluşturduğu doğru hedefi vur",
   "choose_category_to_play": "Oynamak için bir kategori seç",
   "need_min_phrases_hint": "Oynamak için en az {{minimo}} cümlesi olan kategorilere ihtiyacın var. Bir kategoriye daha fazla cümle ekle ve buraya dön.",
+  "missing_phrases_count": "{{count}} cümle daha gerekli",
   "translate_this": "Doğru çeviriye dokun",
   "score": "Puan",
   "best_score": "Rekor",

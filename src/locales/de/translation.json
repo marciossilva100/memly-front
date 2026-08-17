@@ -571,6 +571,7 @@
   "sure_shot_card_desc": "Triff das richtige, von der KI generierte Ziel, mit begrenzter Munition",
   "choose_category_to_play": "Wähle eine Kategorie zum Spielen",
   "need_min_phrases_hint": "Du brauchst Kategorien mit mindestens {{minimo}} Sätzen, um zu spielen. Füge einer Kategorie mehr Sätze hinzu und komm zurück.",
+  "missing_phrases_count": "Noch {{count}} Sätze nötig",
   "translate_this": "Tippe auf die richtige Übersetzung",
   "score": "Punkte",
   "best_score": "Bestwert",

@@ -571,6 +571,7 @@
   "sure_shot_card_desc": "Tirez sur la bonne cible générée par l'IA, avec des munitions limitées",
   "choose_category_to_play": "Choisissez une catégorie pour jouer",
   "need_min_phrases_hint": "Vous avez besoin de catégories avec au moins {{minimo}} phrases pour jouer. Ajoutez plus de phrases à une catégorie et revenez ici.",
+  "missing_phrases_count": "Encore {{count}} phrases nécessaires",
   "translate_this": "Touchez la bonne traduction",
   "score": "Points",
   "best_score": "Record",

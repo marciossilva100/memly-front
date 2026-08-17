@@ -571,6 +571,7 @@
   "sure_shot_card_desc": "Schiet op het juiste, door AI gegenereerde doelwit, met beperkte munitie",
   "choose_category_to_play": "Kies een categorie om te spelen",
   "need_min_phrases_hint": "Je hebt categorieën met minstens {{minimo}} zinnen nodig om te spelen. Voeg meer zinnen toe aan een categorie en kom terug.",
+  "missing_phrases_count": "Nog {{count}} zinnen nodig",
   "translate_this": "Tik op de juiste vertaling",
   "score": "Punten",
   "best_score": "Record",

@@ -571,6 +571,7 @@
   "sure_shot_card_desc": "Spara al bersaglio giusto generato dall'IA, con munizioni limitate",
   "choose_category_to_play": "Scegli una categoria per giocare",
   "need_min_phrases_hint": "Hai bisogno di categorie con almeno {{minimo}} frasi per giocare. Aggiungi altre frasi a una categoria e torna qui.",
+  "missing_phrases_count": "Mancano {{count}} frasi",
   "translate_this": "Tocca la traduzione giusta",
   "score": "Punti",
   "best_score": "Record",

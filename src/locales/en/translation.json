@@ -573,6 +573,7 @@
   "sure_shot_card_desc": "Shoot the right AI-generated target, with limited ammo",
   "choose_category_to_play": "Choose a category to play",
   "need_min_phrases_hint": "You need categories with at least {{minimo}} phrases to play. Add more phrases to a category and come back here.",
+  "missing_phrases_count": "{{count}} more phrases needed",
   "translate_this": "Tap the correct translation",
   "score": "Score",
   "best_score": "Best score",

@@ -571,6 +571,7 @@
   "sure_shot_card_desc": "Strzelaj do właściwego celu wygenerowanego przez AI, z ograniczoną amunicją",
   "choose_category_to_play": "Wybierz kategorię do gry",
   "need_min_phrases_hint": "Potrzebujesz kategorii z co najmniej {{minimo}} zdaniami, aby grać. Dodaj więcej zdań do kategorii i wróć tutaj.",
+  "missing_phrases_count": "Brakuje {{count}} zdań",
   "translate_this": "Dotknij poprawnego tłumaczenia",
   "score": "Punkty",
   "best_score": "Rekord",

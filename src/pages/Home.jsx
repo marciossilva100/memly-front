@@ -7,6 +7,7 @@ import ModalTreinoAdvinhar from "../components/ModalTreinoAdvinhar";
 import ModalIA from '../components/ModalIA';
 import ModalSucesso from '../components/ModalSucesso';
 import PremiumModal from '../components/PremiumModal'
+import LimiteDiarioModal from '../components/LimiteDiarioModal';
 import ModalConfirm from '../components/ModalConfirm';
 import TermometroEstudo from '../components/TermometroEstudo';
 import { useAuth } from "../context/AuthContext";
@@ -81,6 +82,8 @@ export default function Home() {
     const [error, setError] = useState('')
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
     const [motivoPremium, setMotivoPremium] = useState(null);
+    const [limiteModalOpen, setLimiteModalOpen] = useState(false);
+    const [mensagemLimite, setMensagemLimite] = useState(null);
     const [menuOpenId, setMenuOpenId] = useState(null);
     const [recarregar, setRecarregar] = useState(false)
     const [modalConfirm, setOpenModalConfirm] = useState(false)
@@ -838,6 +841,11 @@ export default function Home() {
                     setMotivoPremium(motivo ?? "categorias");
                     setIsPremiumModalOpen(true);
                 }}
+                onOpenLimiteDiario={(mensagem) => {
+                    setOpen(false);
+                    setMensagemLimite(mensagem);
+                    setLimiteModalOpen(true);
+                }}
             />
             <ModalCategoriasEditar
                 open={openCategoriaEditar}
@@ -884,6 +892,16 @@ export default function Home() {
             <ModalIA setOpenTreinoIA={setOpenTreinoIA} openTreinoIA={openTreinoIA} />
             <ModalSucesso msg={msgModalSucesso} openModalSucesso={openModalSucesso} setOpenModalSucesso={setOpenModalSucesso} />
             <PremiumModal isOpen={isPremiumModalOpen} setIsPremiumModalOpen={setIsPremiumModalOpen} onClose={() => { setIsPremiumModalOpen(false); setMotivoPremium(null); }} motivo={motivoPremium} />
+            <LimiteDiarioModal
+                isOpen={limiteModalOpen}
+                mensagem={mensagemLimite}
+                onClose={() => setLimiteModalOpen(false)}
+                onAssinarPremium={() => {
+                    setLimiteModalOpen(false);
+                    setMotivoPremium("categoria_ia");
+                    setIsPremiumModalOpen(true);
+                }}
+            />
             <ModalConfirm setOpenModalConfirm={setOpenModalConfirm} openModalConfirm={modalConfirm} msg={msgModalConfirm} onConfirm={confirmarExclusao} />
         </div>
     )

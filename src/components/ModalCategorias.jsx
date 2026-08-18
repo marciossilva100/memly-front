@@ -53,7 +53,7 @@ function ToggleItem({ label, helpText, checked, onChange }) {
     );
 }
 
-export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onSuccess, onOpenPremium }) {
+export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onSuccess, onOpenPremium, onOpenLimiteDiario }) {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { user, checkAuth } = useAuth();
@@ -174,10 +174,23 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
             const data = await res.json();
 
             if (!data.success) {
-                if (data.limite_atingido || data.premium_necessario) {
-                    // Fecha o formulário de vez - senão o usuário só descarta o
-                    // PremiumModal e volta pro mesmo form pra tentar de novo,
-                    // mesmo já sem nenhuma amostra grátis disponível.
+                // Fecha o formulário de vez - senão o usuário só descarta o
+                // modal e volta pro mesmo form pra tentar de novo, mesmo já
+                // sem cota disponível.
+                if (data.limite_atingido) {
+                    // Cota diária (premium) ou amostra vitalícia (limitado)
+                    // esgotada - diferente de premium_necessario (free, nunca
+                    // teve acesso): aqui o usuário já paga ou já é engajado,
+                    // não precisa da vitrine completa de novo, só um aviso
+                    // claro (mesmo padrão já usado em Perguntas/jogos - ver
+                    // feedback_shared_function_guards). Mostrar o
+                    // PremiumModal completo pra quem já É premium não fazia
+                    // sentido nenhum.
+                    setOpen(false);
+                    onOpenLimiteDiario?.(data.message);
+                    return;
+                }
+                if (data.premium_necessario) {
                     setOpen(false);
                     onOpenPremium?.("categoria_ia");
                     return;

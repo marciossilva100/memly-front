@@ -6,6 +6,7 @@ import ModalCategorias from '../components/ModalCategorias';
 import ModalSucesso from '../components/ModalSucesso';
 import ModalIA from '../components/ModalIA';
 import PremiumModal from '../components/PremiumModal';
+import LimiteDiarioModal from '../components/LimiteDiarioModal';
 
 import {
     AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer,
@@ -47,6 +48,8 @@ export default function Metricas() {
     const [openTreinoIA, setOpenTreinoIA] = useState(false);
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
     const [motivoPremium, setMotivoPremium] = useState(null);
+    const [limiteModalOpen, setLimiteModalOpen] = useState(false);
+    const [mensagemLimite, setMensagemLimite] = useState(null);
 const API_URL = import.meta.env.VITE_API_URL;
 
     // O bloqueio (limitado sem nenhum dos dois recursos disponível, ou free
@@ -673,6 +676,26 @@ const API_URL = import.meta.env.VITE_API_URL;
                     setMsgModalSucesso(msgSucesso);
                 }}
                 setOpenModalSucesso={setOpenModalSucesso}
+                onOpenPremium={(motivo) => {
+                    setOpen(false);
+                    setMotivoPremium(motivo ?? "categorias");
+                    setIsPremiumModalOpen(true);
+                }}
+                onOpenLimiteDiario={(mensagem) => {
+                    setOpen(false);
+                    setMensagemLimite(mensagem);
+                    setLimiteModalOpen(true);
+                }}
+            />
+            <LimiteDiarioModal
+                isOpen={limiteModalOpen}
+                mensagem={mensagemLimite}
+                onClose={() => setLimiteModalOpen(false)}
+                onAssinarPremium={() => {
+                    setLimiteModalOpen(false);
+                    setMotivoPremium("categoria_ia");
+                    setIsPremiumModalOpen(true);
+                }}
             />
             <ModalSucesso msg={msgModalSucesso} openModalSucesso={openModalSucesso} setOpenModalSucesso={setOpenModalSucesso} />
         </div>

@@ -659,6 +659,7 @@ export default function Home() {
                                         className="shadow-md px-4 py-1 text-md  rounded-full bg-[#4cb8c4] text-white hover:opacity-90"
                                         onClick={(e) => {
                                             e.stopPropagation();
+                                            dispensarGuiaTreino();
                                             setCategoriaId(item.id);
                                             setOpenTreino(true);
                                         }}

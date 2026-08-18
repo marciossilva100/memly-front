@@ -216,7 +216,15 @@ export default function Configuracoes() {
             const data = await res.json();
 
             if (!data.success) {
-                setNotifErro(data.message || t("server_connection_error"));
+                // resultados vem do backend só nessa action de teste (ver
+                // enviarParaUsuarioComDiagnostico) - motivo real de cada
+                // subscription que falhou, pra debugar de verdade em vez de
+                // só "não funcionou".
+                const motivos = (data.resultados || [])
+                    .filter((r) => !r.sucesso)
+                    .map((r) => r.motivo)
+                    .join(' | ');
+                setNotifErro(motivos || data.message || t("server_connection_error"));
                 return;
             }
 

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { XCircle } from "lucide-react";
@@ -5,6 +6,17 @@ import { XCircle } from "lucide-react";
 export default function AssinaturaCancelada() {
     const { t } = useTranslation();
     const navigate = useNavigate();
+
+    // Mesmo motivo de AssinaturaSucesso.jsx - essa página só existe dentro
+    // da aba que o PremiumModal abriu pro checkout do Stripe (cancel_url),
+    // que no Android fica presa com a barra de endereço do navegador por
+    // cima. Fecha sozinha e volta pro PWA original.
+    useEffect(() => {
+        if (window.opener) {
+            const timeout = setTimeout(() => window.close(), 2500);
+            return () => clearTimeout(timeout);
+        }
+    }, []);
 
     return (
         <div className="h-dvh flex flex-col items-center justify-center text-center p-6 from-gray-900 to-gray-800 bg-gradient-to-br">

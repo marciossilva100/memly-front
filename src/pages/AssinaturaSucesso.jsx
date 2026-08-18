@@ -10,6 +10,14 @@ export default function AssinaturaSucesso() {
     const navigate = useNavigate();
     const [confirmando, setConfirmando] = useState(true);
 
+    // window.opener só existe quando essa aba foi aberta via window.open()
+    // (o caso do checkout: PremiumModal abre uma aba nova pro Stripe, essa
+    // página é o success_url pra onde o Stripe redireciona DENTRO dessa
+    // mesma aba nova). No Android essa aba aparece com a barra de endereço
+    // do navegador por cima (título + checkout.stripe.com + menu), fora do
+    // layout padrão do PWA - some sozinha fechando a aba, sem precisar o
+    // usuário voltar manualmente. Se não tiver opener (raro: usuário abriu
+    // esse link direto, sem popup), não faz nada além do fluxo normal.
     useEffect(() => {
         // O webhook do Stripe costuma chegar quase na hora, mas não é
         // instantâneo - espera um instante antes de buscar o usuário
@@ -17,6 +25,12 @@ export default function AssinaturaSucesso() {
         const timeout = setTimeout(async () => {
             await checkAuth(true);
             setConfirmando(false);
+
+            if (window.opener) {
+                // Dá tempo do usuário ver a confirmação antes de fechar -
+                // fechar na hora pareceria que nada aconteceu.
+                setTimeout(() => window.close(), 2000);
+            }
         }, 2000);
 
         return () => clearTimeout(timeout);

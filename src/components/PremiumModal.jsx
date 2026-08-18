@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from "react-i18next";
 import { isNativePlatform } from "../utils/googleNativeAuth";
+import { useAuth } from "../context/AuthContext";
 
 import {
   Sparkles,
@@ -67,12 +68,43 @@ function precoReferencia(idioma) {
 
 const PremiumModal = ({ isOpen, onClose, motivo }) => {
   const { t, i18n } = useTranslation();
+  const { user, checkAuth } = useAuth();
   const [assinando, setAssinando] = useState(false);
   const [erroAssinatura, setErroAssinatura] = useState('');
   const API_URL = import.meta.env.VITE_API_URL;
   // Calculado 1x (não muda durante a vida do modal) - evita reconsultar
   // Intl.DateTimeFormat a cada render.
   const [preco] = useState(() => precoReferencia(i18n.language));
+  // true depois que o checkout abre numa aba nova - só então faz sentido
+  // reconsultar o plano quando o usuário voltar pra essa aba (ver efeitos
+  // abaixo). Evita chamadas desnecessárias toda vez que o app troca de
+  // aba/app por qualquer outro motivo enquanto o modal está só aberto.
+  const [checkoutAberto, setCheckoutAberto] = useState(false);
+
+  // O checkout roda numa aba separada (ver assinar() abaixo); essa aba
+  // original com o modal nunca sabe sozinha que o pagamento terminou. Ao
+  // voltar pra essa aba (aba de checkout fechou ou usuário trocou de volta),
+  // reconsulta o usuário - se o plano já virou premium, fecha o modal
+  // sozinho em vez de deixar o botão "Ativar Premium" parado na tela depois
+  // do pagamento já ter sido concluído.
+  useEffect(() => {
+    if (!checkoutAberto) return;
+
+    function aoVoltarPraAba() {
+      if (document.visibilityState === 'visible') {
+        checkAuth(true);
+      }
+    }
+
+    document.addEventListener('visibilitychange', aoVoltarPraAba);
+    return () => document.removeEventListener('visibilitychange', aoVoltarPraAba);
+  }, [checkoutAberto, checkAuth]);
+
+  useEffect(() => {
+    if (checkoutAberto && user?.plano === 1) {
+      onClose();
+    }
+  }, [checkoutAberto, user?.plano, onClose]);
 
   // Vender assinatura de dentro do app Android (mesmo abrindo o checkout do
   // Stripe num navegador embutido) conta como "venda dentro do app" pra
@@ -113,6 +145,7 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
 
       if (novaAba) {
         novaAba.location.href = data.url;
+        setCheckoutAberto(true);
       } else {
         // bloqueio de pop-up mesmo assim (raro) - cai pro redirecionamento direto
         window.location.href = data.url;

@@ -193,6 +193,41 @@ export default function Configuracoes() {
         }
     }
 
+    // Manda uma notificação de teste pro próprio usuário - confirma a
+    // cadeia inteira (subscription salva, chaves VAPID, service worker)
+    // sem precisar de acesso ao terminal do servidor pra rodar o cron.
+    const [notifTestando, setNotifTestando] = useState(false);
+    const [notifTesteEnviado, setNotifTesteEnviado] = useState(false);
+
+    async function handleTestarNotificacao() {
+        setNotifErro('');
+        setNotifTesteEnviado(false);
+        setNotifTestando(true);
+
+        try {
+            const res = await fetch(`${API_URL}/controller/pushNotifications.php`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token"),
+                },
+                body: JSON.stringify({ action: 'enviar_teste' }),
+            });
+            const data = await res.json();
+
+            if (!data.success) {
+                setNotifErro(data.message || t("server_connection_error"));
+                return;
+            }
+
+            setNotifTesteEnviado(true);
+        } catch (error) {
+            setNotifErro(error.message || t("server_connection_error"));
+        } finally {
+            setNotifTestando(false);
+        }
+    }
+
     const [openModalExcluirConta, setOpenModalExcluirConta] = useState(false);
     const [excluindoConta, setExcluindoConta] = useState(false);
     const [erroExcluirConta, setErroExcluirConta] = useState('');
@@ -670,6 +705,24 @@ export default function Configuracoes() {
                                 </button>
                             </div>
                             <p className="text-gray-400 text-sm mt-2">{t("notifications_desc")}</p>
+                            {/* Botão de teste só pras contas usadas pra depurar esse recurso -
+                                texto fixo em português de propósito (não é algo que o usuário
+                                comum vai ver, não precisa de tradução). */}
+                            {notifAtivada && [194, 47].includes(user?.id) && (
+                                <>
+                                    <button
+                                        type="button"
+                                        onClick={handleTestarNotificacao}
+                                        disabled={notifTestando}
+                                        className="mt-3 w-full px-4 py-2 rounded-lg border border-gray-700 hover:bg-gray-700/50 disabled:opacity-60 text-gray-300 text-sm font-medium transition-colors"
+                                    >
+                                        {notifTestando ? "Enviando..." : "Testar notificação"}
+                                    </button>
+                                    {notifTesteEnviado && (
+                                        <p className="text-[#4cb8c4] text-xs mt-2">Notificação de teste enviada! Deve chegar em instantes.</p>
+                                    )}
+                                </>
+                            )}
                             {notifErro && (
                                 <p className="text-red-400 text-xs mt-2">{notifErro}</p>
                             )}

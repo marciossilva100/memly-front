@@ -101,7 +101,13 @@ export default function Flashcards() {
       .then(res => res.json())
       .then(data => {
 
-        setFrases(data);
+        const embaralhadas = [...data];
+        for (let i = embaralhadas.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [embaralhadas[i], embaralhadas[j]] = [embaralhadas[j], embaralhadas[i]];
+        }
+
+        setFrases(embaralhadas);
         setIndex(0);
         setIsFlipped(false);
         setShowButton(true);

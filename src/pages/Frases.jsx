@@ -191,26 +191,6 @@ export default function Frases() {
                         <div className="flex items-center shrink-0">
                             <button
                                 type="button"
-                                disabled={tocandoAudioId === `${item.id}-nativo`}
-                                className="p-2 -m-1 rounded-full hover:bg-gray-700/50 transition-colors"
-                                onClick={async (e) => {
-                                    e.stopPropagation();
-                                    setTocandoAudioId(`${item.id}-nativo`);
-                                    try {
-                                        await playAudio(item.texto_nativo, user, false, user?.native_language, true);
-                                    } finally {
-                                        setTocandoAudioId(null);
-                                    }
-                                }}
-                            >
-                                {tocandoAudioId === `${item.id}-nativo` ? (
-                                    <Loader2 size={18} className="text-white animate-spin" />
-                                ) : (
-                                    <Volume2 size={18} className="text-white" />
-                                )}
-                            </button>
-                            <button
-                                type="button"
                                 disabled={tocandoAudioId === `${item.id}-traduzido`}
                                 className="p-2 -m-1 rounded-full hover:bg-gray-700/50 transition-colors"
                                 onClick={async (e) => {

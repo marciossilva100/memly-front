@@ -296,7 +296,12 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
         // cache assim que consumida, senão um replay reusaria uma URL já
         // revogada e o áudio falharia em silêncio. Uma próxima reprodução
         // busca de novo (sem cache, como antes do preload existir).
-        if (resultado?.url) {
+        // "limite atingido" também precisa sair do cache aqui - é um valor
+        // RESOLVIDO (não uma rejeição, que já limpa sozinha via .catch
+        // acima), então sem isso essa mesma frase ficava presa com esse
+        // resultado cacheado pelo resto da sessão do app, mesmo depois do
+        // limite ser corrigido/deixar de se aplicar (ex: upgrade de plano).
+        if (resultado?.url || resultado?.limiteAtingido) {
             cacheAudio.delete(chaveNatural);
         }
 

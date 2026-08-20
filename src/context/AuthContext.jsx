@@ -108,6 +108,22 @@ export function AuthProvider({ children }) {
     checkAuth();
   }, [checkAuth]);
 
+  // Revalida o usuário sempre que a aba volta a ficar visível - sem isso,
+  // dados que mudaram no servidor enquanto o usuário estava fora (ex:
+  // assinatura Premium concluída numa aba de checkout) só chegavam de volta
+  // se o usuário recarregasse a página ou passasse por um componente com seu
+  // próprio listener (ex: PremiumModal). Assim funciona em qualquer tela.
+  useEffect(() => {
+    function aoVoltarPraAba() {
+      if (document.visibilityState === "visible" && localStorage.getItem("token")) {
+        checkAuth(true);
+      }
+    }
+
+    document.addEventListener("visibilitychange", aoVoltarPraAba);
+    return () => document.removeEventListener("visibilitychange", aoVoltarPraAba);
+  }, [checkAuth]);
+
   async function logout() {
     try {
       const token = localStorage.getItem("token");

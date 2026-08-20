@@ -644,7 +644,7 @@ export default function Home() {
                 <div className="lista-categoria flex-1 overflow-y-auto  scrollbar-hide" id="lista-categoria">
                 {categorias.length > 5 && (
                     <div className="sticky top-0 z-10 pb-3 pr-2">
-                        <div className="flex items-center gap-2 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden px-3">
+                        <div className="flex items-center gap-2 bg-gray-800 border border-gray-700 rounded-xl overflow-hidden px-3">
                             <Search className="text-gray-500 shrink-0" width={18} />
                             <input
                                 type="text"

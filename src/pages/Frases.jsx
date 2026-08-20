@@ -197,7 +197,7 @@ export default function Frases() {
                                     e.stopPropagation();
                                     setTocandoAudioId(item.id);
                                     try {
-                                        await playAudio(item.texto_traduzido, user);
+                                        await playAudio(item.texto_nativo, user, false, user?.native_language, true);
                                     } finally {
                                         setTocandoAudioId(null);
                                     }

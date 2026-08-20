@@ -261,6 +261,14 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
 
     const myToken = cancelarAudioAtual();
 
+    // DEBUG TEMPORÁRIO - remover depois de descobrir por que a voz natural
+    // não está sendo tentada pra usuario 47 mesmo já premium.
+    if (user?.id === 47) {
+        alert(
+            `DEBUG playAudio\nforcarVozPadrao: ${forcarVozPadrao}\nuser.plano: ${user?.plano}\ncotaNaturalEsgotada: ${cotaNaturalEsgotada(user)}\nlimiteReproducoesLimitadoAtingido: ${limiteReproducoesLimitadoAtingido(user)}`
+        );
+    }
+
     // Voz natural (ElevenLabs): liberada pro plano premium (1, limite diário)
     // e, como amostra grátis, pro plano limitado (3, limite vitalício) -
     // ambos controlados pelo backend. Se der erro genérico (rede, API fora),

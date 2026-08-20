@@ -53,8 +53,15 @@ function avisarLimiteAudioSeNecessario(user) {
 // deve continuar bloqueando hoje; o do limitado é vitalício, mas como o
 // backend sempre barra de novo, o pior caso é só 1 chamada extra por dia até
 // essa marca ser renovada.
+// Inclui o plano na chave (não só o user_id) - sem isso, a flag marcada
+// enquanto limitado (amostra vitalícia esgotada) continuava bloqueando a
+// voz natural mesmo depois de virar premium no mesmo dia, e limpar essa
+// flag dependia de sincronizarCotaNatural rodar com sucesso (podia falhar
+// silenciosamente por erro de rede/timeout, sem nunca corrigir sozinha).
+// Com o plano na chave, upgrade/downgrade de plano automaticamente vira uma
+// chave nova (nunca antes marcada), sem depender de nenhuma chamada de rede.
 function chaveCotaNaturalEsgotada(user) {
-    return `zaldemy_cota_natural_esgotada_${user?.id ?? "anon"}`;
+    return `zaldemy_cota_natural_esgotada_${user?.id ?? "anon"}_${user?.plano ?? "0"}`;
 }
 
 function cotaNaturalEsgotada(user) {

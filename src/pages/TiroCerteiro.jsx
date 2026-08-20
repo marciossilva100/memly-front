@@ -9,6 +9,7 @@ import { playAudio, pararAudio, preloadAudio } from "../utils/audioPlayer";
 import { tocarSomTiro, tocarSomMissil, tocarSomAcerto, tocarSomErro } from "../utils/somJogo";
 import imgMeteoro1 from "../assets/img/meteoro1.png";
 import imgMeteoro2 from "../assets/img/meteoro2.png";
+import imgNave from "../assets/img/nave.png";
 
 const IMAGENS_METEORO = [imgMeteoro1, imgMeteoro2];
 
@@ -84,16 +85,18 @@ function Nave({ raia }) {
             className="absolute bottom-2 z-10 pointer-events-none flex flex-col items-center transition-[left] duration-200 ease-out"
             style={{ left: `${RAIAS[raia]}%`, transform: "translateX(-50%)" }}
         >
-            {/* silhueta simples de nave: nariz + asas varridas + entalhe atrás.
-                data-nave-corpo dá o retângulo de referência pro cálculo de
+            {/* data-nave-corpo dá o retângulo de referência pro cálculo de
                 onde exatamente fica o bico (topo-centro) e as asas (cantos
-                inferiores) na hora de atirar. */}
-            <div
+                inferiores) na hora de atirar - o próprio brilho azul da
+                imagem já faz o papel do propulsor, sem precisar de um
+                elemento de brilho separado embaixo. */}
+            <img
                 data-nave-corpo
-                className="w-8 h-8 bg-gradient-to-t from-cyan-300 via-fuchsia-400 to-white animate-nave-pulso"
-                style={{ clipPath: "polygon(50% 0%, 78% 62%, 100% 100%, 50% 78%, 0% 100%, 22% 62%)" }}
+                src={imgNave}
+                alt=""
+                className="w-11 h-auto animate-nave-pulso pointer-events-none select-none"
+                draggable={false}
             />
-            <div className="w-3 h-3 -mt-1 rounded-full bg-cyan-300/90 shadow-[0_0_10px_4px_rgba(34,211,238,0.8)]" />
         </div>
     );
 }

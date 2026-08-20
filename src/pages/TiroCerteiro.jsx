@@ -67,6 +67,15 @@ const MENSAGENS_CARREGANDO = [
 // atraso antes da explosão disparar, pra nunca dessincronizar um do outro.
 const DURACAO_VIAGEM_TIRO = { missil: 260, padrao: 120 };
 
+// Posição real das aletas (as pontas vermelhas) dentro do PNG da nave
+// (src/assets/img/nave.png), como fração da largura/altura do elemento -
+// medida direto nos pixels da imagem (linha mais larga com alpha>200: y≈162
+// de 248, de x≈3 a x≈201 de 210). NÃO é o canto inferior do bounding box:
+// a imagem afunila de novo abaixo das aletas (o brilho azul do propulsor),
+// então usar naveRect.bottom aqui fazia o tiro "asas" sair de um ponto
+// fora da nave (largura de uma altura, mas Y de outra, bem mais baixa).
+const ASAS_NAVE = { y: 0.65, xEsquerda: 0.02, xDireita: 0.96 };
+
 const CORES_RAIA = [
     { bg: "bg-cyan-500/20", border: "border-cyan-400/70", shadow: "shadow-[0_0_16px_rgba(34,211,238,0.45)]", texto: "text-cyan-300", glow: "rgba(34,211,238,0.9)" },
     { bg: "bg-fuchsia-500/20", border: "border-fuchsia-400/70", shadow: "shadow-[0_0_16px_rgba(232,121,249,0.45)]", texto: "text-fuchsia-300", glow: "rgba(232,121,249,0.9)" },
@@ -721,10 +730,10 @@ export default function TiroCerteiro() {
         }
 
         if (tipoTiro === 'asas') {
-            const y = naveRect.bottom - parentRect.top;
+            const y = naveRect.top - parentRect.top + naveRect.height * ASAS_NAVE.y;
             return [
-                { x: naveRect.left - parentRect.left, y },
-                { x: naveRect.right - parentRect.left, y },
+                { x: naveRect.left - parentRect.left + naveRect.width * ASAS_NAVE.xEsquerda, y },
+                { x: naveRect.left - parentRect.left + naveRect.width * ASAS_NAVE.xDireita, y },
             ];
         }
 

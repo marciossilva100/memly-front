@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 import { treinoStatsCache } from "../utils/treinoStatsCache";
 
 
-import { BookOpen, BarChart3, Bot, Plus, Home as HomeIcon, CheckCircle2, Flame, Gamepad2, Crown } from "lucide-react";
+import { BookOpen, BarChart3, Bot, Plus, Home as HomeIcon, CheckCircle2, Flame, Gamepad2, Crown, Search } from "lucide-react";
 
 const AVATAR_COLORS = [
     'bg-emerald-500',
@@ -34,6 +34,7 @@ export default function Home() {
     const [openCategoriaEditar, setOpenCategoriaEditar] = useState(false);
     const [openTreino, setOpenTreino] = useState(false)
     const [categorias, setCategorias] = useState([]);
+    const [buscaCategoria, setBuscaCategoria] = useState("");
     // Balão "crie sua primeira categoria" - baseado no estado real (usuário
     // sem nenhuma categoria ainda), não numa flag solta que só era limpa
     // clicando exatamente no botão de adicionar. Isso fazia o balão voltar a
@@ -641,10 +642,26 @@ export default function Home() {
 
             <div className="flex-1 flex min-h-0 mt-4 pl-4 pr-2 gap-0">
                 <div className="lista-categoria flex-1 overflow-y-auto  scrollbar-hide" id="lista-categoria">
+                {categorias.length > 5 && (
+                    <div className="sticky top-0 z-10 bg-gray-900 pb-3 pr-2">
+                        <div className="flex items-center gap-2 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden px-3">
+                            <Search className="text-gray-500 shrink-0" width={18} />
+                            <input
+                                type="text"
+                                className="w-full py-2.5 outline-none text-base text-white !bg-transparent placeholder:text-gray-500"
+                                placeholder={t("search")}
+                                value={buscaCategoria}
+                                onChange={(e) => setBuscaCategoria(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                )}
                 <div className=" items-center justify-center pr-2 ">
 
                     {/* Item */}
-                    {categorias.map((item, index) => {
+                    {categorias
+                        .filter((item) => item.categoria?.toLowerCase().includes(buscaCategoria.trim().toLowerCase()))
+                        .map((item, index) => {
                         const paraRevisar = revisarPorCategoria[item.id] ?? 0;
                         const progresso = item.quantidade > 0
                             ? Math.min(100, Math.round((paraRevisar / item.quantidade) * 100))

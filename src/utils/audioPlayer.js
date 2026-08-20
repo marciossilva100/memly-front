@@ -65,6 +65,13 @@ function chaveCotaNaturalEsgotada(user) {
 }
 
 function cotaNaturalEsgotada(user) {
+    // Só pro limitado (cota vitalícia) - pro premium (cota diária, reseta
+    // todo dia) essa trava local se mostrou frágil demais (podia ficar
+    // marcada incorretamente e travar a voz natural sem nunca se corrigir
+    // sozinha) - deixa o servidor ser a única fonte de verdade a cada
+    // tentativa em vez de pré-bloquear no cliente.
+    if (user?.plano !== 3) return false;
+
     const hoje = new Date().toISOString().slice(0, 10);
     return localStorage.getItem(chaveCotaNaturalEsgotada(user)) === hoje;
 }
@@ -260,14 +267,6 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
     const voiceLang = lang || user?.learning_language;
 
     const myToken = cancelarAudioAtual();
-
-    // DEBUG TEMPORÁRIO - remover depois de descobrir por que a voz natural
-    // não está sendo tentada pra usuario 47 mesmo já premium.
-    if (user?.id === 47) {
-        alert(
-            `DEBUG playAudio\nforcarVozPadrao: ${forcarVozPadrao}\nuser.plano: ${user?.plano}\ncotaNaturalEsgotada: ${cotaNaturalEsgotada(user)}\nlimiteReproducoesLimitadoAtingido: ${limiteReproducoesLimitadoAtingido(user)}`
-        );
-    }
 
     // Voz natural (ElevenLabs): liberada pro plano premium (1, limite diário)
     // e, como amostra grátis, pro plano limitado (3, limite vitalício) -

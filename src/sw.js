@@ -55,7 +55,14 @@ registerRoute(
         url.pathname.includes("/controller/tts.php") &&
         url.searchParams.get("action") === "stream_audio",
     new CacheFirst({
-        cacheName: "tts-cache-natural",
+        // Nome trocado (era "tts-cache-natural") pra descartar de vez
+        // qualquer entrada antiga - antes do fix em controller/tts.php,
+        // respostas de "limite atingido" voltavam com HTTP 200 e ficavam
+        // cacheadas aqui como se fossem áudio de verdade, pra sempre (ver
+        // comentário lá). Sem trocar o nome, quem já tinha alguma frase
+        // "envenenada" continuaria preso nela mesmo depois do fix, já que o
+        // fix só evita NOVAS entradas erradas, não limpa as existentes.
+        cacheName: "tts-cache-natural-v2",
         plugins: [
             new ExpirationPlugin({ maxEntries: 500, maxAgeSeconds: 60 * 60 * 24 * 365 }),
             new CacheableResponsePlugin({ statuses: [200] }),

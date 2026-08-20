@@ -428,7 +428,11 @@ const gerarAudio = async (texto) => {
             }
         });
 
-        if (!res.ok) {
+        // 429 = limite atingido (ver controller/tts.php) - não é um erro
+        // genérico, precisa continuar pra checagem de limite_atingido no
+        // corpo abaixo em vez de cair direto no throw genérico, senão o
+        // fallback pra voz padrão (mais adiante em playAudio) nunca acontece.
+        if (!res.ok && res.status !== 429) {
             throw new Error("Erro HTTP: " + res.status);
         }
 

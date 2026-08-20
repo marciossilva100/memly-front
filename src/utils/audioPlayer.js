@@ -121,6 +121,13 @@ export async function sincronizarCotaNatural(user) {
         if (data?.limite_atingido) {
             marcarCotaNaturalEsgotada(user);
             avisarLimiteAudioSeNecessario(user);
+        } else {
+            // O servidor confirma que a cota NÃO está mais esgotada (ex:
+            // upgrade de limitado pra premium, que tem sua própria cota
+            // diária) - sem limpar aqui, a flag marcada "hoje" enquanto
+            // ainda limitado continuava bloqueando a voz natural pelo resto
+            // do dia mesmo já premium.
+            localStorage.removeItem(chaveCotaNaturalEsgotada(user));
         }
     } catch (error) {
         console.error('Erro ao sincronizar cota de voz natural:', error);

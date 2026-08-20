@@ -122,6 +122,17 @@ export default function Flashcards() {
 
   }, [id, mode]);
 
+  // O áudio do texto nativo só toca sozinho se o usuário tiver ativado
+  // "Tocar áudio automaticamente na frente do cartão" em Configurações
+  // (zaldemy_autoplay_frente, preferência só do dispositivo) - por padrão
+  // só toca quando clica em "Ouvir" (mesma regra de DigitarTexto.jsx).
+  useEffect(() => {
+    if (!frases[index]?.texto_nativo || !user) return;
+    if (localStorage.getItem('zaldemy_autoplay_frente') !== '1') return;
+
+    playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, true);
+  }, [index, frases, user]);
+
   // Pré-carrega o áudio do verso (texto_traduzido) assim que o card atual
   // fica disponível - não só quando o usuário vira o card. Sem isso, o
   // playAudio() em flipCard() só começava a buscar/gerar o áudio no

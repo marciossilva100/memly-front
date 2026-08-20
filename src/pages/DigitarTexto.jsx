@@ -162,8 +162,17 @@ export default function DigitarTexto() {
 
     }, [id, mode]);
 
-    // O áudio do texto nativo não tem mais autoplay - só toca quando o
-    // usuário clica no botão "Ouvir", em qualquer modo.
+    // O áudio do texto nativo só toca sozinho se o usuário tiver ativado
+    // "Tocar áudio automaticamente na frente do cartão" em Configurações
+    // (zaldemy_autoplay_frente, preferência só do dispositivo) - por padrão
+    // só toca quando clica em "Ouvir".
+    useEffect(() => {
+        const frase = frases[index];
+        if (!frase || !user) return;
+        if (localStorage.getItem('zaldemy_autoplay_frente') !== '1') return;
+
+        playAudio(frase.texto_nativo, user, false, user?.native_language || user?.learning_language, mode === "learn");
+    }, [index, frases, user, mode]);
 
     // Pré-carrega os dois áudios do card assim que ele aparece - sem isso, a
     // voz natural (OpenAI TTS) só começa a ser buscada no momento em que o

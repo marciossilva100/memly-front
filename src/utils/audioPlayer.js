@@ -290,7 +290,35 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
         }
 
         const chaveNatural = chaveCacheAudio("natural", voiceLang, text);
-        const resultado = await obterOuBuscarAudio(chaveNatural, () => gerarAudio(text));
+        let resultado;
+        let erroDebug = null;
+        try {
+            resultado = await obterOuBuscarAudio(chaveNatural, () => gerarAudio(text));
+        } catch (e) {
+            erroDebug = e?.message || String(e);
+            resultado = null;
+        }
+
+        // DEBUG TEMPORÁRIO
+        if (user?.id === 47) {
+            const cacheNames = (await caches.keys()).filter(n => n.includes("tts-cache-natural"));
+            let temEntradaCache = "não checado";
+            try {
+                const urlNatural = `${API_URL}/controller/tts.php?action=stream_audio&texto=${encodeURIComponent(text)}`;
+                const matches = [];
+                for (const nome of cacheNames) {
+                    const c = await caches.open(nome);
+                    const r = await c.match(urlNatural);
+                    matches.push(`${nome}:${r ? "TEM" : "não"}`);
+                }
+                temEntradaCache = matches.join(" | ");
+            } catch (e) {
+                temEntradaCache = "erro: " + e.message;
+            }
+            alert(
+                `DEBUG natural\ntexto: ${text.slice(0, 40)}\nresultado.url: ${!!resultado?.url}\nresultado.limiteAtingido: ${!!resultado?.limiteAtingido}\nerro: ${erroDebug}\ncaches: ${cacheNames.join(",")}\ncacheHit: ${temEntradaCache}`
+            );
+        }
 
         // A URL do blob é de uso único (revogada depois de tocar) - tira do
         // cache assim que consumida, senão um replay reusaria uma URL já

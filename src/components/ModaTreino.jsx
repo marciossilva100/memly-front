@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { playAudio } from "../utils/audioPlayer";
+import { treinoStatsCache } from "../utils/treinoStatsCache";
 import { useTranslation } from "react-i18next";
 import { Trans } from "react-i18next";
 export default function ModalTreino({
@@ -38,7 +39,10 @@ export default function ModalTreino({
 
     if (!openTreino) return;
 
-    const cached = statsCache.current[categoriaId];
+    // Home.jsx já busca esses mesmos dados pra toda categoria assim que a
+    // lista carrega (pros badges dos cards) e guarda no cache compartilhado -
+    // se já tiver chegado, mostra na hora, sem o "pisca zerado" de antes.
+    const cached = statsCache.current[categoriaId] ?? treinoStatsCache.get(categoriaId);
 
     if (cached) {
       // Mostra o dado já conhecido na hora, sem esperar a rede
@@ -71,6 +75,7 @@ export default function ModalTreino({
         };
 
         statsCache.current[categoriaId] = newState;
+        treinoStatsCache.set(categoriaId, newState);
         setCountPhrases(newState);
 
       })

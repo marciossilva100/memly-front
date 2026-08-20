@@ -12,6 +12,7 @@ import ModalConfirm from '../components/ModalConfirm';
 import TermometroEstudo from '../components/TermometroEstudo';
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
+import { treinoStatsCache } from "../utils/treinoStatsCache";
 
 
 import { BookOpen, BarChart3, Bot, Plus, Home as HomeIcon, CheckCircle2, Flame, Gamepad2, Crown } from "lucide-react";
@@ -331,11 +332,26 @@ export default function Home() {
                     .then(res => res.json())
                     // data.data é indexado pelos 4 estágios do treino, em ordem:
                     // [0]=não conheço [1]=memorizando [2]=em treino [3]=memorizado
-                    .then(data => ({
-                        id: cat.id,
-                        revisar: data.data?.[2]?.total ?? 0,
-                        aprendidas: data.data?.[3]?.total ?? 0
-                    }))
+                    .then(data => {
+                        // Guarda o formato completo que o modal de treino
+                        // (ModaTreino.jsx) espera, no cache compartilhado -
+                        // como essa busca já roda pra toda categoria assim
+                        // que a home carrega, o modal abre com os números
+                        // certos na hora, sem o "pisca zerado" de antes.
+                        treinoStatsCache.set(cat.id, {
+                            learn: data.data?.[0]?.total ?? 0,
+                            repeat: (data.data?.[1]?.total ?? 0) + (data.data?.[2]?.total ?? 0),
+                            repeat_traine: data.data?.[2]?.total ?? 0,
+                            review: data.data?.[3]?.total ?? 0,
+                            traine: data.data?.[1]?.segundos_restantes ?? 0
+                        });
+
+                        return {
+                            id: cat.id,
+                            revisar: data.data?.[2]?.total ?? 0,
+                            aprendidas: data.data?.[3]?.total ?? 0
+                        };
+                    })
                     .catch(() => ({ id: cat.id, revisar: 0, aprendidas: 0 }))
             )
         ).then((resultados) => {

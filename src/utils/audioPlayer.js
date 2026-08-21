@@ -182,6 +182,29 @@ function chaveCacheAudio(tipo, lang, text) {
     return `${tipo}::${lang}::${text}`;
 }
 
+// O cache (memória e Service Worker) guarda o áudio natural só pelo texto -
+// não sabe qual personagem/voz foi usado pra gerar. Sem isso, trocar a voz
+// em Configurações não tinha efeito nenhum em frases já ouvidas antes: o
+// áudio antigo (com a voz de antes) continuava sendo servido do cache pra
+// sempre. Chamado depois de salvar uma nova voz com sucesso.
+export async function limparCacheVozNatural() {
+    for (const chave of cacheAudio.keys()) {
+        if (chave.startsWith("natural::")) {
+            cacheAudio.delete(chave);
+        }
+    }
+
+    if (typeof caches !== "undefined") {
+        try {
+            await caches.delete("tts-cache-natural-v2");
+        } catch {
+            // sem Cache Storage disponível (ex: navegador sem suporte) - a
+            // troca de voz ainda funciona pras próximas frases nunca
+            // ouvidas antes, só não invalida o que já estava cacheado.
+        }
+    }
+}
+
 function obterOuBuscarAudio(chave, criarPromise) {
     if (!cacheAudio.has(chave)) {
         if (cacheAudio.size >= CACHE_AUDIO_MAX) {

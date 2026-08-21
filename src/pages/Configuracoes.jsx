@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { FileText, Shield, ShieldCheck, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2, Volume2, Check, Gauge, Bot, Crown, Play, CreditCard, RotateCcw, User, Bell } from "lucide-react";
 import { notificacoesDisponiveis, statusNotificacoes, ativarNotificacoes, desativarNotificacoes } from "../utils/pushNotifications";
+import { limparCacheVozNatural } from "../utils/audioPlayer";
 import ModalConfirm from "../components/ModalConfirm";
 import ModalIA from "../components/ModalIA";
 import PremiumModal from "../components/PremiumModal";
@@ -443,6 +444,12 @@ export default function Configuracoes() {
             if (!data.success) {
                 setVozTts(vozAnterior);
                 setErroVoz(data.message || t("unexpected_error"));
+            } else {
+                // Sem isso, frases já ouvidas antes continuavam tocando com
+                // a voz anterior pra sempre - o cache (memória e Service
+                // Worker) guarda o áudio só pelo texto, sem saber qual
+                // personagem foi usado pra gerar.
+                limparCacheVozNatural();
             }
         } catch (error) {
             console.error('Erro ao salvar voz:', error);

@@ -19,9 +19,12 @@ function saoEquivalentes(a, b) {
 
 export function makePerfectDiff(correct, user) {
 
-  // 🔹 Remove apenas espaços do começo e do fim
-  const correctTrimmed = correct.trim();
-  const userTrimmed = user.trim();
+  // 🔹 Remove espaços do começo/fim e reduz espaços duplos/triplos no meio
+  // a um só - espaço a mais no meio (comum digitando rápido no celular) não
+  // deve reprovar quem acertou a palavra, mesmo lado do raciocínio da
+  // pontuação ignorada acima.
+  const correctTrimmed = correct.trim().replace(/\s+/g, " ");
+  const userTrimmed = user.trim().replace(/\s+/g, " ");
 
   const m = correctTrimmed.length;
   const n = userTrimmed.length;

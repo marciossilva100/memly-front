@@ -12,34 +12,88 @@ function normalizarParaComparar(char) {
     .toLowerCase();
 }
 
+function saoEquivalentes(a, b) {
+  if (PONTUACAO_IGNORADA.has(a) || PONTUACAO_IGNORADA.has(b)) return true;
+  return normalizarParaComparar(a) === normalizarParaComparar(b);
+}
+
 export function makePerfectDiff(correct, user) {
 
   // 🔹 Remove apenas espaços do começo e do fim
   const correctTrimmed = correct.trim();
   const userTrimmed = user.trim();
 
-  const result = [];
-  const max = Math.max(correctTrimmed.length, userTrimmed.length);
+  const m = correctTrimmed.length;
+  const n = userTrimmed.length;
 
-  for (let i = 0; i < max; i++) {
-    const correctChar = correctTrimmed[i] || "";
-    const userChar = userTrimmed[i] || "";
+  // Distância de edição (Levenshtein) entre a resposta certa e a digitada,
+  // com custo 0 pra qualquer operação envolvendo pontuação ignorada - sem
+  // isso, uma vírgula faltando no meio da frase desalinhava a comparação
+  // posição-a-posição de antes, fazendo letras certas depois dela
+  // aparecerem como erro. Com o alinhamento de verdade, essa diferença é
+  // "absorvida" ali mesmo, sem propagar pro resto da frase.
+  const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
 
-    // Se a posição é de pontuação (em qualquer um dos dois lados), não
-    // conta como erro - digitar ou esquecer um ponto/vírgula não deve
-    // reprovar quem acertou a palavra.
-    const ignoravel = PONTUACAO_IGNORADA.has(correctChar) || PONTUACAO_IGNORADA.has(userChar);
-
-    result.push({
-      char: userChar,
-      match: ignoravel || normalizarParaComparar(correctChar) === normalizarParaComparar(userChar),
-    });
+  for (let i = 1; i <= m; i++) {
+    dp[i][0] = dp[i - 1][0] + (PONTUACAO_IGNORADA.has(correctTrimmed[i - 1]) ? 0 : 1);
+  }
+  for (let j = 1; j <= n; j++) {
+    dp[0][j] = dp[0][j - 1] + (PONTUACAO_IGNORADA.has(userTrimmed[j - 1]) ? 0 : 1);
   }
 
-  const isCorrect = result.every((item) => item.match);
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      const cChar = correctTrimmed[i - 1];
+      const uChar = userTrimmed[j - 1];
+
+      const custoSubstituir = saoEquivalentes(cChar, uChar) ? 0 : 1;
+      const custoRemover = PONTUACAO_IGNORADA.has(cChar) ? 0 : 1; // correto tem, usuário não digitou
+      const custoInserir = PONTUACAO_IGNORADA.has(uChar) ? 0 : 1; // usuário digitou a mais
+
+      dp[i][j] = Math.min(
+        dp[i - 1][j - 1] + custoSubstituir,
+        dp[i - 1][j] + custoRemover,
+        dp[i][j - 1] + custoInserir
+      );
+    }
+  }
+
+  // Reconstrói o alinhamento de trás pra frente, escolhendo a operação que
+  // gerou o valor mínimo em cada ponto (preferindo substituir/igualar
+  // quando empata, pra manter o alinhamento "reto" sempre que possível).
+  const result = [];
+  let i = m;
+  let j = n;
+
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0) {
+      const cChar = correctTrimmed[i - 1];
+      const uChar = userTrimmed[j - 1];
+      const custoSubstituir = saoEquivalentes(cChar, uChar) ? 0 : 1;
+
+      if (dp[i][j] === dp[i - 1][j - 1] + custoSubstituir) {
+        result.unshift({ char: uChar, match: custoSubstituir === 0 });
+        i--; j--;
+        continue;
+      }
+    }
+
+    if (i > 0 && (j === 0 || dp[i][j] === dp[i - 1][j] + (PONTUACAO_IGNORADA.has(correctTrimmed[i - 1]) ? 0 : 1))) {
+      // o correto tem um caractere que o usuário não digitou
+      const cChar = correctTrimmed[i - 1];
+      result.unshift({ char: "", match: PONTUACAO_IGNORADA.has(cChar) });
+      i--;
+      continue;
+    }
+
+    // usuário digitou um caractere extra que não existe na resposta certa
+    const uChar = userTrimmed[j - 1];
+    result.unshift({ char: uChar, match: PONTUACAO_IGNORADA.has(uChar) });
+    j--;
+  }
 
   return {
     diff: result,
-    isCorrect,
+    isCorrect: dp[m][n] === 0,
   };
 }

@@ -79,9 +79,15 @@ export function makePerfectDiff(correct, user) {
     }
 
     if (i > 0 && (j === 0 || dp[i][j] === dp[i - 1][j] + (PONTUACAO_IGNORADA.has(correctTrimmed[i - 1]) ? 0 : 1))) {
-      // o correto tem um caractere que o usuário não digitou
+      // o correto tem um caractere que o usuário não digitou - string vazia
+      // aqui não aparece na tela (não dá pra colorir de vermelho um
+      // caractere que não existe), então uma letra ou palavra inteira
+      // faltando ficava invisível no diff, sem nenhum indício visual do
+      // erro. Um marcador ("_") ocupa o lugar visualmente sem fingir que o
+      // usuário digitou algo que não digitou.
       const cChar = correctTrimmed[i - 1];
-      result.unshift({ char: "", match: PONTUACAO_IGNORADA.has(cChar) });
+      const ignoravel = PONTUACAO_IGNORADA.has(cChar);
+      result.unshift({ char: ignoravel ? "" : "_", match: ignoravel });
       i--;
       continue;
     }

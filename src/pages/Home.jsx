@@ -573,7 +573,7 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-2 gap-3 px-4 pt-4">
-                <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-3 flex items-center">
+                <div className="bg-gray-800/50 border border-gray-700 rounded-xl px-3 py-1 flex items-center">
                     <div>
                         <BookOpen className="text-emerald-400 me-3" size={30} />
                     </div>
@@ -584,7 +584,7 @@ export default function Home() {
                     </div>
                 </div>
 
-                <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-3 flex items-center">
+                <div className="bg-gray-800/50 border border-gray-700 rounded-xl px-3 py-2 flex items-center">
                     <div>
                         <CheckCircle2 className="text-purple-400 me-3" size={30} />
                     </div>

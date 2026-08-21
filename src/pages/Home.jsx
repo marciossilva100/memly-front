@@ -640,22 +640,23 @@ export default function Home() {
                 </div>
             )}
 
-            <div className="flex-1 flex min-h-0 mt-4 pl-4 pr-2 gap-0">
-                <div className="lista-categoria flex-1 overflow-y-auto  scrollbar-hide" id="lista-categoria">
-                {categorias.length > 5 && (
-                    <div className="sticky top-0 z-10 pb-3 pr-2">
-                        <div className="flex items-center gap-2 bg-gray-800 border border-gray-700 rounded-xl overflow-hidden px-3">
-                            <Search className="text-gray-500 shrink-0" width={18} />
-                            <input
-                                type="text"
-                                className="w-full py-2.5 outline-none text-base text-white !bg-transparent placeholder:text-gray-500"
-                                placeholder={t("search")}
-                                value={buscaCategoria}
-                                onChange={(e) => setBuscaCategoria(e.target.value)}
-                            />
-                        </div>
+            {categorias.length > 5 && (
+                <div className="px-4 pt-4">
+                    <div className="flex items-center gap-2 bg-gray-800 border border-gray-700 rounded-xl overflow-hidden px-3">
+                        <Search className="text-gray-500 shrink-0" width={18} />
+                        <input
+                            type="text"
+                            className="w-full py-2.5 outline-none text-base text-white !bg-transparent placeholder:text-gray-500"
+                            placeholder={t("search")}
+                            value={buscaCategoria}
+                            onChange={(e) => setBuscaCategoria(e.target.value)}
+                        />
                     </div>
-                )}
+                </div>
+            )}
+
+            <div className="flex-1 flex min-h-0 mt-4 pl-4 pr-2 gap-0 listagem">
+                <div className="lista-categoria flex-1 overflow-y-auto  scrollbar-hide" id="lista-categoria">
                 <div className=" items-center justify-center pr-2 ">
 
                     {/* Item */}

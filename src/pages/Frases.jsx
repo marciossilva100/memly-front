@@ -160,6 +160,7 @@ export default function Frases() {
                     value={textoBusca}
                     onChange={(e) => setTextoBusca(e.target.value)}
                 />
+                
             </div>
 
             {/* único container com altura real (flex-1 dentro do flex-col com

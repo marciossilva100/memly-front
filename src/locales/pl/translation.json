@@ -403,6 +403,7 @@
   "notifications_onboarding_activate": "Włącz powiadomienia",
   "notifications_onboarding_skip": "Nie teraz",
   "premium_reason_audio": "Wykorzystałeś swoje 10 darmowych wymów z naturalnym głosem. Przejdź na premium, aby uzyskać nieograniczony dostęp.",
+  "premium_reason_audio_diario": "Osiągnąłeś dzienny limit wymów z naturalnym głosem. Wróć jutro po więcej.",
   "premium_reason_categorias": "Osiągnąłeś limit 2 talii swojego planu. Przejdź na premium, aby tworzyć nieograniczoną liczbę talii.",
   "all_categories": "Wszystkie talie",
   "all_levels": "Wszystkie poziomy",

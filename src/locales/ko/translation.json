@@ -403,6 +403,7 @@
   "notifications_onboarding_activate": "알림 활성화",
   "notifications_onboarding_skip": "나중에",
   "premium_reason_audio": "무료 자연 음성 발음 10회를 모두 사용했습니다. 무제한 이용을 위해 프리미엄으로 전환하세요.",
+  "premium_reason_audio_diario": "오늘의 자연 음성 발음 한도에 도달했습니다. 내일 다시 이용해 주세요.",
   "premium_reason_categorias": "플랜의 덱 한도(2개)에 도달했습니다. 무제한 덱을 만들려면 프리미엄으로 전환하세요.",
   "all_categories": "모든 덱",
   "all_levels": "모든 레벨",

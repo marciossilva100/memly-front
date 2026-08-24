@@ -26,12 +26,36 @@ function chaveAvisoLimiteAudio(user) {
 // próxima carta).
 const avisosLimiteAudioDisparados = new Set();
 
+// Pro premium o limite é DIÁRIO (reseta toda meia-noite), diferente do
+// limitado (amostra vitalícia, avisada só uma vez na vida) - por isso essa
+// chave guarda a DATA do último aviso, não um bool fixo: sem isso, o
+// primeiro dia em que o premium bate o teto marcaria a chave "pra sempre" e
+// ele nunca mais seria avisado nos próximos dias em que isso acontecer de
+// novo.
+function chaveAvisoLimiteAudioDiarioPremium(user) {
+    return `zaldemy_aviso_limite_audio_diario_premium_${user?.id ?? "anon"}`;
+}
+
 // Mostra o aviso de limite (toast lateral) só uma vez por conta - chamado
 // tanto de dentro de playAudio (limite descoberto NA hora, tentando tocar)
 // quanto de sincronizarCotaNatural (limite já esgotado ANTES da sessão
 // começar) - sem isso, quem abre o app com a cota já estourada nunca via
 // nenhum aviso, o áudio simplesmente caía pra voz padrão em silêncio.
 function avisarLimiteAudioSeNecessario(user) {
+    if (user?.plano === 1) {
+        const chave = chaveAvisoLimiteAudioDiarioPremium(user);
+        const hoje = new Date().toISOString().slice(0, 10);
+        const marcaHoje = `${chave}_${hoje}`;
+
+        if (avisosLimiteAudioDisparados.has(marcaHoje) || localStorage.getItem(chave) === hoje) {
+            return false;
+        }
+        avisosLimiteAudioDisparados.add(marcaHoje);
+        localStorage.setItem(chave, hoje);
+        dispatchPremiumLimitHit("audio_diario_premium");
+        return true;
+    }
+
     const chaveAviso = chaveAvisoLimiteAudio(user);
     if (avisosLimiteAudioDisparados.has(chaveAviso) || localStorage.getItem(chaveAviso)) {
         return false;
@@ -249,7 +273,7 @@ export function preloadAudio(text, user, lang = null, forcarVozPadrao = false) {
 
     if (!forcarVozPadrao && !cotaNaturalEsgotada(user) && !limiteReproducoesLimitadoAtingido(user) && (user.plano === 1 || user.plano === 3)) {
         const chaveNatural = chaveCacheAudio("natural", voiceLang, text);
-        const promiseNatural = obterOuBuscarAudio(chaveNatural, () => gerarAudio(text));
+        const promiseNatural = obterOuBuscarAudio(chaveNatural, () => gerarAudio(text, true));
 
         promiseNatural.then((resultado) => {
             if (resultado?.limiteAtingido) {
@@ -437,8 +461,15 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
 };
 
 // Retorna { limiteAtingido: true }, { url } ou null (erro genérico - cai
-// pro fallback de voz padrão).
-const gerarAudio = async (texto) => {
+// pro fallback de voz padrão, e é também o que acontece quando o backend
+// recusa um preload perto do fim da cota diária do premium pra reservar os
+// últimos usos pra um play explícito - ver AUDIO_IA_RESERVA_PRELOAD_PREMIUM
+// em controller/tts.php).
+// isPreload vai num header (não na querystring) porque a querystring é a
+// chave de cache do service worker - se fosse na URL, o preload e o play
+// explícito da mesma frase virariam URLs diferentes e nunca reaproveitariam
+// o áudio já baixado um do outro.
+const gerarAudio = async (texto, isPreload = false) => {
     const API_URL = import.meta.env.VITE_API_URL;
 
     try {
@@ -454,7 +485,8 @@ const gerarAudio = async (texto) => {
         const res = await fetch(url, {
             method: "GET",
             headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
+                "Authorization": "Bearer " + localStorage.getItem("token"),
+                ...(isPreload ? { "X-Tts-Preload": "1" } : {})
             }
         });
 

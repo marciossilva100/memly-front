@@ -403,6 +403,7 @@
   "notifications_onboarding_activate": "Activer les notifications",
   "notifications_onboarding_skip": "Pas maintenant",
   "premium_reason_audio": "Vous avez utilisé vos 10 prononciations gratuites en voix naturelle. Passez premium pour un accès illimité.",
+  "premium_reason_audio_diario": "Vous avez atteint la limite quotidienne de prononciations en voix naturelle. Revenez demain pour plus.",
   "premium_reason_categorias": "Vous avez atteint la limite de 2 paquets de votre forfait. Passez premium pour créer des paquets illimités.",
   "all_categories": "Tous les paquets",
   "all_levels": "Tous les niveaux",

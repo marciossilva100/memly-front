@@ -405,6 +405,7 @@
   "notifications_onboarding_activate": "Enable notifications",
   "notifications_onboarding_skip": "Not now",
   "premium_reason_audio": "You've used your 10 free natural-voice pronunciations. Go premium for unlimited access.",
+  "premium_reason_audio_diario": "You've reached today's natural-voice pronunciation limit. Come back tomorrow for more.",
   "premium_reason_categorias": "You've reached your plan's 2-deck limit. Go premium to create unlimited decks.",
   "all_categories": "All decks",
   "all_levels": "All levels",

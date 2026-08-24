@@ -42,7 +42,7 @@ async function enviarSubscriptionParaServidor(subscription) {
     const API_URL = import.meta.env.VITE_API_URL;
     const json = subscription.toJSON();
 
-    await fetch(`${API_URL}/controller/pushNotifications.php`, {
+    const res = await fetch(`${API_URL}/controller/pushNotifications.php`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -54,6 +54,18 @@ async function enviarSubscriptionParaServidor(subscription) {
             keys: json.keys,
         }),
     });
+
+    // Sem checar a resposta, um 400/401/500 do backend (subscription
+    // rejeitada, token expirado, erro de banco) passava batido: o fetch só
+    // rejeita em erro de rede, então ativarNotificacoes() "tinha sucesso" e
+    // o toggle acendia mesmo com o servidor nunca guardando a subscription -
+    // foi exatamente esse o caso do usuário 47 ("Nenhuma notificação ativada
+    // nesse dispositivo" ao testar, mesmo com o toggle marcado como ligado).
+    const data = await res.json().catch(() => null);
+
+    if (!res.ok || !data?.success) {
+        throw new Error(data?.message || data?.error || "Não foi possível salvar a notificação no servidor.");
+    }
 }
 
 export async function ativarNotificacoes() {

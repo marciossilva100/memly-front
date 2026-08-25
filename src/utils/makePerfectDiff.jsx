@@ -5,10 +5,20 @@ const PONTUACAO_IGNORADA = new Set([".", ",", ";", ":", "!", "?"]);
 // Remove acentos/diacríticos (á -> a, ç -> c, ã -> a...) pra comparar só a
 // letra em si, não a decoração dela - decompõe o caractere acentuado em
 // letra base + marca de acento (NFD) e descarta a marca.
+// Teclados de celular oferecem várias variantes de apóstrofo (reto, curvo
+// tipográfico esquerdo, curvo tipográfico direito, modificador, acento
+// agudo, crase) - o autocorretor de cada aparelho escolhe uma diferente,
+// então uma contração digitada no celular pode não ser idêntica, caractere
+// a caractere, à que veio da IA. Diferente da pontuação ignorada acima, o
+// apóstrofo continua exigido (não pode sumir) - só os tipos diferentes
+// contam como o mesmo caractere entre si.
+const APOSTROFOS = /[\u2018\u2019\u02bc\u00b4`]/g;
+
 function normalizarParaComparar(char) {
   return char
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
+    .replace(APOSTROFOS, "'")
     .toLowerCase();
 }
 

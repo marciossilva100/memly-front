@@ -81,7 +81,10 @@ export default function Flashcards() {
     };
   }, []);
 
-  const FLIP_TIME = 8000;
+  // Preferência do dispositivo (ver "Tempo pra virar o cartão" em
+  // Configuracoes.jsx) - segundos até o card virar sozinho, convertido pra
+  // ms. 8s é o padrão se o usuário nunca mexeu nessa configuração.
+  const FLIP_TIME = (parseInt(localStorage.getItem('zaldemy_tempo_virada_flashcards'), 10) || 8) * 1000;
   const FLIP_DURATION = 400;
 
   const RADIUS = 42;

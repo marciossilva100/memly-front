@@ -579,5 +579,6 @@
   "game_over_title": "Koniec gry!",
   "play": "Zagraj",
   "play_again": "Zagraj ponownie",
-  "audio_speed_hint": "Możesz dostosować szybkość wymowy w Ustawieniach"
+  "audio_speed_hint": "Możesz dostosować szybkość wymowy w Ustawieniach",
+  "flip_time_flashcards": "Czas do automatycznego odwrócenia karty"
 }

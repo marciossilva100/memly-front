@@ -581,5 +581,6 @@
   "game_over_title": "Fim de jogo!",
   "play": "Jogar",
   "play_again": "Jogar de novo",
-  "audio_speed_hint": "Você pode ajustar a velocidade da pronúncia em Configurações"
+  "audio_speed_hint": "Você pode ajustar a velocidade da pronúncia em Configurações",
+  "flip_time_flashcards": "Tempo para virar o cartão automaticamente"
 }

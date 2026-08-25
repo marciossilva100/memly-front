@@ -579,5 +579,6 @@
   "game_over_title": "게임 오버!",
   "play": "플레이",
   "play_again": "다시 플레이",
-  "audio_speed_hint": "설정에서 발음 속도를 조절할 수 있어요"
+  "audio_speed_hint": "설정에서 발음 속도를 조절할 수 있어요",
+  "flip_time_flashcards": "카드가 자동으로 넘어가는 시간"
 }

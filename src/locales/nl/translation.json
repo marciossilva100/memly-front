@@ -579,5 +579,6 @@
   "game_over_title": "Game over!",
   "play": "Spelen",
   "play_again": "Opnieuw spelen",
-  "audio_speed_hint": "Je kunt de uitspraaksnelheid aanpassen in Instellingen"
+  "audio_speed_hint": "Je kunt de uitspraaksnelheid aanpassen in Instellingen",
+  "flip_time_flashcards": "Tijd voordat de kaart automatisch omdraait"
 }

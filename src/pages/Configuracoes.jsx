@@ -21,14 +21,9 @@ const VOZES_TTS = [
 
 const VELOCIDADES_TTS = [0.75, 1.00, 1.25, 1.50];
 
-// Multiplicador aplicado à duração da queda no jogo Chuva de Frases -
-// maior valor = queda mais devagar (duração maior), por isso os rótulos em
-// palavras em vez de "x", pra não confundir a direção com a velocidade da voz.
-const VELOCIDADES_JOGO_CHUVA = [
-    { valor: 1.3, labelKey: "speed_slow" },
-    { valor: 1.0, labelKey: "speed_normal" },
-    { valor: 0.35, labelKey: "speed_fast" },
-];
+// Segundos que o card da frente fica visível em Flashcards.jsx antes de
+// virar sozinho.
+const TEMPOS_VIRADA_FLASHCARDS = [5, 8, 12, 15];
 
 function ItemMenu({ icone: Icone, titulo, onClick, cor = "text-gray-300" }) {
     return (
@@ -149,15 +144,15 @@ export default function Configuracoes() {
     }
 
     // Preferência só do dispositivo (mesmo padrão do autoplay acima) -
-    // controla a velocidade de queda dos blocos no jogo Chuva de Frases,
-    // lido diretamente do localStorage por ChuvaFrases.jsx.
-    const [velocidadeJogoChuva, setVelocidadeJogoChuva] = useState(
-        () => parseFloat(localStorage.getItem('zaldemy_velocidade_jogo_chuva')) || 1.0
+    // controla quanto tempo o card da frente fica visível antes de virar
+    // sozinho em Flashcards.jsx, lido diretamente do localStorage por lá.
+    const [tempoViradaFlashcards, setTempoViradaFlashcards] = useState(
+        () => parseInt(localStorage.getItem('zaldemy_tempo_virada_flashcards'), 10) || 8
     );
 
-    function handleSelecionarVelocidadeJogoChuva(velocidade) {
-        setVelocidadeJogoChuva(velocidade);
-        localStorage.setItem('zaldemy_velocidade_jogo_chuva', String(velocidade));
+    function handleSelecionarTempoVirada(segundos) {
+        setTempoViradaFlashcards(segundos);
+        localStorage.setItem('zaldemy_tempo_virada_flashcards', String(segundos));
     }
 
     // Notificações push - só existe (feature-detect + PWA instalada, ver
@@ -695,6 +690,32 @@ export default function Configuracoes() {
                                 />
                             </button>
                         </div>
+
+                        <div className="mt-4 pt-4 border-t border-gray-700">
+                            <div className="flex items-center gap-2 mb-2">
+                                <Gauge className="w-4 h-4 text-[#4cb8c4]" />
+                                <span className="text-gray-300 text-sm">{t("flip_time_flashcards")}</span>
+                            </div>
+                            <div className="grid grid-cols-4 gap-2">
+                                {TEMPOS_VIRADA_FLASHCARDS.map((segundos) => {
+                                    const selecionado = tempoViradaFlashcards === segundos;
+                                    return (
+                                        <button
+                                            key={segundos}
+                                            type="button"
+                                            onClick={() => handleSelecionarTempoVirada(segundos)}
+                                            className={`rounded-lg border py-1.5 text-sm font-medium transition-colors ${
+                                                selecionado
+                                                    ? "border-[#4cb8c4] bg-[#4cb8c4]/10 text-[#4cb8c4]"
+                                                    : "border-gray-700 bg-gray-900/40 text-gray-300 hover:bg-gray-700/40"
+                                            }`}
+                                        >
+                                            {segundos}s
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
                     </div>
 
                     {notifDisponivel && (
@@ -741,33 +762,6 @@ export default function Configuracoes() {
                             {notifErro && (
                                 <p className="text-red-400 text-xs mt-2">{notifErro}</p>
                             )}
-                        </div>
-                    )}
-
-                    {isPremium && (
-                        <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 mb-3">
-                            <div className="flex items-center gap-3 mb-3">
-                                <Gauge className="w-5 h-5 text-[#4cb8c4]" />
-                                <span className="text-white text-base">{t("game_speed_chuva_frases")}</span>
-                            </div>
-                            <div className="grid grid-cols-3 gap-2">
-                                {VELOCIDADES_JOGO_CHUVA.map(({ valor, labelKey }) => {
-                                    const selecionada = velocidadeJogoChuva === valor;
-                                    return (
-                                        <button
-                                            key={valor}
-                                            type="button"
-                                            onClick={() => handleSelecionarVelocidadeJogoChuva(valor)}
-                                            className={`rounded-lg border py-1.5 text-sm font-medium transition-colors ${selecionada
-                                                    ? "border-[#4cb8c4] bg-[#4cb8c4]/10 text-[#4cb8c4]"
-                                                    : "border-gray-700 bg-gray-900/40 text-gray-300 hover:bg-gray-700/40"
-                                                }`}
-                                        >
-                                            {t(labelKey)}
-                                        </button>
-                                    );
-                                })}
-                            </div>
                         </div>
                     )}
 

@@ -579,5 +579,6 @@
   "game_over_title": "Oyun bitti!",
   "play": "Oyna",
   "play_again": "Tekrar oyna",
-  "audio_speed_hint": "Telaffuz hızını Ayarlar'dan değiştirebilirsin"
+  "audio_speed_hint": "Telaffuz hızını Ayarlar'dan değiştirebilirsin",
+  "flip_time_flashcards": "Kartın otomatik çevrilme süresi"
 }

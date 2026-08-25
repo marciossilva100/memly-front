@@ -581,5 +581,6 @@
   "game_over_title": "Game over!",
   "play": "Play",
   "play_again": "Play again",
-  "audio_speed_hint": "You can adjust the pronunciation speed in Settings"
+  "audio_speed_hint": "You can adjust the pronunciation speed in Settings",
+  "flip_time_flashcards": "Time to auto-flip the card"
 }

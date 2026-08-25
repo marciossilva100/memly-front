@@ -580,5 +580,6 @@
   "play": "开始游戏",
   "play_again": "再玩一次",
   "audio_speed_hint": "你可以在设置中调整发音速度",
-  "flip_time_flashcards": "卡片自动翻转的时间"
+  "flip_time_flashcards": "卡片自动翻转的时间",
+  "flip_time_hint": "你可以在设置中调整卡片翻转的时间"
 }

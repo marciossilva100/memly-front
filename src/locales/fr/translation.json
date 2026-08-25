@@ -580,5 +580,6 @@
   "play": "Jouer",
   "play_again": "Rejouer",
   "audio_speed_hint": "Vous pouvez ajuster la vitesse de la prononciation dans Paramètres",
-  "flip_time_flashcards": "Délai avant retournement automatique de la carte"
+  "flip_time_flashcards": "Délai avant retournement automatique de la carte",
+  "flip_time_hint": "Vous pouvez régler le délai de retournement de la carte dans les Paramètres"
 }

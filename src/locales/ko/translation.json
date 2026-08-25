@@ -580,5 +580,6 @@
   "play": "플레이",
   "play_again": "다시 플레이",
   "audio_speed_hint": "설정에서 발음 속도를 조절할 수 있어요",
-  "flip_time_flashcards": "카드가 자동으로 넘어가는 시간"
+  "flip_time_flashcards": "카드가 자동으로 넘어가는 시간",
+  "flip_time_hint": "설정에서 카드가 넘어가는 시간을 조정할 수 있어요"
 }

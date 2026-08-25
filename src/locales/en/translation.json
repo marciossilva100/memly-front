@@ -582,5 +582,6 @@
   "play": "Play",
   "play_again": "Play again",
   "audio_speed_hint": "You can adjust the pronunciation speed in Settings",
-  "flip_time_flashcards": "Time to auto-flip the card"
+  "flip_time_flashcards": "Time to auto-flip the card",
+  "flip_time_hint": "You can adjust the card flip time in Settings"
 }

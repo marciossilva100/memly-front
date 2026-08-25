@@ -8,6 +8,7 @@ import { fetchComTimeout } from "../utils/fetchComTimeout";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
+import FlipTimeHintBalloon from "../components/FlipTimeHintBalloon";
 
 export default function Flashcards() {
   const { t } = useTranslation();
@@ -470,6 +471,7 @@ export default function Flashcards() {
   return (
 
     <div style={{ height: vh, top: viewportTop }} className="fixed inset-x-0 flex px-6 pt-4 from-gray-900 to-gray-800 bg-gradient-to-br overscroll-none">
+      <FlipTimeHintBalloon />
       <div className="overflow-y-auto flex-1 scrollbar-hide pb-24">
 
         <div className="relative text-center mb-4">

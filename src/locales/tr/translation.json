@@ -580,5 +580,6 @@
   "play": "Oyna",
   "play_again": "Tekrar oyna",
   "audio_speed_hint": "Telaffuz hızını Ayarlar'dan değiştirebilirsin",
-  "flip_time_flashcards": "Kartın otomatik çevrilme süresi"
+  "flip_time_flashcards": "Kartın otomatik çevrilme süresi",
+  "flip_time_hint": "Kartın çevrilme süresini Ayarlar'dan değiştirebilirsin"
 }

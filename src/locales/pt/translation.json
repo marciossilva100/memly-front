@@ -582,5 +582,6 @@
   "play": "Jogar",
   "play_again": "Jogar de novo",
   "audio_speed_hint": "Você pode ajustar a velocidade da pronúncia em Configurações",
-  "flip_time_flashcards": "Tempo para virar o cartão automaticamente"
+  "flip_time_flashcards": "Tempo para virar o cartão automaticamente",
+  "flip_time_hint": "Você pode ajustar o tempo pra virar o cartão em Configurações"
 }

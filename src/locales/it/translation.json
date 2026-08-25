@@ -580,5 +580,6 @@
   "play": "Gioca",
   "play_again": "Gioca ancora",
   "audio_speed_hint": "Puoi regolare la velocità della pronuncia in Impostazioni",
-  "flip_time_flashcards": "Tempo prima del capovolgimento automatico della carta"
+  "flip_time_flashcards": "Tempo prima del capovolgimento automatico della carta",
+  "flip_time_hint": "Puoi regolare il tempo per capovolgere la carta nelle Impostazioni"
 }

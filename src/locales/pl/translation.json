@@ -580,5 +580,6 @@
   "play": "Zagraj",
   "play_again": "Zagraj ponownie",
   "audio_speed_hint": "Możesz dostosować szybkość wymowy w Ustawieniach",
-  "flip_time_flashcards": "Czas do automatycznego odwrócenia karty"
+  "flip_time_flashcards": "Czas do automatycznego odwrócenia karty",
+  "flip_time_hint": "Możesz dostosować czas odwracania karty w Ustawieniach"
 }

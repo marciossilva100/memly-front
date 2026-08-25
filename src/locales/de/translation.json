@@ -580,5 +580,6 @@
   "play": "Spielen",
   "play_again": "Nochmal spielen",
   "audio_speed_hint": "Du kannst die Aussprachegeschwindigkeit in den Einstellungen anpassen",
-  "flip_time_flashcards": "Zeit bis zum automatischen Umdrehen der Karte"
+  "flip_time_flashcards": "Zeit bis zum automatischen Umdrehen der Karte",
+  "flip_time_hint": "Du kannst die Zeit zum Umdrehen der Karte in den Einstellungen anpassen"
 }

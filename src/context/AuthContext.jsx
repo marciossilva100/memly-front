@@ -105,7 +105,27 @@ export function AuthProvider({ children }) {
       return;
     }
 
-    checkAuth();
+    let cancelado = false;
+
+    // checkAuth mantém o `user` atual (null, no boot) quando falha por rede
+    // (ver catch acima) - sem retry, uma instabilidade passageira bem no
+    // boot do app (comum em PWA/Capacitor saindo do "frio") deixava `user`
+    // null pra sempre nessa sessão, travando qualquer tela que dependa dele
+    // (ex: Header preso em "Carregando...", Home com "0 categorias" mesmo
+    // pra quem já tem categorias cadastradas). Só tenta de novo enquanto
+    // ainda existe token e ainda não conseguimos autenticar - token inválido
+    // já é removido dentro de checkAuth, o que para o retry sozinho.
+    async function autenticarComRetry(tentativa = 1) {
+      const usuario = await checkAuth();
+
+      if (!cancelado && !usuario && localStorage.getItem("token") && tentativa < 4) {
+        setTimeout(() => autenticarComRetry(tentativa + 1), 2000 * tentativa);
+      }
+    }
+
+    autenticarComRetry();
+
+    return () => { cancelado = true; };
   }, [checkAuth]);
 
   // Revalida o usuário sempre que a aba volta a ficar visível - sem isso,

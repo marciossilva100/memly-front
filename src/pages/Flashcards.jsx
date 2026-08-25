@@ -2,6 +2,7 @@ import { useParams, useNavigate,useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { playAudio, preloadAudio, pararAudio } from "../utils/audioPlayer";
 import { Volume, RefreshCw, Loader2 } from "lucide-react";
+import { fetchComTimeout } from "../utils/fetchComTimeout";
 
 // import { gerarAudio } from "../services/elevenlabs";
 import { useAuth } from "../context/AuthContext";
@@ -21,6 +22,11 @@ export default function Flashcards() {
   const [finished, setFinished] = useState(false);
   const [progress, setProgress] = useState(0);
   const [hasBeenFlipped, setHasBeenFlipped] = useState(false); // NOVO: controla se o card já foi virado alguma vez
+  // Trava nextCard contra toque duplo (ou rede lenta) enquanto o await de
+  // trainingUpdate está em andamento - sem isso, duas chamadas concorrentes
+  // liam o mesmo `index` do closure e pulavam 2 posições de uma vez,
+  // deixando index fora dos limites de `frases` e derrubando o render.
+  const [avancando, setAvancando] = useState(false);
   const flipTimeoutRef = useRef(null);
   const API_URL = import.meta.env.VITE_API_URL;
   const [listIdCorrectPhrase, setListIdCorrectPhrase] = useState([]);
@@ -87,7 +93,7 @@ export default function Flashcards() {
       ? 'controller/treino.php'
       : 'controller/frases.php';
 
-    fetch(`${API_URL}/${endpoint}`, {
+    fetchComTimeout(`${API_URL}/${endpoint}`, {
       method: "POST",
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token")
@@ -118,6 +124,13 @@ export default function Flashcards() {
         setListIdCorrectPhrase([]);
         setListIdIncorrectPhrase([]);
 
+      })
+      // Sem isso, uma falha/timeout de rede deixava o spinner de loading
+      // (linha "if (!frases.length)" abaixo) girando pra sempre, sem
+      // nenhuma forma do usuário sair dali a não ser fechando o app.
+      .catch((error) => {
+        console.error("Erro ao carregar frases do treino:", error);
+        navigate("/home");
       });
 
   }, [id, mode]);
@@ -286,6 +299,9 @@ export default function Flashcards() {
 
   const nextCard = async (correct = false) => {
 
+    if (avancando) return;
+    setAvancando(true);
+
     setAnsweredCount(prev => prev + 1);
 
     let updatedList = listIdCorrectPhrase;
@@ -343,6 +359,8 @@ export default function Flashcards() {
       setFinished(true);
 
     }
+
+    setAvancando(false);
 
   };
 
@@ -407,6 +425,24 @@ export default function Flashcards() {
 
         </div>
 
+      </div>
+    );
+
+  }
+
+  // Segunda camada de proteção: se `index` ficar fora dos limites de
+  // `frases` por qualquer motivo, cai aqui em vez de acessar frases[index]
+  // undefined no JSX abaixo e derrubar o render (tela toda escura, sem
+  // ErrorBoundary no app pra capturar o erro).
+  if (!frases[index]) {
+
+    return (
+      <div className="flex h-screen items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
+        <img
+          src={imgChapeuFormatura}
+          alt={t("loading")}
+          className="w-28 animate-pulse"
+        />
       </div>
     );
 
@@ -587,14 +623,16 @@ export default function Flashcards() {
 
             <button
               onClick={() => nextCard(false)}
-              className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 hover:bg-gray-700/50 text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full"
+              disabled={avancando}
+              className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 hover:bg-gray-700/50 text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full disabled:opacity-50"
             >
               {t("didnt_remember")}
             </button>
 
             <button
               onClick={() => nextCard(true)}
-              className="bg-[#4cb8c4] hover:bg-[#3da5b0] text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full"
+              disabled={avancando}
+              className="bg-[#4cb8c4] hover:bg-[#3da5b0] text-white px-5 py-3 rounded-full shadow-lg transition active:scale-95 w-full disabled:opacity-50"
             >
               {t("remembered")}
             </button>

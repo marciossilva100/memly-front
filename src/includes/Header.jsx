@@ -6,6 +6,7 @@ import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import PremiumModal from "../components/PremiumModal";
+import { fetchComTimeout } from "../utils/fetchComTimeout";
 
 
 import {
@@ -146,18 +147,35 @@ export default function Header({ titulo }) {
 
     // 🔽 Buscar idiomas
     useEffect(() => {
-        fetch(`${API_URL}/controller/language.php`, {
-            method: 'POST',
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            },
-            body: JSON.stringify({
-                action: 'list_languages',
+        let cancelado = false;
+
+        // O nome do idioma no cabeçalho depende só desse fetch (idiomaNativo).
+        // Sem timeout/retry, uma rede instável no boot do app (comum em
+        // Capacitor) deixava esse fetch travado ou falhando uma vez só, e
+        // como o useEffect não roda de novo sozinho, o cabeçalho ficava preso
+        // em "Carregando..." pra sempre - daí o retry com backoff abaixo.
+        function buscarIdiomas(tentativa = 1) {
+            fetchComTimeout(`${API_URL}/controller/language.php`, {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({
+                    action: 'list_languages',
+                })
             })
-        })
-            .then(res => res.json())
-            .then(data => setLanguageList(data))
-            .catch(() => { });
+                .then(res => res.json())
+                .then(data => { if (!cancelado) setLanguageList(data); })
+                .catch(() => {
+                    if (!cancelado && tentativa < 4) {
+                        setTimeout(() => buscarIdiomas(tentativa + 1), 2000 * tentativa);
+                    }
+                });
+        }
+
+        buscarIdiomas();
+
+        return () => { cancelado = true; };
     }, [])
 
     // 🔽 Sincronizar idioma do usuário

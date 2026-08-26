@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ClipboardList, X } from "lucide-react";
+import { ClipboardList, ChevronLeft, ChevronRight, X } from "lucide-react";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
 function corNota(nota) {
+    if (nota === null || nota === undefined) return "text-gray-400 border-gray-600 bg-gray-700/30";
     if (nota >= 8) return "text-green-400 border-green-400/30 bg-green-400/10";
     if (nota >= 5) return "text-amber-400 border-amber-400/30 bg-amber-400/10";
     return "text-red-400 border-red-400/30 bg-red-400/10";
@@ -21,6 +22,11 @@ function hojeBrasil() {
     return `${brasil.getFullYear()}-${String(brasil.getMonth() + 1).padStart(2, '0')}-${String(brasil.getDate()).padStart(2, '0')}`;
 }
 
+function formatarData(data) {
+    const [ano, mes, dia] = data.split("-");
+    return `${dia}/${mes}/${ano}`;
+}
+
 export default function HistoricoFraseDoDia() {
     const { t } = useTranslation();
     const navigate = useNavigate();
@@ -30,6 +36,17 @@ export default function HistoricoFraseDoDia() {
     const [historico, setHistorico] = useState([]);
     const [filtroData, setFiltroData] = useState("");
     const jaBuscou = useRef(false);
+
+    // Lista de dias com pelo menos um registro, mais recente primeiro - a
+    // navegação anterior/próximo pula direto entre esses dias, sem depender
+    // do <input type="date"> nativo (não abre de forma confiável dentro do
+    // app instalado como PWA no iOS - reportado pelo usuário).
+    const datasDisponiveis = useMemo(() => {
+        const unicas = new Set(historico.map(item => item.data_criacao?.slice(0, 10)).filter(Boolean));
+        return [...unicas].sort().reverse();
+    }, [historico]);
+
+    const indiceData = filtroData ? datasDisponiveis.indexOf(filtroData) : -1;
 
     const historicoFiltrado = useMemo(() => {
         if (!filtroData) return historico;
@@ -64,6 +81,22 @@ export default function HistoricoFraseDoDia() {
             .finally(() => setLoading(false));
     }, []);
 
+    function irParaDataAnterior() {
+        if (indiceData === -1) {
+            setFiltroData(datasDisponiveis[0]);
+        } else if (indiceData < datasDisponiveis.length - 1) {
+            setFiltroData(datasDisponiveis[indiceData + 1]);
+        }
+    }
+
+    function irParaDataSeguinte() {
+        if (indiceData === 0) {
+            setFiltroData("");
+        } else if (indiceData > 0) {
+            setFiltroData(datasDisponiveis[indiceData - 1]);
+        }
+    }
+
     if (loading) {
         return (
             <div className="flex h-screen items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br">
@@ -92,12 +125,28 @@ export default function HistoricoFraseDoDia() {
 
                 {historico.length > 0 && (
                     <div className="flex items-center gap-2 mb-6">
-                        <input
-                            type="date"
-                            value={filtroData}
-                            onChange={(e) => setFiltroData(e.target.value)}
-                            className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white text-sm rounded-lg px-3 py-1.5 [color-scheme:dark]"
-                        />
+                        <button
+                            type="button"
+                            onClick={irParaDataAnterior}
+                            disabled={indiceData === datasDisponiveis.length - 1}
+                            className="p-2 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-gray-300 disabled:opacity-30 hover:bg-gray-700/50 transition-colors"
+                        >
+                            <ChevronLeft className="w-4 h-4" />
+                        </button>
+
+                        <span className="flex-1 text-center text-white text-sm font-medium bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-lg px-3 py-1.5">
+                            {filtroData ? formatarData(filtroData) : t("history_all_dates_label")}
+                        </span>
+
+                        <button
+                            type="button"
+                            onClick={irParaDataSeguinte}
+                            disabled={!filtroData}
+                            className="p-2 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-gray-300 disabled:opacity-30 hover:bg-gray-700/50 transition-colors"
+                        >
+                            <ChevronRight className="w-4 h-4" />
+                        </button>
+
                         {filtroData && (
                             <button
                                 onClick={() => setFiltroData("")}
@@ -126,17 +175,27 @@ export default function HistoricoFraseDoDia() {
                             <div className="flex items-start justify-between gap-3 mb-2">
                                 <p className="text-white font-medium">{item.frase}</p>
                                 <span className={`shrink-0 text-sm font-bold px-2 py-0.5 rounded-full border ${corNota(item.nota)}`}>
-                                    {item.nota}/10
+                                    {item.nota === null || item.nota === undefined ? t("history_unanswered_label") : `${item.nota}/10`}
                                 </span>
                             </div>
 
-                            <p className="text-gray-400 text-sm italic mb-3">"{item.transcricao}"</p>
+                            {item.transcricao && (
+                                <p className="text-gray-400 text-sm italic mb-3">"{item.transcricao}"</p>
+                            )}
 
-                            <div className="space-y-1.5 border-t border-gray-700 pt-2">
-                                <p className="text-gray-300 text-sm"><span className="text-[#4cb8c4] font-medium">{t("grammar_label")}: </span>{item.feedback_gramatica}</p>
-                                <p className="text-gray-300 text-sm"><span className="text-[#4cb8c4] font-medium">{t("pronunciation_label")}: </span>{item.feedback_pronuncia}</p>
-                                <p className="text-gray-300 text-sm"><span className="text-[#4cb8c4] font-medium">{t("fluency_label")}: </span>{item.feedback_fluencia}</p>
-                            </div>
+                            {(item.feedback_gramatica || item.feedback_pronuncia || item.feedback_fluencia) && (
+                                <div className="space-y-1.5 border-t border-gray-700 pt-2">
+                                    {item.feedback_gramatica && (
+                                        <p className="text-gray-300 text-sm"><span className="text-[#4cb8c4] font-medium">{t("grammar_label")}: </span>{item.feedback_gramatica}</p>
+                                    )}
+                                    {item.feedback_pronuncia && (
+                                        <p className="text-gray-300 text-sm"><span className="text-[#4cb8c4] font-medium">{t("pronunciation_label")}: </span>{item.feedback_pronuncia}</p>
+                                    )}
+                                    {item.feedback_fluencia && (
+                                        <p className="text-gray-300 text-sm"><span className="text-[#4cb8c4] font-medium">{t("fluency_label")}: </span>{item.feedback_fluencia}</p>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>

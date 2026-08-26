@@ -590,5 +590,7 @@
   "premium_reason_traducao_reversa_ia": "AI逆向翻译是高级版专属功能。",
   "suggested_translation_label": "建议译文",
   "your_translation_label": "你的翻译",
-  "text_counter": "第 {{numero}} 篇 / 共 {{total}} 篇"
+  "text_counter": "第 {{numero}} 篇 / 共 {{total}} 篇",
+  "history_all_dates_label": "全部记录",
+  "history_unanswered_label": "未作答"
 }

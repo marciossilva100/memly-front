@@ -590,5 +590,7 @@
   "premium_reason_traducao_reversa_ia": "La Traduction Inversée par IA est une fonctionnalité exclusive du plan Premium.",
   "suggested_translation_label": "Traduction suggérée",
   "your_translation_label": "Votre traduction",
-  "text_counter": "Texte {{numero}} sur {{total}}"
+  "text_counter": "Texte {{numero}} sur {{total}}",
+  "history_all_dates_label": "Tous les enregistrements",
+  "history_unanswered_label": "Sans réponse"
 }

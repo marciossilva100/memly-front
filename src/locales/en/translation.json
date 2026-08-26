@@ -592,5 +592,7 @@
   "premium_reason_traducao_reversa_ia": "AI Reverse Translation is an exclusive Premium plan feature.",
   "suggested_translation_label": "Suggested translation",
   "your_translation_label": "Your translation",
-  "text_counter": "Text {{numero}} of {{total}}"
+  "text_counter": "Text {{numero}} of {{total}}",
+  "history_all_dates_label": "All records",
+  "history_unanswered_label": "Not answered"
 }

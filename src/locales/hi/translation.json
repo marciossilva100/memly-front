@@ -590,5 +590,7 @@
   "premium_reason_traducao_reversa_ia": "AI द्वारा उलटा अनुवाद प्रीमियम प्लान की एक विशेष सुविधा है।",
   "suggested_translation_label": "सुझाया गया अनुवाद",
   "your_translation_label": "आपका अनुवाद",
-  "text_counter": "पाठ {{numero}} / {{total}}"
+  "text_counter": "पाठ {{numero}} / {{total}}",
+  "history_all_dates_label": "सभी रिकॉर्ड",
+  "history_unanswered_label": "अनुत्तरित"
 }

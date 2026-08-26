@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react"
-import { Mic, Square, RotateCcw, History, SkipForward, Send, Languages, Ban, AlertCircle, Keyboard } from "lucide-react";
+import { Volume2, Mic, Square, RotateCcw, History, SkipForward, Send, Languages, Ban, AlertCircle, Keyboard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { pararAudio } from "../utils/audioPlayer";
+import { playAudio, pararAudio } from "../utils/audioPlayer";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import useAudioRecorder from "../hooks/useAudioRecorder";
@@ -426,6 +426,16 @@ export default function TraducaoReversa() {
                                     </p>
                                 </div>
                             </div>
+                        </div>
+
+                        <div className="flex justify-center mt-3">
+                            <button
+                                onClick={() => playAudio(textoNativo, user, true, user?.native_language)}
+                                className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-400/10 border border-purple-400/30 text-purple-400 text-xs hover:bg-purple-400/20 transition-colors"
+                            >
+                                <Volume2 className="w-3.5 h-3.5" />
+                                {t("listen")}
+                            </button>
                         </div>
 
                         <div className="mt-10 flex flex-col items-center gap-4">

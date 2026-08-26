@@ -430,7 +430,10 @@ export default function TraducaoReversa() {
 
                         <div className="flex justify-center mt-3">
                             <button
-                                onClick={() => playAudio(textoNativo, user, true, user?.native_language)}
+                                // forcarVozPadrao=true - o áudio do texto nativo tem que ser sempre a
+                                // voz padrão (Google, via LibreTranslate::getAudio no backend), nunca
+                                // a voz natural/premium (OpenAI) - pedido explícito do usuário.
+                                onClick={() => playAudio(textoNativo, user, true, user?.native_language, true)}
                                 className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-400/10 border border-purple-400/30 text-purple-400 text-xs hover:bg-purple-400/20 transition-colors"
                             >
                                 <Volume2 className="w-3.5 h-3.5" />

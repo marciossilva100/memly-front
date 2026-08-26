@@ -581,5 +581,14 @@
   "play_again": "Tekrar oyna",
   "audio_speed_hint": "Telaffuz hızını Ayarlar'dan değiştirebilirsin",
   "flip_time_flashcards": "Kartın otomatik çevrilme süresi",
-  "flip_time_hint": "Kartın çevrilme süresini Ayarlar'dan değiştirebilirsin"
+  "flip_time_hint": "Kartın çevrilme süresini Ayarlar'dan değiştirebilirsin",
+  "traducao_reversa_training": "Ters Çeviri",
+  "traducao_reversa_training_desc": "Kendi dilinizdeki bir metni öğrendiğiniz dile çevirin",
+  "translate_prompt_instruction": "Aşağıdaki metni {{idioma}} diline çevirin",
+  "traducao_reversa_history_title": "Ters Çeviri Geçmişi",
+  "traducao_reversa_history_empty": "Henüz hiçbir çeviri tamamlamadınız.",
+  "premium_reason_traducao_reversa_ia": "Yapay Zeka ile Ters Çeviri, yalnızca Premium plana özel bir özelliktir.",
+  "suggested_translation_label": "Önerilen çeviri",
+  "your_translation_label": "Sizin çeviriniz",
+  "text_counter": "Metin {{numero}}/{{total}}"
 }

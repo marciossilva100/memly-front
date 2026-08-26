@@ -581,5 +581,14 @@
   "play_again": "Zagraj ponownie",
   "audio_speed_hint": "Możesz dostosować szybkość wymowy w Ustawieniach",
   "flip_time_flashcards": "Czas do automatycznego odwrócenia karty",
-  "flip_time_hint": "Możesz dostosować czas odwracania karty w Ustawieniach"
+  "flip_time_hint": "Możesz dostosować czas odwracania karty w Ustawieniach",
+  "traducao_reversa_training": "Tłumaczenie Odwrotne",
+  "traducao_reversa_training_desc": "Przetłumacz tekst ze swojego języka na język, którego się uczysz",
+  "translate_prompt_instruction": "Przetłumacz poniższy tekst na {{idioma}}",
+  "traducao_reversa_history_title": "Historia Tłumaczenia Odwrotnego",
+  "traducao_reversa_history_empty": "Nie ukończyłeś jeszcze żadnego tłumaczenia.",
+  "premium_reason_traducao_reversa_ia": "Tłumaczenie Odwrotne z AI to funkcja dostępna wyłącznie w planie Premium.",
+  "suggested_translation_label": "Sugerowane tłumaczenie",
+  "your_translation_label": "Twoje tłumaczenie",
+  "text_counter": "Tekst {{numero}} z {{total}}"
 }

@@ -581,5 +581,14 @@
   "play_again": "다시 플레이",
   "audio_speed_hint": "설정에서 발음 속도를 조절할 수 있어요",
   "flip_time_flashcards": "카드가 자동으로 넘어가는 시간",
-  "flip_time_hint": "설정에서 카드가 넘어가는 시간을 조정할 수 있어요"
+  "flip_time_hint": "설정에서 카드가 넘어가는 시간을 조정할 수 있어요",
+  "traducao_reversa_training": "역방향 번역",
+  "traducao_reversa_training_desc": "모국어 텍스트를 학습 중인 언어로 번역해 보세요",
+  "translate_prompt_instruction": "아래 텍스트를 {{idioma}}(으)로 번역하세요",
+  "traducao_reversa_history_title": "역방향 번역 기록",
+  "traducao_reversa_history_empty": "아직 완료한 번역이 없습니다.",
+  "premium_reason_traducao_reversa_ia": "AI 역방향 번역은 프리미엄 플랜 전용 기능입니다.",
+  "suggested_translation_label": "추천 번역",
+  "your_translation_label": "회원님의 번역",
+  "text_counter": "텍스트 {{numero}}/{{total}}"
 }

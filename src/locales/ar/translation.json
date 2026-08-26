@@ -581,5 +581,14 @@
   "play_again": "العب مرة أخرى",
   "audio_speed_hint": "يمكنك ضبط سرعة النطق من الإعدادات",
   "flip_time_flashcards": "الوقت اللازم لقلب البطاقة تلقائيًا",
-  "flip_time_hint": "يمكنك ضبط وقت قلب البطاقة من الإعدادات"
+  "flip_time_hint": "يمكنك ضبط وقت قلب البطاقة من الإعدادات",
+  "traducao_reversa_training": "الترجمة العكسية",
+  "traducao_reversa_training_desc": "ترجم نصًا من لغتك إلى اللغة التي تتعلمها",
+  "translate_prompt_instruction": "ترجم النص أدناه إلى {{idioma}}",
+  "traducao_reversa_history_title": "سجل الترجمة العكسية",
+  "traducao_reversa_history_empty": "لم تكمل أي ترجمة بعد.",
+  "premium_reason_traducao_reversa_ia": "الترجمة العكسية بالذكاء الاصطناعي ميزة حصرية للخطة المميزة.",
+  "suggested_translation_label": "الترجمة المقترحة",
+  "your_translation_label": "ترجمتك",
+  "text_counter": "النص {{numero}} من {{total}}"
 }

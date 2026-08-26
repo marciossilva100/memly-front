@@ -581,5 +581,14 @@
   "play_again": "Rejouer",
   "audio_speed_hint": "Vous pouvez ajuster la vitesse de la prononciation dans Paramètres",
   "flip_time_flashcards": "Délai avant retournement automatique de la carte",
-  "flip_time_hint": "Vous pouvez régler le délai de retournement de la carte dans les Paramètres"
+  "flip_time_hint": "Vous pouvez régler le délai de retournement de la carte dans les Paramètres",
+  "traducao_reversa_training": "Traduction Inversée",
+  "traducao_reversa_training_desc": "Traduisez un texte de votre langue vers la langue que vous apprenez",
+  "translate_prompt_instruction": "Traduisez le texte ci-dessous en {{idioma}}",
+  "traducao_reversa_history_title": "Historique de Traduction Inversée",
+  "traducao_reversa_history_empty": "Vous n'avez encore complété aucune traduction.",
+  "premium_reason_traducao_reversa_ia": "La Traduction Inversée par IA est une fonctionnalité exclusive du plan Premium.",
+  "suggested_translation_label": "Traduction suggérée",
+  "your_translation_label": "Votre traduction",
+  "text_counter": "Texte {{numero}} sur {{total}}"
 }

@@ -29,6 +29,8 @@ import Emparelhar from './pages/Emparelhar'
 import TreinoIA from './pages/treinoIA'
 import Perguntas from './pages/Perguntas'
 import HistoricoPerguntas from './pages/HistoricoPerguntas'
+import TraducaoReversa from './pages/TraducaoReversa'
+import HistoricoTraducaoReversa from './pages/HistoricoTraducaoReversa'
 import HistoricoFraseDoDia from './pages/HistoricoFraseDoDia'
 import HistoricoAcessos from './pages/HistoricoAcessos'
 import DigitarTexto from './pages/DigitarTexto'
@@ -347,6 +349,24 @@ function Layout({ titulo, setTitulo }) {
           element={
             <PrivateRoute>
               <HistoricoPerguntas />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/traducaoreversa"
+          element={
+            <PrivateRoute>
+              <TraducaoReversa />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/traducaoreversa/historico"
+          element={
+            <PrivateRoute>
+              <HistoricoTraducaoReversa />
             </PrivateRoute>
           }
         />

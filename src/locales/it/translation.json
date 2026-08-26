@@ -581,5 +581,14 @@
   "play_again": "Gioca ancora",
   "audio_speed_hint": "Puoi regolare la velocità della pronuncia in Impostazioni",
   "flip_time_flashcards": "Tempo prima del capovolgimento automatico della carta",
-  "flip_time_hint": "Puoi regolare il tempo per capovolgere la carta nelle Impostazioni"
+  "flip_time_hint": "Puoi regolare il tempo per capovolgere la carta nelle Impostazioni",
+  "traducao_reversa_training": "Traduzione Inversa",
+  "traducao_reversa_training_desc": "Traduci un testo dalla tua lingua alla lingua che stai imparando",
+  "translate_prompt_instruction": "Traduci il testo qui sotto in {{idioma}}",
+  "traducao_reversa_history_title": "Cronologia Traduzione Inversa",
+  "traducao_reversa_history_empty": "Non hai ancora completato nessuna traduzione.",
+  "premium_reason_traducao_reversa_ia": "La Traduzione Inversa con IA è una funzione esclusiva del piano Premium.",
+  "suggested_translation_label": "Traduzione suggerita",
+  "your_translation_label": "La tua traduzione",
+  "text_counter": "Testo {{numero}} di {{total}}"
 }

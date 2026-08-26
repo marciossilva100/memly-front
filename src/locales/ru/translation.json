@@ -581,5 +581,14 @@
   "play_again": "Играть снова",
   "audio_speed_hint": "Вы можете изменить скорость произношения в Настройках",
   "flip_time_flashcards": "Время до автоматического переворота карточки",
-  "flip_time_hint": "Вы можете настроить время переворота карточки в Настройках"
+  "flip_time_hint": "Вы можете настроить время переворота карточки в Настройках",
+  "traducao_reversa_training": "Обратный перевод",
+  "traducao_reversa_training_desc": "Переведите текст с вашего родного языка на изучаемый язык",
+  "translate_prompt_instruction": "Переведите текст ниже на {{idioma}}",
+  "traducao_reversa_history_title": "История обратных переводов",
+  "traducao_reversa_history_empty": "Вы ещё не завершили ни одного перевода.",
+  "premium_reason_traducao_reversa_ia": "Обратный перевод с ИИ — эксклюзивная функция плана Premium.",
+  "suggested_translation_label": "Предлагаемый перевод",
+  "your_translation_label": "Ваш перевод",
+  "text_counter": "Текст {{numero}} из {{total}}"
 }

@@ -8,6 +8,7 @@ import PremiumModal from "./PremiumModal";
 import {
     BookOpenText,
     MessageCircleQuestion,
+    Languages,
     ChevronRight,
     Sparkles,
     Crown,
@@ -30,6 +31,7 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA }) {
     // pra Perguntas (cota esgotada é tratado dentro da própria
     // Perguntas.jsx, com o modal enxuto específico pra esse caso).
     const [acessoPerguntas, setAcessoPerguntas] = useState(null);
+    const [acessoTraducaoReversa, setAcessoTraducaoReversa] = useState(null);
 
     // Limitado tem amostra vitalícia da frase do dia, mas ela expira se não
     // for usada no mesmo dia em que foi gerada - só o servidor sabe se
@@ -56,6 +58,11 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA }) {
             .then(res => res.json())
             .then(data => setAcessoPerguntas(!!data.acesso))
             .catch(() => setAcessoPerguntas(true));
+
+        fetch(`${API_URL}/controller/TraducaoReversaController.php?action=verificar_acesso`, { headers })
+            .then(res => res.json())
+            .then(data => setAcessoTraducaoReversa(!!data.acesso))
+            .catch(() => setAcessoTraducaoReversa(true));
     }, [openTreinoIA, user?.plano, API_URL]);
 
     function temAcesso(acessoLimitado) {
@@ -101,6 +108,17 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA }) {
             temAcesso: user?.plano === 3 ? true : temAcesso(),
             disponivel: podeVerDisponibilidade && Boolean(acessoPerguntas),
             motivo: "perguntas_ia"
+        },
+        {
+            icon: Languages,
+            cor: "text-purple-400",
+            fundo: "bg-purple-400/10 border-purple-400/30",
+            titulo: t("traducao_reversa_training"),
+            descricao: t("traducao_reversa_training_desc"),
+            rota: "/traducaoreversa",
+            temAcesso: user?.plano === 3 ? true : temAcesso(),
+            disponivel: podeVerDisponibilidade && Boolean(acessoTraducaoReversa),
+            motivo: "traducao_reversa_ia"
         }
     ];
 

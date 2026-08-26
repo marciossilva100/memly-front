@@ -583,5 +583,14 @@
   "play_again": "Jogar de novo",
   "audio_speed_hint": "Você pode ajustar a velocidade da pronúncia em Configurações",
   "flip_time_flashcards": "Tempo para virar o cartão automaticamente",
-  "flip_time_hint": "Você pode ajustar o tempo pra virar o cartão em Configurações"
+  "flip_time_hint": "Você pode ajustar o tempo pra virar o cartão em Configurações",
+  "traducao_reversa_training": "Tradução Reversa",
+  "traducao_reversa_training_desc": "Traduza um texto do seu idioma para o idioma que você está aprendendo",
+  "translate_prompt_instruction": "Traduza o texto abaixo para {{idioma}}",
+  "traducao_reversa_history_title": "Histórico de Tradução Reversa",
+  "traducao_reversa_history_empty": "Você ainda não completou nenhuma tradução.",
+  "premium_reason_traducao_reversa_ia": "Tradução Reversa por IA é um recurso exclusivo do plano Premium.",
+  "suggested_translation_label": "Tradução sugerida",
+  "your_translation_label": "Sua tradução",
+  "text_counter": "Texto {{numero}} de {{total}}"
 }

@@ -581,5 +581,14 @@
   "play_again": "もう一度プレイ",
   "audio_speed_hint": "設定で発音の速度を調整できます",
   "flip_time_flashcards": "カードが自動的にめくれるまでの時間",
-  "flip_time_hint": "設定でカードがめくれるまでの時間を調整できます"
+  "flip_time_hint": "設定でカードがめくれるまでの時間を調整できます",
+  "traducao_reversa_training": "逆翻訳",
+  "traducao_reversa_training_desc": "母国語のテキストを学習中の言語に翻訳しましょう",
+  "translate_prompt_instruction": "以下のテキストを{{idioma}}に翻訳してください",
+  "traducao_reversa_history_title": "逆翻訳の履歴",
+  "traducao_reversa_history_empty": "まだ翻訳を完了していません。",
+  "premium_reason_traducao_reversa_ia": "AIによる逆翻訳はプレミアムプラン限定の機能です。",
+  "suggested_translation_label": "おすすめの翻訳",
+  "your_translation_label": "あなたの翻訳",
+  "text_counter": "テキスト {{numero}}/{{total}}"
 }

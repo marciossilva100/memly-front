@@ -581,5 +581,14 @@
   "play_again": "Opnieuw spelen",
   "audio_speed_hint": "Je kunt de uitspraaksnelheid aanpassen in Instellingen",
   "flip_time_flashcards": "Tijd voordat de kaart automatisch omdraait",
-  "flip_time_hint": "Je kunt de tijd om de kaart om te draaien aanpassen in Instellingen"
+  "flip_time_hint": "Je kunt de tijd om de kaart om te draaien aanpassen in Instellingen",
+  "traducao_reversa_training": "Omgekeerde Vertaling",
+  "traducao_reversa_training_desc": "Vertaal een tekst van jouw taal naar de taal die je leert",
+  "translate_prompt_instruction": "Vertaal de onderstaande tekst naar het {{idioma}}",
+  "traducao_reversa_history_title": "Geschiedenis van Omgekeerde Vertaling",
+  "traducao_reversa_history_empty": "Je hebt nog geen vertaling voltooid.",
+  "premium_reason_traducao_reversa_ia": "Omgekeerde Vertaling met AI is een exclusieve functie van het Premium-abonnement.",
+  "suggested_translation_label": "Voorgestelde vertaling",
+  "your_translation_label": "Jouw vertaling",
+  "text_counter": "Tekst {{numero}} van {{total}}"
 }

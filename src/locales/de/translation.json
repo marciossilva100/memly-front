@@ -581,5 +581,14 @@
   "play_again": "Nochmal spielen",
   "audio_speed_hint": "Du kannst die Aussprachegeschwindigkeit in den Einstellungen anpassen",
   "flip_time_flashcards": "Zeit bis zum automatischen Umdrehen der Karte",
-  "flip_time_hint": "Du kannst die Zeit zum Umdrehen der Karte in den Einstellungen anpassen"
+  "flip_time_hint": "Du kannst die Zeit zum Umdrehen der Karte in den Einstellungen anpassen",
+  "traducao_reversa_training": "Umgekehrte Übersetzung",
+  "traducao_reversa_training_desc": "Übersetze einen Text aus deiner Sprache in die Sprache, die du lernst",
+  "translate_prompt_instruction": "Übersetze den folgenden Text ins {{idioma}}",
+  "traducao_reversa_history_title": "Verlauf der umgekehrten Übersetzung",
+  "traducao_reversa_history_empty": "Du hast noch keine Übersetzung abgeschlossen.",
+  "premium_reason_traducao_reversa_ia": "Umgekehrte Übersetzung per KI ist ein exklusives Feature des Premium-Plans.",
+  "suggested_translation_label": "Vorgeschlagene Übersetzung",
+  "your_translation_label": "Deine Übersetzung",
+  "text_counter": "Text {{numero}} von {{total}}"
 }

@@ -581,5 +581,14 @@
   "play_again": "再玩一次",
   "audio_speed_hint": "你可以在设置中调整发音速度",
   "flip_time_flashcards": "卡片自动翻转的时间",
-  "flip_time_hint": "你可以在设置中调整卡片翻转的时间"
+  "flip_time_hint": "你可以在设置中调整卡片翻转的时间",
+  "traducao_reversa_training": "逆向翻译",
+  "traducao_reversa_training_desc": "将母语文本翻译成你正在学习的语言",
+  "translate_prompt_instruction": "请将下面的文本翻译成{{idioma}}",
+  "traducao_reversa_history_title": "逆向翻译历史",
+  "traducao_reversa_history_empty": "你还没有完成任何翻译。",
+  "premium_reason_traducao_reversa_ia": "AI逆向翻译是高级版专属功能。",
+  "suggested_translation_label": "建议译文",
+  "your_translation_label": "你的翻译",
+  "text_counter": "第 {{numero}} 篇 / 共 {{total}} 篇"
 }

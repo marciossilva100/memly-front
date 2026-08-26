@@ -111,6 +111,16 @@ export default function Flashcards() {
       .then(res => res.json())
       .then(data => {
 
+        // Categoria sem nenhuma frase pronta pra esse modo agora (ex: todas
+        // ainda esperando as 2h de "memorizando" antes de virar "em treino")
+        // - sem isso, "frases" nunca deixava de ser [], e a checagem
+        // "if (!frases.length)" abaixo ficava girando pra sempre, igual ao
+        // problema que o catch logo abaixo já resolve pra falha de rede.
+        if (!data.length) {
+          navigate("/home");
+          return;
+        }
+
         const embaralhadas = [...data];
         for (let i = embaralhadas.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));

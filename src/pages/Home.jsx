@@ -28,6 +28,16 @@ const AVATAR_COLORS = [
     'bg-rose-500',
 ];
 
+// Categoria pode ter até 50 caracteres agora (era 20), mas o card da Home é
+// estreito demais pra caber isso sem quebrar o layout - trunca em 15 pra
+// exibição (o nome completo continua salvo e aparece ao editar a categoria).
+const MAX_CARACTERES_NOME_CATEGORIA_HOME = 15;
+
+function truncarNomeCategoria(nome) {
+    if (!nome || nome.length <= MAX_CARACTERES_NOME_CATEGORIA_HOME) return nome;
+    return nome.slice(0, MAX_CARACTERES_NOME_CATEGORIA_HOME) + "…";
+}
+
 export default function Home() {
     const { user, setUser, setCategoriasLoading, categoriasLoading } = useAuth();
     const [open, setOpen] = useState(false);
@@ -676,7 +686,7 @@ export default function Home() {
                                     </div>
                                     <div className="min-w-0">
                                         <p className="text-lg text-white font-medium truncate">
-                                            {item.categoria}
+                                            {truncarNomeCategoria(item.categoria)}
                                         </p>
                                         <div className="flex flex-col text-xs text-gray-400">
                                             <span>{item.quantidade} {t("words")}</span>

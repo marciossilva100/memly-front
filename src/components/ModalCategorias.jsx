@@ -71,7 +71,17 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
     // premium/limitado OU já usou a amostra grátis do limitado - sem isso, o
     // usuário só descobria que não tinha mais acesso depois de preencher o
     // formulário e tentar enviar.
-    const semAcessoCategoriaIA = (user?.plano !== 1 && user?.plano !== 3) || user?.categoria_ia_disponivel === false;
+    //
+    // A coroa/PremiumModal completo só faz sentido pra quem NUNCA teve
+    // acesso (free) - "premium_necessario". Cota diária esgotada (premium)
+    // ou amostra vitalícia esgotada (limitado) é "limite_atingido": quem já
+    // paga não precisa de vitrine de upsell, só um aviso enxuto (mesmo
+    // padrão do handleSubmitIA abaixo) - antes essas duas situações caíam
+    // no mesmo balde e mostravam a coroa pra um usuário premium, reportado
+    // como bug.
+    const bloqueioCategoriaIA = user?.categoria_ia_bloqueio ?? null;
+    const semAcessoCategoriaIA = bloqueioCategoriaIA?.premium_necessario === true;
+    const cotaCategoriaIAEsgotada = bloqueioCategoriaIA?.limite_atingido === true;
 
     useEffect(() => {
         setModo('inicial')
@@ -266,13 +276,19 @@ export default function ModalCategorias({ setOpen, open, onOpenModalSucesso, onS
                                 type="button"
                                 className="group flex items-center gap-3 text-left py-3 px-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl w-full text-white hover:bg-gray-700/60 hover:border-gray-600 transition"
                                 onClick={() => {
-                                    // Free nunca tem acesso, nem pra tentar, e o limitado que já
-                                    // usou a amostra grátis também não - mesmo padrão do botão
-                                    // Explorar (verifyPlan): nem abre o formulário, já manda
-                                    // direto pro PremiumModal.
+                                    // Free nunca tem acesso, nem pra tentar - mesmo padrão do
+                                    // botão Explorar (verifyPlan): nem abre o formulário, já
+                                    // manda direto pro PremiumModal.
                                     if (semAcessoCategoriaIA) {
                                         setOpen(false);
                                         onOpenPremium?.("categoria_ia");
+                                        return;
+                                    }
+                                    // Premium/limitado com a cota de hoje (ou amostra vitalícia)
+                                    // já usada - aviso enxuto, sem vitrine de upsell.
+                                    if (cotaCategoriaIAEsgotada) {
+                                        setOpen(false);
+                                        onOpenLimiteDiario?.(bloqueioCategoriaIA?.message);
                                         return;
                                     }
                                     setModo('ia');

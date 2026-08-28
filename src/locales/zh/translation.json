@@ -546,7 +546,7 @@
   "based_on_vocabulary_title": "基于你的词汇量",
   "based_on_vocabulary_desc": "AI 生成的内容主要使用你已经在学习的单词",
   "category_ai_feature_title": "AI 生成分类",
-  "category_ai_feature_desc": "每天最多生成3个新分类，附带任意主题的现成例句",
+  "category_ai_feature_desc": "每天最多生成5个新分类，附带任意主题的现成例句",
   "translation_ai_feature_title": "AI 翻译优化",
   "translation_ai_feature_desc": "每天最多20次翻译优化，Premium 专属",
   "games_feature_title": "游戏无限畅玩",
@@ -592,5 +592,7 @@
   "your_translation_label": "你的翻译",
   "text_counter": "第 {{numero}} 篇 / 共 {{total}} 篇",
   "history_all_dates_label": "全部记录",
-  "history_unanswered_label": "未作答"
+  "history_unanswered_label": "未作答",
+  "translation_reverse_feature_title": "AI逆向翻译",
+  "translation_reverse_feature_desc": "每天最多5篇文本，从母语翻译成学习语言，即时批改"
 }

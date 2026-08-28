@@ -546,7 +546,7 @@
   "based_on_vocabulary_title": "당신의 어휘를 기반으로",
   "based_on_vocabulary_desc": "AI가 생성하는 콘텐츠는 주로 당신이 이미 공부하고 있는 단어를 사용해요",
   "category_ai_feature_title": "AI 카테고리 생성",
-  "category_ai_feature_desc": "하루 최대 3개의 새 카테고리를 원하는 주제의 예문과 함께 생성",
+  "category_ai_feature_desc": "하루 최대 5개의 새 카테고리를 원하는 주제의 예문과 함께 생성",
   "translation_ai_feature_title": "AI 번역 개선",
   "translation_ai_feature_desc": "하루 최대 20회 번역 개선, Premium 전용",
   "games_feature_title": "무제한 게임",
@@ -592,5 +592,7 @@
   "your_translation_label": "회원님의 번역",
   "text_counter": "텍스트 {{numero}}/{{total}}",
   "history_all_dates_label": "전체 기록",
-  "history_unanswered_label": "미응답"
+  "history_unanswered_label": "미응답",
+  "translation_reverse_feature_title": "AI 역방향 번역",
+  "translation_reverse_feature_desc": "모국어를 학습 언어로 번역하는 텍스트를 하루 최대 5개, 즉시 교정과 함께"
 }

@@ -19,6 +19,7 @@ import {
   FolderPlus,
   Languages,
   Gamepad2,
+  ArrowLeftRight,
   X
 } from 'lucide-react';
 
@@ -202,6 +203,11 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
       icon: <Languages className="w-5 h-5" />,
       title: t("translation_ai_feature_title"),
       description: t("translation_ai_feature_desc")
+    },
+    {
+      icon: <ArrowLeftRight className="w-5 h-5" />,
+      title: t("translation_reverse_feature_title"),
+      description: t("translation_reverse_feature_desc")
     },
     {
       icon: <Gamepad2 className="w-5 h-5" />,

@@ -548,7 +548,7 @@
   "based_on_vocabulary_title": "Based on your vocabulary",
   "based_on_vocabulary_desc": "AI-generated content mostly uses words you're already studying",
   "category_ai_feature_title": "AI category creation",
-  "category_ai_feature_desc": "Generate up to 3 new categories a day, complete with ready-made phrases on any topic",
+  "category_ai_feature_desc": "Generate up to 5 new categories a day, complete with ready-made phrases on any topic",
   "translation_ai_feature_title": "AI translation improvement",
   "translation_ai_feature_desc": "Up to 20 improved translations a day, Premium exclusive",
   "games_feature_title": "Unlimited games",
@@ -594,5 +594,7 @@
   "your_translation_label": "Your translation",
   "text_counter": "Text {{numero}} of {{total}}",
   "history_all_dates_label": "All records",
-  "history_unanswered_label": "Not answered"
+  "history_unanswered_label": "Not answered",
+  "translation_reverse_feature_title": "AI Reverse Translation",
+  "translation_reverse_feature_desc": "Up to 5 texts a day to translate from your language into the one you're learning, with instant correction"
 }

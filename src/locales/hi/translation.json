@@ -546,7 +546,7 @@
   "based_on_vocabulary_title": "आपकी शब्दावली पर आधारित",
   "based_on_vocabulary_desc": "AI द्वारा बनाई गई सामग्री ज़्यादातर उन शब्दों का उपयोग करती है जो आप पहले से पढ़ रहे हैं",
   "category_ai_feature_title": "AI से कैटेगरी बनाना",
-  "category_ai_feature_desc": "रोज़ाना 3 नई कैटेगरी तक बनाएं, किसी भी विषय पर तैयार वाक्यों के साथ",
+  "category_ai_feature_desc": "रोज़ाना 5 नई कैटेगरी तक बनाएं, किसी भी विषय पर तैयार वाक्यों के साथ",
   "translation_ai_feature_title": "AI से अनुवाद सुधार",
   "translation_ai_feature_desc": "रोज़ाना 20 सुधरे अनुवाद तक, सिर्फ Premium के लिए",
   "games_feature_title": "असीमित गेम्स",
@@ -592,5 +592,7 @@
   "your_translation_label": "आपका अनुवाद",
   "text_counter": "पाठ {{numero}} / {{total}}",
   "history_all_dates_label": "सभी रिकॉर्ड",
-  "history_unanswered_label": "अनुत्तरित"
+  "history_unanswered_label": "अनुत्तरित",
+  "translation_reverse_feature_title": "AI उलटा अनुवाद",
+  "translation_reverse_feature_desc": "अपनी भाषा से सीखी जा रही भाषा में अनुवाद के लिए रोज़ाना 5 पाठ तक, तुरंत सुधार के साथ"
 }

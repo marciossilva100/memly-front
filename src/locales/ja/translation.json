@@ -546,7 +546,7 @@
   "based_on_vocabulary_title": "あなたの語彙に基づいてカスタマイズ",
   "based_on_vocabulary_desc": "AIが生成するコンテンツは主にあなたがすでに学習している単語を使います",
   "category_ai_feature_title": "AIによるカテゴリ作成",
-  "category_ai_feature_desc": "1日最大3個の新しいカテゴリを、どんなテーマでも例文付きで生成",
+  "category_ai_feature_desc": "1日最大5個の新しいカテゴリを、どんなテーマでも例文付きで生成",
   "translation_ai_feature_title": "AIによる翻訳の改善",
   "translation_ai_feature_desc": "1日最大20回の翻訳改善、Premium限定",
   "games_feature_title": "ゲーム無制限",
@@ -592,5 +592,7 @@
   "your_translation_label": "あなたの翻訳",
   "text_counter": "テキスト {{numero}}/{{total}}",
   "history_all_dates_label": "すべての記録",
-  "history_unanswered_label": "未回答"
+  "history_unanswered_label": "未回答",
+  "translation_reverse_feature_title": "AI逆翻訳",
+  "translation_reverse_feature_desc": "母国語から学習言語への翻訳を1日最大5つ、その場で添削"
 }

@@ -546,7 +546,7 @@
   "based_on_vocabulary_title": "Kelime dağarcığına dayalı",
   "based_on_vocabulary_desc": "Yapay zekanın oluşturduğu içerik ağırlıklı olarak zaten çalıştığın kelimeleri kullanır",
   "category_ai_feature_title": "Yapay zeka ile kategori oluşturma",
-  "category_ai_feature_desc": "Günde 3 yeni kategoriye kadar, her konuda hazır cümlelerle oluşturun",
+  "category_ai_feature_desc": "Günde 5 yeni kategoriye kadar, her konuda hazır cümlelerle oluşturun",
   "translation_ai_feature_title": "Yapay zeka ile çeviri geliştirme",
   "translation_ai_feature_desc": "Günde 20 geliştirilmiş çeviriye kadar, sadece Premium'da",
   "games_feature_title": "Sınırsız oyunlar",
@@ -592,5 +592,7 @@
   "your_translation_label": "Sizin çeviriniz",
   "text_counter": "Metin {{numero}}/{{total}}",
   "history_all_dates_label": "Tüm kayıtlar",
-  "history_unanswered_label": "Yanıtsız"
+  "history_unanswered_label": "Yanıtsız",
+  "translation_reverse_feature_title": "Yapay Zeka ile Ters Çeviri",
+  "translation_reverse_feature_desc": "Kendi dilinizden öğrendiğiniz dile günde 5 metne kadar çeviri, anında düzeltmeyle"
 }

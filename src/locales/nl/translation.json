@@ -546,7 +546,7 @@
   "based_on_vocabulary_title": "Gebaseerd op jouw woordenschat",
   "based_on_vocabulary_desc": "AI-gegenereerde content gebruikt vooral woorden die je al leert",
   "category_ai_feature_title": "Categorie maken met AI",
-  "category_ai_feature_desc": "Maak tot 3 nieuwe categorieën per dag, met kant-en-klare zinnen over elk onderwerp",
+  "category_ai_feature_desc": "Maak tot 5 nieuwe categorieën per dag, met kant-en-klare zinnen over elk onderwerp",
   "translation_ai_feature_title": "Vertaling verbeteren met AI",
   "translation_ai_feature_desc": "Tot 20 verbeterde vertalingen per dag, exclusief voor Premium",
   "games_feature_title": "Onbeperkt spelen",
@@ -592,5 +592,7 @@
   "your_translation_label": "Jouw vertaling",
   "text_counter": "Tekst {{numero}} van {{total}}",
   "history_all_dates_label": "Alle records",
-  "history_unanswered_label": "Niet beantwoord"
+  "history_unanswered_label": "Niet beantwoord",
+  "translation_reverse_feature_title": "AI Omgekeerde Vertaling",
+  "translation_reverse_feature_desc": "Tot 5 teksten per dag om te vertalen van jouw taal naar de taal die je leert, met directe correctie"
 }

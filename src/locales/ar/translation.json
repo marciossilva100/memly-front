@@ -546,7 +546,7 @@
   "based_on_vocabulary_title": "مبني على مفرداتك",
   "based_on_vocabulary_desc": "المحتوى الذي ينشئه الذكاء الاصطناعي يستخدم غالبًا كلمات تدرسها بالفعل",
   "category_ai_feature_title": "إنشاء فئة بالذكاء الاصطناعي",
-  "category_ai_feature_desc": "أنشئ حتى 3 فئات جديدة يوميًا، مع جمل جاهزة حول أي موضوع",
+  "category_ai_feature_desc": "أنشئ حتى 5 فئات جديدة يوميًا، مع جمل جاهزة حول أي موضوع",
   "translation_ai_feature_title": "تحسين الترجمة بالذكاء الاصطناعي",
   "translation_ai_feature_desc": "حتى 20 ترجمة محسّنة يوميًا، حصريًا لبريميوم",
   "games_feature_title": "ألعاب غير محدودة",
@@ -592,5 +592,7 @@
   "your_translation_label": "ترجمتك",
   "text_counter": "النص {{numero}} من {{total}}",
   "history_all_dates_label": "جميع السجلات",
-  "history_unanswered_label": "لم تتم الإجابة"
+  "history_unanswered_label": "لم تتم الإجابة",
+  "translation_reverse_feature_title": "الترجمة العكسية بالذكاء الاصطناعي",
+  "translation_reverse_feature_desc": "حتى 5 نصوص يوميًا لترجمتها من لغتك إلى اللغة التي تتعلمها، مع تصحيح فوري"
 }

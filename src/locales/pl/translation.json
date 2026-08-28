@@ -546,7 +546,7 @@
   "based_on_vocabulary_title": "Oparte na twoim słownictwie",
   "based_on_vocabulary_desc": "Treści generowane przez AI wykorzystują głównie słowa, których już się uczysz",
   "category_ai_feature_title": "Tworzenie kategorii z AI",
-  "category_ai_feature_desc": "Twórz do 3 nowych kategorii dziennie, z gotowymi zdaniami na dowolny temat",
+  "category_ai_feature_desc": "Twórz do 5 nowych kategorii dziennie, z gotowymi zdaniami na dowolny temat",
   "translation_ai_feature_title": "Ulepszanie tłumaczenia z AI",
   "translation_ai_feature_desc": "Do 20 ulepszonych tłumaczeń dziennie, ekskluzywnie dla Premium",
   "games_feature_title": "Nieograniczone gry",
@@ -592,5 +592,7 @@
   "your_translation_label": "Twoje tłumaczenie",
   "text_counter": "Tekst {{numero}} z {{total}}",
   "history_all_dates_label": "Wszystkie wpisy",
-  "history_unanswered_label": "Bez odpowiedzi"
+  "history_unanswered_label": "Bez odpowiedzi",
+  "translation_reverse_feature_title": "Tłumaczenie Odwrotne z AI",
+  "translation_reverse_feature_desc": "Do 5 tekstów dziennie do przetłumaczenia z Twojego języka na ten, którego się uczysz, z natychmiastową korektą"
 }

@@ -546,7 +546,7 @@
   "based_on_vocabulary_title": "Basierend auf deinem Wortschatz",
   "based_on_vocabulary_desc": "KI-generierte Inhalte verwenden hauptsächlich Wörter, die du bereits lernst",
   "category_ai_feature_title": "Kategorien mit KI erstellen",
-  "category_ai_feature_desc": "Erstelle bis zu 3 neue Kategorien pro Tag, inklusive fertiger Sätze zu jedem Thema",
+  "category_ai_feature_desc": "Erstelle bis zu 5 neue Kategorien pro Tag, inklusive fertiger Sätze zu jedem Thema",
   "translation_ai_feature_title": "Übersetzung mit KI verbessern",
   "translation_ai_feature_desc": "Bis zu 20 verbesserte Übersetzungen pro Tag, exklusiv für Premium",
   "games_feature_title": "Unbegrenzte Spiele",
@@ -592,5 +592,7 @@
   "your_translation_label": "Deine Übersetzung",
   "text_counter": "Text {{numero}} von {{total}}",
   "history_all_dates_label": "Alle Einträge",
-  "history_unanswered_label": "Nicht beantwortet"
+  "history_unanswered_label": "Nicht beantwortet",
+  "translation_reverse_feature_title": "KI-Umgekehrte Übersetzung",
+  "translation_reverse_feature_desc": "Bis zu 5 Texte pro Tag von deiner Sprache in die Sprache, die du lernst, mit sofortiger Korrektur"
 }

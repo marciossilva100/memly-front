@@ -3,10 +3,16 @@ import { useTranslation } from "react-i18next";
 
 // Modal enxuto pro caso específico de "cota diária esgotada" nos jogos -
 // diferente do bloqueio de plano free (PremiumModal, com toda a vitrine de
-// funcionalidades), aqui o usuário já está no plano limitado e só precisa
-// de um aviso claro + a opção de virar premium, sem repetir a venda
-// completa toda vez que a cota do dia acaba.
-export default function LimiteDiarioModal({ isOpen, onClose, mensagem, onAssinarPremium }) {
+// funcionalidades), aqui o usuário já está no plano limitado ou premium e
+// só precisa de um aviso claro, sem repetir a venda completa toda vez que
+// a cota do dia acaba.
+//
+// mostrarCtaPremium=false esconde o botão "Assinar Premium" - usado quando
+// quem bateu na cota já É premium (ex: categoria por IA, que tem teto
+// diário pros dois planos). Virar premium de novo não faz sentido nenhum
+// nesse caso; antes esse botão aparecia incondicionalmente, reportado como
+// bug por um usuário premium vendo oferta de assinatura pra ele mesmo.
+export default function LimiteDiarioModal({ isOpen, onClose, mensagem, onAssinarPremium, mostrarCtaPremium = true }) {
     const { t } = useTranslation();
 
     if (!isOpen) return null;
@@ -31,15 +37,19 @@ export default function LimiteDiarioModal({ isOpen, onClose, mensagem, onAssinar
                 <p className="text-gray-300 text-sm mb-6">{mensagem}</p>
 
                 <div className="flex flex-col gap-3">
-                    <button
-                        onClick={onAssinarPremium}
-                        className="w-full bg-gradient-to-r from-[#4cb8c4] to-[#085078] hover:from-[#3da5b0] hover:to-[#064060] text-white font-semibold py-3 rounded-xl transition-all"
-                    >
-                        {t("daily_limit_premium_cta")}
-                    </button>
+                    {mostrarCtaPremium && (
+                        <button
+                            onClick={onAssinarPremium}
+                            className="w-full bg-gradient-to-r from-[#4cb8c4] to-[#085078] hover:from-[#3da5b0] hover:to-[#064060] text-white font-semibold py-3 rounded-xl transition-all"
+                        >
+                            {t("daily_limit_premium_cta")}
+                        </button>
+                    )}
                     <button
                         onClick={onClose}
-                        className="w-full text-gray-400 hover:text-white text-sm py-2 transition-colors"
+                        className={mostrarCtaPremium
+                            ? "w-full text-gray-400 hover:text-white text-sm py-2 transition-colors"
+                            : "w-full bg-gradient-to-r from-[#4cb8c4] to-[#085078] hover:from-[#3da5b0] hover:to-[#064060] text-white font-semibold py-3 rounded-xl transition-all"}
                     >
                         {t("understood")}
                     </button>

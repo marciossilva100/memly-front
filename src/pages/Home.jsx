@@ -940,6 +940,10 @@ export default function Home() {
                 isOpen={limiteModalOpen}
                 mensagem={mensagemLimite}
                 onClose={() => setLimiteModalOpen(false)}
+                // Categoria por IA tem teto diário pros dois planos (premium
+                // e limitado) - quem já é premium não tem pra onde fazer
+                // upsell, então some com o botão "Assinar Premium" nesse caso.
+                mostrarCtaPremium={user?.plano !== 1}
                 onAssinarPremium={() => {
                     setLimiteModalOpen(false);
                     setMotivoPremium("categoria_ia");

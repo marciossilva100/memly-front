@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Dialog } from "@headlessui/react";
-import { Flame, Star, Calendar, MessageCircleQuestion, BookOpenText, Gamepad2, X } from "lucide-react";
+import { Flame, Star, Calendar, MessageCircleQuestion, BookOpenText, Gamepad2, Target, Languages, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 // Pontuação combinada: cada palavra aprendida vale 1 ponto, cada dia
@@ -30,7 +30,7 @@ function LinhaStat({ icon, label, valor }) {
     );
 }
 
-export default function TermometroEstudo({ totalAprendidas = 0, streak = 0, diasAcesso = 0, treinoIaStats = null, jogoResumo = null }) {
+export default function TermometroEstudo({ totalAprendidas = 0, streak = 0, diasAcesso = 0, treinoIaStats = null, jogoResumo = null, jogoTiroResumo = null }) {
     const { t } = useTranslation();
     const [aberto, setAberto] = useState(false);
 
@@ -43,8 +43,11 @@ export default function TermometroEstudo({ totalAprendidas = 0, streak = 0, dias
 
     const perguntasRespondidas = treinoIaStats?.perguntas?.total ?? 0;
     const frasesDoDiaRespondidas = treinoIaStats?.frase_do_dia?.total ?? 0;
+    const traducaoReversaRespondidas = treinoIaStats?.traducao_reversa?.total ?? 0;
     const partidasJogadas = jogoResumo?.partidas_jogadas ?? 0;
     const melhorPontuacaoJogo = jogoResumo?.melhor_pontuacao ?? 0;
+    const partidasTiroJogadas = jogoTiroResumo?.partidas_jogadas ?? 0;
+    const melhorPontuacaoTiro = jogoTiroResumo?.melhor_pontuacao ?? 0;
 
     return (
         <>
@@ -147,6 +150,9 @@ export default function TermometroEstudo({ totalAprendidas = 0, streak = 0, dias
                         <p className="text-gray-500 text-[11px] uppercase tracking-wide mt-4 mb-1">
                             {t("other_activity_label")}
                         </p>
+                        <p className="text-gray-500 text-[11px] mb-1">
+                            {t("other_activity_hint")}
+                        </p>
                         <div>
                             <LinhaStat
                                 icon={<BookOpenText className="w-4 h-4 text-[#4cb8c4]" />}
@@ -159,10 +165,22 @@ export default function TermometroEstudo({ totalAprendidas = 0, streak = 0, dias
                                 valor={perguntasRespondidas}
                             />
                             <LinhaStat
+                                icon={<Languages className="w-4 h-4 text-[#4cb8c4]" />}
+                                label={t("traducao_reversa_training")}
+                                valor={traducaoReversaRespondidas}
+                            />
+                            <LinhaStat
                                 icon={<Gamepad2 className="w-4 h-4 text-[#4cb8c4]" />}
                                 label={t("phrase_rain_game_label")}
                                 valor={partidasJogadas > 0
                                     ? t("games_played_with_best_score", { count: partidasJogadas, pontos: melhorPontuacaoJogo })
+                                    : t("games_not_played_yet")}
+                            />
+                            <LinhaStat
+                                icon={<Target className="w-4 h-4 text-[#4cb8c4]" />}
+                                label={t("sure_shot_title")}
+                                valor={partidasTiroJogadas > 0
+                                    ? t("games_played_with_best_score", { count: partidasTiroJogadas, pontos: melhorPontuacaoTiro })
                                     : t("games_not_played_yet")}
                             />
                         </div>

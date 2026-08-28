@@ -457,6 +457,7 @@
   "streak_label": "当前连续天数",
   "days_accessed_label": "使用天数",
   "other_activity_label": "其他活动",
+  "other_activity_hint": "不计入温度计积分，只是您使用情况的摘要。",
   "games_played_with_best_score": "已玩{{count}}次 · 最高分{{pontos}}",
   "games_not_played_yet": "还没玩过",
   "phrase_rain_game_label": "句子雨",

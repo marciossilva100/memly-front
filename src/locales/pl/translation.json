@@ -457,6 +457,7 @@
   "streak_label": "Aktualna seria",
   "days_accessed_label": "Dni aktywności",
   "other_activity_label": "Inna aktywność",
+  "other_activity_hint": "Nie liczą się do punktów termometru, to tylko podsumowanie Twojej aktywności.",
   "games_played_with_best_score": "Zagrano {{count}}x · rekord {{pontos}}",
   "games_not_played_yet": "Jeszcze nie zagrano",
   "phrase_rain_game_label": "Deszcz Zdań",

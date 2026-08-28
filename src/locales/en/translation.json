@@ -459,6 +459,7 @@
   "streak_label": "Current streak",
   "days_accessed_label": "Days active",
   "other_activity_label": "Other activity",
+  "other_activity_hint": "Don't count toward the thermometer's points, just a summary of your activity.",
   "games_played_with_best_score": "Played {{count}}x · best {{pontos}}",
   "games_not_played_yet": "Not played yet",
   "phrase_rain_game_label": "Phrase Rain",

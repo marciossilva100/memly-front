@@ -459,6 +459,7 @@
   "streak_label": "Sequência atual",
   "days_accessed_label": "Dias de uso",
   "other_activity_label": "Outras atividades",
+  "other_activity_hint": "Não contam pontos pro termômetro, é só um resumo do seu uso.",
   "games_played_with_best_score": "{{count}}x jogado · recorde {{pontos}}",
   "games_not_played_yet": "Ainda não jogou",
   "phrase_rain_game_label": "Chuva de Frases",

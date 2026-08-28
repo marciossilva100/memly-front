@@ -457,6 +457,7 @@
   "streak_label": "Série actuelle",
   "days_accessed_label": "Jours d'utilisation",
   "other_activity_label": "Autres activités",
+  "other_activity_hint": "Ne comptent pas pour les points du thermomètre, juste un résumé de votre activité.",
   "games_played_with_best_score": "Joué {{count}}x · record {{pontos}}",
   "games_not_played_yet": "Pas encore joué",
   "phrase_rain_game_label": "Pluie de Phrases",

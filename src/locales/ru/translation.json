@@ -457,6 +457,7 @@
   "streak_label": "Текущая серия",
   "days_accessed_label": "Дней использования",
   "other_activity_label": "Другая активность",
+  "other_activity_hint": "Не учитываются в очках термометра, это просто сводка вашей активности.",
   "games_played_with_best_score": "Сыграно {{count}}x · рекорд {{pontos}}",
   "games_not_played_yet": "Ещё не играли",
   "phrase_rain_game_label": "Дождь Фраз",

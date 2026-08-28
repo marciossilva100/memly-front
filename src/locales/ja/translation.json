@@ -457,6 +457,7 @@
   "streak_label": "現在の連続日数",
   "days_accessed_label": "利用日数",
   "other_activity_label": "その他の活動",
+  "other_activity_hint": "サーモメーターのポイントには含まれません。利用状況のまとめです。",
   "games_played_with_best_score": "{{count}}回プレイ · 最高{{pontos}}",
   "games_not_played_yet": "まだプレイしていません",
   "phrase_rain_game_label": "フレーズレイン",

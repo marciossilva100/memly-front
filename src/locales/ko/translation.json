@@ -457,6 +457,7 @@
   "streak_label": "현재 연속 일수",
   "days_accessed_label": "사용한 날",
   "other_activity_label": "다른 활동",
+  "other_activity_hint": "온도계 포인트에는 반영되지 않으며, 사용 요약일 뿐입니다.",
   "games_played_with_best_score": "{{count}}회 플레이 · 최고 {{pontos}}",
   "games_not_played_yet": "아직 플레이하지 않음",
   "phrase_rain_game_label": "문장 비 게임",

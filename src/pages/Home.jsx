@@ -106,6 +106,7 @@ export default function Home() {
     const [totalAprendidas, setTotalAprendidas] = useState(0)
     const [treinoIaStats, setTreinoIaStats] = useState(null)
     const [jogoResumo, setJogoResumo] = useState(null)
+    const [jogoTiroResumo, setJogoTiroResumo] = useState(null)
     const [treinoIaDisponivel, setTreinoIaDisponivel] = useState(false)
     const { t } = useTranslation();
     const API_URL = import.meta.env.VITE_API_URL;
@@ -216,6 +217,18 @@ export default function Home() {
             .then(res => res.json())
             .then(data => setJogoResumo(data?.success ? data : null))
             .catch(() => setJogoResumo(null));
+
+        fetch(`${API_URL}/controller/tiroCerteiro.php`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({ action: 'resumo' })
+        })
+            .then(res => res.json())
+            .then(data => setJogoTiroResumo(data?.success ? data : null))
+            .catch(() => setJogoTiroResumo(null));
     }, [user?.id]);
 
     // Bolinha de notificação no ícone de Treino com IA quando ainda sobra
@@ -777,6 +790,7 @@ export default function Home() {
                     diasAcesso={diasAcesso}
                     treinoIaStats={treinoIaStats}
                     jogoResumo={jogoResumo}
+                    jogoTiroResumo={jogoTiroResumo}
                 />
             </div>
             {/* Fica FORA da barra de baixo (abaixo) de propósito - essa barra

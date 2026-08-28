@@ -457,6 +457,7 @@
   "streak_label": "التتابع الحالي",
   "days_accessed_label": "أيام الاستخدام",
   "other_activity_label": "أنشطة أخرى",
+  "other_activity_hint": "لا تُحتسب ضمن نقاط مقياس التقدم، إنها مجرد ملخص لاستخدامك.",
   "games_played_with_best_score": "لُعبت {{count}} مرة · أفضل نتيجة {{pontos}}",
   "games_not_played_yet": "لم تُلعب بعد",
   "phrase_rain_game_label": "مطر الجمل",

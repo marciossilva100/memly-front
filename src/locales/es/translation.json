@@ -458,6 +458,7 @@
   "streak_label": "Racha actual",
   "days_accessed_label": "Días de uso",
   "other_activity_label": "Otras actividades",
+  "other_activity_hint": "No cuentan para los puntos del termómetro, es solo un resumen de tu uso.",
   "games_played_with_best_score": "Jugado {{count}}x · récord {{pontos}}",
   "games_not_played_yet": "Aún no jugado",
   "phrase_rain_game_label": "Lluvia de Frases",

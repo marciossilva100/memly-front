@@ -457,6 +457,7 @@
   "streak_label": "मौजूदा सिलसिला",
   "days_accessed_label": "इस्तेमाल के दिन",
   "other_activity_label": "अन्य गतिविधि",
+  "other_activity_hint": "थर्मामीटर के पॉइंट्स में नहीं गिनते, बस आपके उपयोग का सारांश है।",
   "games_played_with_best_score": "{{count}}x खेला गया · सर्वश्रेष्ठ {{pontos}}",
   "games_not_played_yet": "अभी तक नहीं खेला",
   "phrase_rain_game_label": "फ्रेज़ रेन",

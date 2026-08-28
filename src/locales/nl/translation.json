@@ -457,6 +457,7 @@
   "streak_label": "Huidige reeks",
   "days_accessed_label": "Actieve dagen",
   "other_activity_label": "Andere activiteit",
+  "other_activity_hint": "Tellen niet mee voor de punten van de thermometer, gewoon een overzicht van je gebruik.",
   "games_played_with_best_score": "{{count}}x gespeeld · record {{pontos}}",
   "games_not_played_yet": "Nog niet gespeeld",
   "phrase_rain_game_label": "Zinnenregen",

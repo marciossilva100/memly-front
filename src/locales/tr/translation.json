@@ -457,6 +457,7 @@
   "streak_label": "Güncel seri",
   "days_accessed_label": "Kullanım günleri",
   "other_activity_label": "Diğer etkinlikler",
+  "other_activity_hint": "Termometre puanına dahil değildir, sadece kullanımınızın bir özetidir.",
   "games_played_with_best_score": "{{count}}x oynandı · rekor {{pontos}}",
   "games_not_played_yet": "Henüz oynanmadı",
   "phrase_rain_game_label": "Cümle Yağmuru",

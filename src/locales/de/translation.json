@@ -457,6 +457,7 @@
   "streak_label": "Aktuelle Serie",
   "days_accessed_label": "Aktive Tage",
   "other_activity_label": "Weitere Aktivität",
+  "other_activity_hint": "Zählen nicht für die Punkte des Thermometers, nur eine Zusammenfassung deiner Nutzung.",
   "games_played_with_best_score": "{{count}}x gespielt · Rekord {{pontos}}",
   "games_not_played_yet": "Noch nicht gespielt",
   "phrase_rain_game_label": "Satzregen",

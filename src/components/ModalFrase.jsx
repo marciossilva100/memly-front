@@ -2,7 +2,7 @@ import { Dialog } from "@headlessui/react";
 import { useState, useEffect } from "react";
 import { translateText } from "../services/translateText"
 import { useAuth } from "../context/AuthContext";
-import { Play, PlayCircle, PlaySquare, Repeat, Check, Crown, Bot } from "lucide-react";
+import { Play, PlayCircle, PlaySquare, Repeat, Check, Crown, Bot, Loader2 } from "lucide-react";
 import { playAudio } from "../utils/audioPlayer";
 import { containsProfanity } from "../utils/contentFilter";
 import { useTranslation } from "react-i18next";
@@ -17,6 +17,9 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
     const [translatedPhrase, setTranslatedPhrase] = useState('')
     const [loadingSugestao, setLoadingSugestao] = useState(false)
     const [loadingMelhorar, setLoadingMelhorar] = useState(false)
+    // Indicador visual pro "Ouvir" - sem preload, o clique podia parecer
+    // travado (nada acontece por 1-2s até o áudio terminar de gerar).
+    const [buscandoAudio, setBuscandoAudio] = useState(false)
 
     const [errorPhrase, setErrorPhrase] = useState('')
     const [errorTranslatedPhrase, setErrorTranslatedPhrase] = useState('')
@@ -246,7 +249,15 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                             <div className="flex justify-between">
                                 <label className="font-medium text-sm mb-3 text-white">{t("translation")}</label>
                                 {translatedPhrase && (
-                                    <PlayCircle className="text-[#4cb8c4]" onClick={()=>playAudio(translatedPhrase,user)} />
+                                    buscandoAudio ? (
+                                        <Loader2 className="text-[#4cb8c4] animate-spin" />
+                                    ) : (
+                                        <PlayCircle className="text-[#4cb8c4] cursor-pointer" onClick={() => {
+                                            setBuscandoAudio(true);
+                                            playAudio(translatedPhrase, user, false, null, false, false, () => setBuscandoAudio(false))
+                                                .finally(() => setBuscandoAudio(false));
+                                        }} />
+                                    )
                                 )}
 
                             </div>

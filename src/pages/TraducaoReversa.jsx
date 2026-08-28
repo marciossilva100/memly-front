@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { Volume2, Mic, Square, RotateCcw, History, SkipForward, Send, Languages, Ban, AlertCircle, Keyboard } from "lucide-react";
+import { Volume2, Mic, Square, RotateCcw, History, SkipForward, Send, Languages, Ban, AlertCircle, Keyboard, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { playAudio, pararAudio } from "../utils/audioPlayer";
 import { useAuth } from "../context/AuthContext";
@@ -24,6 +24,9 @@ function corNota(nota) {
 export default function TraducaoReversa() {
     const { t } = useTranslation();
     const [loading, setLoading] = useState(false);
+    // Indicador visual pro "Ouvir" - sem preload, o clique podia parecer
+    // travado (nada acontece por 1-2s até o áudio terminar de gerar).
+    const [buscandoAudio, setBuscandoAudio] = useState(false);
     const [error, setError] = useState(null)
     const [audioVazio, setAudioVazio] = useState(false)
     const [textoEncerrado, setTextoEncerrado] = useState(false)
@@ -433,11 +436,16 @@ export default function TraducaoReversa() {
                                 // forcarVozPadrao=true - o áudio do texto nativo tem que ser sempre a
                                 // voz padrão (Google, via LibreTranslate::getAudio no backend), nunca
                                 // a voz natural/premium (OpenAI) - pedido explícito do usuário.
-                                onClick={() => playAudio(textoNativo, user, true, user?.native_language, true)}
-                                className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-400/10 border border-purple-400/30 text-purple-400 text-xs hover:bg-purple-400/20 transition-colors"
+                                disabled={buscandoAudio}
+                                onClick={() => {
+                                    setBuscandoAudio(true);
+                                    playAudio(textoNativo, user, true, user?.native_language, true, false, () => setBuscandoAudio(false))
+                                        .finally(() => setBuscandoAudio(false));
+                                }}
+                                className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-400/10 border border-purple-400/30 text-purple-400 text-xs hover:bg-purple-400/20 transition-colors disabled:opacity-70"
                             >
-                                <Volume2 className="w-3.5 h-3.5" />
-                                {t("listen")}
+                                {buscandoAudio ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Volume2 className="w-3.5 h-3.5" />}
+                                {buscandoAudio ? t("generating_audio") : t("listen")}
                             </button>
                         </div>
 

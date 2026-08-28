@@ -137,6 +137,9 @@ export default function ChuvaFrases() {
     const [autoplayAudio, setAutoplayAudio] = useState(
         () => localStorage.getItem('zaldemy_autoplay_jogo_chuva') === '1'
     );
+    // Indicador visual pro "Ouvir" - sem preload, o clique podia parecer
+    // travado (nada acontece por 1-2s até o áudio terminar de gerar).
+    const [buscandoAudioAlvo, setBuscandoAudioAlvo] = useState(false);
 
     function handleSelecionarVelocidadeJogo(velocidade) {
         setVelocidadeJogo(velocidade);
@@ -382,7 +385,10 @@ export default function ChuvaFrases() {
     // padrão, mesmo pra quem tem plano premium/limitado.
     function tocarAudioAlvo() {
         if (!alvo) return;
-        playAudio(alvo.texto_traduzido, user, false, null, true, true).catch(() => { });
+        setBuscandoAudioAlvo(true);
+        playAudio(alvo.texto_traduzido, user, false, null, true, true, () => setBuscandoAudioAlvo(false))
+            .catch(() => { })
+            .finally(() => setBuscandoAudioAlvo(false));
     }
 
     // Toca o áudio sozinho a cada nova frase alvo, se a opção "áudio
@@ -714,11 +720,11 @@ export default function ChuvaFrases() {
                         <button
                             type="button"
                             onClick={tocarAudioAlvo}
-                            disabled={!alvo}
+                            disabled={!alvo || buscandoAudioAlvo}
                             className="relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors disabled:opacity-50"
                         >
-                            <Volume2 className="w-3.5 h-3.5" />
-                            {t("listen")}
+                            {buscandoAudioAlvo ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Volume2 className="w-3.5 h-3.5" />}
+                            {buscandoAudioAlvo ? t("generating_audio") : t("listen")}
                         </button>
                     </div>
 

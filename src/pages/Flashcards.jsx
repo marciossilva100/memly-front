@@ -42,6 +42,7 @@ export default function Flashcards() {
   // que a pronúncia natural está sendo gerada de verdade em vez de parecer
   // travado durante a espera de rede/geração.
   const [buscandoAudioVerso, setBuscandoAudioVerso] = useState(false);
+  const [buscandoAudioFrente, setBuscandoAudioFrente] = useState(false);
 
   // Para o áudio em reprodução ao sair da tela (troca de rota) - sem isso,
   // o áudio seguia tocando mesmo depois do usuário já ter navegado embora.
@@ -545,12 +546,20 @@ export default function Flashcards() {
           {/* Botão Ouvir nativo - aparece antes de virar o card */}
           {!isFlipped && (
             <div className="text-center flex justify-center mt-5">
-              <button onClick={(e) => {
-                e.preventDefault();
-                playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, true);
-              }} className="px-4 py-2 rounded-md bg-slate-500 text-white text-sm transition flex">
-                <Volume className="w-5 h-5" />
-                {t("listen")}
+              <button
+                disabled={buscandoAudioFrente}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setBuscandoAudioFrente(true);
+                  playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, true, false, () => setBuscandoAudioFrente(false))
+                    .finally(() => setBuscandoAudioFrente(false));
+                }} className="px-4 py-2 rounded-md bg-slate-500 text-white text-sm transition flex disabled:opacity-70">
+                {buscandoAudioFrente ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Volume className="w-5 h-5" />
+                )}
+                {buscandoAudioFrente ? t("generating_audio") : t("listen")}
               </button>
             </div>
           )}

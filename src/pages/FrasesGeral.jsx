@@ -15,7 +15,8 @@ import {
     Settings,
     BarChart3,
     Bot,
-    Crown
+    Crown,
+    Loader2
 } from "lucide-react";
 
 
@@ -34,6 +35,9 @@ export default function FrasesGeral() {
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
     const [motivoPremium, setMotivoPremium] = useState(null);
     const [openTreinoIA, setOpenTreinoIA] = useState(false);
+    // Indicador visual pro "Ouvir" - sem preload, o clique podia parecer
+    // travado (nada acontece por 1-2s até o áudio terminar de gerar).
+    const [tocandoAudioId, setTocandoAudioId] = useState(null);
     const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
 
@@ -155,9 +159,18 @@ export default function FrasesGeral() {
                                     <p className="text-white truncate">{item.texto_nativo}</p>
                                     <p className="text-[#4cb8c4] text-sm truncate mt-0.5">{item.texto_traduzido}</p>
                                 </div>
-                                <Volume2 size={18} className="text-blue-400 shrink-0" onClick={() => {
-                                    playAudio(item.texto_traduzido, user);
-                                }} />
+                                {tocandoAudioId === item.id ? (
+                                    <Loader2 size={18} className="text-blue-400 shrink-0 animate-spin" />
+                                ) : (
+                                    <Volume2 size={18} className="text-blue-400 shrink-0" onClick={async () => {
+                                        setTocandoAudioId(item.id);
+                                        try {
+                                            await playAudio(item.texto_traduzido, user);
+                                        } finally {
+                                            setTocandoAudioId(null);
+                                        }
+                                    }} />
+                                )}
                             </div>
                         ))}
 

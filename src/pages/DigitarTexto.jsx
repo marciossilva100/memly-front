@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { makePerfectDiff } from "../utils/makePerfectDiff";
 import { playAudio, pararAudio, preloadAudio } from "../utils/audioPlayer";
 import '../digitartexto.css'
-import { Volume, Play, Check, RefreshCw } from "lucide-react";
+import { Volume, Play, Check, RefreshCw, Loader2 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
@@ -33,6 +33,12 @@ export default function DigitarTexto() {
     const textareaRef = useRef(null);
     const contentRef = useRef(null);
     const [pular, setPular] = useState(false)
+    // Indicador visual pro "Ouvir" - sem preload (ou com ele ainda em voo), o
+    // clique podia parecer travado (nada acontece até o áudio terminar de
+    // gerar). Os 3 botões de "Ouvir" da tela nunca aparecem ao mesmo tempo
+    // (frente/verso errado/verso certo são mutuamente exclusivos), então um
+    // único estado serve pros três.
+    const [buscandoAudio, setBuscandoAudio] = useState(false)
     const { user, setUser } = useAuth();
     const flipTimeoutRef = useRef(null);
 
@@ -561,12 +567,16 @@ export default function DigitarTexto() {
 
                 {!isFlipped && !diff && (
                     <div className="text-center flex justify-center mt-5 [@media(max-height:700px)]:mt-2">
-                        <button onClick={(e) => {
-                            e.preventDefault();
-                            playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, mode === "learn");
-                        }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors">
-                            <Volume className="w-4 h-4" />
-                            {t("listen")}
+                        <button
+                            disabled={buscandoAudio}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setBuscandoAudio(true);
+                                playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, mode === "learn", false, () => setBuscandoAudio(false))
+                                    .finally(() => setBuscandoAudio(false));
+                            }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors disabled:opacity-70">
+                            {buscandoAudio ? <Loader2 className="w-4 h-4 animate-spin" /> : <Volume className="w-4 h-4" />}
+                            {buscandoAudio ? t("generating_audio") : t("listen")}
                         </button>
                     </div>
                 )}
@@ -575,12 +585,16 @@ export default function DigitarTexto() {
 
                     <div className="mt-6 w-full ">
                         <div className="text-center flex justify-center">
-                            <button onClick={(e) => {
-                                e.preventDefault();
-                                playAudio(frases[index].texto_traduzido, user);
-                            }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-700/50 border border-gray-600 text-gray-300 text-xs hover:bg-gray-700 transition-colors">
-                                <Volume className="w-4 h-4" />
-                                {t("listen")}
+                            <button
+                                disabled={buscandoAudio}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setBuscandoAudio(true);
+                                    playAudio(frases[index].texto_traduzido, user, false, null, false, false, () => setBuscandoAudio(false))
+                                        .finally(() => setBuscandoAudio(false));
+                                }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-700/50 border border-gray-600 text-gray-300 text-xs hover:bg-gray-700 transition-colors disabled:opacity-70">
+                                {buscandoAudio ? <Loader2 className="w-4 h-4 animate-spin" /> : <Volume className="w-4 h-4" />}
+                                {buscandoAudio ? t("generating_audio") : t("listen")}
                             </button>
                         </div>
 
@@ -648,12 +662,16 @@ export default function DigitarTexto() {
                 {diff && diff.isCorrect && (
                     <div>
                         <div className="text-center flex justify-center mt-4">
-                            <button onClick={(e) => {
-                                e.preventDefault();
-                                playAudio(frases[index].texto_traduzido, user);
-                            }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-700/50 border border-gray-600 text-gray-300 text-xs hover:bg-gray-700 transition-colors">
-                                <Volume className="w-4 h-4" />
-                                {t("listen")}
+                            <button
+                                disabled={buscandoAudio}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setBuscandoAudio(true);
+                                    playAudio(frases[index].texto_traduzido, user, false, null, false, false, () => setBuscandoAudio(false))
+                                        .finally(() => setBuscandoAudio(false));
+                                }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-700/50 border border-gray-600 text-gray-300 text-xs hover:bg-gray-700 transition-colors disabled:opacity-70">
+                                {buscandoAudio ? <Loader2 className="w-4 h-4 animate-spin" /> : <Volume className="w-4 h-4" />}
+                                {buscandoAudio ? t("generating_audio") : t("listen")}
                             </button>
                         </div>
                         {!pular && (

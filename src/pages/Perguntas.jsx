@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { Volume2, Mic, Square, RotateCcw, History, SkipForward, Send, MessageCircleQuestion, Ban, AlertCircle, Eye, EyeOff, Keyboard } from "lucide-react";
+import { Volume2, Mic, Square, RotateCcw, History, SkipForward, Send, MessageCircleQuestion, Ban, AlertCircle, Eye, EyeOff, Keyboard, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { playAudio, pararAudio } from "../utils/audioPlayer";
 import { useAuth } from "../context/AuthContext";
@@ -21,6 +21,9 @@ function corNota(nota) {
 export default function Perguntas() {
     const { t } = useTranslation();
     const [loading, setLoading] = useState(false);
+    // Indicador visual pro "Ouvir" - sem preload, o clique podia parecer
+    // travado (nada acontece por 1-2s até a voz natural terminar de gerar).
+    const [buscandoAudio, setBuscandoAudio] = useState(false);
     const [error, setError] = useState(null)
     const [audioVazio, setAudioVazio] = useState(false)
     const [perguntaEncerrada, setPerguntaEncerrada] = useState(false)
@@ -476,11 +479,16 @@ export default function Perguntas() {
 
                         <div className={`flex justify-center mt-3 ${flipped ? "hidden" : ""}`}>
                             <button
-                                onClick={() => playAudio(question, user, true)}
-                                className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors"
+                                disabled={buscandoAudio}
+                                onClick={() => {
+                                    setBuscandoAudio(true);
+                                    playAudio(question, user, true, null, false, false, () => setBuscandoAudio(false))
+                                        .finally(() => setBuscandoAudio(false));
+                                }}
+                                className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors disabled:opacity-70"
                             >
-                                <Volume2 className="w-3.5 h-3.5" />
-                                {t("listen")}
+                                {buscandoAudio ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Volume2 className="w-3.5 h-3.5" />}
+                                {buscandoAudio ? t("generating_audio") : t("listen")}
                             </button>
                         </div>
 

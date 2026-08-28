@@ -236,9 +236,11 @@ export default function ChuvaFrases() {
     }, [fase, API_URL, acessoBloqueado]);
 
     function alternarSelecao(categoria) {
-        // Categoria abaixo do mínimo de frases fica visível mas desabilitada
-        // (ver comentário em setCategorias) - clique nela não faz nada.
-        if ((categoria.total_frases ?? 0) < MIN_FRASES) return;
+        // Categoria abaixo do mínimo de frases JÁ ESTUDADAS (id_treino >= 2)
+        // fica visível mas desabilitada (ver comentário em setCategorias) -
+        // clique nela não faz nada. O jogo só usa frases estudadas, então o
+        // mínimo tem que valer sobre esse número, não o total cadastrado.
+        if ((categoria.total_treinadas ?? 0) < MIN_FRASES) return;
 
         setSelecionadas((prev) =>
             prev.includes(categoria.id)
@@ -294,7 +296,9 @@ export default function ChuvaFrases() {
             fetch(`${API_URL}/controller/frases.php`, {
                 method: "POST",
                 headers,
-                body: JSON.stringify({ action: "frases", category_id: cat.id }),
+                // Só frases já estudadas de verdade (id_treino >= 2) - o jogo
+                // não deve praticar vocabulário que o aluno nunca treinou.
+                body: JSON.stringify({ action: "frases", category_id: cat.id, somente_estudadas: true }),
             }).then((r) => r.json())
         );
 
@@ -624,7 +628,7 @@ export default function ChuvaFrases() {
                                 <p className="text-gray-400 text-sm mb-3">{t("choose_category_to_play")}</p>
                                 {categorias.map((item, index) => {
                                     const marcada = selecionadas.includes(item.id);
-                                    const faltam = MIN_FRASES - (item.total_frases ?? 0);
+                                    const faltam = MIN_FRASES - (item.total_treinadas ?? 0);
                                     const bloqueada = faltam > 0;
                                     return (
                                         <div
@@ -647,7 +651,7 @@ export default function ChuvaFrases() {
                                                 <p className="text-xs text-gray-400">
                                                     {bloqueada
                                                         ? t("missing_phrases_count", { count: faltam })
-                                                        : `${item.total_frases} ${t("words")}`}
+                                                        : `${item.total_treinadas} ${t("words")}`}
                                                 </p>
                                             </div>
                                             {!bloqueada && (

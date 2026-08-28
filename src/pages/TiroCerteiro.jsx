@@ -576,9 +576,12 @@ export default function TiroCerteiro() {
     }, [fase, API_URL, acessoBloqueado]);
 
     function alternarSelecao(categoria) {
-        // Categoria abaixo do mínimo de frases fica visível mas desabilitada
-        // (ver comentário acima) - clique nela não faz nada.
-        if ((categoria.total_frases ?? 0) < MIN_FRASES) return;
+        // Categoria abaixo do mínimo de frases JÁ ESTUDADAS (id_treino >= 2)
+        // fica visível mas desabilitada (ver comentário acima) - clique nela
+        // não faz nada. O jogo só usa frases estudadas como vocabulário de
+        // base (getFrasesDoUsuario, sem fallback), então o mínimo tem que
+        // valer sobre esse número, não o total cadastrado na categoria.
+        if ((categoria.total_treinadas ?? 0) < MIN_FRASES) return;
 
         setSelecionadas((prev) =>
             prev.includes(categoria.id)
@@ -949,7 +952,7 @@ export default function TiroCerteiro() {
                                 <p className="text-gray-400 text-sm mb-3">{t("choose_category_to_play")}</p>
                                 {categorias.map((item, index) => {
                                     const marcada = selecionadas.includes(item.id);
-                                    const faltam = MIN_FRASES - (item.total_frases ?? 0);
+                                    const faltam = MIN_FRASES - (item.total_treinadas ?? 0);
                                     const bloqueada = faltam > 0;
                                     return (
                                         <div
@@ -972,7 +975,7 @@ export default function TiroCerteiro() {
                                                 <p className="text-xs text-gray-400">
                                                     {bloqueada
                                                         ? t("missing_phrases_count", { count: faltam })
-                                                        : `${item.total_frases} ${t("words")}`}
+                                                        : `${item.total_treinadas} ${t("words")}`}
                                                 </p>
                                             </div>
                                             {!bloqueada && (

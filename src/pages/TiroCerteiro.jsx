@@ -339,9 +339,30 @@ export default function TiroCerteiro() {
     const [indiceAtual, setIndiceAtual] = useState(0);
     const [caindo, setCaindo] = useState([]);
     const [pontos, setPontos] = useState(0);
+    // Estatísticas pra tela de fim de jogo - antes só mostrava a pontuação,
+    // sem nenhum detalhe de desempenho (pedido do usuário: "muito genérica").
+    const [acertos, setAcertos] = useState(0);
+    const [erros, setErros] = useState(0);
+    // Só controle interno (nunca renderizado direto) - ref em vez de state
+    // pra não disparar re-render a cada acerto só por causa da sequência.
+    const sequenciaAtualRef = useRef(0);
+    const [melhorSequencia, setMelhorSequencia] = useState(0);
+    // Cada item: { alvo, certa } - a palavra no idioma nativo e a tradução
+    // certa, pra rever depois do jogo o que errou de verdade.
+    const [palavrasErradas, setPalavrasErradas] = useState([]);
     const [vidas, setVidas] = useState(vidasIniciais);
     const [municao, setMunicao] = useState(municaoInicial);
     const [tiro, setTiro] = useState(null);
+    // Munição é descontada na hora (usarMunicao, síncrono, logo no início de
+    // atirar()), mas o impacto/explosão do tiro só acontece depois de
+    // duracaoViagem (+ o tempo da própria animação) - sem essa trava, o
+    // último tiro da munição disparava o efeito de fim de jogo (que zera
+    // "caindo" e troca de tela) antes do jogador ver o tiro acertando o
+    // alvo. Contador (não bool) porque o jogador pode atirar de novo antes
+    // da animação do tiro anterior terminar - com bool, o primeiro tiro a
+    // resolver "destravava" o fim de jogo enquanto um tiro mais recente
+    // ainda estava em voo. Só é seguro encerrar o jogo quando chega a 0.
+    const [tirosEmVoo, setTirosEmVoo] = useState(0);
     const [recorde, setRecorde] = useState(null);
     // índice em RAIAS (0 ou 1) - a nave se move entre as 2 raias fixas com
     // os botões, mesma faixa em que os alvos caem.
@@ -501,6 +522,11 @@ export default function TiroCerteiro() {
                 setRodadas(data.rodadas);
                 setIndiceAtual(0);
                 setPontos(0);
+                setAcertos(0);
+                setErros(0);
+                sequenciaAtualRef.current = 0;
+                setMelhorSequencia(0);
+                setPalavrasErradas([]);
                 setVidas(vidasIniciais);
                 setMunicao(municaoInicial);
                 setCaindo([]);
@@ -606,8 +632,15 @@ export default function TiroCerteiro() {
         setCaindo([]);
     }
 
-    function perderVida() {
+    // palavra (opcional): { alvo, certa } da rodada que gerou o erro - vai
+    // pra lista de revisão da tela de fim de jogo.
+    function perderVida(palavra = null) {
         setVidas((prev) => Math.max(prev - 1, 0));
+        setErros((prev) => prev + 1);
+        sequenciaAtualRef.current = 0;
+        if (palavra) {
+            setPalavrasErradas((prev) => [...prev, palavra]);
+        }
     }
 
     function usarMunicao() {
@@ -618,7 +651,7 @@ export default function TiroCerteiro() {
     // de ChuvaFrases.jsx, pra não disparar setState/fetch de dentro de
     // outro setState.
     useEffect(() => {
-        if (fase === "jogando" && (vidas <= 0 || municao <= 0)) {
+        if (fase === "jogando" && (vidas <= 0 || municao <= 0) && tirosEmVoo === 0) {
             setCaindo([]);
             setFase("fimDeJogo");
 
@@ -635,7 +668,7 @@ export default function TiroCerteiro() {
                 .catch(() => { });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [vidas, municao]);
+    }, [vidas, municao, tirosEmVoo]);
 
     // Pré-carrega o áudio da tradução certa assim que o texto da rodada
     // aparece (não só quando o jogador acerta) - sem isso, o TTS só começava
@@ -707,7 +740,7 @@ export default function TiroCerteiro() {
 
     function handleFimDaQueda(item) {
         if (item.correta) {
-            perderVida();
+            perderVida(alvo ? { alvo: alvo.alvo, certa: item.texto } : null);
             avancarRodada();
         } else {
             removerCaindo(item.uid);
@@ -751,6 +784,7 @@ export default function TiroCerteiro() {
     function atirar() {
         if (municao <= 0) return;
         usarMunicao();
+        setTirosEmVoo((prev) => prev + 1);
         if (tipoTiro === "missil") {
             tocarSomMissil();
         } else {
@@ -786,7 +820,10 @@ export default function TiroCerteiro() {
         if (!alvoAtingido) {
             const primeiraOrigem = origens[0] ?? { x: 0, y: altura };
             setTiro({ top: 0, left: primeiraOrigem.x, cor: corNave, raios: montarRaios(primeiraOrigem.x, 0), particulas: [], tipoTiro });
-            setTimeout(() => setTiro(null), 500);
+            setTimeout(() => {
+                setTiro(null);
+                setTirosEmVoo((prev) => Math.max(prev - 1, 0));
+            }, 500);
             return;
         }
 
@@ -799,7 +836,10 @@ export default function TiroCerteiro() {
 
         if (!alvoAtingido.correta) {
             setTiro({ top, left, cor: corNave, raios, particulas: [], tipoTiro });
-            setTimeout(() => setTiro(null), duracaoViagem + 500);
+            setTimeout(() => {
+                setTiro(null);
+                setTirosEmVoo((prev) => Math.max(prev - 1, 0));
+            }, duracaoViagem + 500);
 
             setTimeout(() => {
                 tocarSomErro();
@@ -807,7 +847,7 @@ export default function TiroCerteiro() {
                     prev.map((i) => (i.uid === alvoAtingido.uid ? { ...i, estado: "errada", jaErrou: true } : i))
                 );
                 if (!alvoAtingido.jaErrou) {
-                    perderVida();
+                    perderVida(alvo ? { alvo: alvo.alvo, certa: alvo.certa } : null);
                 }
                 setTimeout(() => {
                     setCaindo((prev) =>
@@ -844,7 +884,10 @@ export default function TiroCerteiro() {
         // Precisa cobrir: viagem do tiro (até 260ms no míssil) + atraso
         // escalonado das partículas (até 100ms) + duração da explosão
         // (750ms) - com folga, senão a limpeza corta a explosão no meio.
-        setTimeout(() => setTiro(null), duracaoViagem + 950);
+        setTimeout(() => {
+            setTiro(null);
+            setTirosEmVoo((prev) => Math.max(prev - 1, 0));
+        }, duracaoViagem + 950);
 
         setTimeout(() => {
             tocarSomAcerto();
@@ -855,6 +898,9 @@ export default function TiroCerteiro() {
 
             removerCaindo(alvoAtingido.uid);
             setPontos((prev) => prev + 10 + nivelAtual(prev));
+            setAcertos((prev) => prev + 1);
+            sequenciaAtualRef.current += 1;
+            setMelhorSequencia((melhor) => Math.max(melhor, sequenciaAtualRef.current));
             avancarRodada();
         }, duracaoViagem);
     }
@@ -1146,17 +1192,59 @@ export default function TiroCerteiro() {
             )}
 
             {fase === "fimDeJogo" && (
-                <div className="relative flex-1 flex flex-col items-center justify-center text-center">
-                    <div className="w-16 h-16 rounded-full bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center mb-5">
+                <div className="relative flex-1 flex flex-col items-center text-center overflow-y-auto py-6 px-1">
+                    <div className="w-16 h-16 rounded-full bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center mb-4 shrink-0">
                         <Trophy className="w-8 h-8 text-cyan-300" />
                     </div>
                     <h1 className="text-xl font-semibold text-white mb-2">{t("game_over_title")}</h1>
                     <p className="text-gray-300 mb-1">{t("score")}: {pontos}</p>
                     {recorde !== null && (
-                        <p className="text-gray-400 text-sm mb-8">{t("best_score")}: {recorde}</p>
+                        <p className="text-gray-400 text-sm mb-4">{t("best_score")}: {recorde}</p>
                     )}
 
-                    <div className="flex flex-col gap-3 w-full max-w-xs">
+                    <div className="grid grid-cols-2 gap-2 w-full max-w-xs mb-4">
+                        <div className="rounded-xl border border-gray-700 bg-gray-800/40 p-3 flex flex-col items-center gap-1">
+                            <Check className="w-4 h-4 text-emerald-400" />
+                            <span className="text-lg font-semibold text-white leading-none">{acertos}</span>
+                            <span className="text-[11px] text-gray-400 leading-none">{t("hits_label")}</span>
+                        </div>
+                        <div className="rounded-xl border border-gray-700 bg-gray-800/40 p-3 flex flex-col items-center gap-1">
+                            <X className="w-4 h-4 text-red-400" />
+                            <span className="text-lg font-semibold text-white leading-none">{erros}</span>
+                            <span className="text-[11px] text-gray-400 leading-none">{t("misses_label")}</span>
+                        </div>
+                        <div className="rounded-xl border border-gray-700 bg-gray-800/40 p-3 flex flex-col items-center gap-1">
+                            <Target className="w-4 h-4 text-cyan-300" />
+                            <span className="text-lg font-semibold text-white leading-none">
+                                {(acertos + erros) > 0 ? Math.round((acertos / (acertos + erros)) * 100) : 0}%
+                            </span>
+                            <span className="text-[11px] text-gray-400 leading-none">{t("accuracy_rate")}</span>
+                        </div>
+                        <div className="rounded-xl border border-gray-700 bg-gray-800/40 p-3 flex flex-col items-center gap-1">
+                            <Flame className="w-4 h-4 text-orange-400" />
+                            <span className="text-lg font-semibold text-white leading-none">{melhorSequencia}</span>
+                            <span className="text-[11px] text-gray-400 leading-none">{t("best_answer_streak")}</span>
+                        </div>
+                    </div>
+
+                    {palavrasErradas.length > 0 && (
+                        <div className="w-full max-w-xs mb-4 text-left">
+                            <p className="text-gray-400 text-xs uppercase tracking-wide mb-2">{t("words_to_review_label")}</p>
+                            <div className="max-h-32 overflow-y-auto flex flex-col gap-1.5 pr-1">
+                                {palavrasErradas.map((p, i) => (
+                                    <div
+                                        key={i}
+                                        className="rounded-lg border border-red-400/20 bg-red-400/5 px-3 py-1.5 text-sm text-white flex items-center justify-between gap-2"
+                                    >
+                                        <span className="truncate">{p.alvo}</span>
+                                        <span className="text-gray-400 text-xs shrink-0">{p.certa}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="flex flex-col gap-3 w-full max-w-xs mt-auto shrink-0">
                         <button
                             onClick={() => iniciarPartida(categoriasEscolhidas)}
                             className="w-full px-6 py-3 rounded-full bg-gradient-to-r from-fuchsia-500 to-cyan-400 hover:opacity-90 text-white font-medium transition-opacity"

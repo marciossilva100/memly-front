@@ -379,7 +379,18 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
             const audio = new Audio(resultado.url);
             currentAudio = audio;
 
-            audio.playbackRate = velocidadeNormal ? 1.0 : 0.9;
+            // Antes ficava travado em 0.9x, ignorando a preferência salva em
+            // Configurações (que fica logo abaixo do seletor de voz natural -
+            // ou seja, foi pensada pra controlar exatamente essa voz) - só o
+            // ramo de voz padrão (abaixo) lia zaldemy_velocidade_tts. Usuário
+            // reportou que mudar a velocidade "não parece surtir efeito no
+            // treino de ia" (Perguntas/Frase do Dia/Tradução Reversa, que
+            // tocam voz natural) - unificado com o mesmo cálculo do ramo de
+            // voz padrão, pra "1.00x" significar o mesmo ritmo nos dois casos.
+            const velocidadePreferidaNatural = parseFloat(localStorage.getItem('zaldemy_velocidade_tts'));
+            audio.playbackRate = velocidadeNormal
+                ? 1.0
+                : (Number.isFinite(velocidadePreferidaNatural) ? velocidadePreferidaNatural : 1.0);
             onAudioIniciado?.();
 
             // Espera o áudio terminar de verdade antes de resolver - quem

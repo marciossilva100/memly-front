@@ -581,6 +581,8 @@
   "misses_label": "실수",
   "words_to_review_label": "복습할 단어",
   "game_over_title": "게임 오버!",
+  "pool_mastered_title": "모두 마스터했습니다!",
+  "pool_mastered_subtitle": "이 카테고리에서 학습한 모든 단어를 맞혔습니다. 더 많은 문장을 연습해서 더 많은 콘텐츠를 잠금 해제하세요.",
   "play": "플레이",
   "play_again": "다시 플레이",
   "audio_speed_hint": "설정에서 발음 속도를 조절할 수 있어요",

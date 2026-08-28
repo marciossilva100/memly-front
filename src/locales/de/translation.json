@@ -581,6 +581,8 @@
   "misses_label": "Fehler",
   "words_to_review_label": "Wörter zum Wiederholen",
   "game_over_title": "Spiel vorbei!",
+  "pool_mastered_title": "Du hast alles gemeistert!",
+  "pool_mastered_subtitle": "Du hast alle geübten Wörter dieser Kategorien richtig beantwortet. Übe mehr Sätze, um weitere Inhalte freizuschalten.",
   "play": "Spielen",
   "play_again": "Nochmal spielen",
   "audio_speed_hint": "Du kannst die Aussprachegeschwindigkeit in den Einstellungen anpassen",

@@ -581,6 +581,8 @@
   "misses_label": "Iskalar",
   "words_to_review_label": "Tekrar edilecek kelimeler",
   "game_over_title": "Oyun bitti!",
+  "pool_mastered_title": "Her şeyde ustalaştın!",
+  "pool_mastered_subtitle": "Bu kategorilerdeki çalıştığın tüm kelimeleri doğru bildin. Daha fazla içerik açmak için daha fazla cümle çalış.",
   "play": "Oyna",
   "play_again": "Tekrar oyna",
   "audio_speed_hint": "Telaffuz hızını Ayarlar'dan değiştirebilirsin",

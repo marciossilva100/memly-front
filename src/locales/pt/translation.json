@@ -583,6 +583,8 @@
   "misses_label": "Erros",
   "words_to_review_label": "Palavras pra revisar",
   "game_over_title": "Fim de jogo!",
+  "pool_mastered_title": "Você dominou tudo!",
+  "pool_mastered_subtitle": "Você acertou todas as palavras estudadas dessas categorias. Estude mais frases pra desbloquear mais conteúdo.",
   "play": "Jogar",
   "play_again": "Jogar de novo",
   "audio_speed_hint": "Você pode ajustar a velocidade da pronúncia em Configurações",

@@ -582,6 +582,8 @@
   "misses_label": "Fallos",
   "words_to_review_label": "Palabras para repasar",
   "game_over_title": "¡Fin del juego!",
+  "pool_mastered_title": "¡Lo dominaste todo!",
+  "pool_mastered_subtitle": "Acertaste todas las palabras estudiadas de estas categorías. Practica más frases para desbloquear más contenido.",
   "play": "Jugar",
   "play_again": "Jugar de nuevo",
   "audio_speed_hint": "Puedes ajustar la velocidad de la pronunciación en Configuración",

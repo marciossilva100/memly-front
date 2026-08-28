@@ -581,6 +581,8 @@
   "misses_label": "ミス",
   "words_to_review_label": "復習する単語",
   "game_over_title": "ゲームオーバー！",
+  "pool_mastered_title": "すべてマスターしました！",
+  "pool_mastered_subtitle": "このカテゴリーで学習した単語をすべて正解しました。もっとフレーズを練習して新しいコンテンツを解放しましょう。",
   "play": "プレイ",
   "play_again": "もう一度プレイ",
   "audio_speed_hint": "設定で発音の速度を調整できます",

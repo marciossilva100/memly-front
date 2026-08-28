@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { playAudio, pararAudio } from "../utils/audioPlayer";
 import { tocarSomAcerto } from "../utils/somJogo";
-import { Heart, Trophy, Loader2, CloudRain, Check, Volume2, Settings, X } from "lucide-react";
+import { Heart, Trophy, Loader2, CloudRain, Check, Volume2, Settings, X, Target, Flame, Sparkles } from "lucide-react";
 import PremiumModal from "../components/PremiumModal";
 import LimiteDiarioModal from "../components/LimiteDiarioModal";
 
@@ -104,7 +104,7 @@ export default function ChuvaFrases() {
     const API_URL = import.meta.env.VITE_API_URL;
     const vidasIniciais = user?.plano === 1 ? VIDAS_INICIAIS.premium : VIDAS_INICIAIS.padrao;
 
-    const [fase, setFase] = useState("escolher"); // escolher | jogando | fimDeJogo
+    const [fase, setFase] = useState("escolher"); // escolher | jogando | fimDeJogo | poolDominado
 
     const [categorias, setCategorias] = useState([]);
     const [loadingCategorias, setLoadingCategorias] = useState(true);
@@ -120,6 +120,15 @@ export default function ChuvaFrases() {
     const [alvo, setAlvo] = useState(null);
     const [caindo, setCaindo] = useState([]);
     const [pontos, setPontos] = useState(0);
+    // Estatísticas pra tela de fim de jogo/pool dominado - mesmo padrão já
+    // usado em TiroCerteiro.jsx (usuário pediu o mesmo detalhamento aqui).
+    const [acertos, setAcertos] = useState(0);
+    const [erros, setErros] = useState(0);
+    const sequenciaAtualRef = useRef(0);
+    const [melhorSequencia, setMelhorSequencia] = useState(0);
+    // Cada item: { alvo, certa } - a palavra no idioma nativo e a tradução
+    // certa, pra rever depois do jogo o que errou de verdade.
+    const [palavrasErradas, setPalavrasErradas] = useState([]);
     const [vidas, setVidas] = useState(vidasIniciais);
     const [explodindo, setExplodindo] = useState(null);
 
@@ -161,6 +170,13 @@ export default function ChuvaFrases() {
     // ids de frases já usadas como alvo nesse ciclo - só controla a ordem de
     // sorteio (não aparece na tela), então fica num ref em vez de estado.
     const usadasRef = useRef([]);
+    // ids de frases já ACERTADAS nesta partida - diferente de usadasRef
+    // (que só evita repetir de imediato, mas volta a sortear depois de um
+    // ciclo completo), essas nunca mais voltam a cair, nem depois de um
+    // ciclo - pedido explícito do usuário (palavra já dominada não deveria
+    // reaparecer). Quando o pool inteiro fica sem nenhuma não-acertada, o
+    // jogo encerra com a tela de "dominou tudo" (ver useEffect abaixo).
+    const acertadasRef = useRef([]);
 
     // Para o áudio em reprodução ao sair da tela (troca de rota) - sem isso,
     // o áudio seguia tocando mesmo depois do usuário já ter navegado embora.
@@ -327,8 +343,14 @@ export default function ChuvaFrases() {
                 setFrases(listaFrases);
                 setRecorde(recordeData?.recorde ?? null);
                 setPontos(0);
+                setAcertos(0);
+                setErros(0);
+                sequenciaAtualRef.current = 0;
+                setMelhorSequencia(0);
+                setPalavrasErradas([]);
                 setVidas(vidasIniciais);
                 usadasRef.current = [];
+                acertadasRef.current = [];
                 setCaindo([]);
                 setAlvo(escolherProximoAlvo(listaFrases, []));
             })
@@ -336,18 +358,43 @@ export default function ChuvaFrases() {
             .finally(() => setLoadingFrases(false));
     }
 
-    function avancarAlvo() {
+    // foiAcerto: true quando o alvo atual acabou de ser identificado
+    // corretamente (não quando só "encerrou" por cair sem ser tocado) -
+    // marca ele como definitivamente fora do pool de sorteio daqui pra
+    // frente (ver acertadasRef acima).
+    function avancarAlvo(foiAcerto = false) {
         setAlvo((alvoAtual) => {
+            if (foiAcerto && alvoAtual) {
+                acertadasRef.current = [...acertadasRef.current, alvoAtual.id];
+            }
+
+            const poolRestante = frases.filter((f) => !acertadasRef.current.includes(f.id));
+
+            if (poolRestante.length === 0) {
+                return null;
+            }
+
             const novasUsadas = alvoAtual ? [...usadasRef.current, alvoAtual.id] : usadasRef.current;
-            const baseParaEscolha = novasUsadas.length >= frases.length ? [] : novasUsadas;
+            // usadasRef pode conter ids que acabaram de sair do pool
+            // (recém-acertados) - filtra antes de decidir se já deu a volta
+            // completa no que resta, senão o ciclo nunca "fecha" de verdade.
+            const usadasNoPoolRestante = novasUsadas.filter((id) => poolRestante.some((f) => f.id === id));
+            const baseParaEscolha = usadasNoPoolRestante.length >= poolRestante.length ? [] : usadasNoPoolRestante;
             usadasRef.current = baseParaEscolha;
-            return escolherProximoAlvo(frases, baseParaEscolha);
+            return escolherProximoAlvo(poolRestante, baseParaEscolha);
         });
         setCaindo([]);
     }
 
-    function perderVida() {
+    // palavra (opcional): { alvo, certa } do alvo atual que gerou o erro -
+    // vai pra lista de revisão da tela de fim de jogo.
+    function perderVida(palavra = null) {
         setVidas((prev) => Math.max(prev - 1, 0));
+        setErros((prev) => prev + 1);
+        sequenciaAtualRef.current = 0;
+        if (palavra) {
+            setPalavrasErradas((prev) => [...prev, palavra]);
+        }
     }
 
     // fim de jogo quando as vidas zeram - via effect (não dentro do updater
@@ -378,6 +425,35 @@ export default function ChuvaFrases() {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [vidas]);
+
+    // "Dominou tudo" - avancarAlvo() põe alvo em null quando não sobra mais
+    // nenhuma frase não-acertada no pool selecionado. Mesmo padrão de effect
+    // do fim de jogo por vidas zeradas (nunca dentro do updater de setAlvo).
+    useEffect(() => {
+        if (fase === "jogando" && alvo === null) {
+            setCaindo([]);
+            setFase("poolDominado");
+
+            if (categoriasEscolhidas.length !== 1) return;
+
+            fetch(`${API_URL}/controller/jogoChuvaFrases.php`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token"),
+                },
+                body: JSON.stringify({
+                    action: "salvar_pontuacao",
+                    category_id: categoriasEscolhidas[0].id,
+                    pontuacao: pontos,
+                }),
+            })
+                .then((res) => res.json())
+                .then((data) => setRecorde((prev) => data?.recorde ?? prev))
+                .catch(() => { });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [alvo]);
 
     // Sempre em velocidade normal, ignorando a preferência de velocidade
     // salva em Configurações (é uma dica, não o estudo em si).
@@ -496,7 +572,7 @@ export default function ChuvaFrases() {
 
     function handleFimDaQueda(item) {
         if (item.correta) {
-            perderVida();
+            perderVida(alvo ? { alvo: alvo.texto_nativo, certa: alvo.texto_traduzido } : null);
             avancarAlvo();
         } else {
             removerCaindo(item.uid);
@@ -509,7 +585,7 @@ export default function ChuvaFrases() {
         );
 
         if (!item.jaErrou) {
-            perderVida();
+            perderVida(alvo ? { alvo: alvo.texto_nativo, certa: alvo.texto_traduzido } : null);
         }
 
         setTimeout(() => {
@@ -548,7 +624,10 @@ export default function ChuvaFrases() {
 
         removerCaindo(item.uid);
         setPontos((prev) => prev + 10 + nivelAtual(prev));
-        avancarAlvo();
+        setAcertos((prev) => prev + 1);
+        sequenciaAtualRef.current += 1;
+        setMelhorSequencia((melhor) => Math.max(melhor, sequenciaAtualRef.current));
+        avancarAlvo(true);
     }
 
     function jogarDeNovo() {
@@ -759,18 +838,69 @@ export default function ChuvaFrases() {
                 </div>
             )}
 
-            {fase === "fimDeJogo" && (
-                <div className="flex-1 flex flex-col items-center justify-center text-center">
-                    <div className="w-16 h-16 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 flex items-center justify-center mb-5">
-                        <Trophy className="w-8 h-8 text-[#4cb8c4]" />
+            {(fase === "fimDeJogo" || fase === "poolDominado") && (
+                <div className="relative flex-1 flex flex-col items-center text-center overflow-y-auto py-6 px-1">
+                    <div className="w-16 h-16 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 flex items-center justify-center mb-4 shrink-0">
+                        {fase === "poolDominado" ? (
+                            <Sparkles className="w-8 h-8 text-[#4cb8c4]" />
+                        ) : (
+                            <Trophy className="w-8 h-8 text-[#4cb8c4]" />
+                        )}
                     </div>
-                    <h1 className="text-xl font-semibold text-white mb-2">{t("game_over_title")}</h1>
+                    <h1 className="text-xl font-semibold text-white mb-2">
+                        {fase === "poolDominado" ? t("pool_mastered_title") : t("game_over_title")}
+                    </h1>
+                    {fase === "poolDominado" && (
+                        <p className="text-gray-400 text-sm mb-3 max-w-xs">{t("pool_mastered_subtitle")}</p>
+                    )}
                     <p className="text-gray-300 mb-1">{t("score")}: {pontos}</p>
                     {recorde !== null && (
-                        <p className="text-gray-400 text-sm mb-8">{t("best_score")}: {recorde}</p>
+                        <p className="text-gray-400 text-sm mb-4">{t("best_score")}: {recorde}</p>
                     )}
 
-                    <div className="flex flex-col gap-3 w-full max-w-xs">
+                    <div className="grid grid-cols-2 gap-2 w-full max-w-xs mb-4">
+                        <div className="rounded-xl border border-gray-700 bg-gray-800/40 p-3 flex flex-col items-center gap-1">
+                            <Check className="w-4 h-4 text-emerald-400" />
+                            <span className="text-lg font-semibold text-white leading-none">{acertos}</span>
+                            <span className="text-[11px] text-gray-400 leading-none">{t("hits_label")}</span>
+                        </div>
+                        <div className="rounded-xl border border-gray-700 bg-gray-800/40 p-3 flex flex-col items-center gap-1">
+                            <X className="w-4 h-4 text-red-400" />
+                            <span className="text-lg font-semibold text-white leading-none">{erros}</span>
+                            <span className="text-[11px] text-gray-400 leading-none">{t("misses_label")}</span>
+                        </div>
+                        <div className="rounded-xl border border-gray-700 bg-gray-800/40 p-3 flex flex-col items-center gap-1">
+                            <Target className="w-4 h-4 text-[#4cb8c4]" />
+                            <span className="text-lg font-semibold text-white leading-none">
+                                {(acertos + erros) > 0 ? Math.round((acertos / (acertos + erros)) * 100) : 0}%
+                            </span>
+                            <span className="text-[11px] text-gray-400 leading-none">{t("accuracy_rate")}</span>
+                        </div>
+                        <div className="rounded-xl border border-gray-700 bg-gray-800/40 p-3 flex flex-col items-center gap-1">
+                            <Flame className="w-4 h-4 text-orange-400" />
+                            <span className="text-lg font-semibold text-white leading-none">{melhorSequencia}</span>
+                            <span className="text-[11px] text-gray-400 leading-none">{t("best_answer_streak")}</span>
+                        </div>
+                    </div>
+
+                    {palavrasErradas.length > 0 && (
+                        <div className="w-full max-w-xs mb-4 text-left">
+                            <p className="text-gray-400 text-xs uppercase tracking-wide mb-2">{t("words_to_review_label")}</p>
+                            <div className="max-h-32 overflow-y-auto flex flex-col gap-1.5 pr-1">
+                                {palavrasErradas.map((p, i) => (
+                                    <div
+                                        key={i}
+                                        className="rounded-lg border border-red-400/20 bg-red-400/5 px-3 py-1.5 text-sm text-white flex items-center justify-between gap-2"
+                                    >
+                                        <span className="truncate">{p.alvo}</span>
+                                        <span className="text-gray-400 text-xs shrink-0">{p.certa}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="flex flex-col gap-3 w-full max-w-xs mt-auto shrink-0">
                         <button
                             onClick={jogarDeNovo}
                             className="w-full px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors"

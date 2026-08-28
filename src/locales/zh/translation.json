@@ -581,6 +581,8 @@
   "misses_label": "失误",
   "words_to_review_label": "需要复习的单词",
   "game_over_title": "游戏结束！",
+  "pool_mastered_title": "你已全部掌握！",
+  "pool_mastered_subtitle": "你答对了这些分类中所有已学的单词。多练习一些句子来解锁更多内容吧。",
   "play": "开始游戏",
   "play_again": "再玩一次",
   "audio_speed_hint": "你可以在设置中调整发音速度",

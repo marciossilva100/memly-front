@@ -581,6 +581,8 @@
   "misses_label": "Errori",
   "words_to_review_label": "Parole da rivedere",
   "game_over_title": "Fine del gioco!",
+  "pool_mastered_title": "Hai dominato tutto!",
+  "pool_mastered_subtitle": "Hai indovinato tutte le parole studiate di queste categorie. Esercitati con altre frasi per sbloccare più contenuti.",
   "play": "Gioca",
   "play_again": "Gioca ancora",
   "audio_speed_hint": "Puoi regolare la velocità della pronuncia in Impostazioni",

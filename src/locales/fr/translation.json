@@ -581,6 +581,8 @@
   "misses_label": "Erreurs",
   "words_to_review_label": "Mots à revoir",
   "game_over_title": "Partie terminée !",
+  "pool_mastered_title": "Vous avez tout maîtrisé !",
+  "pool_mastered_subtitle": "Vous avez réussi tous les mots étudiés de ces catégories. Entraînez-vous sur plus de phrases pour débloquer plus de contenu.",
   "play": "Jouer",
   "play_again": "Rejouer",
   "audio_speed_hint": "Vous pouvez ajuster la vitesse de la prononciation dans Paramètres",

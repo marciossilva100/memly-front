@@ -590,6 +590,7 @@
   "premium_reason_traducao_reversa_ia": "AI 역방향 번역은 프리미엄 플랜 전용 기능입니다.",
   "suggested_translation_label": "추천 번역",
   "your_translation_label": "회원님의 번역",
+  "original_text_label": "원문",
   "text_counter": "텍스트 {{numero}}/{{total}}",
   "history_all_dates_label": "전체 기록",
   "history_unanswered_label": "미응답",

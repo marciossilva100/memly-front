@@ -590,6 +590,7 @@
   "premium_reason_traducao_reversa_ia": "Umgekehrte Übersetzung per KI ist ein exklusives Feature des Premium-Plans.",
   "suggested_translation_label": "Vorgeschlagene Übersetzung",
   "your_translation_label": "Deine Übersetzung",
+  "original_text_label": "Originaltext",
   "text_counter": "Text {{numero}} von {{total}}",
   "history_all_dates_label": "Alle Einträge",
   "history_unanswered_label": "Nicht beantwortet",

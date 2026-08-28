@@ -590,6 +590,7 @@
   "premium_reason_traducao_reversa_ia": "الترجمة العكسية بالذكاء الاصطناعي ميزة حصرية للخطة المميزة.",
   "suggested_translation_label": "الترجمة المقترحة",
   "your_translation_label": "ترجمتك",
+  "original_text_label": "النص الأصلي",
   "text_counter": "النص {{numero}} من {{total}}",
   "history_all_dates_label": "جميع السجلات",
   "history_unanswered_label": "لم تتم الإجابة",

@@ -590,6 +590,7 @@
   "premium_reason_traducao_reversa_ia": "AIによる逆翻訳はプレミアムプラン限定の機能です。",
   "suggested_translation_label": "おすすめの翻訳",
   "your_translation_label": "あなたの翻訳",
+  "original_text_label": "原文",
   "text_counter": "テキスト {{numero}}/{{total}}",
   "history_all_dates_label": "すべての記録",
   "history_unanswered_label": "未回答",

@@ -590,6 +590,7 @@
   "premium_reason_traducao_reversa_ia": "Обратный перевод с ИИ — эксклюзивная функция плана Premium.",
   "suggested_translation_label": "Предлагаемый перевод",
   "your_translation_label": "Ваш перевод",
+  "original_text_label": "Исходный текст",
   "text_counter": "Текст {{numero}} из {{total}}",
   "history_all_dates_label": "Все записи",
   "history_unanswered_label": "Без ответа",

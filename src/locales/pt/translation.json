@@ -592,6 +592,7 @@
   "premium_reason_traducao_reversa_ia": "Tradução Reversa por IA é um recurso exclusivo do plano Premium.",
   "suggested_translation_label": "Tradução sugerida",
   "your_translation_label": "Sua tradução",
+  "original_text_label": "Texto original",
   "text_counter": "Texto {{numero}} de {{total}}",
   "history_all_dates_label": "Todos os registros",
   "history_unanswered_label": "Não respondido",

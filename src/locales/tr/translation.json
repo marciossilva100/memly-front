@@ -590,6 +590,7 @@
   "premium_reason_traducao_reversa_ia": "Yapay Zeka ile Ters Çeviri, yalnızca Premium plana özel bir özelliktir.",
   "suggested_translation_label": "Önerilen çeviri",
   "your_translation_label": "Sizin çeviriniz",
+  "original_text_label": "Orijinal metin",
   "text_counter": "Metin {{numero}}/{{total}}",
   "history_all_dates_label": "Tüm kayıtlar",
   "history_unanswered_label": "Yanıtsız",

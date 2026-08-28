@@ -571,6 +571,11 @@ export default function TraducaoReversa() {
                         </div>
 
                         <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4">
+                            <p className="text-gray-500 text-xs mb-1 uppercase tracking-wide">{t("original_text_label")}</p>
+                            <p className="text-white leading-relaxed">{textoNativo}</p>
+                        </div>
+
+                        <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4">
                             <p className="text-gray-500 text-xs mb-1 uppercase tracking-wide">{t("your_translation_label")}</p>
                             <p className="text-white italic">"{resultado.resposta}"</p>
                         </div>
@@ -600,12 +605,18 @@ export default function TraducaoReversa() {
             }
 
             {resultado && resultado.pode_tentar_novamente &&
-                <div className="fixed bottom-0 left-0 w-full px-6 py-4 text-center bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent">
+                <div className="fixed bottom-0 left-0 w-full px-6 py-4 flex gap-3 bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent">
                     <button
                         onClick={tentarNovamente}
-                        className="px-6 py-3 w-full rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium flex items-center justify-center gap-2 transition-colors">
+                        className="px-6 py-3 flex-1 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium flex items-center justify-center gap-2 transition-colors">
                         <RotateCcw className="w-4 h-4" />
                         {t("try_again")}
+                    </button>
+                    <button
+                        onClick={proximoTexto}
+                        className="px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white flex items-center justify-center gap-2 hover:bg-gray-700/50 transition-colors">
+                        <SkipForward className="w-4 h-4" />
+                        {t("next_question")}
                     </button>
                 </div>
             }

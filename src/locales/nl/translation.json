@@ -590,6 +590,7 @@
   "premium_reason_traducao_reversa_ia": "Omgekeerde Vertaling met AI is een exclusieve functie van het Premium-abonnement.",
   "suggested_translation_label": "Voorgestelde vertaling",
   "your_translation_label": "Jouw vertaling",
+  "original_text_label": "Oorspronkelijke tekst",
   "text_counter": "Tekst {{numero}} van {{total}}",
   "history_all_dates_label": "Alle records",
   "history_unanswered_label": "Niet beantwoord",

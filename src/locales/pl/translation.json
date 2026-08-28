@@ -590,6 +590,7 @@
   "premium_reason_traducao_reversa_ia": "Tłumaczenie Odwrotne z AI to funkcja dostępna wyłącznie w planie Premium.",
   "suggested_translation_label": "Sugerowane tłumaczenie",
   "your_translation_label": "Twoje tłumaczenie",
+  "original_text_label": "Tekst oryginalny",
   "text_counter": "Tekst {{numero}} z {{total}}",
   "history_all_dates_label": "Wszystkie wpisy",
   "history_unanswered_label": "Bez odpowiedzi",

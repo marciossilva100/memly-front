@@ -17,6 +17,7 @@ import ko from "./locales/ko/translation.json";
 import nl from "./locales/nl/translation.json";
 import tr from "./locales/tr/translation.json";
 import pl from "./locales/pl/translation.json";
+import lt from "./locales/lt/translation.json";
 
 i18n
   .use(LanguageDetector)
@@ -67,6 +68,9 @@ i18n
       },
       pl: {
         translation: pl
+      },
+      lt: {
+        translation: lt
       }
     },
 

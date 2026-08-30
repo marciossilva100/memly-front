@@ -60,6 +60,9 @@ const BLOCKED_WORDS = {
     hi: [
         "चूतिया", "गांडू", "रंडी", "कमीना", "भोसड़ी", "हरामी", "हरामज़ादा",
     ],
+    lt: [
+        "bybis", "kalė", "kurva", "pyzdec", "šikna", "šūdas",
+    ],
 };
 
 // Idiomas sem separação por espaço entre palavras — busca por substring direta.
@@ -73,9 +76,10 @@ const DIACRITIC_MAP = {
     ú: "u", ù: "u", û: "u", ü: "u",
     ç: "c", ñ: "n", ş: "s", ğ: "g", ı: "i", ő: "o", ű: "u",
     ł: "l", ż: "z", ź: "z", ą: "a", ę: "e", ć: "c", ń: "n", š: "s", č: "c", ž: "z",
+    ė: "e", į: "i", ų: "u", ū: "u",
 };
 
-const DIACRITIC_PATTERN = /[áàâãäåéèêëíìîïóòôõöúùûüçñşğıőűłżźąęćńšč]/gi;
+const DIACRITIC_PATTERN = /[áàâãäåéèêëíìîïóòôõöúùûüçñşğıőűłżźąęćńščėįųū]/gi;
 
 function stripDiacritics(text) {
     return text.replace(DIACRITIC_PATTERN, (ch) => DIACRITIC_MAP[ch.toLowerCase()] ?? ch);

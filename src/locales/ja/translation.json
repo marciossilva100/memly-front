@@ -91,6 +91,7 @@
   "enter_text_or_word": "テキストまたは単語を入力してください",
   "enter_translation": "翻訳を入力してください",
   "word_or_phrase_pt": "ポルトガル語の単語またはフレーズ",
+  "word_or_phrase_in": "{{idioma}}の単語またはフレーズ",
   "example_phrase_placeholder": "勉強するのが大好きです",
   "translation": "翻訳",
   "suggest_translation": "翻訳を提案",

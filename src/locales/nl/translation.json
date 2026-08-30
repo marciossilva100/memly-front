@@ -91,6 +91,7 @@
   "enter_text_or_word": "Voer de tekst of het woord in",
   "enter_translation": "Voer de vertaling in",
   "word_or_phrase_pt": "Woord of zin in het Portugees",
+  "word_or_phrase_in": "Woord of zin in het {{idioma}}",
   "example_phrase_placeholder": "Ik hou van studeren",
   "translation": "Vertaling",
   "suggest_translation": "Vertaling voorstellen",

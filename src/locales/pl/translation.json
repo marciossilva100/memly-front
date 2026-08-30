@@ -91,6 +91,7 @@
   "enter_text_or_word": "Wpisz tekst lub słowo",
   "enter_translation": "Wpisz tłumaczenie",
   "word_or_phrase_pt": "Słowo lub zwrot po portugalsku",
+  "word_or_phrase_in": "Słowo lub zwrot w języku {{idioma}}",
   "example_phrase_placeholder": "Uwielbiam się uczyć",
   "translation": "Tłumaczenie",
   "suggest_translation": "Zaproponuj tłumaczenie",

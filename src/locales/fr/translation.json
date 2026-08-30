@@ -91,6 +91,7 @@
   "enter_text_or_word": "Saisissez le texte ou le mot",
   "enter_translation": "Saisissez la traduction",
   "word_or_phrase_pt": "Mot ou phrase en portugais",
+  "word_or_phrase_in": "Mot ou phrase en {{idioma}}",
   "example_phrase_placeholder": "J'adore étudier",
   "translation": "Traduction",
   "suggest_translation": "Suggérer une traduction",

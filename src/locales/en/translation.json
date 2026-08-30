@@ -92,6 +92,7 @@
   "enter_text_or_word": "Enter the text or word",
   "enter_translation": "Enter the translation",
   "word_or_phrase_pt": "Word or phrase in Portuguese",
+  "word_or_phrase_in": "Word or phrase in {{idioma}}",
   "example_phrase_placeholder": "I love studying",
   "translation": "Translation",
   "suggest_translation": "Suggest translation",

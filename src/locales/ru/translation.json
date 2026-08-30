@@ -91,6 +91,7 @@
   "enter_text_or_word": "Введите текст или слово",
   "enter_translation": "Введите перевод",
   "word_or_phrase_pt": "Слово или фраза на португальском",
+  "word_or_phrase_in": "Слово или фраза на {{idioma}}",
   "example_phrase_placeholder": "Я обожаю учиться",
   "translation": "Перевод",
   "suggest_translation": "Предложить перевод",

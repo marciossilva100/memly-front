@@ -92,6 +92,7 @@
   "enter_text_or_word": "Digite o texto ou palavra",
   "enter_translation": "Digite a tradução",
   "word_or_phrase_pt": "Palavra ou frase em português",
+  "word_or_phrase_in": "Palavra ou frase em {{idioma}}",
   "example_phrase_placeholder": "Eu adoro estudar",
   "translation": "Tradução",
   "suggest_translation": "Sugerir tradução",

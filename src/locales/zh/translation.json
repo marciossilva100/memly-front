@@ -91,6 +91,7 @@
   "enter_text_or_word": "输入文本或单词",
   "enter_translation": "输入翻译",
   "word_or_phrase_pt": "葡萄牙语单词或短语",
+  "word_or_phrase_in": "{{idioma}}单词或短语",
   "example_phrase_placeholder": "我喜欢学习",
   "translation": "翻译",
   "suggest_translation": "建议翻译",

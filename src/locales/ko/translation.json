@@ -91,6 +91,7 @@
   "enter_text_or_word": "텍스트나 단어를 입력하세요",
   "enter_translation": "번역을 입력하세요",
   "word_or_phrase_pt": "포르투갈어 단어 또는 표현",
+  "word_or_phrase_in": "{{idioma}} 단어 또는 표현",
   "example_phrase_placeholder": "저는 공부하는 것을 좋아해요",
   "translation": "번역",
   "suggest_translation": "번역 제안하기",

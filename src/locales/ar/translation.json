@@ -91,6 +91,7 @@
   "enter_text_or_word": "أدخل النص أو الكلمة",
   "enter_translation": "أدخل الترجمة",
   "word_or_phrase_pt": "كلمة أو عبارة بالبرتغالية",
+  "word_or_phrase_in": "كلمة أو عبارة باللغة {{idioma}}",
   "example_phrase_placeholder": "أنا أحب الدراسة",
   "translation": "الترجمة",
   "suggest_translation": "اقتراح ترجمة",

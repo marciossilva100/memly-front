@@ -91,6 +91,7 @@
   "enter_text_or_word": "Text oder Wort eingeben",
   "enter_translation": "Übersetzung eingeben",
   "word_or_phrase_pt": "Wort oder Satz auf Portugiesisch",
+  "word_or_phrase_in": "Wort oder Satz auf {{idioma}}",
   "example_phrase_placeholder": "Ich liebe es zu lernen",
   "translation": "Übersetzung",
   "suggest_translation": "Übersetzung vorschlagen",

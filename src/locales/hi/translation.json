@@ -91,6 +91,7 @@
   "enter_text_or_word": "टेक्स्ट या शब्द दर्ज करें",
   "enter_translation": "अनुवाद दर्ज करें",
   "word_or_phrase_pt": "पुर्तगाली में शब्द या वाक्यांश",
+  "word_or_phrase_in": "{{idioma}} में शब्द या वाक्यांश",
   "example_phrase_placeholder": "मुझे पढ़ना बहुत पसंद है",
   "translation": "अनुवाद",
   "suggest_translation": "अनुवाद सुझाएं",

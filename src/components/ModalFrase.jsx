@@ -241,7 +241,11 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                     <form action="" onSubmit={handleSubmit}>
                         <div>
                             <div className="">
-                                <label className="font-medium text-sm mb-3 text-white">{t("word_or_phrase_pt")}</label>
+                                <label className="font-medium text-sm mb-3 text-white">
+                                    {user?.native_language_name
+                                        ? t("word_or_phrase_in", { idioma: user.native_language_name })
+                                        : t("word_or_phrase_pt")}
+                                </label>
                             </div>
                             <textarea
                                 onChange={(e) => {

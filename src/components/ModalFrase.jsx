@@ -15,7 +15,6 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
     const [loading, setLoading] = useState(false)
     const [phrase, setPhrase] = useState('')
     const [translatedPhrase, setTranslatedPhrase] = useState('')
-    const [loadingSugestao, setLoadingSugestao] = useState(false)
     const [loadingMelhorar, setLoadingMelhorar] = useState(false)
     // Indicador visual pro "Ouvir" - sem preload, o clique podia parecer
     // travado (nada acontece por 1-2s até o áudio terminar de gerar).
@@ -114,62 +113,13 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
         };
     }
 
-    // Sugestão gratuita (Google Translate via LibreTranslate.php) - disponível
-    // pra todos os planos, tradução literal/instantânea.
-    async function sugerirTraducao(e) {
-        e.preventDefault();
-
-        if (loadingSugestao || loadingMelhorar) return;
-
-        const { modoReverso, textoOrigem, sourceLang, targetLang } = direcaoTraducao();
-        if (!textoOrigem) return;
-
-        setLoadingSugestao(true);
-        setErrorTranslatedPhrase('');
-        setErrorPhrase('');
-
-        try {
-            const res = await fetch(`${API_URL}/controller/libreTranslate.php`, {
-                method: 'POST',
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                },
-                body: JSON.stringify({
-                    phrase: textoOrigem,
-                    sourceLang,
-                    targetLang
-                })
-            });
-
-            const data = await res.json();
-
-            // Nunca exibir data.message direto - controller/libreTranslate.php
-            // é um endpoint de terceiro (Google Translate via LibreTranslate.php)
-            // e um erro cru do PHP já vazou pra tela assim antes (reportado
-            // pelo usuário: "LibreTranslate::translateText(): Return value
-            // must be of type array, null returned"). O backend agora manda
-            // um "code" em vez de mensagem pronta - escolhe a chave i18n aqui.
-            if (!data.success) {
-                modoReverso ? setErrorPhrase(t("server_connection_error")) : setErrorTranslatedPhrase(t("server_connection_error"));
-                return;
-            }
-
-            modoReverso ? setPhrase(data.message) : setTranslatedPhrase(data.message);
-
-        } catch {
-            modoReverso ? setErrorPhrase(t("unexpected_error")) : setErrorTranslatedPhrase(t("unexpected_error"));
-        } finally {
-            setLoadingSugestao(false);
-        }
-    }
-
     // Melhoria por IA (gpt-5-nano) - tradução natural/idiomática, não literal.
     // Recurso premium/limitado (amostra vitalícia) - free vê o cadeado com
     // coroa e abre o PremiumModal ao clicar.
     async function melhorarComIA(e) {
         e.preventDefault();
 
-        if (loadingSugestao || loadingMelhorar) return;
+        if (loadingMelhorar) return;
 
         const { modoReverso, textoOrigem, sourceLang, targetLang } = direcaoTraducao();
         if (!textoOrigem) return;
@@ -286,16 +236,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                                 <div className="flex flex-wrap gap-2 mt-3">
                                     <button
                                         type="button"
-                                        disabled={loadingSugestao || loadingMelhorar}
-                                        className="flex items-center text-sm bg-gray-700/60 hover:bg-gray-700 disabled:opacity-50 text-white px-4 py-1.5 rounded-full transition-colors"
-                                        onClick={sugerirTraducao}
-                                    >
-                                        {loadingSugestao ? t("suggesting_translation") : t("suggest_translation")}
-                                    </button>
-
-                                    <button
-                                        type="button"
-                                        disabled={loadingSugestao || loadingMelhorar}
+                                        disabled={loadingMelhorar}
                                         className="flex items-center gap-1.5 text-sm bg-gradient-to-r from-[#4cb8c4] to-[#085078] hover:from-[#3da5b0] hover:to-[#064060] disabled:opacity-50 text-white px-4 py-1.5 rounded-full transition-colors"
                                         onClick={melhorarComIA}
                                     >

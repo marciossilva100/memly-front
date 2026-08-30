@@ -720,20 +720,20 @@ export default function ChuvaFrases() {
                                             key={item.id}
                                             onClick={() => alternarSelecao(item)}
                                             className={`flex bg-gray-800/50 backdrop-blur-sm items-center gap-3 py-3 px-4 rounded-xl border shadow-lg mb-3 transition-colors ${bloqueada
-                                                    ? "border-gray-700 opacity-50 cursor-not-allowed"
+                                                    ? "border-gray-700 cursor-not-allowed"
                                                     : marcada
                                                         ? "border-[#4cb8c4] bg-[#4cb8c4]/10 cursor-pointer"
                                                         : "border-gray-700 hover:bg-gray-700/50 cursor-pointer"
                                                 }`}
                                         >
                                             <div
-                                                className={`flex items-center justify-center w-11 h-11 shrink-0 rounded-full text-white font-semibold text-lg ${AVATAR_COLORS[index % AVATAR_COLORS.length]}`}
+                                                className={`flex items-center justify-center w-11 h-11 shrink-0 rounded-full text-white font-semibold text-lg ${bloqueada ? "opacity-40" : ""} ${AVATAR_COLORS[index % AVATAR_COLORS.length]}`}
                                             >
                                                 {item.categoria?.charAt(0)?.toUpperCase()}
                                             </div>
                                             <div className="min-w-0 flex-1">
-                                                <p className="text-white font-medium truncate">{item.categoria}</p>
-                                                <p className="text-xs text-gray-400">
+                                                <p className={`font-medium truncate ${bloqueada ? "text-gray-400" : "text-white"}`}>{item.categoria}</p>
+                                                <p className={`text-xs ${bloqueada ? "text-amber-400" : "text-gray-400"}`}>
                                                     {bloqueada
                                                         ? t("missing_phrases_count", { count: faltam })
                                                         : `${item.total_treinadas} ${t("words")}`}

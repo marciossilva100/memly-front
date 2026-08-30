@@ -143,16 +143,21 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
 
             const data = await res.json();
 
+            // Nunca exibir data.message direto - controller/libreTranslate.php
+            // é um endpoint de terceiro (Google Translate via LibreTranslate.php)
+            // e um erro cru do PHP já vazou pra tela assim antes (reportado
+            // pelo usuário: "LibreTranslate::translateText(): Return value
+            // must be of type array, null returned"). O backend agora manda
+            // um "code" em vez de mensagem pronta - escolhe a chave i18n aqui.
             if (!data.success) {
-                modoReverso ? setErrorPhrase(data.message) : setErrorTranslatedPhrase(data.message);
+                modoReverso ? setErrorPhrase(t("server_connection_error")) : setErrorTranslatedPhrase(t("server_connection_error"));
                 return;
             }
 
             modoReverso ? setPhrase(data.message) : setTranslatedPhrase(data.message);
 
-        } catch (error) {
-            const mensagem = error?.message || t("unexpected_error");
-            modoReverso ? setErrorPhrase(mensagem) : setErrorTranslatedPhrase(mensagem);
+        } catch {
+            modoReverso ? setErrorPhrase(t("unexpected_error")) : setErrorTranslatedPhrase(t("unexpected_error"));
         } finally {
             setLoadingSugestao(false);
         }

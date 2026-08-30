@@ -37,7 +37,19 @@ export default function useAudioRecorder() {
         setAudioUrl(null);
 
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            // Constraints explícitas em vez de confiar no padrão do navegador/
+            // dispositivo (que varia bastante, principalmente no WebView do
+            // app via Capacitor) - usuário reportou "falo no microfone mas
+            // parece que não capta corretamente". echoCancellation/
+            // noiseSuppression/autoGainControl geralmente já vêm ligados por
+            // padrão no Chrome, mas não em todo navegador/WebView.
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: {
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    autoGainControl: true,
+                }
+            });
             streamRef.current = stream;
 
             const mediaRecorder = new MediaRecorder(stream);

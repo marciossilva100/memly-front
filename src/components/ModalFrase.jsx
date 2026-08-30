@@ -15,6 +15,9 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
     const [loading, setLoading] = useState(false)
     const [phrase, setPhrase] = useState('')
     const [translatedPhrase, setTranslatedPhrase] = useState('')
+    // Comentado (não removido) - ver explicação completa junto da função
+    // sugerirTraducao() mais abaixo, sobre por que esse botão foi desativado.
+    // const [loadingSugestao, setLoadingSugestao] = useState(false)
     const [loadingMelhorar, setLoadingMelhorar] = useState(false)
     // Indicador visual pro "Ouvir" - sem preload, o clique podia parecer
     // travado (nada acontece por 1-2s até o áudio terminar de gerar).
@@ -112,6 +115,63 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
             targetLang: modoReverso ? user.native_language : user.learning_language,
         };
     }
+
+    // Sugestão gratuita (Google Translate via LibreTranslate.php) - DESATIVADA
+    // (comentada, não removida) porque o Google passou a bloquear de forma
+    // persistente o endpoint não-oficial que o LibreTranslate.php usa
+    // (translate.googleapis.com/translate_a/single) com HTTP 429 "automated
+    // queries" - reproduzido direto contra o endpoint, não é falha pontual
+    // nem bug do nosso código. Só "Melhorar com IA" (OpenAI) ficou ativo.
+    // Se um dia trocar de provedor de tradução literal, é só reativar isso e
+    // devolver o botão no JSX abaixo (e as chaves de i18n suggest_translation/
+    // suggesting_translation, que continuam nas 15 pastas de idioma).
+    //
+    // async function sugerirTraducao(e) {
+    //     e.preventDefault();
+    //
+    //     if (loadingSugestao || loadingMelhorar) return;
+    //
+    //     const { modoReverso, textoOrigem, sourceLang, targetLang } = direcaoTraducao();
+    //     if (!textoOrigem) return;
+    //
+    //     setLoadingSugestao(true);
+    //     setErrorTranslatedPhrase('');
+    //     setErrorPhrase('');
+    //
+    //     try {
+    //         const res = await fetch(`${API_URL}/controller/libreTranslate.php`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 "Authorization": "Bearer " + localStorage.getItem("token")
+    //             },
+    //             body: JSON.stringify({
+    //                 phrase: textoOrigem,
+    //                 sourceLang,
+    //                 targetLang
+    //             })
+    //         });
+    //
+    //         const data = await res.json();
+    //
+    //         // Nunca exibir data.message direto - controller/libreTranslate.php
+    //         // é um endpoint de terceiro (Google Translate via LibreTranslate.php)
+    //         // e um erro cru do PHP já vazou pra tela assim antes (reportado
+    //         // pelo usuário: "LibreTranslate::translateText(): Return value
+    //         // must be of type array, null returned"). O backend agora manda
+    //         // um "code" em vez de mensagem pronta - escolhe a chave i18n aqui.
+    //         if (!data.success) {
+    //             modoReverso ? setErrorPhrase(t("server_connection_error")) : setErrorTranslatedPhrase(t("server_connection_error"));
+    //             return;
+    //         }
+    //
+    //         modoReverso ? setPhrase(data.message) : setTranslatedPhrase(data.message);
+    //
+    //     } catch {
+    //         modoReverso ? setErrorPhrase(t("unexpected_error")) : setErrorTranslatedPhrase(t("unexpected_error"));
+    //     } finally {
+    //         setLoadingSugestao(false);
+    //     }
+    // }
 
     // Melhoria por IA (gpt-5-nano) - tradução natural/idiomática, não literal.
     // Recurso premium/limitado (amostra vitalícia) - free vê o cadeado com
@@ -234,6 +294,18 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
 
                             {(phrase?.length > 1 || translatedPhrase?.length > 1) && (
                                 <div className="flex flex-wrap gap-2 mt-3">
+                                    {/* Botão "Sugerir tradução" desativado - ver comentário
+                                        completo junto de sugerirTraducao() acima.
+                                    <button
+                                        type="button"
+                                        disabled={loadingSugestao || loadingMelhorar}
+                                        className="flex items-center text-sm bg-gray-700/60 hover:bg-gray-700 disabled:opacity-50 text-white px-4 py-1.5 rounded-full transition-colors"
+                                        onClick={sugerirTraducao}
+                                    >
+                                        {loadingSugestao ? t("suggesting_translation") : t("suggest_translation")}
+                                    </button>
+                                    */}
+
                                     <button
                                         type="button"
                                         disabled={loadingMelhorar}

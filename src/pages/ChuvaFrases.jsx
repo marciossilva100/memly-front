@@ -867,24 +867,24 @@ export default function ChuvaFrases() {
                     )}
 
                     <div className="grid grid-cols-2 gap-2 w-full max-w-xs mb-4">
-                        <div className="rounded-xl border border-gray-700 bg-gray-800/40 p-3 flex flex-col items-center gap-1">
+                        <div className="rounded-xl border border-gray-700 bg-gray-800/85 backdrop-blur-sm p-3 flex flex-col items-center gap-1">
                             <Check className="w-4 h-4 text-emerald-400" />
                             <span className="text-lg font-semibold text-white leading-none">{acertos}</span>
                             <span className="text-[11px] text-gray-400 leading-none">{t("hits_label")}</span>
                         </div>
-                        <div className="rounded-xl border border-gray-700 bg-gray-800/40 p-3 flex flex-col items-center gap-1">
+                        <div className="rounded-xl border border-gray-700 bg-gray-800/85 backdrop-blur-sm p-3 flex flex-col items-center gap-1">
                             <X className="w-4 h-4 text-red-400" />
                             <span className="text-lg font-semibold text-white leading-none">{erros}</span>
                             <span className="text-[11px] text-gray-400 leading-none">{t("misses_label")}</span>
                         </div>
-                        <div className="rounded-xl border border-gray-700 bg-gray-800/40 p-3 flex flex-col items-center gap-1">
+                        <div className="rounded-xl border border-gray-700 bg-gray-800/85 backdrop-blur-sm p-3 flex flex-col items-center gap-1">
                             <Target className="w-4 h-4 text-[#4cb8c4]" />
                             <span className="text-lg font-semibold text-white leading-none">
                                 {(acertos + erros) > 0 ? Math.round((acertos / (acertos + erros)) * 100) : 0}%
                             </span>
                             <span className="text-[11px] text-gray-400 leading-none">{t("accuracy_rate")}</span>
                         </div>
-                        <div className="rounded-xl border border-gray-700 bg-gray-800/40 p-3 flex flex-col items-center gap-1">
+                        <div className="rounded-xl border border-gray-700 bg-gray-800/85 backdrop-blur-sm p-3 flex flex-col items-center gap-1">
                             <Flame className="w-4 h-4 text-orange-400" />
                             <span className="text-lg font-semibold text-white leading-none">{melhorSequencia}</span>
                             <span className="text-[11px] text-gray-400 leading-none">{t("best_answer_streak")}</span>

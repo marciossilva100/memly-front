@@ -182,6 +182,12 @@ export default function ChuvaFrases() {
     // reaparecer). Quando o pool inteiro fica sem nenhuma não-acertada, o
     // jogo encerra com a tela de "dominou tudo" (ver useEffect abaixo).
     const acertadasRef = useRef([]);
+    // Últimos textos usados como distratora (frase errada que cai) - evita
+    // a mesma frase cair de novo logo em seguida. Pode repetir de vez em
+    // quando (principalmente com pouco vocabulário), só não uma atrás da
+    // outra - por isso é uma janela curta, não uma exclusão permanente
+    // (pedido explícito do usuário).
+    const distratorasRecentesRef = useRef([]);
 
     // Para o áudio em reprodução ao sair da tela (troca de rota) - sem isso,
     // o áudio seguia tocando mesmo depois do usuário já ter navegado embora.
@@ -356,6 +362,7 @@ export default function ChuvaFrases() {
                 setVidas(vidasIniciais);
                 usadasRef.current = [];
                 acertadasRef.current = [];
+                distratorasRecentesRef.current = [];
                 setCaindo([]);
                 setAlvo(escolherProximoAlvo(listaFrases, []));
             })
@@ -522,8 +529,21 @@ export default function ChuvaFrases() {
                 if (vaiSerCorreta) {
                     texto = alvo.texto_traduzido;
                 } else {
-                    const candidatas = frases.filter((f) => f.id !== alvo.id);
+                    let candidatas = frases.filter((f) => f.id !== alvo.id);
                     if (candidatas.length === 0) return prev;
+
+                    // Evita repetir uma distratora que já está caindo na tela
+                    // agora ou que caiu há pouco - pode repetir de vez em
+                    // quando (com pouco vocabulário), só não uma atrás da
+                    // outra. Se a exclusão zerar as opções, ignora e sorteia
+                    // do jeito normal mesmo (melhor repetir do que travar).
+                    const textosNaTela = new Set(prev.map((item) => item.texto));
+                    const textosRecentes = new Set(distratorasRecentesRef.current);
+                    const semRepeticao = candidatas.filter(
+                        (f) => !textosNaTela.has(f.texto_traduzido) && !textosRecentes.has(f.texto_traduzido)
+                    );
+                    if (semRepeticao.length > 0) candidatas = semRepeticao;
+
                     // quanto maior o nível, mais parecidas (tamanho) as distratoras
                     candidatas.sort(
                         (a, b) =>
@@ -532,6 +552,8 @@ export default function ChuvaFrases() {
                     );
                     const faixa = Math.min(candidatas.length, Math.max(2, 6 - Math.floor(nivel / 2)));
                     texto = candidatas[Math.floor(Math.random() * faixa)].texto_traduzido;
+
+                    distratorasRecentesRef.current = [texto, ...distratorasRecentesRef.current].slice(0, 3);
                 }
 
                 // Preferência de velocidade (Configurações ou o próprio ícone

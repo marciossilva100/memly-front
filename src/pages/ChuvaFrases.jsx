@@ -493,7 +493,12 @@ export default function ChuvaFrases() {
         if (fase !== "jogando" || !alvo || modalConfigAberto) return;
 
         const nivel = nivelAtual(pontos);
-        const intervaloSpawn = Math.max(4500 - nivel * 150, 3000);
+        // Intervalo entre blocos - reduzido de 4500-3000ms pra 2800-1800ms
+        // (usuário reportou blocos muito espaçados caindo, deixando a frase
+        // certa demorar demais pra aparecer). raiasCandidatas (colisão real
+        // por progresso de queda) continua garantindo que blocos nunca se
+        // sobrepõem de verdade, mesmo com spawn mais frequente.
+        const intervaloSpawn = Math.max(2800 - nivel * 100, 1800);
 
         function spawnUmaFrase() {
             setCaindo((prev) => {

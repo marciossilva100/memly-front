@@ -7,6 +7,7 @@ import { tocarSomAcerto } from "../utils/somJogo";
 import { Heart, Trophy, Loader2, CloudRain, Check, Volume2, Settings, X, Target, Flame, Sparkles } from "lucide-react";
 import PremiumModal from "../components/PremiumModal";
 import LimiteDiarioModal from "../components/LimiteDiarioModal";
+import imgFundoChuva from "../assets/img/chuva-frases-bg.png";
 
 const AVATAR_COLORS = [
     'bg-emerald-500',
@@ -637,7 +638,10 @@ export default function ChuvaFrases() {
     }
 
     return (
-        <div className="px-5 h-dvh flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
+        <div
+            className="px-5 h-dvh flex flex-col bg-gray-900 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url(${imgFundoChuva})` }}
+        >
             <div className="flex items-center gap-3 mb-4 mt-4">
                 <div className="cursor-pointer" onClick={() => navigate(-1)}>
                     <i className="bi bi-arrow-left text-2xl text-white"></i>

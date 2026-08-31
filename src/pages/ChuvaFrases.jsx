@@ -48,10 +48,14 @@ const LIMIAR_QUEDA_SEGURA = 0.3;
 
 // Uma cor neon fixa por raia (não aleatória) - visual mais vivo sem virar
 // bagunça, já que cada raia sempre cai na mesma cor.
+// Opacidade do bg alta o suficiente pra não deixar a imagem de fundo do
+// jogo (ver imgFundoChuva) vazar por trás do texto e atrapalhar a leitura -
+// era /25, transparente demais desde que o fundo virou uma imagem em vez de
+// um gradiente liso.
 const CORES_RAIA = [
-    { bg: "bg-teal-500/25", border: "border-teal-400/70", shadow: "shadow-[0_0_14px_rgba(45,212,191,0.35)]", texto: "text-teal-400", glow: "rgba(45,212,191,0.9)" },
-    { bg: "bg-indigo-500/25", border: "border-indigo-400/70", shadow: "shadow-[0_0_14px_rgba(129,140,248,0.35)]", texto: "text-indigo-400", glow: "rgba(129,140,248,0.9)" },
-    { bg: "bg-pink-500/25", border: "border-pink-400/70", shadow: "shadow-[0_0_14px_rgba(244,114,182,0.35)]", texto: "text-pink-400", glow: "rgba(244,114,182,0.9)" },
+    { bg: "bg-teal-500/85", border: "border-teal-400/70", shadow: "shadow-[0_0_14px_rgba(45,212,191,0.35)]", texto: "text-teal-400", glow: "rgba(45,212,191,0.9)" },
+    { bg: "bg-indigo-500/85", border: "border-indigo-400/70", shadow: "shadow-[0_0_14px_rgba(129,140,248,0.35)]", texto: "text-indigo-400", glow: "rgba(129,140,248,0.9)" },
+    { bg: "bg-pink-500/85", border: "border-pink-400/70", shadow: "shadow-[0_0_14px_rgba(244,114,182,0.35)]", texto: "text-pink-400", glow: "rgba(244,114,182,0.9)" },
 ];
 
 function nivelAtual(pontos) {
@@ -819,7 +823,7 @@ export default function ChuvaFrases() {
                                     key={item.uid}
                                     onClick={(e) => handleToque(item, e)}
                                     onAnimationEnd={() => handleFimDaQueda(item)}
-                                    className={`chuva-item px-3 py-2 rounded-2xl border text-sm font-medium text-center transition-colors ${item.estado === "errada"
+                                    className={`chuva-item px-3 py-2 rounded-2xl border backdrop-blur-sm text-sm font-medium text-center transition-colors ${item.estado === "errada"
                                             ? "bg-red-500/80 border-red-400 text-white"
                                             : `${cor.bg} ${cor.border} ${cor.shadow} text-white`
                                         }`}

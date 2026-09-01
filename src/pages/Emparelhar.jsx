@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { playAudio, pararAudio } from "../utils/audioPlayer";
@@ -45,6 +45,12 @@ export default function JogoFrases() {
   const API_URL = import.meta.env.VITE_API_URL;
   const [finalizado, setFinalizado] = useState(false);
   const { user } = useAuth();
+  // Ids de frase envolvidos em pelo menos 1 tentativa errada durante a
+  // sessão - separa quem pareou de primeira (promove pra memorizado) de
+  // quem só acertou depois de errar (volta pra "não conheço"), igual o
+  // conceito de acerto/erro nas outras telas de treino. Ref porque não
+  // precisa re-renderizar nada, só é lido no fim da sessão.
+  const frasesComErroRef = useRef(new Set());
 
   const navigate = useNavigate();
 
@@ -66,9 +72,16 @@ export default function JogoFrases() {
     carregarFrases();
   }, [id, mode]);
 
-  async function trainingUpdate(updatedList, actionToSend) {
+  // updatedList = ids pareados sem nenhum erro no meio (promove pra
+  // memorizado); updatedIncorrectList = ids que só pareraram depois de errar
+  // pelo menos 1 vez (volta pra "não conheço") - formato que
+  // controller/treino.php espera pra chamar Treino::metricas(). Bug real
+  // encontrado antes: mandava só "updatedList" com todas as frases juntas,
+  // sem separar acerto/erro, e o backend nem lia essa chave - nada era
+  // gravado (nem id_treino, nem métricas), silenciosamente.
+  async function trainingUpdate(updatedList, updatedIncorrectList, actionToSend) {
     try {
-      await fetch(`${API_URL}/controller/treino.php`, {
+      const res = await fetch(`${API_URL}/controller/treino.php`, {
         method: "POST",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
@@ -76,10 +89,16 @@ export default function JogoFrases() {
         body: JSON.stringify({
           action: actionToSend,
           updatedList: updatedList,
+          updatedIncorrectList: updatedIncorrectList,
           category_id: id,
-
         }),
       });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        console.log(data.message);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -114,6 +133,7 @@ export default function JogoFrases() {
         setAcertos(0);
         setErros(0);
         setFinalizado(false);
+        frasesComErroRef.current = new Set();
 
         setNativas(shuffleArray(lote));
         setTraduzidas(shuffleArray(lote));
@@ -128,8 +148,12 @@ export default function JogoFrases() {
 
     if (lote.length === 0) {
 
-      if (mode !== 'learn')
-        await trainingUpdate(idPhrases, "trainee_finish");
+      if (mode !== 'learn') {
+        const comErro = frasesComErroRef.current;
+        const acertosLimpos = idPhrases.filter((fraseId) => !comErro.has(fraseId));
+        const comErroList = idPhrases.filter((fraseId) => comErro.has(fraseId));
+        await trainingUpdate(acertosLimpos, comErroList, "trainee_finish");
+      }
 
       setFinalizado(true);
       return;
@@ -176,10 +200,18 @@ export default function JogoFrases() {
       setErroEsquerdaId(selecionadaEsquerda.id);
       setErroDireitaId(selecionadaDireita.id);
 
+      // Marca as 2 frases envolvidas nessa tentativa errada (não dá pra
+      // saber qual das duas o aluno realmente não sabia, já que ele clicou
+      // num par que não combina) - mais seguro tratar as 2 como "ainda não
+      // domina" do que arriscar promover uma que só pareou por sorte.
+      frasesComErroRef.current.add(selecionadaEsquerda.id);
+      frasesComErroRef.current.add(selecionadaDireita.id);
+
       setErros((prev) => prev + 1);
+      setBloqueado(true);
 
       setTimeout(() => {
-        resetEstados();
+        finalizarErro();
       }, 450);
     }
   }, [selecionadaEsquerda, selecionadaDireita]);
@@ -192,6 +224,29 @@ export default function JogoFrases() {
     const novoTraduzidas = traduzidas.filter(
       (item) => item.id !== selecionadaDireita.id
     );
+
+    setNativas(novoNativas);
+    setTraduzidas(novoTraduzidas);
+
+    resetEstados();
+    setBloqueado(false);
+
+    if (novoNativas.length === 0) {
+      carregarProximoLote();
+    }
+  }
+
+  // Par errado: some da tela igual um acerto (não fica pra tentar de novo)
+  // e volta pra id_treino=1 (ver frasesComErroRef) - pedido explícito do
+  // usuário. Remove as 2 frases INTEIRAS (dos dois lados, nativa e
+  // traduzida), não só os cards clicados - senão sobrava card sem par
+  // possível na tela (a tradução da frase A e a nativa da frase B ficariam
+  // órfãs, já que os pares certos delas teriam sumido).
+  function finalizarErro() {
+    const idsRemover = new Set([selecionadaEsquerda.id, selecionadaDireita.id]);
+
+    const novoNativas = nativas.filter((item) => !idsRemover.has(item.id));
+    const novoTraduzidas = traduzidas.filter((item) => !idsRemover.has(item.id));
 
     setNativas(novoNativas);
     setTraduzidas(novoTraduzidas);

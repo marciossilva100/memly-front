@@ -2,6 +2,7 @@ import { Dialog } from "@headlessui/react";
 import { useState, useEffect } from "react";
 import { translateText } from "../services/translateText"
 import { useAuth } from "../context/AuthContext";
+import { dispatchPremiumLimitHit } from "../hooks/usePremiumLimitListener";
 import { Play, PlayCircle, PlaySquare, Repeat, Check, Crown, Bot, Loader2 } from "lucide-react";
 import { playAudio } from "../utils/audioPlayer";
 import { containsProfanity } from "../utils/contentFilter";
@@ -82,6 +83,17 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
             const data = await res.json();
 
             if (!data.success) {
+                // Limite diário de frases criadas - mesmo padrão dos outros
+                // avisos de limite (AudioLimitToast e companhia): some da
+                // lateral em vez de ficar preso como erro dentro do modal.
+                // Nunca mostra data.message (texto cru do backend) direto
+                // na tela - só a chave i18n escolhida aqui pelo plano.
+                if (data.limite_atingido) {
+                    setOpenPhrase(false);
+                    dispatchPremiumLimitHit(user.plano === 1 ? "frases_diario_premium" : "frases");
+                    return;
+                }
+
                 setErrorTranslatedPhrase(data.message);
                 return;
             }

@@ -406,6 +406,8 @@
   "notifications_onboarding_skip": "Non ora",
   "premium_reason_audio": "Hai usato le tue 10 pronunce gratuite con voce naturale. Passa a premium per un accesso illimitato.",
   "premium_reason_audio_diario": "Hai raggiunto il limite giornaliero di pronunce con voce naturale. Torna domani per averne di più.",
+  "premium_reason_frases": "Hai raggiunto il limite di 10 frasi create oggi. Passa a premium per crearne fino a 100 al giorno.",
+  "premium_reason_frases_diario": "Hai raggiunto il limite giornaliero di frasi create. Torna domani per crearne altre.",
   "premium_reason_categorias": "Hai raggiunto il limite di 2 mazzi del tuo piano. Passa a premium per creare mazzi illimitati.",
   "all_categories": "Tutti i mazzi",
   "all_levels": "Tutti i livelli",

@@ -406,6 +406,8 @@
   "notifications_onboarding_skip": "暂不开启",
   "premium_reason_audio": "你已用完10次免费的自然语音发音。升级高级版即可无限使用。",
   "premium_reason_audio_diario": "你已达到今日自然语音发音的上限,明天再来吧。",
+  "premium_reason_frases": "你已达到今天可创建10个句子的上限。升级高级版即可每天创建最多100个。",
+  "premium_reason_frases_diario": "你已达到今日句子创建上限,明天再来创建更多吧。",
   "premium_reason_categorias": "你已达到该计划2个牌组的上限。升级高级版即可创建无限牌组。",
   "all_categories": "所有牌组",
   "all_levels": "所有级别",

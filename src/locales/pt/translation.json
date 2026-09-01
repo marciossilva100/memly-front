@@ -408,6 +408,8 @@
   "notifications_onboarding_skip": "Agora não",
   "premium_reason_audio": "Você usou suas 10 pronúncias grátis com voz natural. Vire premium para ter acesso ilimitado.",
   "premium_reason_audio_diario": "Você atingiu o limite diário de pronúncias com voz natural. Volte amanhã para mais.",
+  "premium_reason_frases": "Você atingiu o limite de 10 frases criadas hoje. Vire premium para criar até 100 por dia.",
+  "premium_reason_frases_diario": "Você atingiu o limite diário de frases criadas. Volte amanhã para mais.",
   "premium_reason_categorias": "Você atingiu o limite de 2 categorias do seu plano. Vire premium para criar categorias ilimitadas.",
   "all_categories": "Todas as categorias",
   "all_levels": "Todos os níveis",

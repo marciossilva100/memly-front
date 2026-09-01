@@ -406,6 +406,8 @@
   "notifications_onboarding_skip": "Şimdi değil",
   "premium_reason_audio": "10 ücretsiz doğal ses telaffuzunu kullandın. Sınırsız erişim için premium'a geç.",
   "premium_reason_audio_diario": "Doğal sesle günlük telaffuz limitine ulaştın. Daha fazlası için yarın tekrar gel.",
+  "premium_reason_frases": "Bugün oluşturulan 10 cümle limitine ulaştın. Günde 100'e kadar oluşturmak için premium'a geç.",
+  "premium_reason_frases_diario": "Günlük cümle oluşturma limitine ulaştın. Daha fazlası için yarın tekrar gel.",
   "premium_reason_categorias": "Planının 2 deste sınırına ulaştın. Sınırsız deste oluşturmak için premium'a geç.",
   "all_categories": "Tüm desteler",
   "all_levels": "Tüm seviyeler",

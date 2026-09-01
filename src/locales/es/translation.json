@@ -407,6 +407,8 @@
   "notifications_onboarding_skip": "Ahora no",
   "premium_reason_audio": "Ya usaste tus 10 pronunciaciones gratis con voz natural. Hazte premium para acceso ilimitado.",
   "premium_reason_audio_diario": "Alcanzaste el límite diario de pronunciaciones con voz natural. Vuelve mañana para más.",
+  "premium_reason_frases": "Alcanzaste el límite de 10 frases creadas hoy. Hazte premium para crear hasta 100 por día.",
+  "premium_reason_frases_diario": "Alcanzaste el límite diario de frases creadas. Vuelve mañana para más.",
   "premium_reason_categorias": "Alcanzaste el límite de 2 mazos de tu plan. Hazte premium para crear mazos ilimitados.",
   "all_categories": "Todos los mazos",
   "all_levels": "Todos los niveles",

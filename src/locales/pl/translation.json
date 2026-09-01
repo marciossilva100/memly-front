@@ -406,6 +406,8 @@
   "notifications_onboarding_skip": "Nie teraz",
   "premium_reason_audio": "Wykorzystałeś swoje 10 darmowych wymów z naturalnym głosem. Przejdź na premium, aby uzyskać nieograniczony dostęp.",
   "premium_reason_audio_diario": "Osiągnąłeś dzienny limit wymów z naturalnym głosem. Wróć jutro po więcej.",
+  "premium_reason_frases": "Osiągnąłeś limit 10 zdań utworzonych dzisiaj. Przejdź na premium, aby tworzyć do 100 dziennie.",
+  "premium_reason_frases_diario": "Osiągnąłeś dzienny limit utworzonych zdań. Wróć jutro, aby utworzyć więcej.",
   "premium_reason_categorias": "Osiągnąłeś limit 2 talii swojego planu. Przejdź na premium, aby tworzyć nieograniczoną liczbę talii.",
   "all_categories": "Wszystkie talie",
   "all_levels": "Wszystkie poziomy",

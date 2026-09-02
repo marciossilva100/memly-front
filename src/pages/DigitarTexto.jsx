@@ -172,12 +172,16 @@ export default function DigitarTexto() {
     // "Tocar áudio automaticamente na frente do cartão" em Configurações
     // (zaldemy_autoplay_frente, preferência só do dispositivo) - por padrão
     // só toca quando clica em "Ouvir".
+    //
+    // A frente do card aqui é sempre o texto no idioma nativo do usuário
+    // (o enunciado "o que você quer dizer") - nunca deve gastar cota de voz
+    // natural (OpenAI TTS) nele, então força a voz padrão em qualquer modo.
     useEffect(() => {
         const frase = frases[index];
         if (!frase || !user) return;
         if (localStorage.getItem('zaldemy_autoplay_frente') !== '1') return;
 
-        playAudio(frase.texto_nativo, user, false, user?.native_language || user?.learning_language, mode === "learn");
+        playAudio(frase.texto_nativo, user, false, user?.native_language || user?.learning_language, true);
     }, [index, frases, user, mode]);
 
     // Pré-carrega os dois áudios do card assim que ele aparece - sem isso, a
@@ -196,8 +200,10 @@ export default function DigitarTexto() {
         const frase = frases[index];
         if (!frase || !user) return;
 
-        const forcarPadraoNativo = mode === "learn";
-        preloadAudio(frase.texto_nativo, user, user?.native_language || user?.learning_language, forcarPadraoNativo);
+        // texto_nativo = idioma nativo do usuário (o enunciado): sempre voz
+        // padrão, nunca voz natural. Só texto_traduzido (a resposta, no idioma
+        // que ele aprende) usa a voz natural.
+        preloadAudio(frase.texto_nativo, user, user?.native_language || user?.learning_language, true);
         preloadAudio(frase.texto_traduzido, user);
     }, [index, frases, user, mode]);
 
@@ -372,6 +378,12 @@ export default function DigitarTexto() {
 
             // ✅ Adiciona o ID mesmo quando pula
             setCorrectIds(prev => [...prev, frases[index].id]);
+
+            // "Não lembro" conta como erro no treino - manda a frase de volta
+            // pro id_treino 1 (statusCorrectPhrase 0 -> tipo_treino 1 no
+            // backend), igual a errar a digitação.
+            if (mode === "traine")
+                await trainingUpdate('trainee_finish', frases[index].id, 0);
 
             setDiff({ isCorrect: true });
             virarFlashcard();
@@ -572,7 +584,7 @@ export default function DigitarTexto() {
                             onClick={(e) => {
                                 e.preventDefault();
                                 setBuscandoAudio(true);
-                                playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, mode === "learn", false, () => setBuscandoAudio(false))
+                                playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, true, false, () => setBuscandoAudio(false))
                                     .finally(() => setBuscandoAudio(false));
                             }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors disabled:opacity-70">
                             {buscandoAudio ? <Loader2 className="w-4 h-4 animate-spin" /> : <Volume className="w-4 h-4" />}

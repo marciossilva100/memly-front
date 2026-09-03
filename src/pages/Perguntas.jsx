@@ -8,6 +8,7 @@ import useAudioRecorder from "../hooks/useAudioRecorder";
 import AudioPreviewPlayer from "../components/AudioPreviewPlayer";
 import PremiumModal from "../components/PremiumModal";
 import LimiteDiarioModal from "../components/LimiteDiarioModal";
+import DuvidaChat from "../components/DuvidaChat";
 import TextoDestacado from "../components/TextoDestacado";
 import VocabularioHintBalloon from "../components/VocabularioHintBalloon";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
@@ -641,6 +642,8 @@ export default function Perguntas() {
                             <p className="text-[#4cb8c4] text-xs mb-1 uppercase tracking-wide font-semibold">{t("feedback_label")}</p>
                             <p className="text-white leading-relaxed">{resultado.feedback}</p>
                         </div>
+
+                        <DuvidaChat questionId={questionId} />
                     </div>
                 }
             </div>

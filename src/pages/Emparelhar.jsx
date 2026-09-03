@@ -238,25 +238,38 @@ export default function JogoFrases() {
 
   // Par errado: some da tela igual um acerto (não fica pra tentar de novo)
   // e volta pra id_treino=1 (ver frasesComErroRef) - pedido explícito do
-  // usuário. Remove as 2 frases INTEIRAS (dos dois lados, nativa e
-  // traduzida), não só os cards clicados - senão sobrava card sem par
-  // possível na tela (a tradução da frase A e a nativa da frase B ficariam
-  // órfãs, já que os pares certos delas teriam sumido).
+  // usuário, mas só faz sentido em modo de treino/revisão (errar de novo
+  // uma frase que já devia estar sabida). No modo "learn" (primeira
+  // exposição ao conteúdo, nem manda trainingUpdate pro backend - ver
+  // carregarProximoLote) errar é normal e esperado - remover o card fazia o
+  // aluno nunca chegar a aprender aquele par de verdade (reportado: "estão
+  // sumindo os quadros que não deveriam" em /emparelhar/:id/learn). Nesse
+  // modo só reseta a seleção, os cards continuam na tela pra tentar de novo.
+  // Remove as 2 frases INTEIRAS (dos dois lados, nativa e traduzida), não só
+  // os cards clicados - senão sobrava card sem par possível na tela (a
+  // tradução da frase A e a nativa da frase B ficariam órfãs, já que os
+  // pares certos delas teriam sumido).
   function finalizarErro() {
-    const idsRemover = new Set([selecionadaEsquerda.id, selecionadaDireita.id]);
+    if (mode !== 'learn') {
+      const idsRemover = new Set([selecionadaEsquerda.id, selecionadaDireita.id]);
 
-    const novoNativas = nativas.filter((item) => !idsRemover.has(item.id));
-    const novoTraduzidas = traduzidas.filter((item) => !idsRemover.has(item.id));
+      const novoNativas = nativas.filter((item) => !idsRemover.has(item.id));
+      const novoTraduzidas = traduzidas.filter((item) => !idsRemover.has(item.id));
 
-    setNativas(novoNativas);
-    setTraduzidas(novoTraduzidas);
+      setNativas(novoNativas);
+      setTraduzidas(novoTraduzidas);
+
+      resetEstados();
+      setBloqueado(false);
+
+      if (novoNativas.length === 0) {
+        carregarProximoLote();
+      }
+      return;
+    }
 
     resetEstados();
     setBloqueado(false);
-
-    if (novoNativas.length === 0) {
-      carregarProximoLote();
-    }
   }
 
   const porcentagem = totalPerguntas

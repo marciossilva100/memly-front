@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Send, Loader2, X } from "lucide-react";
+import { Send, Loader2, X, MessageCircleQuestion } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const MAX_MENSAGENS = 3;
@@ -96,17 +96,21 @@ export default function DuvidaChat({ questionId }) {
             <button
                 type="button"
                 onClick={() => setAberto(true)}
-                className="flex items-center justify-center gap-2 text-sm text-[#4cb8c4] hover:text-[#6ecbd6] transition-colors py-1"
+                className="flex items-center justify-center gap-2 text-sm font-medium text-[#4cb8c4] border border-[#4cb8c4]/30 bg-[#4cb8c4]/5 hover:bg-[#4cb8c4]/10 transition-colors rounded-xl py-3"
             >
+                <MessageCircleQuestion className="w-4 h-4" />
                 {t("ask_doubt_button")}
             </button>
         );
     }
 
     return (
-        <div className="rounded-xl border border-gray-700 bg-gray-800/50 backdrop-blur-sm flex flex-col max-h-80">
-            <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-700">
-                <p className="text-white text-sm font-medium">{t("doubt_chat_title")}</p>
+        <div className="rounded-xl border border-gray-700 bg-gray-800/50 backdrop-blur-sm flex flex-col max-h-80 overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-2.5 bg-gradient-to-br from-[#233245] to-[#0d1425] border-b border-gray-700">
+                <p className="flex items-center gap-1.5 text-[#4cb8c4] text-xs uppercase tracking-wide font-semibold">
+                    <MessageCircleQuestion className="w-3.5 h-3.5" />
+                    {t("doubt_chat_title")}
+                </p>
                 <button type="button" onClick={() => setAberto(false)} className="text-gray-400 hover:text-white">
                     <X className="w-4 h-4" />
                 </button>

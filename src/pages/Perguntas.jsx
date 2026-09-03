@@ -410,7 +410,7 @@ export default function Perguntas() {
 
     return (
         <div className="p-4 justify-center w-full px-6 h-screen flex flex-col h-dvh from-gray-900 to-gray-800 bg-gradient-to-br">
-            <div className="flex-1 overflow-y-auto scrollbar-hide pb-24">
+            <div className="flex-1 overflow-y-auto scrollbar-hide pb-40">
                 <div className="relative mb-6 flex items-center justify-between">
                     <div
                         className="cursor-pointer"

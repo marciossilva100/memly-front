@@ -5,6 +5,33 @@ import { fetchComTimeout } from "./fetchComTimeout";
 let currentAudio = null;
 let currentToken = 0;
 
+// PWA no Android (relatado: "modo premium, treino do texto gerado por ia,
+// não reproduz o áudio por completo" - cortava perto do fim de um áudio
+// mais longo, ~13s, bem acima da duração típica) - sem isso, o navegador
+// não tem como saber que aquele <audio> é uma reprodução de mídia "de
+// verdade" merecendo proteção contra suspensão em segundo plano (tela
+// apagando, otimização de bateria do Android) - áudios curtos terminam
+// antes disso acontecer, os mais longos (perto do limite de caracteres)
+// têm mais chance de serem pegos no meio. Registra a Media Session
+// enquanto toca e limpa ao terminar; ausente com segurança (undefined)
+// em navegadores sem suporte.
+function marcarMediaSessionTocando() {
+    if (typeof navigator === "undefined" || !("mediaSession" in navigator)) return;
+    try {
+        navigator.mediaSession.metadata = new MediaMetadata({ title: "Zaldemy" });
+        navigator.mediaSession.playbackState = "playing";
+    } catch {
+        // MediaMetadata pode não existir em navegadores mais antigos - o
+        // playbackState sozinho (sem metadata) ainda ajuda, mas se nem o
+        // construtor existir, só ignora e segue sem media session.
+    }
+}
+
+function limparMediaSession() {
+    if (typeof navigator === "undefined" || !("mediaSession" in navigator)) return;
+    navigator.mediaSession.playbackState = "none";
+}
+
 // Depois que o modal premium por limite de áudio já apareceu uma vez, novas
 // tentativas de reprodução caem direto pra voz padrão (free) em vez de
 // interromper de novo com o modal. Guardado no localStorage (não só em
@@ -185,6 +212,7 @@ function cancelarAudioAtual() {
     }
 
     currentAudio = null;
+    limparMediaSession();
 
     return meuToken;
 }
@@ -392,6 +420,7 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
                 ? 1.0
                 : (Number.isFinite(velocidadePreferidaNatural) ? velocidadePreferidaNatural : 1.0);
             onAudioIniciado?.();
+            marcarMediaSessionTocando();
 
             // Espera o áudio terminar de verdade antes de resolver - quem
             // chama (ex: jogo Chuva de Frases) precisa saber quando a
@@ -400,10 +429,12 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
                 audio.onended = () => {
                     URL.revokeObjectURL(resultado.url);
                     currentAudio = null;
+                    limparMediaSession();
                     resolve();
                 };
                 audio.onerror = () => {
                     currentAudio = null;
+                    limparMediaSession();
                     resolve();
                 };
                 audio.play().catch(() => resolve());
@@ -424,6 +455,7 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
         // controle de execução
         currentAudio = { playing: true };
         onAudioIniciado?.();
+        marcarMediaSessionTocando();
 
         for (const base64 of audios) {
 
@@ -459,11 +491,14 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
             URL.revokeObjectURL(urlAudio);
         }
 
+        limparMediaSession();
+
         if (myToken === currentToken) {
             currentAudio = null;
         }
 
     } catch (err) {
+        limparMediaSession();
         console.error("Erro ao tocar áudio:", err);
         if (myToken === currentToken) {
             currentAudio = null;

@@ -138,7 +138,11 @@ export default function Perguntas() {
         fetchQuestion();
     }, []);
 
-    const handleSkip = async () => {
+    // Marca a pergunta pendente atual como respondida (status_id=1) sem
+    // nota - usado tanto pro botão "pular" (antes de responder) quanto pelo
+    // "próxima pergunta" no feedback, quando a pergunta ainda estava
+    // pendente de tentativa (ver proximaPergunta abaixo).
+    async function marcarPendenteComoPulada() {
         try {
             const formData = new FormData();
             formData.append('action', 'skip');
@@ -150,12 +154,15 @@ export default function Perguntas() {
                 },
                 body: formData
             });
-
-            setResultado(null);
-            fetchQuestion();
         } catch (err) {
             console.error(err);
         }
+    }
+
+    const handleSkip = async () => {
+        await marcarPendenteComoPulada();
+        setResultado(null);
+        fetchQuestion();
     };
 
     async function enviarResposta() {
@@ -238,7 +245,19 @@ export default function Perguntas() {
         }
     }
 
-    function proximaPergunta() {
+    async function proximaPergunta() {
+        // Se a pergunta atual ainda pode ser tentada de novo (nota baixa,
+        // mas sobrou tentativa), ela continua "pendente" (status_id=0) no
+        // backend - sem marcar como pulada aqui, fetchQuestion() reaproveita
+        // essa MESMA pendente (getPendente() em DailyQuestionOpenAI.php,
+        // pensado pra sobreviver a um recarregamento de página) em vez de
+        // gerar uma nova, fazendo "Próxima pergunta" voltar pra mesma
+        // pergunta (reportado pelo usuário). Quando pode_tentar_novamente é
+        // false, a pergunta já foi marcada como respondida (status_id=1)
+        // pelo próprio backend na hora de avaliar - não precisa pular de novo.
+        if (resultado?.pode_tentar_novamente) {
+            await marcarPendenteComoPulada();
+        }
         setResultado(null);
         fetchQuestion();
     }

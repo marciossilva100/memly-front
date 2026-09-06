@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Volume2, Mic, Square, RotateCcw, History, Send, BookOpenText, Ban, AlertCircle, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Volume2, Mic, Square, RotateCcw, History, Send, BookOpenText, Ban, AlertCircle, Eye, EyeOff, Loader2, Check, Sparkles, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -47,6 +47,13 @@ export default function TreinoIA() {
     const [enviando, setEnviando] = useState(false);
     const [resultado, setResultado] = useState(null);
 
+    // Seletor de categoria (só aparece 1x por dia, antes de gerar a frase de
+    // hoje - se já existe uma pendente ou o limite diário já foi atingido,
+    // o backend nem chega a pedir escolha, ver verificarSeletorCategoria).
+    const [mostrarSeletor, setMostrarSeletor] = useState(false);
+    const [categorias, setCategorias] = useState([]);
+    const [categoriasSelecionadas, setCategoriasSelecionadas] = useState([]);
+
     const navigate = useNavigate();
     const { user } = useAuth();
     const API_URL = import.meta.env.VITE_API_URL;
@@ -61,10 +68,69 @@ export default function TreinoIA() {
     useEffect(() => {
         if (jaBuscou.current) return;
         jaBuscou.current = true;
-        buscarFraseDoDia();
+        verificarSeletorCategoria();
     }, []);
 
-    function buscarFraseDoDia() {
+    // Checagem leve (sem gerar nada) - só pergunta a categoria quando ainda
+    // não existe uma pendente de hoje nem o limite diário já foi atingido
+    // (nesses casos a escolha não seria usada pra nada, pedido do usuário
+    // pra essa tela aparecer só 1x por dia).
+    function verificarSeletorCategoria() {
+        setLoading(true);
+
+        fetch(`${API_URL}/controller/fraseDoDia.php`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({ action: 'precisa_escolher_categoria' })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.precisa_escolher) {
+                    return fetch(`${API_URL}/controller/fraseDoDia.php`, {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": "Bearer " + localStorage.getItem("token")
+                        },
+                        body: JSON.stringify({ action: 'listar_categorias' })
+                    })
+                        .then(res => res.json())
+                        .then(catData => {
+                            setCategorias(catData.categorias || []);
+                            setMostrarSeletor(true);
+                            setLoading(false);
+                        });
+                }
+
+                buscarFraseDoDia();
+            })
+            .catch(() => buscarFraseDoDia());
+    }
+
+    function alternarCategoria(id) {
+        setCategoriasSelecionadas((prev) => {
+            if (prev.includes(id)) {
+                return prev.filter((c) => c !== id);
+            }
+            // Máximo 2 categorias escolhidas à mão - mesma regra do backend
+            // (MAX_CATEGORIAS_ESCOLHA_MANUAL), evita voltar a misturar
+            // assuntos demais na mesma frase.
+            if (prev.length >= 2) {
+                return [prev[1], id];
+            }
+            return [...prev, id];
+        });
+    }
+
+    function confirmarCategoria() {
+        setMostrarSeletor(false);
+        buscarFraseDoDia(categoriasSelecionadas);
+    }
+
+    function buscarFraseDoDia(categoriaIds) {
         setLoading(true);
         setError(null);
         setInsufficientContent(false);
@@ -76,7 +142,10 @@ export default function TreinoIA() {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + localStorage.getItem("token")
             },
-            body: JSON.stringify({ action: 'obter' })
+            body: JSON.stringify({
+                action: 'obter',
+                ...(categoriaIds?.length > 0 && { category_ids: categoriaIds })
+            })
         })
             .then(res => res.json())
             .then(data => {
@@ -252,6 +321,83 @@ export default function TreinoIA() {
                     onClose={() => setIsPremiumModalOpen(false)}
                     motivo={motivoPremium}
                 />
+            </div>
+        );
+    }
+
+    if (mostrarSeletor) {
+        return (
+            <div className="h-dvh flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
+                <div className="flex-1 overflow-y-auto px-5 pt-8 pb-40">
+                    <div className="flex flex-col items-center text-center mb-6">
+                        <div className="w-14 h-14 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 flex items-center justify-center mb-4">
+                            <BookOpenText className="w-6 h-6 text-[#4cb8c4]" />
+                        </div>
+                        <h1 className="text-lg font-semibold text-white mb-1">{t("category_selector_title")}</h1>
+                        <p className="text-gray-400 text-sm max-w-xs">{t("category_selector_subtitle")}</p>
+                    </div>
+
+                    <div className="flex flex-col gap-2.5">
+                        <button
+                            type="button"
+                            onClick={() => setCategoriasSelecionadas([])}
+                            className={`flex items-center gap-3 rounded-xl border px-4 py-3.5 text-left transition-colors ${categoriasSelecionadas.length === 0
+                                ? "border-[#4cb8c4] bg-[#4cb8c4]/10"
+                                : "border-gray-700 bg-gray-800/50 hover:bg-gray-700/50"
+                                }`}
+                        >
+                            <div className="w-9 h-9 shrink-0 rounded-full bg-gradient-to-br from-[#4cb8c4] to-[#085078] flex items-center justify-center">
+                                <Sparkles className="w-4 h-4 text-white" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-white text-sm font-medium">{t("category_selector_all_categories")}</p>
+                                <p className="text-gray-400 text-xs">{t("category_selector_all_categories_desc")}</p>
+                            </div>
+                            {categoriasSelecionadas.length === 0 && (
+                                <Check className="w-5 h-5 text-[#4cb8c4] shrink-0" />
+                            )}
+                        </button>
+
+                        {categorias.length > 0 && (
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mt-3 mb-0.5">
+                                {t("category_selector_or_choose")}
+                            </p>
+                        )}
+
+                        {categorias.map((cat) => {
+                            const selecionada = categoriasSelecionadas.includes(cat.categoria_id);
+                            return (
+                                <button
+                                    key={cat.categoria_id}
+                                    type="button"
+                                    onClick={() => alternarCategoria(cat.categoria_id)}
+                                    className={`flex items-center gap-3 rounded-xl border px-4 py-3.5 text-left transition-colors ${selecionada
+                                        ? "border-[#4cb8c4] bg-[#4cb8c4]/10"
+                                        : "border-gray-700 bg-gray-800/50 hover:bg-gray-700/50"
+                                        }`}
+                                >
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-white text-sm font-medium truncate">{cat.categoria || t("uncategorized")}</p>
+                                        <p className="text-gray-400 text-xs">{cat.total} {t("phrases_count_label")}</p>
+                                    </div>
+                                    {selecionada && <Check className="w-5 h-5 text-[#4cb8c4] shrink-0" />}
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                <div className="fixed bottom-0 left-0 w-full px-6 py-4 bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent">
+                    <button
+                        onClick={confirmarCategoria}
+                        className="px-6 py-3.5 w-full rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium flex items-center justify-center gap-2 transition-colors"
+                    >
+                        {categoriasSelecionadas.length === 0
+                            ? t("category_selector_generate_surprise")
+                            : t("category_selector_generate_chosen")}
+                        <ArrowRight className="w-4 h-4" />
+                    </button>
+                </div>
             </div>
         );
     }

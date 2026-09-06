@@ -337,6 +337,9 @@ export default function TiroCerteiro() {
 
     const [rodadas, setRodadas] = useState([]);
     const [indiceAtual, setIndiceAtual] = useState(0);
+    // Evita disparar mais de uma busca de rodadas novas ao mesmo tempo (ex:
+    // o jogador completa duas voltas rápido antes da 1ª busca responder).
+    const buscandoNovasRodadasRef = useRef(false);
     const [caindo, setCaindo] = useState([]);
     const [pontos, setPontos] = useState(0);
     // Estatísticas pra tela de fim de jogo - antes só mostrava a pontuação,
@@ -627,9 +630,54 @@ export default function TiroCerteiro() {
         return () => clearInterval(intervalo);
     }, [fase]);
 
+    // Reportado pelo usuário: "rodadas repetidas, rodadas seguidas e
+    // repetidas" - o índice só voltava pro 0 ao chegar no fim do lote,
+    // repetindo as mesmas 12 rodadas na MESMA ordem sem parar (munição do
+    // premium, 18, já é maior que QTD_RODADAS=12, então isso acontece toda
+    // partida bem cedo). Agora, ao completar uma volta: reembaralha o lote
+    // atual na hora (sem pausa nenhuma pro jogador, já que não depende de
+    // rede) E busca um lote novo de verdade em segundo plano pra substituir
+    // assim que chegar - a repetição exata só volta a acontecer se a busca
+    // de um lote novo falhar.
     function avancarRodada() {
-        setIndiceAtual((prev) => (prev + 1 < rodadas.length ? prev + 1 : 0));
+        setIndiceAtual((prev) => {
+            if (prev + 1 < rodadas.length) {
+                return prev + 1;
+            }
+
+            setRodadas((atual) => [...atual].sort(() => Math.random() - 0.5));
+            buscarNovoLote();
+            return 0;
+        });
         setCaindo([]);
+    }
+
+    function buscarNovoLote() {
+        if (buscandoNovasRodadasRef.current) return;
+        buscandoNovasRodadasRef.current = true;
+
+        fetch(`${API_URL}/controller/tiroCerteiro.php`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token"),
+            },
+            body: JSON.stringify({
+                action: "mais_rodadas",
+                category_ids: categoriasEscolhidas.map((c) => c.id),
+            }),
+        })
+            .then((r) => r.json())
+            .then((data) => {
+                if (data?.success !== false && Array.isArray(data?.rodadas) && data.rodadas.length > 0) {
+                    setRodadas(data.rodadas);
+                    setIndiceAtual(0);
+                }
+            })
+            .catch(() => {})
+            .finally(() => {
+                buscandoNovasRodadasRef.current = false;
+            });
     }
 
     // palavra (opcional): { alvo, certa } da rodada que gerou o erro - vai

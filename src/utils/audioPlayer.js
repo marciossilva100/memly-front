@@ -409,12 +409,13 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
 
             // Antes ficava travado em 0.9x, ignorando a preferência salva em
             // Configurações (que fica logo abaixo do seletor de voz natural -
-            // ou seja, foi pensada pra controlar exatamente essa voz) - só o
-            // ramo de voz padrão (abaixo) lia zaldemy_velocidade_tts. Usuário
+            // ou seja, foi pensada pra controlar exatamente essa voz). Usuário
             // reportou que mudar a velocidade "não parece surtir efeito no
             // treino de ia" (Perguntas/Frase do Dia/Tradução Reversa, que
-            // tocam voz natural) - unificado com o mesmo cálculo do ramo de
-            // voz padrão, pra "1.00x" significar o mesmo ritmo nos dois casos.
+            // tocam voz natural) - corrigido pra ler a preferência salva aqui
+            // também. Chave PRÓPRIA (zaldemy_velocidade_tts), independente da
+            // voz padrão (zaldemy_velocidade_tts_padrao, ramo abaixo) - dois
+            // controles separados em Configurações.
             const velocidadePreferidaNatural = parseFloat(localStorage.getItem('zaldemy_velocidade_tts'));
             audio.playbackRate = velocidadeNormal
                 ? 1.0
@@ -469,12 +470,14 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
             const audio = new Audio(urlAudio);
             currentAudio = audio;
 
-            // A voz padrão (LibreTranslate) não tem parâmetro de velocidade
-            // na API, então aplicamos no player - disponível em qualquer
-            // plano, diferente da escolha de voz (só premium). velocidadeNormal
+            // A voz padrão (Google) não tem parâmetro de velocidade na API,
+            // então aplicamos no player - disponível em qualquer plano,
+            // diferente da escolha de voz (só premium). Preferência PRÓPRIA
+            // (zaldemy_velocidade_tts_padrao), independente da voz natural
+            // logo acima - usuário pediu controles separados. velocidadeNormal
             // ignora a preferência salva (ex: acerto no jogo Chuva de Frases,
             // que sempre toca no tom normal pra não atrapalhar o reforço).
-            const velocidadePreferida = parseFloat(localStorage.getItem('zaldemy_velocidade_tts'));
+            const velocidadePreferida = parseFloat(localStorage.getItem('zaldemy_velocidade_tts_padrao'));
             audio.playbackRate = velocidadeNormal
                 ? 1.0
                 : (Number.isFinite(velocidadePreferida) ? velocidadePreferida : 1.0);

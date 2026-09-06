@@ -46,6 +46,10 @@ export default function Configuracoes() {
     const { t } = useTranslation();
     const { logout, user, checkAuth } = useAuth();
     const isPremium = user?.plano === 1;
+    // Premium e limitado ouvem voz natural (limitado com cota diária); só o
+    // free (plano 2) nunca recebe voz natural, sempre cai na voz padrão
+    // (Google) - ver audioPlayer.js.
+    const temVozNatural = user?.plano === 1 || user?.plano === 3;
     const API_URL = import.meta.env.VITE_API_URL;
 
     const [openTreinoIA, setOpenTreinoIA] = useState(false);
@@ -128,6 +132,13 @@ export default function Configuracoes() {
     const [velocidadeTts, setVelocidadeTts] = useState(1.00);
     const [salvandoVelocidade, setSalvandoVelocidade] = useState(false);
     const [erroVelocidade, setErroVelocidade] = useState('');
+
+    // Velocidade da voz padrão (Google) - independente da voz natural acima,
+    // usuário pediu controles separados (antes as duas compartilhavam a
+    // mesma preferência).
+    const [velocidadeTtsPadrao, setVelocidadeTtsPadrao] = useState(1.00);
+    const [salvandoVelocidadePadrao, setSalvandoVelocidadePadrao] = useState(false);
+    const [erroVelocidadePadrao, setErroVelocidadePadrao] = useState('');
 
     // Preferência só do dispositivo (não precisa sincronizar entre aparelhos,
     // mesmo padrão de armazenamento já usado pra velocidade de fallback em
@@ -362,6 +373,8 @@ export default function Configuracoes() {
                     setVozTts(data.voz_tts || 'nova');
                     setVelocidadeTts(data.velocidade_tts ?? 1.00);
                     localStorage.setItem('zaldemy_velocidade_tts', String(data.velocidade_tts ?? 1.00));
+                    setVelocidadeTtsPadrao(data.velocidade_tts_padrao ?? 1.00);
+                    localStorage.setItem('zaldemy_velocidade_tts_padrao', String(data.velocidade_tts_padrao ?? 1.00));
                 }
             } catch (error) {
                 console.error('Erro ao carregar configurações:', error);
@@ -487,6 +500,41 @@ export default function Configuracoes() {
             setErroVelocidade(t("server_connection_error"));
         } finally {
             setSalvandoVelocidade(false);
+        }
+    }
+
+    async function handleSelecionarVelocidadePadrao(velocidade) {
+        if (velocidade === velocidadeTtsPadrao || salvandoVelocidadePadrao) return;
+
+        const velocidadeAnterior = velocidadeTtsPadrao;
+        setVelocidadeTtsPadrao(velocidade);
+        setErroVelocidadePadrao('');
+        setSalvandoVelocidadePadrao(true);
+
+        try {
+            const res = await fetch(`${API_URL}/controller/configuracoes.php`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({ action: 'atualizar_velocidade_tts_padrao', velocidade_tts_padrao: velocidade })
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                setVelocidadeTtsPadrao(velocidadeAnterior);
+                setErroVelocidadePadrao(data.message || t("unexpected_error"));
+            } else {
+                localStorage.setItem('zaldemy_velocidade_tts_padrao', String(velocidade));
+            }
+        } catch (error) {
+            console.error('Erro ao salvar velocidade padrão:', error);
+            setVelocidadeTtsPadrao(velocidadeAnterior);
+            setErroVelocidadePadrao(t("server_connection_error"));
+        } finally {
+            setSalvandoVelocidadePadrao(false);
         }
     }
 
@@ -639,20 +687,52 @@ export default function Configuracoes() {
                             </>
                         )}
 
-                        <div className={isPremium ? "mt-4 pt-4 border-t border-gray-700" : ""}>
+                        {temVozNatural && (
+                            <div className={isPremium ? "mt-4 pt-4 border-t border-gray-700" : ""}>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <Gauge className="w-4 h-4 text-[#4cb8c4]" />
+                                    <span className="text-gray-300 text-sm">{t("voice_speed_natural")}</span>
+                                </div>
+                                <div className="grid grid-cols-4 gap-2">
+                                    {VELOCIDADES_TTS.map((velocidade) => {
+                                        const selecionada = velocidadeTts === velocidade;
+                                        return (
+                                            <button
+                                                key={velocidade}
+                                                type="button"
+                                                disabled={salvandoVelocidade}
+                                                onClick={() => handleSelecionarVelocidade(velocidade)}
+                                                className={`rounded-lg border py-1.5 text-sm font-medium transition-colors disabled:opacity-60 ${
+                                                    selecionada
+                                                        ? "border-[#4cb8c4] bg-[#4cb8c4]/10 text-[#4cb8c4]"
+                                                        : "border-gray-700 bg-gray-900/40 text-gray-300 hover:bg-gray-700/40"
+                                                }`}
+                                            >
+                                                {velocidade}x
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                                {erroVelocidade && (
+                                    <p className="text-red-400 text-xs mt-2">{erroVelocidade}</p>
+                                )}
+                            </div>
+                        )}
+
+                        <div className={temVozNatural || isPremium ? "mt-4 pt-4 border-t border-gray-700" : ""}>
                             <div className="flex items-center gap-2 mb-2">
                                 <Gauge className="w-4 h-4 text-[#4cb8c4]" />
                                 <span className="text-gray-300 text-sm">{t("voice_speed")}</span>
                             </div>
                             <div className="grid grid-cols-4 gap-2">
                                 {VELOCIDADES_TTS.map((velocidade) => {
-                                    const selecionada = velocidadeTts === velocidade;
+                                    const selecionada = velocidadeTtsPadrao === velocidade;
                                     return (
                                         <button
                                             key={velocidade}
                                             type="button"
-                                            disabled={salvandoVelocidade}
-                                            onClick={() => handleSelecionarVelocidade(velocidade)}
+                                            disabled={salvandoVelocidadePadrao}
+                                            onClick={() => handleSelecionarVelocidadePadrao(velocidade)}
                                             className={`rounded-lg border py-1.5 text-sm font-medium transition-colors disabled:opacity-60 ${
                                                 selecionada
                                                     ? "border-[#4cb8c4] bg-[#4cb8c4]/10 text-[#4cb8c4]"
@@ -664,8 +744,8 @@ export default function Configuracoes() {
                                     );
                                 })}
                             </div>
-                            {erroVelocidade && (
-                                <p className="text-red-400 text-xs mt-2">{erroVelocidade}</p>
+                            {erroVelocidadePadrao && (
+                                <p className="text-red-400 text-xs mt-2">{erroVelocidadePadrao}</p>
                             )}
                         </div>
 

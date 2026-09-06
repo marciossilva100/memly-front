@@ -445,6 +445,7 @@
   "type_answer_placeholder": "Wpisz swoją odpowiedź...",
   "answer_by_voice": "Odpowiedz głosowo",
   "feedback_label": "Informacja zwrotna",
+  "ideal_answer_label": "Idealna odpowiedź",
   "ask_doubt_button": "Zadaj pytanie o to pytanie",
   "doubt_chat_title": "Zadaj pytanie",
   "doubt_chat_empty": "Zapytaj o coś związanego z tym pytaniem, jeśli masz wątpliwości.",

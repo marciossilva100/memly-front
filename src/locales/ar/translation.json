@@ -445,6 +445,7 @@
   "type_answer_placeholder": "اكتب إجابتك...",
   "answer_by_voice": "الإجابة بالصوت",
   "feedback_label": "الملاحظات",
+  "ideal_answer_label": "الإجابة المثالية",
   "ask_doubt_button": "اطرح سؤالاً حول هذا السؤال",
   "doubt_chat_title": "طرح سؤال",
   "doubt_chat_empty": "اسأل عن أي شيء يخص هذا السؤال إذا كان لديك شك.",

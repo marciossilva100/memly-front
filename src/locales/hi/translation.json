@@ -445,6 +445,7 @@
   "type_answer_placeholder": "अपना उत्तर टाइप करें...",
   "answer_by_voice": "आवाज़ से जवाब दें",
   "feedback_label": "प्रतिक्रिया",
+  "ideal_answer_label": "आदर्श उत्तर",
   "ask_doubt_button": "इस सवाल के बारे में पूछें",
   "doubt_chat_title": "सवाल पूछें",
   "doubt_chat_empty": "अगर कोई शंका है तो इस सवाल के बारे में कुछ पूछें।",

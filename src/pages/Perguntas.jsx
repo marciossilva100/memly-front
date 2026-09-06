@@ -761,6 +761,13 @@ export default function Perguntas() {
                             <p className="text-white leading-relaxed">{resultado.feedback}</p>
                         </div>
 
+                        {!resultado.pode_tentar_novamente && resultado.resposta_ideal &&
+                            <div className="rounded-xl border border-green-800/50 bg-gradient-to-br from-[#1c3a2e] to-[#0d1425] p-4">
+                                <p className="text-green-400 text-xs mb-1 uppercase tracking-wide font-semibold">{t("ideal_answer_label")}</p>
+                                <p className="text-white leading-relaxed">{resultado.resposta_ideal}</p>
+                            </div>
+                        }
+
                         <DuvidaChat questionId={questionId} />
                     </div>
                 }

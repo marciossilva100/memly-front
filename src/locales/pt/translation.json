@@ -447,6 +447,7 @@
   "type_answer_placeholder": "Digite sua resposta...",
   "answer_by_voice": "Responder por voz",
   "feedback_label": "Feedback",
+  "ideal_answer_label": "Resposta ideal",
   "ask_doubt_button": "Tirar dúvida sobre essa pergunta",
   "doubt_chat_title": "Tirar dúvida",
   "doubt_chat_empty": "Pergunte algo sobre essa pergunta, se tiver dúvida.",

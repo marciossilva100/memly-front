@@ -445,6 +445,7 @@
   "type_answer_placeholder": "输入你的答案...",
   "answer_by_voice": "语音回答",
   "feedback_label": "反馈",
+  "ideal_answer_label": "理想答案",
   "ask_doubt_button": "对这道题提问",
   "doubt_chat_title": "提问",
   "doubt_chat_empty": "如果有疑问,可以就这道题提问。",

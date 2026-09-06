@@ -445,6 +445,7 @@
   "type_answer_placeholder": "Cevabınızı yazın...",
   "answer_by_voice": "Sesli cevapla",
   "feedback_label": "Geri bildirim",
+  "ideal_answer_label": "İdeal cevap",
   "ask_doubt_button": "Bu soru hakkında bir şey sor",
   "doubt_chat_title": "Soru sor",
   "doubt_chat_empty": "Bu soruyla ilgili bir şüphen varsa sorabilirsin.",

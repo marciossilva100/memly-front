@@ -445,6 +445,7 @@
   "type_answer_placeholder": "Введите ваш ответ...",
   "answer_by_voice": "Ответить голосом",
   "feedback_label": "Обратная связь",
+  "ideal_answer_label": "Идеальный ответ",
   "ask_doubt_button": "Задать вопрос об этом задании",
   "doubt_chat_title": "Задать вопрос",
   "doubt_chat_empty": "Задайте вопрос об этом задании, если есть сомнения.",

@@ -447,6 +447,7 @@
   "type_answer_placeholder": "Type your answer...",
   "answer_by_voice": "Answer by voice",
   "feedback_label": "Feedback",
+  "ideal_answer_label": "Ideal answer",
   "ask_doubt_button": "Ask a question about this prompt",
   "doubt_chat_title": "Ask a question",
   "doubt_chat_empty": "Ask something about this question, if you have doubts.",

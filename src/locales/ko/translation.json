@@ -445,6 +445,7 @@
   "type_answer_placeholder": "답변을 입력하세요...",
   "answer_by_voice": "음성으로 답하기",
   "feedback_label": "피드백",
+  "ideal_answer_label": "이상적인 답변",
   "ask_doubt_button": "이 질문에 대해 물어보기",
   "doubt_chat_title": "질문하기",
   "doubt_chat_empty": "궁금한 점이 있으면 이 질문에 대해 물어보세요.",

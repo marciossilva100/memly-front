@@ -706,7 +706,8 @@ export default function TraducaoReversa() {
                 <div className="fixed bottom-0 left-0 w-full px-6 py-4 text-center bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent">
                     <button
                         onClick={handleSkip}
-                        className="px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white w-full flex items-center justify-center gap-2 hover:bg-gray-700/50 transition-colors">
+                        disabled={gravando}
+                        className="px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white w-full flex items-center justify-center gap-2 hover:bg-gray-700/50 disabled:opacity-50 transition-colors">
                         <SkipForward className="w-4 h-4" />
                         {t("next_question")}
                     </button>

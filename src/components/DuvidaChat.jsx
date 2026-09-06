@@ -123,10 +123,6 @@ export default function DuvidaChat({ questionId }) {
                     </div>
                 )}
 
-                {!carregandoHistorico && mensagens.length === 0 && (
-                    <p className="text-gray-500 text-xs text-center py-2">{t("doubt_chat_empty")}</p>
-                )}
-
                 {mensagens.map((m, i) => (
                     <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
                         <p className={`text-sm rounded-2xl px-3 py-2 max-w-[85%] ${m.role === "user"
@@ -158,7 +154,7 @@ export default function DuvidaChat({ questionId }) {
                             type="text"
                             value={texto}
                             onChange={(e) => setTexto(e.target.value)}
-                            placeholder={t("doubt_chat_placeholder")}
+                            placeholder={mensagens.length === 0 && !carregandoHistorico ? t("doubt_chat_empty") : t("doubt_chat_placeholder")}
                             disabled={enviando}
                             className="flex-1 bg-transparent text-white text-sm placeholder-gray-500 outline-none px-2 py-1.5 disabled:opacity-50"
                         />

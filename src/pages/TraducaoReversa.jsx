@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { Volume2, Mic, Square, RotateCcw, History, SkipForward, Send, Languages, Ban, AlertCircle, Keyboard, Loader2 } from "lucide-react";
+import { Volume2, Mic, Square, RotateCcw, History, SkipForward, Send, Languages, Ban, AlertCircle, Keyboard, Loader2, Check, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { playAudio, pararAudio } from "../utils/audioPlayer";
 import { useAuth } from "../context/AuthContext";
@@ -53,11 +53,17 @@ export default function TraducaoReversa() {
     const [motivoPremium, setMotivoPremium] = useState(null);
     const API_URL = import.meta.env.VITE_API_URL;
 
+    // Seletor de categoria (só aparece 1x por dia, mesmo padrão de
+    // treinoIA.jsx/Perguntas.jsx) - obrigatório escolher até 2 categorias.
+    const [mostrarSeletor, setMostrarSeletor] = useState(false);
+    const [categorias, setCategorias] = useState([]);
+    const [categoriasSelecionadas, setCategoriasSelecionadas] = useState([]);
+
     const { gravando, audioBlob, audioUrl, erro: erroGravacao, iniciarGravacao, pararGravacao, limpar } = useAudioRecorder();
 
     useEffect(() => () => pararAudio(), []);
 
-    const fetchTexto = () => {
+    const fetchTexto = (categoriaIds) => {
         setLoading(true);
         setError(null);
         setInsufficientContent(false);
@@ -67,7 +73,9 @@ export default function TraducaoReversa() {
         setRespostaTexto("");
         limpar();
 
-        fetch(`${API_URL}/controller/TraducaoReversaController.php`, {
+        const query = categoriaIds?.length > 0 ? `?category_ids=${categoriaIds.join(',')}` : '';
+
+        fetch(`${API_URL}/controller/TraducaoReversaController.php${query}`, {
             method: 'GET',
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token")
@@ -122,8 +130,59 @@ export default function TraducaoReversa() {
     useEffect(() => {
         if (jaBuscou.current) return;
         jaBuscou.current = true;
-        fetchTexto();
+        verificarSeletorCategoria();
     }, []);
+
+    // Checagem leve (sem gerar nada) - só pergunta a categoria quando ainda
+    // não existe pendente de hoje nem o limite diário foi atingido (mesmo
+    // padrão de treinoIA.jsx/Perguntas.jsx).
+    function verificarSeletorCategoria() {
+        setLoading(true);
+
+        fetch(`${API_URL}/controller/TraducaoReversaController.php?action=precisa_escolher_categoria`, {
+            headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.precisa_escolher) {
+                    return fetch(`${API_URL}/controller/TraducaoReversaController.php?action=listar_categorias`, {
+                        headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
+                    })
+                        .then(res => res.json())
+                        .then(catData => {
+                            const lista = catData.categorias || [];
+                            if (lista.length === 0) {
+                                setInsufficientContent(true);
+                                setLoading(false);
+                                return;
+                            }
+                            setCategorias(lista);
+                            setMostrarSeletor(true);
+                            setLoading(false);
+                        });
+                }
+
+                fetchTexto();
+            })
+            .catch(() => fetchTexto());
+    }
+
+    function alternarCategoria(id) {
+        setCategoriasSelecionadas((prev) => {
+            if (prev.includes(id)) {
+                return prev.filter((c) => c !== id);
+            }
+            if (prev.length >= 2) {
+                return [prev[1], id];
+            }
+            return [...prev, id];
+        });
+    }
+
+    function confirmarCategoria() {
+        setMostrarSeletor(false);
+        fetchTexto(categoriasSelecionadas);
+    }
 
     const handleSkip = async () => {
         try {
@@ -258,6 +317,56 @@ export default function TraducaoReversa() {
                     onClose={() => navigate('/home')}
                     motivo={motivoPremium}
                 />
+            </div>
+        );
+    }
+
+    if (mostrarSeletor) {
+        return (
+            <div className="h-dvh flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
+                <div className="flex-1 overflow-y-auto px-5 pt-8 pb-40">
+                    <div className="flex flex-col items-center text-center mb-6">
+                        <div className="w-14 h-14 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 flex items-center justify-center mb-4">
+                            <Languages className="w-6 h-6 text-[#4cb8c4]" />
+                        </div>
+                        <h1 className="text-lg font-semibold text-white mb-1">{t("category_selector_title")}</h1>
+                        <p className="text-gray-400 text-sm max-w-xs">{t("category_selector_subtitle")}</p>
+                    </div>
+
+                    <div className="flex flex-col gap-2.5">
+                        {categorias.map((cat) => {
+                            const selecionada = categoriasSelecionadas.includes(cat.categoria_id);
+                            return (
+                                <button
+                                    key={cat.categoria_id}
+                                    type="button"
+                                    onClick={() => alternarCategoria(cat.categoria_id)}
+                                    className={`flex items-center gap-3 rounded-xl border px-4 py-3.5 text-left transition-colors ${selecionada
+                                        ? "border-[#4cb8c4] bg-[#4cb8c4]/10"
+                                        : "border-gray-700 bg-gray-800/50 hover:bg-gray-700/50"
+                                        }`}
+                                >
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-white text-sm font-medium truncate">{cat.categoria || t("uncategorized")}</p>
+                                        <p className="text-gray-400 text-xs">{cat.total} {t("phrases_count_label")}</p>
+                                    </div>
+                                    {selecionada && <Check className="w-5 h-5 text-[#4cb8c4] shrink-0" />}
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                <div className="fixed bottom-0 left-0 w-full px-6 py-4 bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent">
+                    <button
+                        onClick={confirmarCategoria}
+                        disabled={categoriasSelecionadas.length === 0}
+                        className="px-6 py-3.5 w-full rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] disabled:opacity-40 text-white font-medium flex items-center justify-center gap-2 transition-colors"
+                    >
+                        {t("category_selector_generate_chosen")}
+                        <ArrowRight className="w-4 h-4" />
+                    </button>
+                </div>
             </div>
         );
     }

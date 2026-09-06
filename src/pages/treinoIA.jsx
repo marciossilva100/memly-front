@@ -99,7 +99,16 @@ export default function TreinoIA() {
                     })
                         .then(res => res.json())
                         .then(catData => {
-                            setCategorias(catData.categorias || []);
+                            const lista = catData.categorias || [];
+                            if (lista.length === 0) {
+                                // Sem categoria elegível nenhuma - mesma tela de
+                                // conteúdo insuficiente de sempre, não faz
+                                // sentido mostrar um seletor vazio.
+                                setInsufficientContent(true);
+                                setLoading(false);
+                                return;
+                            }
+                            setCategorias(lista);
                             setMostrarSeletor(true);
                             setLoading(false);
                         });

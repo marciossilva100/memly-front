@@ -576,8 +576,19 @@ export default function TreinoIA() {
                                     <RotateCcw className="w-4 h-4" />
                                     {t("try_again")}
                                 </button>
+                                {/* navigate(-1) (volta no histórico) trocado por
+                                    destino explícito - reportado pelo usuário que
+                                    não conseguia encerrar o treino, só "tentar
+                                    novamente" funcionava. Sem isso, esse botão
+                                    dependia do histórico de navegação do
+                                    navegador ter pra onde voltar; sem histórico
+                                    (ou um histórico que só levava de volta pra cá),
+                                    o clique não tirava o aluno da tela de jeito
+                                    nenhum. Mesma distinção "voltar" x "ir pra
+                                    home" já usada na tela de limite diário desta
+                                    página. */}
                                 <button
-                                    onClick={() => navigate(-1)}
+                                    onClick={() => navigate('/home')}
                                     className="px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white font-medium transition-colors"
                                 >
                                     {t("back")}
@@ -585,7 +596,7 @@ export default function TreinoIA() {
                             </div>
                         ) : (
                             <button
-                                onClick={() => navigate(-1)}
+                                onClick={() => navigate('/home')}
                                 className="mt-2 px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors"
                             >
                                 {t("back")}

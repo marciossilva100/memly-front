@@ -226,7 +226,7 @@ export default function Perguntas() {
     const handleSkip = async () => {
         await marcarPendenteComoPulada();
         setResultado(null);
-        fetchQuestion();
+        fetchQuestion(categoriasSelecionadas);
     };
 
     async function enviarResposta() {
@@ -323,7 +323,7 @@ export default function Perguntas() {
             await marcarPendenteComoPulada();
         }
         setResultado(null);
-        fetchQuestion();
+        fetchQuestion(categoriasSelecionadas);
     }
 
     function tentarNovamente() {
@@ -448,7 +448,7 @@ export default function Perguntas() {
 
                 <div className="mt-8 flex flex-col gap-3 w-full max-w-xs">
                     <button
-                        onClick={fetchQuestion}
+                        onClick={() => fetchQuestion(categoriasSelecionadas)}
                         className="px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors"
                     >
                         {t("try_again")}

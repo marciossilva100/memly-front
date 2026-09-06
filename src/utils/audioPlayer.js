@@ -32,6 +32,20 @@ function limparMediaSession() {
     navigator.mediaSession.playbackState = "none";
 }
 
+// Alguns navegadores (relatado no Chrome/Android, mesma classe de quirk da
+// Media Session acima) resetam playbackRate pra 1 sozinhos assim que o
+// <audio> termina de carregar os metadados de uma blob URL recém-criada,
+// mesmo já tendo sido setado antes do play() - reaplica em 'loadedmetadata'
+// (dispara de novo antes de tocar) e 'playing' (dispara já tocando, rede
+// mais lenta) pra garantir que a velocidade escolhida realmente "gruda",
+// não só na tentativa inicial.
+function aplicarVelocidade(audio, rate) {
+    audio.playbackRate = rate;
+    const reaplicar = () => { audio.playbackRate = rate; };
+    audio.addEventListener("loadedmetadata", reaplicar);
+    audio.addEventListener("playing", reaplicar);
+}
+
 // Depois que o modal premium por limite de áudio já apareceu uma vez, novas
 // tentativas de reprodução caem direto pra voz padrão (free) em vez de
 // interromper de novo com o modal. Guardado no localStorage (não só em
@@ -417,9 +431,9 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
             // voz padrão (zaldemy_velocidade_tts_padrao, ramo abaixo) - dois
             // controles separados em Configurações.
             const velocidadePreferidaNatural = parseFloat(localStorage.getItem('zaldemy_velocidade_tts'));
-            audio.playbackRate = velocidadeNormal
+            aplicarVelocidade(audio, velocidadeNormal
                 ? 1.0
-                : (Number.isFinite(velocidadePreferidaNatural) ? velocidadePreferidaNatural : 1.0);
+                : (Number.isFinite(velocidadePreferidaNatural) ? velocidadePreferidaNatural : 1.0));
             onAudioIniciado?.();
             marcarMediaSessionTocando();
 
@@ -478,9 +492,9 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
             // ignora a preferência salva (ex: acerto no jogo Chuva de Frases,
             // que sempre toca no tom normal pra não atrapalhar o reforço).
             const velocidadePreferida = parseFloat(localStorage.getItem('zaldemy_velocidade_tts_padrao'));
-            audio.playbackRate = velocidadeNormal
+            aplicarVelocidade(audio, velocidadeNormal
                 ? 1.0
-                : (Number.isFinite(velocidadePreferida) ? velocidadePreferida : 1.0);
+                : (Number.isFinite(velocidadePreferida) ? velocidadePreferida : 1.0));
 
             await audio.play().catch(err => {
                 console.error("ERRO PLAY:", err);

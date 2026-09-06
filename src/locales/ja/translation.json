@@ -566,7 +566,7 @@
   "vocabulary_hint_balloon": "ここをタップすると、すでに学習している単語を確認できます。",
   "ia_gerando_conteudo": "AIがコンテンツを生成しています...",
   "category_selector_title": "今日のテーマを選ぶ",
-  "category_selector_subtitle": "AIに任せてサプライズにするか、今日の文の元になるカテゴリーを2つまで選べます。",
+  "category_selector_subtitle": "今日の文の元になるカテゴリーを2つまで選んでください。",
   "category_selector_all_categories": "すべてのカテゴリー",
   "category_selector_all_categories_desc": "AIがテーマを選びます（デフォルト）",
   "category_selector_or_choose": "またはカテゴリーを2つまで選択",

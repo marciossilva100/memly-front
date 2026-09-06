@@ -566,7 +566,7 @@
   "vocabulary_hint_balloon": "Vous pouvez appuyer ici pour voir les mots que vous étudiez déjà.",
   "ia_gerando_conteudo": "L'IA génère votre contenu...",
   "category_selector_title": "Choisissez le thème du jour",
-  "category_selector_subtitle": "Laissez l'IA vous surprendre ou choisissez jusqu'à 2 catégories pour la phrase du jour.",
+  "category_selector_subtitle": "Choisissez jusqu'à 2 catégories pour la phrase du jour.",
   "category_selector_all_categories": "Toutes les catégories",
   "category_selector_all_categories_desc": "Laisser l'IA choisir le thème (par défaut)",
   "category_selector_or_choose": "Ou choisissez jusqu'à 2 catégories",

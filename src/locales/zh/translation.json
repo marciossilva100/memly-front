@@ -566,7 +566,7 @@
   "vocabulary_hint_balloon": "点击这里可以查看你已经在学习的单词。",
   "ia_gerando_conteudo": "AI 正在生成您的内容...",
   "category_selector_title": "选择今天的主题",
-  "category_selector_subtitle": "可以让AI给你惊喜,也可以选择最多2个分类作为今天句子的基础。",
+  "category_selector_subtitle": "选择最多2个分类作为今天句子的基础。",
   "category_selector_all_categories": "所有分类",
   "category_selector_all_categories_desc": "由AI选择主题(默认)",
   "category_selector_or_choose": "或选择最多2个分类",

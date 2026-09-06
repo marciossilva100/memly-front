@@ -568,7 +568,7 @@
   "vocabulary_hint_balloon": "You can tap here to see the words you're already studying.",
   "ia_gerando_conteudo": "The AI is generating your content...",
   "category_selector_title": "Choose today's topic",
-  "category_selector_subtitle": "Let the AI surprise you, or pick up to 2 categories to base today's phrase on.",
+  "category_selector_subtitle": "Choose up to 2 categories to base today's phrase on.",
   "category_selector_all_categories": "All categories",
   "category_selector_all_categories_desc": "Let the AI choose the topic (default)",
   "category_selector_or_choose": "Or choose up to 2 categories",

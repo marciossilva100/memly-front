@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Volume2, Mic, Square, RotateCcw, History, Send, BookOpenText, Ban, AlertCircle, Eye, EyeOff, Loader2, Check, Sparkles, ArrowRight } from "lucide-react";
+import { Volume2, Mic, Square, RotateCcw, History, Send, BookOpenText, Ban, AlertCircle, Eye, EyeOff, Loader2, Check, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -338,32 +338,6 @@ export default function TreinoIA() {
                     </div>
 
                     <div className="flex flex-col gap-2.5">
-                        <button
-                            type="button"
-                            onClick={() => setCategoriasSelecionadas([])}
-                            className={`flex items-center gap-3 rounded-xl border px-4 py-3.5 text-left transition-colors ${categoriasSelecionadas.length === 0
-                                ? "border-[#4cb8c4] bg-[#4cb8c4]/10"
-                                : "border-gray-700 bg-gray-800/50 hover:bg-gray-700/50"
-                                }`}
-                        >
-                            <div className="w-9 h-9 shrink-0 rounded-full bg-gradient-to-br from-[#4cb8c4] to-[#085078] flex items-center justify-center">
-                                <Sparkles className="w-4 h-4 text-white" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-white text-sm font-medium">{t("category_selector_all_categories")}</p>
-                                <p className="text-gray-400 text-xs">{t("category_selector_all_categories_desc")}</p>
-                            </div>
-                            {categoriasSelecionadas.length === 0 && (
-                                <Check className="w-5 h-5 text-[#4cb8c4] shrink-0" />
-                            )}
-                        </button>
-
-                        {categorias.length > 0 && (
-                            <p className="text-gray-500 text-xs uppercase tracking-wide mt-3 mb-0.5">
-                                {t("category_selector_or_choose")}
-                            </p>
-                        )}
-
                         {categorias.map((cat) => {
                             const selecionada = categoriasSelecionadas.includes(cat.categoria_id);
                             return (
@@ -390,11 +364,10 @@ export default function TreinoIA() {
                 <div className="fixed bottom-0 left-0 w-full px-6 py-4 bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent">
                     <button
                         onClick={confirmarCategoria}
-                        className="px-6 py-3.5 w-full rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium flex items-center justify-center gap-2 transition-colors"
+                        disabled={categoriasSelecionadas.length === 0}
+                        className="px-6 py-3.5 w-full rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] disabled:opacity-40 text-white font-medium flex items-center justify-center gap-2 transition-colors"
                     >
-                        {categoriasSelecionadas.length === 0
-                            ? t("category_selector_generate_surprise")
-                            : t("category_selector_generate_chosen")}
+                        {t("category_selector_generate_chosen")}
                         <ArrowRight className="w-4 h-4" />
                     </button>
                 </div>

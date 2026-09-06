@@ -568,7 +568,7 @@
   "vocabulary_hint_balloon": "Você pode tocar aqui pra ver as palavras que já está estudando.",
   "ia_gerando_conteudo": "A IA está gerando seu conteúdo...",
   "category_selector_title": "Escolha o assunto de hoje",
-  "category_selector_subtitle": "Você pode deixar a IA surpreender ou escolher até 2 categorias pra basear a frase de hoje.",
+  "category_selector_subtitle": "Escolha até 2 categorias pra basear a frase de hoje.",
   "category_selector_all_categories": "Todas as categorias",
   "category_selector_all_categories_desc": "Deixa a IA escolher o assunto (padrão)",
   "category_selector_or_choose": "Ou escolha até 2 categorias",

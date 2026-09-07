@@ -324,7 +324,7 @@ export async function limparCacheVozNatural() {
 
     if (typeof caches !== "undefined") {
         try {
-            await caches.delete("tts-cache-natural-v2");
+            await caches.delete("tts-cache-natural-v3");
         } catch {
             // sem Cache Storage disponível (ex: navegador sem suporte) - a
             // troca de voz ainda funciona pras próximas frases nunca

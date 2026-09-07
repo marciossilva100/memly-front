@@ -17,7 +17,8 @@ import {
     Loader2,
     BookOpen,
     MoreVertical,
-    FolderInput
+    FolderInput,
+    CheckCircle2
 } from "lucide-react";
 
 
@@ -52,6 +53,9 @@ export default function Frases() {
     const [movendoParaId, setMovendoParaId] = useState(null);
     const [erroMover, setErroMover] = useState('');
     const [buscaCategoriaMover, setBuscaCategoriaMover] = useState('');
+    // Nome da categoria de destino depois de mover com sucesso - enquanto
+    // preenchido, o modal mostra a mensagem de sucesso no lugar da lista.
+    const [moverSucessoNome, setMoverSucessoNome] = useState(null);
     const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
 
@@ -150,6 +154,7 @@ export default function Frases() {
         setMoverFraseItem(item);
         setErroMover('');
         setBuscaCategoriaMover('');
+        setMoverSucessoNome(null);
         setCarregandoCategoriasMover(true);
 
         try {
@@ -176,7 +181,7 @@ export default function Frases() {
         }
     }
 
-    async function moverFrasePara(categoriaDestinoId) {
+    async function moverFrasePara(categoriaDestinoId, categoriaDestinoNome) {
         if (!moverFraseItem || movendoParaId) return;
 
         setMovendoParaId(categoriaDestinoId);
@@ -203,8 +208,16 @@ export default function Frases() {
                 return;
             }
 
-            setMoverFraseItem(null);
+            // Recarrega a lista de frases já na hora (a frase movida some da
+            // tela atual) e mostra a confirmação dentro do próprio modal por
+            // um instante antes de fechar sozinho.
             listPhrase();
+            setMoverSucessoNome(categoriaDestinoNome);
+
+            setTimeout(() => {
+                setMoverFraseItem(null);
+                setMoverSucessoNome(null);
+            }, 1500);
         } catch {
             setErroMover(t("server_connection_error"));
         } finally {
@@ -428,61 +441,72 @@ export default function Frases() {
                 <div className="fixed inset-0 backdrop-blur-[2px]" />
                 <div className="fixed inset-0 flex items-end sm:items-center justify-center px-4 pb-4 sm:pb-0">
                     <Dialog.Panel className="w-full max-w-md max-h-[80vh] flex flex-col rounded-2xl from-gray-900 to-gray-800 bg-gradient-to-br border border-white/30 p-5 shadow-xl">
-                        <Dialog.Title className="text-lg font-semibold text-white mb-3">
-                            {t("move_phrase_title")}
-                        </Dialog.Title>
+                        {moverSucessoNome ? (
+                            <div className="flex flex-col items-center justify-center py-8 gap-3">
+                                <CheckCircle2 size={40} className="text-green-400" />
+                                <p className="text-white text-center">
+                                    {t("move_phrase_success", { categoria: moverSucessoNome })}
+                                </p>
+                            </div>
+                        ) : (
+                            <>
+                                <Dialog.Title className="text-lg font-semibold text-white mb-3">
+                                    {t("move_phrase_title")}
+                                </Dialog.Title>
 
-                        <div className="flex items-center gap-2 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden px-3 mb-3 shrink-0">
-                            <Search className="text-gray-500 shrink-0" width={16} />
-                            <input
-                                type="text"
-                                className="w-full py-2 outline-none text-sm text-white !bg-transparent placeholder:text-gray-500"
-                                placeholder={t("search")}
-                                value={buscaCategoriaMover}
-                                onChange={(e) => setBuscaCategoriaMover(e.target.value)}
-                            />
-                        </div>
-
-                        <div className="flex-1 overflow-y-auto scrollbar-hide space-y-1.5">
-                            {carregandoCategoriasMover && (
-                                <div className="flex justify-center py-6">
-                                    <Loader2 size={22} className="text-[#4cb8c4] animate-spin" />
+                                <div className="flex items-center gap-2 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden px-3 mb-3 shrink-0">
+                                    <Search className="text-gray-500 shrink-0" width={16} />
+                                    <input
+                                        type="text"
+                                        className="w-full py-2 outline-none text-sm text-white !bg-transparent placeholder:text-gray-500"
+                                        placeholder={t("search")}
+                                        value={buscaCategoriaMover}
+                                        onChange={(e) => setBuscaCategoriaMover(e.target.value)}
+                                    />
                                 </div>
-                            )}
 
-                            {!carregandoCategoriasMover && categoriasParaMoverFiltradas.length === 0 && (
-                                <div className="text-center py-6 text-gray-400 text-sm">
-                                    {t("move_phrase_empty")}
-                                </div>
-                            )}
-
-                            {!carregandoCategoriasMover && categoriasParaMoverFiltradas.map((cat) => (
-                                <button
-                                    key={cat.id}
-                                    type="button"
-                                    disabled={movendoParaId !== null}
-                                    className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-gray-800/50 border border-gray-700 hover:bg-gray-700/50 transition-colors disabled:opacity-60 text-left"
-                                    onClick={() => moverFrasePara(cat.id)}
-                                >
-                                    <span className="text-white text-sm truncate">{cat.categoria}</span>
-                                    {movendoParaId === cat.id && (
-                                        <Loader2 size={16} className="text-[#4cb8c4] animate-spin shrink-0" />
+                                <div className="flex-1 overflow-y-auto scrollbar-hide space-y-1.5">
+                                    {carregandoCategoriasMover && (
+                                        <div className="flex justify-center py-6">
+                                            <Loader2 size={22} className="text-[#4cb8c4] animate-spin" />
+                                        </div>
                                     )}
+
+                                    {!carregandoCategoriasMover && categoriasParaMoverFiltradas.length === 0 && (
+                                        <div className="text-center py-6 text-gray-400 text-sm">
+                                            {t("move_phrase_empty")}
+                                        </div>
+                                    )}
+
+                                    {!carregandoCategoriasMover && categoriasParaMoverFiltradas.map((cat) => (
+                                        <button
+                                            key={cat.id}
+                                            type="button"
+                                            disabled={movendoParaId !== null}
+                                            className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-gray-800/50 border border-gray-700 hover:bg-gray-700/50 transition-colors disabled:opacity-60 text-left"
+                                            onClick={() => moverFrasePara(cat.id, cat.categoria)}
+                                        >
+                                            <span className="text-white text-sm truncate">{cat.categoria}</span>
+                                            {movendoParaId === cat.id && (
+                                                <Loader2 size={16} className="text-[#4cb8c4] animate-spin shrink-0" />
+                                            )}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                {erroMover && (
+                                    <p className="text-red-400 text-xs mt-3">{erroMover}</p>
+                                )}
+
+                                <button
+                                    type="button"
+                                    className="w-full px-4 py-3 mt-3 rounded-xl bg-gray-800/50 border border-gray-700 hover:bg-gray-700/50 transition-colors text-gray-300 text-base shrink-0"
+                                    onClick={() => setMoverFraseItem(null)}
+                                >
+                                    {t("cancel")}
                                 </button>
-                            ))}
-                        </div>
-
-                        {erroMover && (
-                            <p className="text-red-400 text-xs mt-3">{erroMover}</p>
+                            </>
                         )}
-
-                        <button
-                            type="button"
-                            className="w-full px-4 py-3 mt-3 rounded-xl bg-gray-800/50 border border-gray-700 hover:bg-gray-700/50 transition-colors text-gray-300 text-base shrink-0"
-                            onClick={() => setMoverFraseItem(null)}
-                        >
-                            {t("cancel")}
-                        </button>
                     </Dialog.Panel>
                 </div>
             </Dialog>

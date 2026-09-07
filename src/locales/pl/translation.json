@@ -55,6 +55,7 @@
   "move": "Przenieś",
   "move_phrase_title": "Przenieść do której kategorii?",
   "move_phrase_empty": "Brak innej kategorii, do której można przenieść to zdanie.",
+  "move_phrase_success": "Zdanie zostało przeniesione do \"{{categoria}}\"!",
   "portuguese": "Portugalski",
   "english": "Angielski",
   "word": "słowa",

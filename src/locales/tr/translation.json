@@ -55,6 +55,7 @@
   "move": "Taşı",
   "move_phrase_title": "Hangi kategoriye taşınsın?",
   "move_phrase_empty": "Bu ifadeyi taşıyabileceğiniz başka bir kategori yok.",
+  "move_phrase_success": "İfade \"{{categoria}}\" kategorisine başarıyla taşındı!",
   "portuguese": "Portekizce",
   "english": "İngilizce",
   "word": "kelimeler",

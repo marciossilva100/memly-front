@@ -55,6 +55,7 @@
   "move": "Verschieben",
   "move_phrase_title": "In welche Kategorie verschieben?",
   "move_phrase_empty": "Keine andere Kategorie verfügbar, um diesen Satz zu verschieben.",
+  "move_phrase_success": "Satz erfolgreich nach \"{{categoria}}\" verschoben!",
   "portuguese": "Portugiesisch",
   "english": "Englisch",
   "word": "Wörter",

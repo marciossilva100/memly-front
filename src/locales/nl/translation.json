@@ -55,6 +55,7 @@
   "move": "Verplaatsen",
   "move_phrase_title": "Naar welke categorie verplaatsen?",
   "move_phrase_empty": "Geen andere categorie beschikbaar om deze zin naar te verplaatsen.",
+  "move_phrase_success": "Zin succesvol verplaatst naar \"{{categoria}}\"!",
   "portuguese": "Portugees",
   "english": "Engels",
   "word": "woorden",

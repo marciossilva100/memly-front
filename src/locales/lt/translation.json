@@ -55,6 +55,7 @@
   "move": "Perkelti",
   "move_phrase_title": "Perkelti į kurią kategoriją?",
   "move_phrase_empty": "Nėra kitos kategorijos, į kurią būtų galima perkelti šią frazę.",
+  "move_phrase_success": "Frazė sėkmingai perkelta į \"{{categoria}}\"!",
   "confirm_delete_phrase": "Ar norite ištrinti šią frazę?",
   "portuguese": "Portugalų",
   "english": "Anglų",

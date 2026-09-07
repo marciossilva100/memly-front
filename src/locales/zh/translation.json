@@ -55,6 +55,7 @@
   "move": "移动",
   "move_phrase_title": "要移动到哪个分类？",
   "move_phrase_empty": "没有其他分类可以移动这个短语。",
+  "move_phrase_success": "短语已成功移动到\"{{categoria}}\"！",
   "portuguese": "葡萄牙语",
   "english": "英语",
   "word": "单词",

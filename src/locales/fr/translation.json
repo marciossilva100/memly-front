@@ -55,6 +55,7 @@
   "move": "Déplacer",
   "move_phrase_title": "Déplacer vers quelle catégorie ?",
   "move_phrase_empty": "Aucune autre catégorie disponible pour déplacer cette phrase.",
+  "move_phrase_success": "Phrase déplacée vers \"{{categoria}}\" avec succès !",
   "portuguese": "Portugais",
   "english": "Anglais",
   "word": "mots",

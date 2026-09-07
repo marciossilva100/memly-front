@@ -55,6 +55,7 @@
   "move": "نقل",
   "move_phrase_title": "نقل لأي فئة؟",
   "move_phrase_empty": "لا توجد فئة أخرى متاحة لنقل هذه العبارة.",
+  "move_phrase_success": "تم نقل العبارة إلى \"{{categoria}}\" بنجاح!",
   "portuguese": "البرتغالية",
   "english": "الإنجليزية",
   "word": "كلمات",

@@ -55,6 +55,7 @@
   "move": "이동",
   "move_phrase_title": "어느 카테고리로 이동할까요?",
   "move_phrase_empty": "이 문구를 이동할 수 있는 다른 카테고리가 없습니다.",
+  "move_phrase_success": "문구가 \"{{categoria}}\"(으)로 성공적으로 이동되었습니다!",
   "portuguese": "포르투갈어",
   "english": "영어",
   "word": "단어",

@@ -55,6 +55,7 @@
   "move": "Sposta",
   "move_phrase_title": "Sposta in quale categoria?",
   "move_phrase_empty": "Nessun'altra categoria disponibile per spostare questa frase.",
+  "move_phrase_success": "Frase spostata con successo in \"{{categoria}}\"!",
   "portuguese": "Portoghese",
   "english": "Inglese",
   "word": "parole",

@@ -55,6 +55,7 @@
   "move": "Mover",
   "move_phrase_title": "¿Mover a qué categoría?",
   "move_phrase_empty": "No hay otra categoría disponible para mover esta frase.",
+  "move_phrase_success": "¡Frase movida a \"{{categoria}}\" con éxito!",
   "confirm_delete_phrase": "¿Deseas eliminar esta frase?",
   "portuguese": "Portugués",
   "english": "Inglés",

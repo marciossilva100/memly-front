@@ -55,6 +55,7 @@
   "move": "移動",
   "move_phrase_title": "どのカテゴリーに移動しますか？",
   "move_phrase_empty": "このフレーズを移動できる他のカテゴリーがありません。",
+  "move_phrase_success": "フレーズを「{{categoria}}」に移動しました！",
   "portuguese": "ポルトガル語",
   "english": "英語",
   "word": "単語",

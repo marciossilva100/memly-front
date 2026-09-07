@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from 'react';
+import { Dialog } from "@headlessui/react";
 import ModalFrase from "../components/ModalFrase";
 import HintBalloon from "../components/HintBalloon";
 import { useAuth } from "../context/AuthContext";
@@ -14,7 +15,9 @@ import {
     Search,
     Volume2,
     Loader2,
-    BookOpen
+    BookOpen,
+    MoreVertical,
+    FolderInput
 } from "lucide-react";
 
 
@@ -36,6 +39,19 @@ export default function Frases() {
     // visual o clique parecia travado/sem resposta.
     const [tocandoAudioId, setTocandoAudioId] = useState(null);
     const [deleteId, setDeleteId] = useState(0);
+    // Nome da categoria atual, pra exibir no título no lugar do genérico
+    // "Frases" - undefined enquanto carrega (mostra o fallback genérico),
+    // string vazia/null só se a busca falhar mesmo.
+    const [nomeCategoria, setNomeCategoria] = useState(null);
+    // Frase cujo menu de 3 pontos (Mover/Excluir) está aberto.
+    const [menuFrase, setMenuFrase] = useState(null);
+    // Frase sendo movida - abre o seletor de categoria de destino.
+    const [moverFraseItem, setMoverFraseItem] = useState(null);
+    const [categoriasParaMover, setCategoriasParaMover] = useState([]);
+    const [carregandoCategoriasMover, setCarregandoCategoriasMover] = useState(false);
+    const [movendoParaId, setMovendoParaId] = useState(null);
+    const [erroMover, setErroMover] = useState('');
+    const [buscaCategoriaMover, setBuscaCategoriaMover] = useState('');
     const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
 
@@ -46,7 +62,29 @@ export default function Frases() {
     useEffect(() => {
 
         listPhrase()
+        buscarNomeCategoria()
     }, []);
+
+    async function buscarNomeCategoria() {
+        try {
+            const res = await fetch(`${API_URL}/controller/categorias.php`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({ action: 'obter_nome', category_id: id })
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                setNomeCategoria(data.categoria);
+            }
+        } catch {
+            // Falha silenciosa - fica no fallback genérico t("phrases").
+        }
+    }
 
     async function listPhrase() {
         setLoading(true);
@@ -107,6 +145,79 @@ export default function Frases() {
         setOpenModalConfirm(false);
     }
 
+    async function abrirSeletorMover(item) {
+        setMenuFrase(null);
+        setMoverFraseItem(item);
+        setErroMover('');
+        setBuscaCategoriaMover('');
+        setCarregandoCategoriasMover(true);
+
+        try {
+            const res = await fetch(`${API_URL}/controller/categorias.php`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({ action: 'listar_para_mover', category_id: id })
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                setCategoriasParaMover(data.categorias || []);
+            } else {
+                setErroMover(t("unexpected_error"));
+            }
+        } catch {
+            setErroMover(t("server_connection_error"));
+        } finally {
+            setCarregandoCategoriasMover(false);
+        }
+    }
+
+    async function moverFrasePara(categoriaDestinoId) {
+        if (!moverFraseItem || movendoParaId) return;
+
+        setMovendoParaId(categoriaDestinoId);
+        setErroMover('');
+
+        try {
+            const res = await fetch(`${API_URL}/controller/frases.php`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({
+                    action: 'move_phrase',
+                    id_phrase: moverFraseItem.id,
+                    category_id_destino: categoriaDestinoId
+                })
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                setErroMover(data.message || t("unexpected_error"));
+                return;
+            }
+
+            setMoverFraseItem(null);
+            listPhrase();
+        } catch {
+            setErroMover(t("server_connection_error"));
+        } finally {
+            setMovendoParaId(null);
+        }
+    }
+
+    const buscaCategoriaMoverNormalizada = buscaCategoriaMover.trim().toLowerCase();
+
+    const categoriasParaMoverFiltradas = buscaCategoriaMoverNormalizada
+        ? categoriasParaMover.filter(c => c.categoria?.toLowerCase().includes(buscaCategoriaMoverNormalizada))
+        : categoriasParaMover;
+
     const buscaNormalizada = textoBusca.trim().toLowerCase();
 
     const frasesFiltradas = buscaNormalizada
@@ -144,7 +255,7 @@ export default function Frases() {
                         <BookOpen className="w-5 h-5" />
                     </span>
                     <div className="min-w-0">
-                        <h1 className="text-lg font-semibold text-white leading-tight truncate">{t("phrases")}</h1>
+                        <h1 className="text-lg font-semibold text-white leading-tight truncate">{nomeCategoria || t("phrases")}</h1>
                         <p className="text-xs text-gray-400">{frases.length}</p>
                     </div>
                 </div>
@@ -215,11 +326,10 @@ export default function Frases() {
                                 className="p-2 -m-1 rounded-full hover:bg-gray-700/50 transition-colors"
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    setDeleteId(item.id);
-                                    setOpenModalConfirm(true);
+                                    setMenuFrase(item);
                                 }}
                             >
-                                <Trash size={18} className="text-red-400" />
+                                <MoreVertical size={18} className="text-gray-400" />
                             </button>
                         </div>
                     </div>
@@ -265,6 +375,117 @@ export default function Frases() {
                 msg={t("confirm_delete_phrase")}
                 onConfirm={confirmarExclusaoFrase}
             />
+
+            {/* Menu de ações da frase (3 pontos) - action sheet simples com
+                Mover/Excluir, no lugar do ícone de lixeira direto. */}
+            <Dialog
+                open={!!menuFrase}
+                onClose={() => setMenuFrase(null)}
+                className="relative z-50"
+            >
+                <div className="fixed inset-0 backdrop-blur-[2px]" />
+                <div className="fixed inset-0 flex items-end sm:items-center justify-center px-4 pb-4 sm:pb-0">
+                    <Dialog.Panel className="w-full max-w-md rounded-2xl from-gray-900 to-gray-800 bg-gradient-to-br border border-white/30 p-3 shadow-xl space-y-1">
+                        <button
+                            type="button"
+                            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-700/50 transition-colors text-left"
+                            onClick={() => abrirSeletorMover(menuFrase)}
+                        >
+                            <FolderInput size={18} className="text-[#4cb8c4]" />
+                            <span className="text-white text-base">{t("move")}</span>
+                        </button>
+                        <button
+                            type="button"
+                            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-700/50 transition-colors text-left"
+                            onClick={() => {
+                                setDeleteId(menuFrase.id);
+                                setMenuFrase(null);
+                                setOpenModalConfirm(true);
+                            }}
+                        >
+                            <Trash size={18} className="text-red-400" />
+                            <span className="text-white text-base">{t("delete")}</span>
+                        </button>
+                        <button
+                            type="button"
+                            className="w-full px-4 py-3 rounded-xl bg-gray-800/50 border border-gray-700 hover:bg-gray-700/50 transition-colors text-gray-300 text-base mt-1"
+                            onClick={() => setMenuFrase(null)}
+                        >
+                            {t("cancel")}
+                        </button>
+                    </Dialog.Panel>
+                </div>
+            </Dialog>
+
+            {/* Seletor de categoria de destino pra mover a frase - só mostra
+                categorias do mesmo par de idiomas (backend já filtra), com
+                busca já que a lista pode ter muitas categorias. */}
+            <Dialog
+                open={!!moverFraseItem}
+                onClose={() => setMoverFraseItem(null)}
+                className="relative z-50"
+            >
+                <div className="fixed inset-0 backdrop-blur-[2px]" />
+                <div className="fixed inset-0 flex items-end sm:items-center justify-center px-4 pb-4 sm:pb-0">
+                    <Dialog.Panel className="w-full max-w-md max-h-[80vh] flex flex-col rounded-2xl from-gray-900 to-gray-800 bg-gradient-to-br border border-white/30 p-5 shadow-xl">
+                        <Dialog.Title className="text-lg font-semibold text-white mb-3">
+                            {t("move_phrase_title")}
+                        </Dialog.Title>
+
+                        <div className="flex items-center gap-2 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl overflow-hidden px-3 mb-3 shrink-0">
+                            <Search className="text-gray-500 shrink-0" width={16} />
+                            <input
+                                type="text"
+                                className="w-full py-2 outline-none text-sm text-white !bg-transparent placeholder:text-gray-500"
+                                placeholder={t("search")}
+                                value={buscaCategoriaMover}
+                                onChange={(e) => setBuscaCategoriaMover(e.target.value)}
+                            />
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto scrollbar-hide space-y-1.5">
+                            {carregandoCategoriasMover && (
+                                <div className="flex justify-center py-6">
+                                    <Loader2 size={22} className="text-[#4cb8c4] animate-spin" />
+                                </div>
+                            )}
+
+                            {!carregandoCategoriasMover && categoriasParaMoverFiltradas.length === 0 && (
+                                <div className="text-center py-6 text-gray-400 text-sm">
+                                    {t("move_phrase_empty")}
+                                </div>
+                            )}
+
+                            {!carregandoCategoriasMover && categoriasParaMoverFiltradas.map((cat) => (
+                                <button
+                                    key={cat.id}
+                                    type="button"
+                                    disabled={movendoParaId !== null}
+                                    className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-gray-800/50 border border-gray-700 hover:bg-gray-700/50 transition-colors disabled:opacity-60 text-left"
+                                    onClick={() => moverFrasePara(cat.id)}
+                                >
+                                    <span className="text-white text-sm truncate">{cat.categoria}</span>
+                                    {movendoParaId === cat.id && (
+                                        <Loader2 size={16} className="text-[#4cb8c4] animate-spin shrink-0" />
+                                    )}
+                                </button>
+                            ))}
+                        </div>
+
+                        {erroMover && (
+                            <p className="text-red-400 text-xs mt-3">{erroMover}</p>
+                        )}
+
+                        <button
+                            type="button"
+                            className="w-full px-4 py-3 mt-3 rounded-xl bg-gray-800/50 border border-gray-700 hover:bg-gray-700/50 transition-colors text-gray-300 text-base shrink-0"
+                            onClick={() => setMoverFraseItem(null)}
+                        >
+                            {t("cancel")}
+                        </button>
+                    </Dialog.Panel>
+                </div>
+            </Dialog>
 
         </div>
     );

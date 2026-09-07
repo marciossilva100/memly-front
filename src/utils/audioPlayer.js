@@ -32,6 +32,31 @@ function limparMediaSession() {
     navigator.mediaSession.playbackState = "none";
 }
 
+// Chave de localStorage por tipo de voz - as duas preferências são
+// independentes desde que o usuário pediu controles separados em
+// Configurações (antes só existia "zaldemy_velocidade_tts", compartilhada).
+const CHAVE_VELOCIDADE = {
+    natural: "zaldemy_velocidade_tts",
+    padrao: "zaldemy_velocidade_tts_padrao",
+};
+
+// Única fonte de verdade pra "qual velocidade tocar esse áudio" - antes essa
+// leitura (chave certa + parseFloat + fallback pra 1.0 + override de
+// velocidadeNormal) estava duplicada nos dois ramos de playAudio (natural e
+// padrão), cada um com sua própria cópia quase idêntica; relatado múltiplas
+// vezes como "velocidade inconsistente/não bate com Configurações" entre
+// telas, sempre porque uma das duas cópias tinha ficado defasada da outra
+// depois de algum ajuste. Concentrando aqui, só existe UM lugar pra
+// verificar/corrigir quando o comportamento de velocidade mudar de novo.
+// velocidadeNormal (ex: acerto no jogo Chuva de Frases/Tiro Certeiro) sempre
+// vence e força 1.0x, independente da preferência salva.
+function velocidadePreferida(tipo, velocidadeNormal) {
+    if (velocidadeNormal) return 1.0;
+
+    const valor = parseFloat(localStorage.getItem(CHAVE_VELOCIDADE[tipo]));
+    return Number.isFinite(valor) ? valor : 1.0;
+}
+
 // Alguns navegadores (relatado no Chrome/Android, mesma classe de quirk da
 // Media Session acima) resetam playbackRate pra 1 sozinhos assim que o
 // <audio> termina de carregar os metadados de uma blob URL recém-criada,
@@ -39,7 +64,8 @@ function limparMediaSession() {
 // (dispara de novo antes de tocar) e 'playing' (dispara já tocando, rede
 // mais lenta) pra garantir que a velocidade escolhida realmente "gruda",
 // não só na tentativa inicial.
-function aplicarVelocidade(audio, rate) {
+function aplicarVelocidade(audio, tipo, velocidadeNormal) {
+    const rate = velocidadePreferida(tipo, velocidadeNormal);
     audio.playbackRate = rate;
     const reaplicar = () => { audio.playbackRate = rate; };
     audio.addEventListener("loadedmetadata", reaplicar);
@@ -210,6 +236,40 @@ export async function sincronizarCotaNatural(user) {
         }
     } catch (error) {
         console.error('Erro ao sincronizar cota de voz natural:', error);
+    }
+}
+
+// Sincroniza as duas preferências de velocidade salvas em Configurações pro
+// localStorage - ANTES disso, as chaves (CHAVE_VELOCIDADE) só eram
+// gravadas quando a própria tela de Configurações era aberta; se o usuário
+// nunca tivesse passado por lá neste aparelho/sessão (troca de aparelho,
+// storage limpo, reinstalação do PWA), toda reprodução caía no fallback
+// 1.0x de velocidadePreferida() em vez da velocidade de verdade salva no
+// servidor - reportado como "velocidade inconsistente entre telas". Chamado
+// uma vez ao autenticar (ver AuthContext), mesmo padrão de
+// sincronizarCotaNatural acima.
+export async function sincronizarVelocidadesAudio(user) {
+    if (!user) return;
+
+    const API_URL = import.meta.env.VITE_API_URL;
+
+    try {
+        const res = await fetchComTimeout(`${API_URL}/controller/configuracoes.php`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({ action: 'obter' })
+        });
+        const data = await res.json();
+
+        if (data?.success) {
+            localStorage.setItem(CHAVE_VELOCIDADE.natural, String(data.velocidade_tts ?? 1.0));
+            localStorage.setItem(CHAVE_VELOCIDADE.padrao, String(data.velocidade_tts_padrao ?? 1.0));
+        }
+    } catch (error) {
+        console.error('Erro ao sincronizar velocidade de áudio:', error);
     }
 }
 
@@ -421,19 +481,10 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
             const audio = new Audio(resultado.url);
             currentAudio = audio;
 
-            // Antes ficava travado em 0.9x, ignorando a preferência salva em
-            // Configurações (que fica logo abaixo do seletor de voz natural -
-            // ou seja, foi pensada pra controlar exatamente essa voz). Usuário
-            // reportou que mudar a velocidade "não parece surtir efeito no
-            // treino de ia" (Perguntas/Frase do Dia/Tradução Reversa, que
-            // tocam voz natural) - corrigido pra ler a preferência salva aqui
-            // também. Chave PRÓPRIA (zaldemy_velocidade_tts), independente da
-            // voz padrão (zaldemy_velocidade_tts_padrao, ramo abaixo) - dois
-            // controles separados em Configurações.
-            const velocidadePreferidaNatural = parseFloat(localStorage.getItem('zaldemy_velocidade_tts'));
-            aplicarVelocidade(audio, velocidadeNormal
-                ? 1.0
-                : (Number.isFinite(velocidadePreferidaNatural) ? velocidadePreferidaNatural : 1.0));
+            // Velocidade da voz natural - ver velocidadePreferida/aplicarVelocidade
+            // (única fonte de verdade, compartilhada com o ramo de voz padrão
+            // abaixo).
+            aplicarVelocidade(audio, "natural", velocidadeNormal);
             onAudioIniciado?.();
             marcarMediaSessionTocando();
 
@@ -486,15 +537,10 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
 
             // A voz padrão (Google) não tem parâmetro de velocidade na API,
             // então aplicamos no player - disponível em qualquer plano,
-            // diferente da escolha de voz (só premium). Preferência PRÓPRIA
-            // (zaldemy_velocidade_tts_padrao), independente da voz natural
-            // logo acima - usuário pediu controles separados. velocidadeNormal
-            // ignora a preferência salva (ex: acerto no jogo Chuva de Frases,
-            // que sempre toca no tom normal pra não atrapalhar o reforço).
-            const velocidadePreferida = parseFloat(localStorage.getItem('zaldemy_velocidade_tts_padrao'));
-            aplicarVelocidade(audio, velocidadeNormal
-                ? 1.0
-                : (Number.isFinite(velocidadePreferida) ? velocidadePreferida : 1.0));
+            // diferente da escolha de voz (só premium). Velocidade da voz
+            // padrão - ver velocidadePreferida/aplicarVelocidade (única fonte
+            // de verdade, compartilhada com o ramo de voz natural acima).
+            aplicarVelocidade(audio, "padrao", velocidadeNormal);
 
             await audio.play().catch(err => {
                 console.error("ERRO PLAY:", err);

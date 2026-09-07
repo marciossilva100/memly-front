@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, useMemo, useCallback } from "react";
 import { hasGoogleRedirectToken } from "../utils/googleRedirectAuth";
-import { sincronizarCotaNatural } from "../utils/audioPlayer";
+import { sincronizarCotaNatural, sincronizarVelocidadesAudio } from "../utils/audioPlayer";
 import { fetchComTimeout } from "../utils/fetchComTimeout";
 
 const AuthContext = createContext();
@@ -55,12 +55,17 @@ export function AuthProvider({ children }) {
         setUser(data.user);
         // AWAIT de propósito - loading só vira false depois disso (ver
         // finally abaixo), então nenhuma tela consegue montar e disparar
-        // preloadAudio/playAudio antes da cota estar sincronizada. Sem
-        // esperar, a primeira tentativa de áudio da sessão podia vencer a
-        // corrida contra esse fetch e tocar em cache sem nunca descobrir
-        // que a cota já tinha acabado (ver comentário em
-        // sincronizarCotaNatural, em audioPlayer.js).
-        await sincronizarCotaNatural(data.user);
+        // preloadAudio/playAudio antes da cota e da velocidade estarem
+        // sincronizadas. Sem esperar, a primeira tentativa de áudio da
+        // sessão podia vencer a corrida contra esse fetch e tocar com dados
+        // desatualizados (cota já esgotada, ou velocidade ainda no fallback
+        // 1.0x por nunca ter passado por Configurações neste aparelho - ver
+        // comentários em sincronizarCotaNatural/sincronizarVelocidadesAudio,
+        // em audioPlayer.js).
+        await Promise.all([
+            sincronizarCotaNatural(data.user),
+            sincronizarVelocidadesAudio(data.user)
+        ]);
         return data.user;
       }
 

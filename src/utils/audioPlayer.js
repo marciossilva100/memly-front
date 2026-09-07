@@ -32,9 +32,11 @@ function limparMediaSession() {
     navigator.mediaSession.playbackState = "none";
 }
 
-// Chave de localStorage por tipo de voz - as duas preferências são
-// independentes desde que o usuário pediu controles separados em
-// Configurações (antes só existia "zaldemy_velocidade_tts", compartilhada).
+// Chave de localStorage por tipo de voz - natural e padrão (Google) são
+// independentes uma da outra (o usuário quer poder escolher velocidades
+// diferentes pra cada), mas cada uma precisa valer de forma ÚNICA e
+// consistente em TODO o app - qualquer tela que toque voz natural usa a
+// MESMA chave/valor, idem pra voz padrão.
 const CHAVE_VELOCIDADE = {
     natural: "zaldemy_velocidade_tts",
     padrao: "zaldemy_velocidade_tts_padrao",

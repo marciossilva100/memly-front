@@ -694,10 +694,12 @@ export default function TraducaoReversa() {
                             <p className="text-white leading-relaxed">{resultado.feedback}</p>
                         </div>
 
-                        <div className="rounded-xl border border-purple-400/30 bg-purple-400/10 p-4">
-                            <p className="text-purple-400 text-xs mb-1 uppercase tracking-wide font-semibold">{t("suggested_translation_label")}</p>
-                            <p className="text-white leading-relaxed">{resultado.traducao_gabarito}</p>
-                        </div>
+                        {!resultado.pode_tentar_novamente &&
+                            <div className="rounded-xl border border-purple-400/30 bg-purple-400/10 p-4">
+                                <p className="text-purple-400 text-xs mb-1 uppercase tracking-wide font-semibold">{t("suggested_translation_label")}</p>
+                                <p className="text-white leading-relaxed">{resultado.traducao_gabarito}</p>
+                            </div>
+                        }
                     </div>
                 }
             </div>

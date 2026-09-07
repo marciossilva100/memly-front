@@ -548,6 +548,11 @@ export default function TreinoIA() {
                         </div>
 
                         <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4">
+                            <p className="text-gray-500 text-xs mb-1 uppercase tracking-wide">{t("original_text_label")}</p>
+                            <p className="text-white">{frase}</p>
+                        </div>
+
+                        <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4">
                             <p className="text-gray-500 text-xs mb-1 uppercase tracking-wide">{t("transcription_label")}</p>
                             <p className="text-white italic">"{resultado.transcricao}"</p>
                         </div>

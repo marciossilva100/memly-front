@@ -64,6 +64,14 @@ export default function Perguntas() {
     const [mostrarSeletor, setMostrarSeletor] = useState(false);
     const [categorias, setCategorias] = useState([]);
     const [categoriasSelecionadas, setCategoriasSelecionadas] = useState([]);
+    // true só quando a PRÓPRIA checagem "precisa escolher categoria" falha
+    // (erro de rede) - nesse caso ainda não sabemos se o usuário precisa
+    // escolher, então o botão de tentar de novo da tela de erro precisa
+    // rechamar essa checagem, não fetchQuestion() direto (que geraria sem
+    // categoria nenhuma - bug real reportado: falha nessa checagem caía
+    // silenciosamente pra "sem categoria", puxando conteúdo de qualquer
+    // categoria do usuário em vez de respeitar a escolhida).
+    const [erroAoVerificarSeletor, setErroAoVerificarSeletor] = useState(false);
 
     const { gravando, audioBlob, audioUrl, erro: erroGravacao, iniciarGravacao, pararGravacao, limpar } = useAudioRecorder();
 
@@ -72,6 +80,7 @@ export default function Perguntas() {
     useEffect(() => () => pararAudio(), []);
 
     const fetchQuestion = (categoriaIds) => {
+        setErroAoVerificarSeletor(false);
         setLoading(true);
         setError(null);
         setInsufficientContent(false);
@@ -182,7 +191,17 @@ export default function Perguntas() {
 
                 fetchQuestion();
             })
-            .catch(() => fetchQuestion());
+            .catch(() => {
+                // NUNCA cair pra fetchQuestion() sem categoria aqui - ainda
+                // não sabemos se o usuário precisa escolher uma, então gerar
+                // mesmo assim ignoraria a escolha dele (bug real: um erro de
+                // rede nessa checagem silenciosamente devolvia conteúdo de
+                // QUALQUER categoria, sem pedir nada). Mostra erro com opção
+                // de tentar a checagem de novo.
+                setErroAoVerificarSeletor(true);
+                setError(t("server_connection_error"));
+                setLoading(false);
+            });
     }
 
     function alternarCategoria(id) {
@@ -448,7 +467,7 @@ export default function Perguntas() {
 
                 <div className="mt-8 flex flex-col gap-3 w-full max-w-xs">
                     <button
-                        onClick={() => fetchQuestion(categoriasSelecionadas)}
+                        onClick={() => erroAoVerificarSeletor ? verificarSeletorCategoria() : fetchQuestion(categoriasSelecionadas)}
                         className="px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors"
                     >
                         {t("try_again")}

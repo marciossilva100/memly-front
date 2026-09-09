@@ -615,7 +615,7 @@ export default function TreinoIA() {
                                     onClick={() => navigate('/home')}
                                     className="px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white font-medium transition-colors"
                                 >
-                                    {t("back")}
+                                    {t("finish")}
                                 </button>
                             </div>
                         ) : (

@@ -83,10 +83,19 @@ export default function Flashcards() {
     };
   }, []);
 
-  // Preferência do dispositivo (ver "Tempo pra virar o cartão" em
-  // Configuracoes.jsx) - segundos até o card virar sozinho, convertido pra
-  // ms. 8s é o padrão se o usuário nunca mexeu nessa configuração.
-  const FLIP_TIME = (parseInt(localStorage.getItem('zaldemy_tempo_virada_flashcards'), 10) || 8) * 1000;
+  // Tempo até o card virar sozinho é dinâmico, proporcional ao tamanho do
+  // texto que o usuário está aprendendo (texto_traduzido - o lado que ele
+  // precisa tentar produzir de cabeça antes do flip automático revelar a
+  // resposta). Um texto de 1 palavra não precisa do mesmo tempo que uma
+  // frase inteira. Teto de 18s pra nunca deixar o usuário esperando demais
+  // mesmo num texto bem longo. Substitui a antiga preferência fixa em
+  // Configurações ("Tempo pra virar o cartão"), removida por não fazer
+  // mais sentido com o tempo variando por cartão.
+  const TEMPO_BASE_FLIP = 3000; // ms mínimos, mesmo pra texto de 1 palavra
+  const MS_POR_CARACTERE_FLIP = 110; // ms adicionais por caractere do texto-alvo
+  const FLIP_TIME_MAXIMO = 18000;
+  const tamanhoTextoAlvo = frases[index]?.texto_traduzido?.length || 0;
+  const FLIP_TIME = Math.min(TEMPO_BASE_FLIP + tamanhoTextoAlvo * MS_POR_CARACTERE_FLIP, FLIP_TIME_MAXIMO);
   const FLIP_DURATION = 400;
 
   const RADIUS = 42;

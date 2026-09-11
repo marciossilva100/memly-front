@@ -23,7 +23,10 @@ const VELOCIDADES_TTS = [0.75, 1.00, 1.25, 1.50];
 
 // Segundos que o card da frente fica visível em Flashcards.jsx antes de
 // virar sozinho.
-const TEMPOS_VIRADA_FLASHCARDS = [5, 8, 12, 15];
+// Desativado: o tempo de flip virou dinâmico (proporcional ao tamanho do
+// texto do cartão, teto de 18s), ver Flashcards.jsx. Deixado comentado
+// (em vez de removido) caso a preferência manual volte a fazer sentido.
+// const TEMPOS_VIRADA_FLASHCARDS = [5, 8, 12, 15];
 
 function ItemMenu({ icone: Icone, titulo, onClick, cor = "text-gray-300" }) {
     return (
@@ -157,14 +160,15 @@ export default function Configuracoes() {
     // Preferência só do dispositivo (mesmo padrão do autoplay acima) -
     // controla quanto tempo o card da frente fica visível antes de virar
     // sozinho em Flashcards.jsx, lido diretamente do localStorage por lá.
-    const [tempoViradaFlashcards, setTempoViradaFlashcards] = useState(
-        () => parseInt(localStorage.getItem('zaldemy_tempo_virada_flashcards'), 10) || 8
-    );
+    // Desativado junto com TEMPOS_VIRADA_FLASHCARDS acima (ver comentário lá).
+    // const [tempoViradaFlashcards, setTempoViradaFlashcards] = useState(
+    //     () => parseInt(localStorage.getItem('zaldemy_tempo_virada_flashcards'), 10) || 8
+    // );
 
-    function handleSelecionarTempoVirada(segundos) {
-        setTempoViradaFlashcards(segundos);
-        localStorage.setItem('zaldemy_tempo_virada_flashcards', String(segundos));
-    }
+    // function handleSelecionarTempoVirada(segundos) {
+    //     setTempoViradaFlashcards(segundos);
+    //     localStorage.setItem('zaldemy_tempo_virada_flashcards', String(segundos));
+    // }
 
     // Notificações push - só existe (feature-detect + PWA instalada, ver
     // notificacoesDisponiveis) fora do navegador comum e fora do app nativo
@@ -771,6 +775,9 @@ export default function Configuracoes() {
                             </button>
                         </div>
 
+                        {/* Desativado: tempo de flip virou dinâmico por tamanho de texto
+                            (ver Flashcards.jsx). Deixado comentado caso a preferência
+                            manual volte a fazer sentido.
                         <div className="mt-4 pt-4 border-t border-gray-700">
                             <div className="flex items-center gap-2 mb-2">
                                 <Gauge className="w-4 h-4 text-[#4cb8c4]" />
@@ -796,6 +803,7 @@ export default function Configuracoes() {
                                 })}
                             </div>
                         </div>
+                        */}
                     </div>
 
                     {notifDisponivel && (

@@ -33,7 +33,7 @@ export default function Flashcards() {
   const [listIdCorrectPhrase, setListIdCorrectPhrase] = useState([]);
   const [listIdIncorrectPhrase, setListIdIncorrectPhrase] = useState([]);
   const [answeredCount, setAnsweredCount] = useState(0);
-  const { user, setUser } = useAuth();
+  const { user } = useAuth();
   const location = useLocation();
   const correctIds = location.state?.correctIds || [];
   const [vh, setVh] = useState(window.innerHeight);
@@ -91,8 +91,11 @@ export default function Flashcards() {
   // mesmo num texto bem longo. Substitui a antiga preferência fixa em
   // Configurações ("Tempo pra virar o cartão"), removida por não fazer
   // mais sentido com o tempo variando por cartão.
-  const TEMPO_BASE_FLIP = 3000; // ms mínimos, mesmo pra texto de 1 palavra
-  const MS_POR_CARACTERE_FLIP = 110; // ms adicionais por caractere do texto-alvo
+  // Calibrado com frases reais do app (~80-110 caracteres, o "texto longo"
+  // comum aqui) pra chegar perto do teto de 18s nelas, em vez de só textos
+  // extremos baterem no teto - com 110ms/caractere isso ficava em 12-15s.
+  const TEMPO_BASE_FLIP = 4000; // ms mínimos, mesmo pra texto de 1 palavra
+  const MS_POR_CARACTERE_FLIP = 140; // ms adicionais por caractere do texto-alvo
   const FLIP_TIME_MAXIMO = 18000;
   const tamanhoTextoAlvo = frases[index]?.texto_traduzido?.length || 0;
   const FLIP_TIME = Math.min(TEMPO_BASE_FLIP + tamanhoTextoAlvo * MS_POR_CARACTERE_FLIP, FLIP_TIME_MAXIMO);
@@ -157,6 +160,10 @@ export default function Flashcards() {
         navigate("/home");
       });
 
+    // API_URL é constante, navigate é estável (react-router) e correctIds só
+    // deve valer na entrada da tela (não deve refazer a busca se o state da
+    // rota mudar sem trocar de tela de fato) - só id/mode devem reiniciar o deck.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, mode]);
 
   // O áudio do texto nativo só toca sozinho se o usuário tiver ativado
@@ -187,6 +194,40 @@ export default function Flashcards() {
     if (!frases[index]?.texto_traduzido || !user) return;
     preloadAudio(frases[index].texto_traduzido, user);
   }, [index, frases, user]);
+
+  function flipCard() {
+    const willFlip = !isFlipped;
+
+    // Alterna entre virado e não virado
+    setIsFlipped(willFlip);
+
+    // Marca que o card já foi virado pelo menos uma vez
+    if (!hasBeenFlipped) {
+      setHasBeenFlipped(true);
+    }
+
+    // Cancelar qualquer timeout anterior antes de configurar o novo
+    if (flipTimeoutRef.current) {
+      clearTimeout(flipTimeoutRef.current);
+      flipTimeoutRef.current = null;
+    }
+
+    // Quando virar para o verso (isFlipped se tornando true)
+    if (willFlip) {
+      // Esconde o botão "Mostrar" quando o card é virado pela primeira vez
+      if (showButton) {
+        setShowButton(false);
+      }
+
+      const currentIndex = index;
+      flipTimeoutRef.current = setTimeout(() => {
+        setBuscandoAudioVerso(true);
+        playAudio(frases[currentIndex].texto_traduzido, user, false, null, false, false, () => setBuscandoAudioVerso(false))
+          .finally(() => setBuscandoAudioVerso(false));
+        flipTimeoutRef.current = null;
+      }, FLIP_DURATION / 2);
+    }
+  }
 
   // progresso e flip automático
   useEffect(() => {
@@ -219,76 +260,13 @@ export default function Flashcards() {
       setProgress(0);
     }
 
+    // FLIP_TIME e flipCard ficam de fora de propósito: os dois mudam a
+    // cada render (FLIP_TIME depende do texto do cartão atual, flipCard é
+    // recriada em toda renderização) - incluir os dois aqui reiniciaria o
+    // timer de progresso em qualquer re-render alheio (ex: mudança de
+    // buscandoAudioVerso), não só quando o cartão muda de verdade.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index, frases, finished, isFlipped, showButton]);
-
-  const flipCard = () => {
-    const willFlip = !isFlipped;
-
-    // Alterna entre virado e não virado
-    setIsFlipped(willFlip);
-
-    // Marca que o card já foi virado pelo menos uma vez
-    if (!hasBeenFlipped) {
-      setHasBeenFlipped(true);
-    }
-
-    // Cancelar qualquer timeout anterior antes de configurar o novo
-    if (flipTimeoutRef.current) {
-      clearTimeout(flipTimeoutRef.current);
-      flipTimeoutRef.current = null;
-    }
-
-    // Quando virar para o verso (isFlipped se tornando true)
-    if (willFlip) {
-      // Esconde o botão "Mostrar" quando o card é virado pela primeira vez
-      if (showButton) {
-        setShowButton(false);
-      }
-
-      const currentIndex = index;
-      flipTimeoutRef.current = setTimeout(() => {
-        setBuscandoAudioVerso(true);
-        playAudio(frases[currentIndex].texto_traduzido, user, false, null, false, false, () => setBuscandoAudioVerso(false))
-          .finally(() => setBuscandoAudioVerso(false));
-        flipTimeoutRef.current = null;
-      }, FLIP_DURATION / 2);
-    }
-  };
-
-  async function learningUpdate(updatedList, updatedIncorrectList, actionToSend, metrics) {
-
-    try {
-
-      const res = await fetch(`${API_URL}/controller/treino.php`, {
-        method: "POST",
-        headers: {
-          "Authorization": "Bearer " + localStorage.getItem("token")
-        },
-        body: JSON.stringify({
-          action: actionToSend,
-          updatedList: updatedList,
-          updatedIncorrectList: updatedIncorrectList,
-          category_id: id,
-          acertos: metrics.acertos,
-          erros: metrics.erros,
-          total: metrics.totalPerguntas,
-          porcentagem: metrics.porcentagem
-        })
-      });
-
-      const data = await res.json();
-
-      if (!data.success) {
-        console.log(data.message);
-      }
-
-    } catch (error) {
-
-      console.log(error);
-
-    }
-
-  }
 
   async function trainingUpdate(actionToSend, frase_id, statusCorrectPhrase) {
 
@@ -369,17 +347,10 @@ export default function Flashcards() {
 
     } else {
 
-      const updatedCorrect = updatedList;
-      const updatedIncorrect = updatedIncorrectList;
-
-      const acertos = updatedCorrect.length;
-      const erros = updatedIncorrect.length;
-      const totalPerguntas = frases.length;
-
-      const porcentagem = totalPerguntas
-        ? Math.round((acertos / totalPerguntas) * 100)
-        : 0;
-
+      // acertos/erros/porcentagem exibidos na tela de resultado são
+      // recalculados no render a partir de listIdCorrectPhrase/
+      // listIdIncorrectPhrase (ver mais abaixo), não precisam ser
+      // computados aqui.
       setFinished(true);
 
     }

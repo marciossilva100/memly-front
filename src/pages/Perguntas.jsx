@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { Volume2, Mic, Square, RotateCcw, History, SkipForward, Send, MessageCircleQuestion, Ban, AlertCircle, Eye, EyeOff, Keyboard, Loader2, Check, ArrowRight } from "lucide-react";
+import { Volume2, Mic, Square, RotateCcw, History, SkipForward, Send, MessageCircleQuestion, Ban, AlertCircle, Eye, EyeOff, Keyboard, Loader2, Check, ArrowRight, BookOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { playAudio, pararAudio } from "../utils/audioPlayer";
 import { useAuth } from "../context/AuthContext";
@@ -11,6 +11,7 @@ import LimiteDiarioModal from "../components/LimiteDiarioModal";
 import DuvidaChat from "../components/DuvidaChat";
 import TextoDestacado from "../components/TextoDestacado";
 import VocabularioHintBalloon from "../components/VocabularioHintBalloon";
+import VocabularioCategoriaModal from "../components/VocabularioCategoriaModal";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 
 function corNota(nota) {
@@ -72,6 +73,14 @@ export default function Perguntas() {
     // silenciosamente pra "sem categoria", puxando conteúdo de qualquer
     // categoria do usuário em vez de respeitar a escolhida).
     const [erroAoVerificarSeletor, setErroAoVerificarSeletor] = useState(false);
+
+    // Modal "Vocabulário" (ao lado do "Ouvir") - lista as frases já
+    // cadastradas nas categorias escolhidas pro treino, só o lado do idioma
+    // que o aluno está aprendendo (texto_traduzido), como referência/consulta.
+    const [vocabularioModalAberto, setVocabularioModalAberto] = useState(false);
+    const [vocabularioFrases, setVocabularioFrases] = useState([]);
+    const [carregandoVocabulario, setCarregandoVocabulario] = useState(false);
+    const [erroVocabulario, setErroVocabulario] = useState(null);
 
     const { gravando, audioBlob, audioUrl, erro: erroGravacao, iniciarGravacao, pararGravacao, limpar } = useAudioRecorder();
 
@@ -143,6 +152,12 @@ export default function Perguntas() {
                 setQuestionDestacada(data.question_destacada || null);
                 setNumeroPergunta(data.numero ?? null);
                 setTotalPerguntas(data.total ?? null);
+                // O backend sempre devolve a(s) categoria(s) de fato usada(s)
+                // (da requisição ou da escolha de hoje já persistida) - sem
+                // isso, categoriasSelecionadas ficava [] a partir da 2ª
+                // pergunta do dia (quando não reenviamos category_ids),
+                // quebrando o botão "Vocabulário".
+                setCategoriasSelecionadas(data.categoria_ids || []);
             })
             .catch(err => {
                 console.error(err);
@@ -219,6 +234,44 @@ export default function Perguntas() {
     function confirmarCategoria() {
         setMostrarSeletor(false);
         fetchQuestion(categoriasSelecionadas);
+    }
+
+    // Botão "Vocabulário" - busca todas as frases já cadastradas nas
+    // categorias escolhidas pro treino (até 2, mesmo endpoint usado em
+    // FrasesGeral.jsx pra listar frases de uma categoria por id) e junta
+    // num só array, mais recentes primeiro.
+    function abrirVocabulario() {
+        setVocabularioModalAberto(true);
+        buscarVocabulario();
+    }
+
+    function buscarVocabulario() {
+        setCarregandoVocabulario(true);
+        setErroVocabulario(null);
+
+        Promise.all(
+            categoriasSelecionadas.map((categoriaId) =>
+                fetch(`${API_URL}/controller/frases.php`, {
+                    method: 'POST',
+                    headers: {
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    },
+                    body: JSON.stringify({ action: 'frasesgeral', category_id: categoriaId })
+                }).then(res => {
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    return res.json();
+                })
+            )
+        )
+            .then((listas) => {
+                const todas = listas.flat().sort((a, b) => b.id - a.id);
+                setVocabularioFrases(todas);
+            })
+            .catch((err) => {
+                console.error(err);
+                setErroVocabulario(t("vocabulary_load_error"));
+            })
+            .finally(() => setCarregandoVocabulario(false));
     }
 
     // Marca a pergunta pendente atual como respondida (status_id=1) sem
@@ -629,7 +682,7 @@ export default function Perguntas() {
                         </div>
                         <p className="text-center text-gray-500 text-xs mt-2">{t("tap_card_to_flip")}</p>
 
-                        <div className={`flex justify-center mt-3 ${flipped ? "hidden" : ""}`}>
+                        <div className={`flex justify-center gap-2 mt-3 ${flipped ? "hidden" : ""}`}>
                             <button
                                 disabled={buscandoAudio}
                                 onClick={() => {
@@ -642,6 +695,17 @@ export default function Perguntas() {
                                 {buscandoAudio ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Volume2 className="w-3.5 h-3.5" />}
                                 {buscandoAudio ? t("generating_audio") : t("listen")}
                             </button>
+
+                            {categoriasSelecionadas.length > 0 && (
+                                <button
+                                    type="button"
+                                    onClick={abrirVocabulario}
+                                    className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-800/50 border border-gray-700 text-gray-300 text-xs hover:bg-gray-700/50 transition-colors"
+                                >
+                                    <BookOpen className="w-3.5 h-3.5" />
+                                    {t("vocabulary_button")}
+                                </button>
+                            )}
                         </div>
 
                         <div className={`mt-10 flex flex-col items-center gap-4 ${flipped ? "hidden" : ""}`}>
@@ -836,6 +900,16 @@ export default function Perguntas() {
                 setIsPremiumModalOpen={setIsPremiumModalOpen}
                 onClose={() => { setIsPremiumModalOpen(false); setMotivoPremium(null); }}
                 motivo={motivoPremium}
+            />
+
+            <VocabularioCategoriaModal
+                isOpen={vocabularioModalAberto}
+                onClose={() => setVocabularioModalAberto(false)}
+                frases={vocabularioFrases}
+                loading={carregandoVocabulario}
+                erro={erroVocabulario}
+                onTentarNovamente={buscarVocabulario}
+                user={user}
             />
         </div>
     )

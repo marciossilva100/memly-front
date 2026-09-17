@@ -46,6 +46,7 @@ export default function TreinoIA() {
     const [flipped, setFlipped] = useState(false);
     const [enviando, setEnviando] = useState(false);
     const [resultado, setResultado] = useState(null);
+    const [finalizando, setFinalizando] = useState(false);
 
     // Seletor de categoria (só aparece 1x por dia, antes de gerar a frase de
     // hoje - se já existe uma pendente ou o limite diário já foi atingido,
@@ -258,6 +259,32 @@ export default function TreinoIA() {
         setAudioVazio(false);
         setFlipped(false);
         limpar();
+    }
+
+    // Botão "Finalizar" na tela de feedback (só aparece quando
+    // pode_tentar_novamente é true) - antes só navegava pra Home sem avisar
+    // o backend, deixando a frase presa em status_id=0 (nunca esgotava
+    // tentativas sozinha): sumia do histórico e voltava como pendente na
+    // próxima visita em vez de contar a nota que o aluno já tinha recebido.
+    async function finalizarTreino() {
+        setFinalizando(true);
+
+        try {
+            const formData = new FormData();
+            formData.append('action', 'finalizar');
+
+            await fetch(`${API_URL}/controller/fraseDoDia.php`, {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: formData
+            });
+        } catch (err) {
+            console.error(err);
+        } finally {
+            navigate('/home');
+        }
     }
 
     if (loading) {
@@ -612,10 +639,11 @@ export default function TreinoIA() {
                                     home" já usada na tela de limite diário desta
                                     página. */}
                                 <button
-                                    onClick={() => navigate('/home')}
-                                    className="px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white font-medium transition-colors"
+                                    disabled={finalizando}
+                                    onClick={finalizarTreino}
+                                    className="px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white font-medium transition-colors disabled:opacity-70"
                                 >
-                                    {t("finish")}
+                                    {finalizando ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : t("finish")}
                                 </button>
                             </div>
                         ) : (

@@ -561,6 +561,8 @@
   "interests_selected_count": "{{done}} van {{total}} geselecteerd",
   "subscription": "Abonnement",
   "subscription_active": "Je Zaldemy+-abonnement is actief.",
+  "subscription_payment_failed": "We konden je laatste factuur niet afschrijven. Werk je betaalmethode bij om je Premium-toegang te behouden.",
+  "update_payment_method": "Betaalmethode bijwerken",
   "subscription_ends_on": "Je abonnement eindigt op {{date}}. Tot die tijd behoud je premium-toegang.",
   "cancel_subscription": "Abonnement opzeggen",
   "reactivate_subscription": "Abonnement heractiveren",

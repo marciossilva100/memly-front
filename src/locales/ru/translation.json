@@ -561,6 +561,8 @@
   "interests_selected_count": "Выбрано {{done}} из {{total}}",
   "subscription": "Подписка",
   "subscription_active": "Ваша подписка Zaldemy+ активна.",
+  "subscription_payment_failed": "Не удалось списать оплату за последний счёт. Обновите способ оплаты, чтобы сохранить доступ к Premium.",
+  "update_payment_method": "Обновить способ оплаты",
   "subscription_ends_on": "Ваша подписка закончится {{date}}. До этого момента у вас сохранится премиум-доступ.",
   "cancel_subscription": "Отменить подписку",
   "reactivate_subscription": "Возобновить подписку",

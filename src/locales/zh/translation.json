@@ -561,6 +561,8 @@
   "interests_selected_count": "已选择 {{done}}/{{total}} 个",
   "subscription": "订阅",
   "subscription_active": "你的 Zaldemy+ 订阅处于有效状态。",
+  "subscription_payment_failed": "我们未能成功扣除您最近一期账单。请更新支付方式以保留高级版权限。",
+  "update_payment_method": "更新支付方式",
   "subscription_ends_on": "你的订阅将于 {{date}} 结束，在此之前你仍可使用高级功能。",
   "cancel_subscription": "取消订阅",
   "reactivate_subscription": "重新激活订阅",

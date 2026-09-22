@@ -561,6 +561,8 @@
   "interests_selected_count": "{{total}} में से {{done}} चुनी गईं",
   "subscription": "सदस्यता",
   "subscription_active": "आपकी Zaldemy+ सदस्यता सक्रिय है।",
+  "subscription_payment_failed": "हम आपके आखिरी बिल का भुगतान नहीं ले पाए। प्रीमियम एक्सेस बनाए रखने के लिए अपना भुगतान तरीका अपडेट करें।",
+  "update_payment_method": "भुगतान तरीका अपडेट करें",
   "subscription_ends_on": "आपकी सदस्यता {{date}} को समाप्त हो जाएगी। तब तक आपके पास प्रीमियम एक्सेस रहेगा।",
   "cancel_subscription": "सदस्यता रद्द करें",
   "reactivate_subscription": "सदस्यता फिर से सक्रिय करें",

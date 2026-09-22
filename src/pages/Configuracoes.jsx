@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
-import { FileText, Shield, ShieldCheck, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2, Volume2, Check, Gauge, Bot, Crown, Play, CreditCard, RotateCcw, User, Bell } from "lucide-react";
+import { FileText, Shield, ShieldCheck, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2, Volume2, Check, Gauge, Bot, Crown, Play, CreditCard, RotateCcw, User, Bell, AlertTriangle } from "lucide-react";
 import { notificacoesDisponiveis, statusNotificacoes, ativarNotificacoes, desativarNotificacoes } from "../utils/pushNotifications";
 import { limparCacheVozNatural } from "../utils/audioPlayer";
 import ModalConfirm from "../components/ModalConfirm";
@@ -352,6 +352,43 @@ export default function Configuracoes() {
             console.error('Erro ao reativar assinatura:', error);
             setErroAssinatura(t("server_connection_error"));
         } finally {
+            setProcessandoAssinatura(false);
+        }
+    }
+
+    // Manda pro Billing Portal do próprio Stripe (hospedado por eles, com
+    // atualização de cartão de verdade) - NÃO é o mesmo fluxo de
+    // "criar_checkout" (que criaria uma assinatura nova, duplicada). Botão
+    // só aparece quando a cobrança já falhou (assinatura_status past_due/
+    // unpaid) - antes disso não tinha NENHUMA ação disponível pra resolver
+    // o problema (só cancelar), então o link do email/push de cobrança
+    // falhada caía numa tela sem nada a fazer (bug real reportado pelo
+    // usuário: "clica e não acontece nada").
+    async function handleAtualizarPagamento() {
+        setProcessandoAssinatura(true);
+        setErroAssinatura('');
+
+        try {
+            const res = await fetch(`${API_URL}/controller/assinatura.php`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({ action: 'portal_pagamento' })
+            });
+
+            const data = await res.json();
+
+            if (!data.success || !data.url) {
+                setErroAssinatura(data.message || t("unexpected_error"));
+                return;
+            }
+
+            window.location.href = data.url;
+        } catch (error) {
+            console.error('Erro ao abrir portal de pagamento:', error);
+            setErroAssinatura(t("server_connection_error"));
             setProcessandoAssinatura(false);
         }
     }
@@ -875,6 +912,22 @@ export default function Configuracoes() {
                                     >
                                         <RotateCcw className="w-4 h-4" />
                                         {t("reactivate_subscription")}
+                                    </button>
+                                </>
+                            ) : (user?.assinatura_status === 'past_due' || user?.assinatura_status === 'unpaid') ? (
+                                <>
+                                    <p className="flex items-start gap-2 text-amber-300 text-sm mb-3">
+                                        <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+                                        {t("subscription_payment_failed")}
+                                    </p>
+                                    <button
+                                        type="button"
+                                        onClick={handleAtualizarPagamento}
+                                        disabled={processandoAssinatura}
+                                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#4cb8c4] hover:bg-[#3da5b0] disabled:opacity-60 text-white text-sm font-medium transition-colors"
+                                    >
+                                        <CreditCard className="w-4 h-4" />
+                                        {t("update_payment_method")}
                                     </button>
                                 </>
                             ) : (

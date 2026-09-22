@@ -561,6 +561,8 @@
   "interests_selected_count": "{{total}}개 중 {{done}}개 선택됨",
   "subscription": "구독",
   "subscription_active": "Zaldemy+ 구독이 활성화되어 있습니다.",
+  "subscription_payment_failed": "최근 청구서 결제에 실패했습니다. 프리미엄 액세스를 유지하려면 결제 수단을 업데이트하세요.",
+  "update_payment_method": "결제 수단 업데이트",
   "subscription_ends_on": "구독이 {{date}}에 종료됩니다. 그때까지는 프리미엄 액세스가 유지됩니다.",
   "cancel_subscription": "구독 취소",
   "reactivate_subscription": "구독 다시 활성화",

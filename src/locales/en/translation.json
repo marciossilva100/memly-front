@@ -563,6 +563,8 @@
   "interests_selected_count": "{{done}} of {{total}} selected",
   "subscription": "Subscription",
   "subscription_active": "Your Zaldemy+ subscription is active.",
+  "subscription_payment_failed": "We couldn't charge your last invoice. Update your payment method to keep your Premium access.",
+  "update_payment_method": "Update payment method",
   "subscription_ends_on": "Your subscription will end on {{date}}. You'll keep premium access until then.",
   "cancel_subscription": "Cancel subscription",
   "reactivate_subscription": "Reactivate subscription",

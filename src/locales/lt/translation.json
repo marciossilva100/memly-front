@@ -563,6 +563,8 @@
   "interests_selected_count": "{{done}} iš {{total}} pasirinkta",
   "subscription": "Prenumerata",
   "subscription_active": "Jūsų Zaldemy+ prenumerata aktyvi.",
+  "subscription_payment_failed": "Nepavyko nuskaityti mokėjimo už paskutinę sąskaitą. Atnaujinkite mokėjimo būdą, kad išlaikytumėte Premium prieigą.",
+  "update_payment_method": "Atnaujinti mokėjimo būdą",
   "subscription_ends_on": "Jūsų prenumerata bus atšaukta {{date}}. Iki tada išlaikysite premium prieigą.",
   "cancel_subscription": "Atšaukti prenumeratą",
   "reactivate_subscription": "Atnaujinti prenumeratą",

@@ -561,6 +561,8 @@
   "interests_selected_count": "{{done}} di {{total}} selezionate",
   "subscription": "Abbonamento",
   "subscription_active": "Il tuo abbonamento Zaldemy+ è attivo.",
+  "subscription_payment_failed": "Non siamo riusciti ad addebitare la tua ultima fattura. Aggiorna il metodo di pagamento per mantenere l'accesso Premium.",
+  "update_payment_method": "Aggiorna metodo di pagamento",
   "subscription_ends_on": "Il tuo abbonamento terminerà il {{date}}. Manterrai l'accesso premium fino ad allora.",
   "cancel_subscription": "Annulla abbonamento",
   "reactivate_subscription": "Riattiva abbonamento",

@@ -561,6 +561,8 @@
   "interests_selected_count": "تم اختيار {{done}} من {{total}}",
   "subscription": "الاشتراك",
   "subscription_active": "اشتراكك في Zaldemy+ نشط.",
+  "subscription_payment_failed": "لم نتمكن من تحصيل قيمة آخر فاتورة. يُرجى تحديث وسيلة الدفع للحفاظ على وصولك إلى Premium.",
+  "update_payment_method": "تحديث وسيلة الدفع",
   "subscription_ends_on": "سينتهي اشتراكك في {{date}}. ستحتفظ بالوصول المميز حتى ذلك الحين.",
   "cancel_subscription": "إلغاء الاشتراك",
   "reactivate_subscription": "إعادة تفعيل الاشتراك",

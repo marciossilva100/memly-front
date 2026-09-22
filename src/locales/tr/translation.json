@@ -561,6 +561,8 @@
   "interests_selected_count": "{{total}} kategoriden {{done}} seçildi",
   "subscription": "Abonelik",
   "subscription_active": "Zaldemy+ aboneliğin aktif.",
+  "subscription_payment_failed": "Son faturanızı tahsil edemedik. Premium erişiminizi korumak için ödeme yönteminizi güncelleyin.",
+  "update_payment_method": "Ödeme yöntemini güncelle",
   "subscription_ends_on": "Aboneliğin {{date}} tarihinde sona erecek. O zamana kadar premium erişimin devam eder.",
   "cancel_subscription": "Aboneliği iptal et",
   "reactivate_subscription": "Aboneliği yeniden etkinleştir",

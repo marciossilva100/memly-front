@@ -561,6 +561,8 @@
   "interests_selected_count": "{{total}}件中{{done}}件を選択済み",
   "subscription": "サブスクリプション",
   "subscription_active": "Zaldemy+のサブスクリプションは有効です。",
+  "subscription_payment_failed": "最新の請求のお支払いに失敗しました。プレミアムアクセスを維持するには、支払い方法を更新してください。",
+  "update_payment_method": "支払い方法を更新",
   "subscription_ends_on": "サブスクリプションは{{date}}に終了します。それまでプレミアムアクセスは継続します。",
   "cancel_subscription": "サブスクリプションを解約",
   "reactivate_subscription": "サブスクリプションを再開",

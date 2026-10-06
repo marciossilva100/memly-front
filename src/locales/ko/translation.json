@@ -633,5 +633,5 @@
   "history_all_dates_label": "전체 기록",
   "history_unanswered_label": "미응답",
   "translation_reverse_feature_title": "AI 역방향 번역",
-  "translation_reverse_feature_desc": "모국어를 학습 언어로 번역하는 텍스트를 하루 최대 5개, 즉시 교정과 함께"
+  "translation_reverse_feature_desc": "모국어를 학습 언어로 번역하는 텍스트를 하루 최대 10개, 즉시 교정과 함께"
 }

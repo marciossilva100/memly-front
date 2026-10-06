@@ -57,6 +57,7 @@ import Jogos from './pages/Jogos';
 import TiroCerteiro from './pages/TiroCerteiro';
 import TermosDeUso from './pages/TermosDeUso';
 import PoliticaPrivacidade from './pages/PoliticaPrivacidade';
+import ExclusaoDeConta from './pages/ExclusaoDeConta';
 import Contato from './pages/Contato';
 import Faq from './pages/Faq';
 import LandingPage from './pages/LandingPage';
@@ -469,6 +470,7 @@ function Layout({ titulo, setTitulo }) {
         <Route path="/redefinirsenha" element={<RedefinirSenha />} />
         <Route path="/termosdeuso" element={<TermosDeUso />} />
         <Route path="/politicaprivacidade" element={<PoliticaPrivacidade />} />
+        <Route path="/exclusaodeconta" element={<ExclusaoDeConta />} />
         <Route path="/contato" element={<Contato />} />
         <Route path="/faq" element={<Faq />} />
         <Route path="/videos" element={<EnglishVideos query="english listening practice" />} />

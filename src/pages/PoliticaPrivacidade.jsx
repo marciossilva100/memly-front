@@ -22,7 +22,7 @@ export default function PoliticaPrivacidade() {
                         <Shield className="w-6 h-6 text-green-400" />
                         <h1 className="text-2xl font-bold">Política de Privacidade</h1>
                     </div>
-                    <p className="text-sm text-gray-400 mb-6">Última atualização: agosto de 2026</p>
+                    <p className="text-sm text-gray-400 mb-6">Última atualização: outubro de 2026</p>
 
                     <div className="space-y-5 text-sm leading-relaxed text-gray-200">
                         <section>
@@ -42,12 +42,16 @@ export default function PoliticaPrivacidade() {
                                 <li>Conteúdo que você cria: categorias e frases cadastradas ou importadas;</li>
                                 <li>Dados de uso e progresso: respostas de treino, taxa de acerto, sequência de dias
                                     de estudo (streak) e histórico de atividade no app;</li>
-                                <li>Áudio da sua voz, quando você grava uma resposta nos exercícios de IA (Perguntas
-                                    e Frase do Dia). O áudio é enviado para transcrição em texto e descartado logo em
-                                    seguida - não guardamos o arquivo de áudio, apenas o texto transcrito e a
-                                    correção gerada;</li>
+                                <li>Áudio da sua voz, quando você grava uma resposta nos exercícios de IA (Perguntas,
+                                    Frase do Dia e Tradução Reversa). O áudio é enviado para transcrição em texto e
+                                    descartado logo em seguida - não guardamos o arquivo de áudio, apenas o texto
+                                    transcrito e a correção gerada;</li>
                                 <li>Informações técnicas básicas de acesso, como token de sessão armazenado no
                                     dispositivo, endereço IP, tipo de dispositivo/navegador e data/hora de login;</li>
+                                <li>Dados de notificação push, quando você ativa essa opção: um identificador de
+                                    inscrição e chaves de criptografia gerados pelo próprio navegador (necessários
+                                    pra enviar a notificação com segurança), além do tipo de navegador/dispositivo.
+                                    Não revelam seu conteúdo nem sua localização;</li>
                             </ul>
                         </section>
 
@@ -58,11 +62,14 @@ export default function PoliticaPrivacidade() {
                                 <li>Criar e manter sua conta e autenticar seu acesso;</li>
                                 <li>Personalizar seu aprendizado (idiomas, categorias, métricas de desempenho);</li>
                                 <li>Gerar áudio das frases e sugerir traduções durante o treino;</li>
-                                <li>Transcrever e corrigir suas respostas faladas nos exercícios de IA (Perguntas e
-                                    Frase do Dia), gerando nota e feedback sobre gramática, pronúncia e fluência;</li>
+                                <li>Transcrever e corrigir suas respostas faladas ou digitadas nos exercícios de IA
+                                    (Perguntas, Frase do Dia e Tradução Reversa), gerando nota e feedback sobre
+                                    gramática, pronúncia e fluência;</li>
                                 <li>Exibir seu progresso e estatísticas na tela de Métricas;</li>
                                 <li>Manter um histórico de acessos à sua conta, por segurança;</li>
-                                <li>Enviar comunicações importantes sobre sua conta ou o serviço;</li>
+                                <li>Enviar comunicações importantes sobre sua conta ou o serviço, por e-mail e,
+                                    quando ativado, por notificação push (ex: lembrete de treino, aviso de cobrança
+                                    da assinatura que falhou);</li>
                                 <li>Melhorar a qualidade e a segurança do app.</li>
                             </ul>
                         </section>
@@ -79,15 +86,17 @@ export default function PoliticaPrivacidade() {
                                     padrão (não-IA) das frases praticadas;</li>
                                 <li><strong>OpenAI</strong> (<a href="https://openai.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#4cb8c4] underline">política de privacidade</a>),
                                     para gerar a voz natural (premium) das frases, transcrever sua resposta falada
-                                    nos exercícios de IA (Perguntas e Frase do Dia) e gerar perguntas, correções,
-                                    sugestões de tradução e categorias por IA - o áudio enviado para transcrição
-                                    não é retido por nós nem pela OpenAI após o processamento;</li>
-                                <li><strong>Groq</strong> (<a href="https://groq.com/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-[#4cb8c4] underline">política de privacidade</a>),
-                                    usado na funcionalidade "Treino com IA" pra combinar frases que você já
-                                    estudou num parágrafo coeso de prática;</li>
+                                    nos exercícios de IA (Perguntas, Frase do Dia e Tradução Reversa) e gerar
+                                    perguntas, textos, correções, sugestões de tradução e categorias por IA - o
+                                    áudio enviado para transcrição não é retido por nós nem pela OpenAI após o
+                                    processamento;</li>
                                 <li><strong>Stripe</strong> (<a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#4cb8c4] underline">política de privacidade</a>),
                                     processador de pagamento da assinatura Zaldemy+ - dados de cartão são tratados
                                     diretamente pelo Stripe, o Zaldemy não armazena número de cartão;</li>
+                                <li><strong>Hostinger</strong> (<a href="https://www.hostinger.com/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-[#4cb8c4] underline">política de privacidade</a>),
+                                    provedor usado pra enviar e-mails transacionais (confirmação de cadastro,
+                                    redefinição de senha, avisos sobre sua assinatura) - recebe seu nome e e-mail
+                                    só pra esse envio;</li>
                                 <li><strong>ip-api.com</strong>, para identificar o país do seu endereço IP no
                                     momento do cadastro (usado só pra liberar ou não o cadastro por região);</li>
                                 <li>YouTube e Open Library, para buscar vídeos e livros usados nas práticas de

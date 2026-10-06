@@ -29,6 +29,12 @@ export default function Flashcards() {
   // deixando index fora dos limites de `frases` e derrubando o render.
   const [avancando, setAvancando] = useState(false);
   const flipTimeoutRef = useRef(null);
+  // Guarda a Promise do áudio do verso em andamento - só usada no ÚLTIMO
+  // cartão (ver nextCard), pra esperar a pronúncia terminar antes de
+  // mostrar a tela de resultado, em vez de cortar o áudio igual acontece
+  // normalmente ao avançar pro próximo cartão (onde cortar é esperado -
+  // o aluno já está olhando pro cartão seguinte).
+  const audioVersoPromiseRef = useRef(null);
   const API_URL = import.meta.env.VITE_API_URL;
   const [listIdCorrectPhrase, setListIdCorrectPhrase] = useState([]);
   const [listIdIncorrectPhrase, setListIdIncorrectPhrase] = useState([]);
@@ -222,7 +228,7 @@ export default function Flashcards() {
       const currentIndex = index;
       flipTimeoutRef.current = setTimeout(() => {
         setBuscandoAudioVerso(true);
-        playAudio(frases[currentIndex].texto_traduzido, user, false, null, false, false, () => setBuscandoAudioVerso(false))
+        audioVersoPromiseRef.current = playAudio(frases[currentIndex].texto_traduzido, user, false, null, false, false, () => setBuscandoAudioVerso(false))
           .finally(() => setBuscandoAudioVerso(false));
         flipTimeoutRef.current = null;
       }, FLIP_DURATION / 2);
@@ -319,6 +325,37 @@ export default function Flashcards() {
       updatedIncorrectList = [...listIdIncorrectPhrase, frases[index].id];
       setListIdIncorrectPhrase(updatedIncorrectList);
 
+    }
+
+    // No ÚLTIMO cartão, espera a pronúncia do verso terminar antes de
+    // cortar o áudio e mostrar a tela de resultado - bug real reportado:
+    // clicar em "Lembrei" cortava a pronúncia na hora e já pulava pra
+    // nota, sem dar chance de ouvir. Nos cartões anteriores cortar é
+    // esperado (o aluno já está indo pro próximo cartão); no último não
+    // tem "próximo" pra tentar ouvir de novo, então vale esperar. Timeout
+    // de segurança (8s) pra nunca travar o aluno se o áudio falhar.
+    const ehUltimoCard = index + 1 >= frases.length;
+    if (ehUltimoCard) {
+      // Clique rápido demais: o setTimeout de FLIP_DURATION/2 que inicia o
+      // áudio do verso ainda não disparou (hasBeenFlipped já liberou os
+      // botões antes disso) - dispara o início do áudio agora em vez de só
+      // cancelar, senão a pronúncia do último cartão nunca chegaria nem a
+      // começar.
+      if (flipTimeoutRef.current) {
+        clearTimeout(flipTimeoutRef.current);
+        flipTimeoutRef.current = null;
+        setBuscandoAudioVerso(true);
+        audioVersoPromiseRef.current = playAudio(frases[index].texto_traduzido, user, false, null, false, false, () => setBuscandoAudioVerso(false))
+          .finally(() => setBuscandoAudioVerso(false));
+      }
+
+      if (audioVersoPromiseRef.current) {
+        await Promise.race([
+          audioVersoPromiseRef.current,
+          new Promise((resolve) => setTimeout(resolve, 8000)),
+        ]);
+        audioVersoPromiseRef.current = null;
+      }
     }
 
     window.speechSynthesis.cancel();

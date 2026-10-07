@@ -350,10 +350,18 @@ export default function Flashcards() {
       }
 
       if (audioVersoPromiseRef.current) {
-        await Promise.race([
-          audioVersoPromiseRef.current,
-          new Promise((resolve) => setTimeout(resolve, 8000)),
-        ]);
+        // Falha no áudio (ex: erro de rede) não pode travar o fluxo aqui -
+        // sem o catch, uma rejeição interrompia nextCard() antes de chegar
+        // em setAvancando(false) lá embaixo, deixando os botões desabilitados
+        // pra sempre (bug real reportado: tela travada no último cartão).
+        try {
+          await Promise.race([
+            audioVersoPromiseRef.current,
+            new Promise((resolve) => setTimeout(resolve, 8000)),
+          ]);
+        } catch (err) {
+          console.error("Falha ao tocar áudio do último cartão:", err);
+        }
         audioVersoPromiseRef.current = null;
       }
     }

@@ -426,6 +426,13 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
     // reproduz nada - só mostra o modal premium.
     // forcarVozPadrao ignora o plano e usa sempre a voz gratuita (ex: frente
     // do flashcard em DigitarTexto.jsx, que não deve gastar cota de voz premium).
+    //
+    // Bloco inteiro envolto em try/catch - playAudio() tem o contrato
+    // implícito (usado por vários chamadores, ex: espera do último cartão em
+    // Flashcards.jsx) de sempre RESOLVER, nunca rejeitar. Sem essa proteção,
+    // um erro aqui dentro (rede, audio.play() etc.) rejeitava a Promise e
+    // travava quem await'ava ela sem try/catch próprio.
+    try {
     if (!forcarVozPadrao && !cotaNaturalEsgotada(user) && !limiteReproducoesLimitadoAtingido(user) && (user.plano === 1 || user.plano === 3)) {
         // Reserva o slot ANTES do fetch (que é assíncrono) - contar só depois
         // de buscar o áudio permitia que múltiplas chamadas simultâneas (ex:
@@ -510,6 +517,9 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
 
             return;
         }
+    }
+    } catch (err) {
+        console.error("Erro na voz natural, caindo pro fallback de voz padrão:", err);
     }
 
     try {

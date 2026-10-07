@@ -97,7 +97,7 @@ export default function ReferenciaUsuario({ setTitulo }) {
 
 
     return (
-        <div className="h-dvh overflow-hidden flex flex-col px-10 pt-6 pb-[env(safe-area-inset-bottom)] from-gray-900 to-gray-800 bg-gradient-to-br">
+        <div className="h-dvh overflow-y-auto flex flex-col px-10 pt-6 pb-[env(safe-area-inset-bottom)] from-gray-900 to-gray-800 bg-gradient-to-br">
 
             <div className="relative mb-2">
                 <div

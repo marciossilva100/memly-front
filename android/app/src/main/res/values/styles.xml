@@ -7,18 +7,29 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:background">@null</item>
+        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
     </style>
 
 
+    <!-- Tema de fato usado pela MainActivity (ver AndroidManifest.xml) -
+         sem navigationBarColor/statusBarColor aqui, o Android deixava a
+         área da barra de navegação sem cor definida, e em alguns
+         aparelhos/lançadores o papel de parede do sistema aparecia por
+         trás (mais visível na miniatura da tela de apps recentes). -->
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
         <item name="android:background">@drawable/splash</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_cap</item>
         <item name="windowSplashScreenIconBackgroundColor">#FFFFFF</item>
+        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
     </style>
 </resources>

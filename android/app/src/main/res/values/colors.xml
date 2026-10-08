@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Navy do app (mesma cor de background usada no ícone, splash e
+         SplashScreen.backgroundColor do capacitor.config.json) - usada aqui
+         pra colorir a status bar e a navigation bar do sistema, que sem
+         isso ficavam com fundo indefinido e deixavam o papel de parede do
+         Android aparecer por trás em alguns aparelhos (visível sobretudo na
+         miniatura da tela de apps recentes). -->
+    <color name="colorPrimary">#111827</color>
+    <color name="colorPrimaryDark">#111827</color>
+    <color name="colorAccent">#111827</color>
+</resources>

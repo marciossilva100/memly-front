@@ -323,6 +323,17 @@ export default function Flashcards() {
     if (avancando) return;
     setAvancando(true);
 
+    // Função inteira envolta em try/finally - já apareceram DUAS causas
+    // diferentes de tela travada aqui (rejeição não tratada no áudio do
+    // último cartão, fetch sem timeout em trainingUpdate), cada uma
+    // corrigida pontualmente na hora, mas o problema de fundo é mais
+    // amplo: QUALQUER erro síncrono em QUALQUER linha daqui (ex:
+    // window.speechSynthesis.cancel(), API instável em algumas WebViews
+    // Android) interrompe a função antes de chegar no setAvancando(false)
+    // do final, travando os botões pra sempre. O finally garante que isso
+    // nunca mais trava independente de qual linha falhar.
+    try {
+
     setAnsweredCount(prev => prev + 1);
 
     let updatedList = listIdCorrectPhrase;
@@ -379,8 +390,19 @@ export default function Flashcards() {
       }
     }
 
-    window.speechSynthesis.cancel();
-    pararAudio();
+    // Try/catch próprio (não só o try/finally da função inteira) - uma
+    // falha aqui (speechSynthesis é API instável em algumas WebViews
+    // Android) não pode impedir o resto da função de rodar, senão o aluno
+    // fica preso no MESMO cartão pra sempre: o finally de fora só evita o
+    // botão ficar desabilitado, mas pula todo o código que avança pro
+    // próximo cartão (setIsFlipped, setShowButton, setIndex etc.), que vem
+    // depois dessas linhas.
+    try {
+      window.speechSynthesis.cancel();
+      pararAudio();
+    } catch (err) {
+      console.error("Falha ao cancelar áudio/voz:", err);
+    }
 
     if (flipTimeoutRef.current) {
       clearTimeout(flipTimeoutRef.current);
@@ -413,7 +435,11 @@ export default function Flashcards() {
 
     }
 
-    setAvancando(false);
+    } finally {
+
+      setAvancando(false);
+
+    }
 
   };
 

@@ -276,6 +276,14 @@ export default function Flashcards() {
 
   async function trainingUpdate(actionToSend, frase_id, statusCorrectPhrase) {
 
+    // Sem timeout, um fetch() pendurado numa rede móvel instável (celular
+    // real, fora do WiFi estável usado em teste local) nunca resolve nem
+    // rejeita - o await em nextCard() ficava esperando pra sempre,
+    // deixando avancando=true e os botões desabilitados pra sempre (bug
+    // real reportado: tela travada em QUALQUER cartão, não só o último).
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
     try {
 
       const res = await fetch(`${API_URL}/controller/treino.php`, {
@@ -288,7 +296,8 @@ export default function Flashcards() {
           frase_id: [frase_id],
           category_id: id,
           statusCorrectPhrase: statusCorrectPhrase
-        })
+        }),
+        signal: controller.signal
       });
 
       const data = await res.json();
@@ -300,6 +309,10 @@ export default function Flashcards() {
     } catch (error) {
 
       console.log(error);
+
+    } finally {
+
+      clearTimeout(timeoutId);
 
     }
 

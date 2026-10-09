@@ -285,6 +285,35 @@ function cancelarAudioAtual() {
 
     if (currentAudio && currentAudio.pause) {
         currentAudio.pause();
+
+        // pause() sozinho não é garantia de parada imediata em todas as
+        // WebViews Android (relatado: áudio continuando a tocar depois de
+        // "Lembrei"/"Não lembrei" em cartões do meio, fora do cenário de
+        // último cartão). Zerar o tempo e desligar a fonte força o elemento
+        // a soltar o recurso de mídia de vez, em vez de só sinalizar pausa -
+        // mais agressivo, mas sempre seguro de chamar aqui (currentAudio já
+        // está sendo descartado de qualquer forma).
+        try {
+            currentAudio.currentTime = 0;
+            currentAudio.src = '';
+            currentAudio.load();
+        } catch {
+            // alguns navegadores lançam ao mexer em currentTime/src de um
+            // elemento já destruído/sem fonte - inofensivo, já vamos
+            // descartar a referência de qualquer jeito.
+        }
+    }
+
+    // speechSynthesis é um mecanismo de voz totalmente separado do <audio>
+    // (usado em alguns fallbacks) - cancelar aqui também, não só no
+    // chamador, garante que pararAudio() sozinho já corta qualquer voz
+    // tocando, não importa qual dos dois mecanismos está ativo.
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+        try {
+            window.speechSynthesis.cancel();
+        } catch {
+            // ignora - mesmo raciocínio acima
+        }
     }
 
     currentAudio = null;

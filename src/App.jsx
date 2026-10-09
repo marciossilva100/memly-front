@@ -63,7 +63,7 @@ import Faq from './pages/Faq';
 import LandingPage from './pages/LandingPage';
 import DesktopBlockedNotice from './components/DesktopBlockedNotice';
 import InstallPwaNotice from './components/InstallPwaNotice';
-import { isMobileWeb, isStandaloneApp } from './utils/googleNativeAuth';
+import { isMobileWeb, isStandaloneApp, isNativePlatform } from './utils/googleNativeAuth';
 
 // Contexto de conexão
 import { ConnectionProvider, useConnection } from './context/ConnectionContext';
@@ -493,6 +493,14 @@ function App() {
   }
 
   useEffect(() => {
+    // Esse aviso é especificamente pra PWA/site (nova versão publicada no
+    // Vercel) - no app nativo (Capacitor) os assets são empacotados dentro
+    // do próprio APK/AAB, atualização acontece só via Play Store, nunca por
+    // Service Worker. Sem essa checagem, o modal "nova versão disponível"
+    // aparecia dentro do app nativo sem nenhuma atualização real pra
+    // aplicar (bug real reportado: modal insistindo em aparecer no app).
+    if (isNativePlatform()) return;
+
     // Com registerType "prompt" (vite.config.js), o service worker novo só é
     // ativado quando updateSW() é chamado - só recarrega se o usuário
     // confirmar, e nunca sozinho no meio de alguma ação em andamento.

@@ -390,18 +390,25 @@ export default function Flashcards() {
       }
     }
 
-    // Try/catch próprio (não só o try/finally da função inteira) - uma
-    // falha aqui (speechSynthesis é API instável em algumas WebViews
-    // Android) não pode impedir o resto da função de rodar, senão o aluno
-    // fica preso no MESMO cartão pra sempre: o finally de fora só evita o
-    // botão ficar desabilitado, mas pula todo o código que avança pro
-    // próximo cartão (setIsFlipped, setShowButton, setIndex etc.), que vem
-    // depois dessas linhas.
+    // CAUSA RAIZ REAL do áudio não interrompendo, confirmada em log de
+    // celular de verdade (depuração via cabo): window.speechSynthesis não
+    // existe em várias WebViews Android (API incompleta, diferente do
+    // Chrome desktop). Como essa chamada vinha ANTES de pararAudio() no
+    // mesmo try, o erro "Cannot read properties of undefined (reading
+    // 'cancel')" abortava o bloco ali mesmo - pararAudio() (que é quem de
+    // fato pausa o <audio>) NUNCA chegava a rodar nesses aparelhos. Dois
+    // try/catch separados agora: uma falha num mecanismo de voz nunca
+    // impede o outro de rodar.
     try {
-      window.speechSynthesis.cancel();
       pararAudio();
     } catch (err) {
-      console.error("Falha ao cancelar áudio/voz:", err);
+      console.error("Falha ao pausar áudio:", err);
+    }
+
+    try {
+      window.speechSynthesis?.cancel();
+    } catch (err) {
+      console.error("Falha ao cancelar speechSynthesis:", err);
     }
 
     if (flipTimeoutRef.current) {
@@ -587,7 +594,7 @@ export default function Flashcards() {
                 style={{ cursor: "pointer" }}
               >
                 <div className="card-front shadow-[0_10px_40px_rgba(0,0,0,0.08)] text-center px-8 py-10 [@media(max-height:700px)]:py-6 bg-[linear-gradient(to_right,#233245,#0d1425)] rounded-lg">
-                  <span className="text-2xl [@media(max-height:700px)]:text-xl">
+                  <span className="text-xl [@media(max-height:700px)]:text-lg">
                     {frases[index].texto_nativo}
                   </span>
                   <div className="absolute right-0 top-0 mt-3 me-3">
@@ -596,7 +603,7 @@ export default function Flashcards() {
                 </div>
 
                 <div className="card-back shadow-[0_10px_40px_rgba(0,0,0,0.09)] text-center px-8 py-10 [@media(max-height:700px)]:py-6 rounded-lg bg-[linear-gradient(to_right,#0d1425,#233245)]">
-                  <span className="text-2xl [@media(max-height:700px)]:text-xl text-white">
+                  <span className="text-xl [@media(max-height:700px)]:text-lg text-white">
                     {hasBeenFlipped ? frases[index].texto_traduzido : ""}
                   </span>
                   <div className="absolute right-0 top-0 mt-3 me-3">

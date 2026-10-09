@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
-import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom'
+import { App as CapacitorApp } from '@capacitor/app'
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { registerSW } from "virtual:pwa-register";
@@ -60,6 +61,7 @@ import PoliticaPrivacidade from './pages/PoliticaPrivacidade';
 import ExclusaoDeConta from './pages/ExclusaoDeConta';
 import Contato from './pages/Contato';
 import Faq from './pages/Faq';
+import Sobre from './pages/Sobre';
 import LandingPage from './pages/LandingPage';
 import DesktopBlockedNotice from './components/DesktopBlockedNotice';
 import InstallPwaNotice from './components/InstallPwaNotice';
@@ -138,6 +140,7 @@ function MobileOnlyRoute({ children }) {
 
 function Layout({ titulo, setTitulo }) {
   const location = useLocation()
+  const navigate = useNavigate()
   const { user, loading } = useAuth()
   const { isOnline } = useConnection()
 
@@ -153,6 +156,33 @@ function Layout({ titulo, setTitulo }) {
   useEffect(() => {
     initAnalytics()
   }, [])
+
+  // Botão físico/gesto de voltar do Android - sem esse listener, o
+  // Capacitor cai no comportamento padrão (fecha o app direto, mesmo tendo
+  // pra onde "voltar" dentro do app) - bug real reportado: tocar em voltar
+  // saía do app em vez de navegar. Usa location.pathname (não locationRef)
+  // de propósito: precisa ler sempre o valor mais atual no momento do
+  // toque, não o de quando o listener foi registrado.
+  const locationRef = useRef(location);
+  useEffect(() => {
+    locationRef.current = location;
+  }, [location]);
+
+  useEffect(() => {
+    if (!isNativePlatform()) return;
+
+    const listenerPromise = CapacitorApp.addListener('backButton', () => {
+      if (locationRef.current.pathname === '/home') {
+        CapacitorApp.exitApp();
+      } else {
+        navigate('/home');
+      }
+    });
+
+    return () => {
+      listenerPromise.then((listener) => listener.remove());
+    };
+  }, [navigate]);
 
   useEffect(() => {
     trackPageView(location.pathname)
@@ -473,6 +503,7 @@ function Layout({ titulo, setTitulo }) {
         <Route path="/exclusaodeconta" element={<ExclusaoDeConta />} />
         <Route path="/contato" element={<Contato />} />
         <Route path="/faq" element={<Faq />} />
+        <Route path="/sobre" element={<Sobre />} />
         <Route path="/videos" element={<EnglishVideos query="english listening practice" />} />
       </Routes>
     </>

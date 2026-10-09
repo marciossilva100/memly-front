@@ -19,12 +19,14 @@ if (import.meta.env.DEV) {
   )
 }
 
-// O app fica coberto pela splash nativa ate o React montar, evitando
-// mostrar o loader do index.html (mesmo icone "piscando" duas vezes).
-// Espera dois frames para garantir que o navegador ja pintou algo antes
-// de esconder a splash nativa (senao sobra um vao escuro sem nada).
-requestAnimationFrame(() => {
-  requestAnimationFrame(() => {
-    SplashScreen.hide()
-  })
-})
+// A splash nativa agora é escondida por AuthGate.jsx, só quando o app já
+// sabe se o usuário está logado ou não (não só quando o React terminou de
+// montar) - bug real reportado: escondendo cedo demais aqui (só 2 frames),
+// sobrava a tela de loading do próprio AuthGate (mesmo ícone chapéu) visível
+// por cima enquanto a checagem de login (chamada de rede) ainda rodava,
+// virando duas telas de "chapéu" em sequência em vez de uma transição só.
+//
+// Mantido aqui só como rede de segurança - se por algum motivo AuthGate
+// nunca montar/rodar esse efeito (erro antes disso), a splash não fica
+// presa pra sempre.
+setTimeout(() => SplashScreen.hide(), 8000)

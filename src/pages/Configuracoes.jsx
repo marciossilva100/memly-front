@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
-import { FileText, Shield, ShieldCheck, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2, Volume2, Check, Gauge, Bot, Crown, Play, CreditCard, RotateCcw, User, Bell, AlertTriangle } from "lucide-react";
+import { FileText, Shield, ShieldCheck, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2, Volume2, Check, Gauge, Bot, Crown, Play, CreditCard, RotateCcw, User, Bell, AlertTriangle, Info } from "lucide-react";
 import { notificacoesDisponiveis, statusNotificacoes, ativarNotificacoes, desativarNotificacoes } from "../utils/pushNotifications";
 import { limparCacheVozNatural } from "../utils/audioPlayer";
 import ModalConfirm from "../components/ModalConfirm";
@@ -970,6 +970,13 @@ export default function Configuracoes() {
                             titulo={t("access_history_title")}
                             cor="text-[#4cb8c4]"
                             onClick={() => navigate("/configuracoes/acessos")}
+                        />
+
+                        <ItemMenu
+                            icone={Info}
+                            titulo={t("about")}
+                            cor="text-sky-400"
+                            onClick={() => navigate("/sobre")}
                         />
 
                         <ItemMenu

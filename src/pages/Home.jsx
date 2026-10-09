@@ -698,7 +698,7 @@ export default function Home() {
                                         {item.categoria?.charAt(0)?.toUpperCase()}
                                     </div>
                                     <div className="min-w-0">
-                                        <p className="text-lg text-white font-medium truncate">
+                                        <p className="text-base text-white font-medium truncate">
                                             {truncarNomeCategoria(item.categoria)}
                                         </p>
                                         <div className="flex flex-col text-xs text-gray-400">

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "50605149640",
+    "project_id": "zaldemy-2ddb3",
+    "storage_bucket": "zaldemy-2ddb3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:50605149640:android:044ac7dc7b4511256804fd",
+        "android_client_info": {
+          "package_name": "com.zaldemy.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqGY2rWiOGbukxiJNsnZ-uBBzITz3fXiI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

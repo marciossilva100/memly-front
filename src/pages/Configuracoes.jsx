@@ -170,9 +170,9 @@ export default function Configuracoes() {
     //     localStorage.setItem('zaldemy_tempo_virada_flashcards', String(segundos));
     // }
 
-    // Notificações push - só existe (feature-detect + PWA instalada, ver
-    // notificacoesDisponiveis) fora do navegador comum e fora do app nativo
-    // (Capacitor ainda não tem push nativo configurado).
+    // Notificações push - disponível na PWA instalada (Web Push) e no app
+    // nativo (Capacitor/FCM), mas não numa aba comum do navegador (ver
+    // notificacoesDisponiveis).
     const [notifDisponivel, setNotifDisponivel] = useState(false);
     const [notifAtivada, setNotifAtivada] = useState(false);
     const [notifCarregando, setNotifCarregando] = useState(false);

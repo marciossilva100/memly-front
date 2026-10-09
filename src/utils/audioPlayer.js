@@ -284,6 +284,20 @@ function cancelarAudioAtual() {
     const meuToken = ++currentToken;
 
     if (currentAudio && currentAudio.pause) {
+        // muted ANTES de pause() - relatado que em algumas WebViews Android
+        // o pause() sozinho não corta o som na hora (buffer de áudio nativo
+        // já enfileirado no MediaCodec do aparelho não é necessariamente
+        // interrompido só porque o elemento HTML pausou). muted=true corta
+        // a saída de áudio imediatamente, independente do estado interno de
+        // buffer/decodificação - camada de segurança a mais, redundante com
+        // pause() em navegadores normais mas decisiva nos que não obedecem
+        // pause() na hora.
+        try {
+            currentAudio.muted = true;
+        } catch {
+            // inofensivo - segue pras outras camadas de parada abaixo
+        }
+
         currentAudio.pause();
 
         // pause() sozinho não é garantia de parada imediata em todas as
@@ -541,6 +555,19 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
                     limparMediaSession();
                     resolve();
                 };
+                // onpause é essencial - sem ele, quando cancelarAudioAtual()
+                // pausa esse áudio de fora (usuário avançou de cartão), essa
+                // Promise nunca resolvia (pause() não dispara ended/error),
+                // travando playAudio() indefinidamente em vez de liberar a
+                // função pra quem chamou - nesse caminho é a voz PREMIUM
+                // (natural), o mais usado no dia a dia.
+                audio.onpause = () => {
+                    URL.revokeObjectURL(resultado.url);
+                    if (currentAudio === audio) {
+                        currentAudio = null;
+                    }
+                    resolve();
+                };
                 audio.play().catch(() => resolve());
             });
 
@@ -587,9 +614,15 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
                 console.error("ERRO PLAY:", err);
             });
 
+            // onpause é essencial aqui - sem ele, quando cancelarAudioAtual()
+            // pausa esse áudio de fora (usuário clicou "Lembrei"/"Não
+            // lembrei"), essa Promise nunca resolvia (pause() não dispara
+            // ended/error), travando esse loop e o playAudio() inteiro
+            // indefinidamente em vez de liberar a função pra quem chamou.
             await new Promise(resolve => {
                 audio.onended = resolve;
                 audio.onerror = resolve;
+                audio.onpause = resolve;
             });
 
             URL.revokeObjectURL(urlAudio);

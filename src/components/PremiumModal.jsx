@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from "react-i18next";
 import { isNativePlatform } from "../utils/googleNativeAuth";
 import { useAuth } from "../context/AuthContext";
+import { obterPacotePremium, comprarPacotePremium } from "../utils/revenueCat";
 
 import {
   Sparkles,
@@ -82,6 +83,35 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
   // aba/app por qualquer outro motivo enquanto o modal está só aberto.
   const [checkoutAberto, setCheckoutAberto] = useState(false);
 
+  // Pacote Premium real do RevenueCat (preço de verdade da loja, já na
+  // moeda/formatação do Google Play) - null enquanto carrega ou se não
+  // disponível (ex: RevenueCat/Play Billing fora do ar, produto não
+  // configurado ainda). Só busca se for nativo e o usuário ainda não for
+  // premium - comprar de novo quem já é premium (por qualquer canal, Stripe
+  // ou RevenueCat) cobraria 2x pela mesma coisa.
+  const [pacoteNativo, setPacoteNativo] = useState(null);
+  const [carregandoPacoteNativo, setCarregandoPacoteNativo] = useState(false);
+  // true logo após uma compra nativa confirmada pelo Google Play - dispara
+  // o polling abaixo até o webhook (model/RevenueCat.php) processar e
+  // usuarios.plano virar 1 de verdade. A confirmação da LOJA é instantânea,
+  // mas o nosso backend só sabe depois do webhook chegar (assíncrono).
+  const [compraNativaConcluida, setCompraNativaConcluida] = useState(false);
+
+  useEffect(() => {
+    if (!isNativePlatform() || isOpen !== true || user?.plano === 1) return;
+
+    let cancelado = false;
+    setCarregandoPacoteNativo(true);
+
+    obterPacotePremium().then((pacote) => {
+      if (!cancelado) setPacoteNativo(pacote);
+    }).finally(() => {
+      if (!cancelado) setCarregandoPacoteNativo(false);
+    });
+
+    return () => { cancelado = true; };
+  }, [isOpen, user?.plano]);
+
   // O checkout roda numa aba separada (ver assinar() abaixo); essa aba
   // original com o modal nunca sabe sozinha que o pagamento terminou. Ao
   // voltar pra essa aba (aba de checkout fechou ou usuário trocou de volta),
@@ -107,10 +137,61 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
     }
   }, [checkoutAberto, user?.plano, onClose]);
 
-  // Vender assinatura de dentro do app Android (mesmo abrindo o checkout do
-  // Stripe num navegador embutido) conta como "venda dentro do app" pra
-  // política da Google Play - só é permitido via Google Play Billing, que
-  // ainda não está implementado. Por isso esse fluxo só roda na versão web.
+  // Depois da compra nativa confirmada pela loja, o Google manda o evento
+  // pro RevenueCat, que manda o webhook pro nosso backend (ver
+  // model/RevenueCat.php) - isso não é instantâneo (rede, fila). Faz
+  // polling curto (a cada 2s, até 20s) em vez de 1 checkAuth só, pra não
+  // deixar o usuário preso vendo "processando" se o webhook demorar um
+  // pouco mais que o normal. Para sozinho assim que plano virar 1 (effect
+  // abaixo fecha o modal) ou depois do tempo máximo.
+  useEffect(() => {
+    if (!compraNativaConcluida || user?.plano === 1) return;
+
+    let tentativas = 0;
+    const intervalo = setInterval(() => {
+      tentativas += 1;
+      checkAuth(true);
+      if (tentativas >= 10) clearInterval(intervalo);
+    }, 2000);
+
+    return () => clearInterval(intervalo);
+  }, [compraNativaConcluida, user?.plano, checkAuth]);
+
+  useEffect(() => {
+    if (compraNativaConcluida && user?.plano === 1) {
+      onClose();
+    }
+  }, [compraNativaConcluida, user?.plano, onClose]);
+
+  // Compra real dentro do app Android via Google Play Billing (RevenueCat).
+  // appUserID já foi configurado em inicializarRevenueCat() (ver
+  // AuthContext.jsx, chamado logo após o login) com o id do nosso próprio
+  // usuário - é isso que faz o webhook saber de quem é a compra.
+  async function assinarNativo() {
+    if (!pacoteNativo) return;
+
+    setAssinando(true);
+    setErroAssinatura('');
+
+    const resultado = await comprarPacotePremium(pacoteNativo);
+
+    setAssinando(false);
+
+    if (resultado.cancelado) return;
+
+    if (!resultado.sucesso) {
+      setErroAssinatura(resultado.erro || t('server_connection_error'));
+      return;
+    }
+
+    setCompraNativaConcluida(true);
+  }
+
+  // Vende via Stripe (checkout numa aba separada) - só roda na versão web.
+  // No app Android, vender assim (mesmo abrindo o checkout num navegador
+  // embutido) conta como "venda dentro do app" pra política da Google Play
+  // e exigiria Google Play Billing - por isso o Android usa assinarNativo()
+  // acima em vez desta função.
   async function assinar() {
     setAssinando(true);
     setErroAssinatura('');
@@ -272,11 +353,26 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
               </p>
             </div>
 
-            {/* Preço */}
-            <div className="text-center mb-6">
-              <span className="text-4xl font-bold text-white">{preco.valor}</span>
-              <span className="text-gray-300 ml-1">{t("per_month")}</span>
-            </div>
+            {/* Preço - na web é o valor de referência (Stripe). No app
+                Android só mostra preço quando existe um pacote REAL do
+                RevenueCat/Google Play pra comprar ali mesmo (pacoteNativo) -
+                mostrar preço sem ter como comprar seria a mesma violação de
+                política que motivou tirar isso daqui antes (preço +
+                instrução de pagar fora do Play Billing). Sem pacote
+                disponível, não mostra preço nenhum (ver bloco
+                isNativePlatform() do botão mais abaixo pro fallback). */}
+            {!isNativePlatform() && (
+              <div className="text-center mb-6">
+                <span className="text-4xl font-bold text-white">{preco.valor}</span>
+                <span className="text-gray-300 ml-1">{t("per_month")}</span>
+              </div>
+            )}
+            {isNativePlatform() && pacoteNativo && (
+              <div className="text-center mb-6">
+                <span className="text-4xl font-bold text-white">{pacoteNativo.product.priceString}</span>
+                <span className="text-gray-300 ml-1">{t("per_month")}</span>
+              </div>
+            )}
 
             {/* Qualidade de áudio: free x premium */}
             <div className="mb-6 bg-gray-800/50 rounded-xl p-4 border border-gray-700">
@@ -337,14 +433,16 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
               ))}
             </div>
 
-            {/* Botão de assinatura - só funciona na web (Stripe). No app
-                Android, vender aqui exigiria Google Play Billing (ainda não
-                implementado), então só mostra o aviso. */}
-            {isNativePlatform() ? (
-              <div className="w-full bg-gray-800/50 border border-gray-700 text-gray-200 text-sm text-center py-4 px-6 rounded-xl mb-4">
-                {t("subscribe_on_website_hint")}
-              </div>
-            ) : (
+            {/* Botão de assinatura - 3 cenários:
+                1) Web: Stripe, igual sempre foi.
+                2) Android com pacote do RevenueCat carregado: compra real
+                   via Google Play Billing, dentro do próprio app.
+                3) Android sem pacote (RevenueCat/Play Billing fora do ar ou
+                   produto não configurado ainda): fallback neutro, SEM
+                   preço nem instrução de pagar fora do app - a mesma
+                   restrição de política de antes continua valendo pra esse
+                   caso de erro. */}
+            {!isNativePlatform() && (
               <button
                 onClick={assinar}
                 disabled={assinando}
@@ -354,6 +452,32 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
                 <span>{assinando ? t("redirecting_to_checkout") : t("activate_premium_button", { preco: preco.valor })}</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
+            )}
+
+            {isNativePlatform() && pacoteNativo && (
+              <button
+                onClick={assinarNativo}
+                disabled={assinando || compraNativaConcluida}
+                className="w-full bg-gradient-to-r from-[#4cb8c4] to-[#085078] hover:from-[#3da5b0] hover:to-[#064060] disabled:opacity-60 text-white font-bold py-3.5 px-6 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 group mb-4"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>
+                  {compraNativaConcluida
+                    ? t("confirming_premium_purchase")
+                    : assinando
+                      ? t("redirecting_to_checkout")
+                      : t("activate_premium_button", { preco: pacoteNativo.product.priceString })}
+                </span>
+                {!compraNativaConcluida && !assinando && (
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                )}
+              </button>
+            )}
+
+            {isNativePlatform() && !pacoteNativo && (
+              <div className="w-full bg-gray-800/50 border border-gray-700 text-gray-200 text-sm text-center py-4 px-6 rounded-xl mb-4">
+                {carregandoPacoteNativo ? t("loading_dots") : t("premium_feature_native_notice")}
+              </div>
             )}
 
             {erroAssinatura && (

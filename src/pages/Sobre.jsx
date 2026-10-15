@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { FileText, Shield, Trash2, Mail, HelpCircle, ChevronRight } from "lucide-react";
+import { Mail, HelpCircle, ChevronRight } from "lucide-react";
 import { isNativePlatform } from "../utils/googleNativeAuth";
 import logo from "../assets/img/chapeu_formatura.png";
 
@@ -76,24 +76,6 @@ export default function Sobre() {
                     </div>
 
                     <div className="space-y-3">
-                        <ItemLink
-                            icone={FileText}
-                            titulo={t("terms_of_use")}
-                            cor="text-blue-400"
-                            onClick={() => navigate("/termosdeuso")}
-                        />
-                        <ItemLink
-                            icone={Shield}
-                            titulo={t("privacy_policy")}
-                            cor="text-purple-400"
-                            onClick={() => navigate("/politicaprivacidade")}
-                        />
-                        <ItemLink
-                            icone={Trash2}
-                            titulo={t("delete_account")}
-                            cor="text-red-500"
-                            onClick={() => navigate("/exclusaodeconta")}
-                        />
                         <ItemLink
                             icone={HelpCircle}
                             titulo={t("faq")}

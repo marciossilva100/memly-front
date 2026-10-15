@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, useMemo, useCallback } 
 import { hasGoogleRedirectToken } from "../utils/googleRedirectAuth";
 import { sincronizarCotaNatural, sincronizarVelocidadesAudio } from "../utils/audioPlayer";
 import { fetchComTimeout } from "../utils/fetchComTimeout";
+import { inicializarRevenueCat, limparUsuarioRevenueCat } from "../utils/revenueCat";
 
 const AuthContext = createContext();
 
@@ -53,6 +54,14 @@ export function AuthProvider({ children }) {
 
       if (data.authenticated) {
         setUser(data.user);
+
+        // Sem await de propósito - não é algo que bloqueia nenhuma tela, só
+        // precisa estar pronto quando o usuário realmente abrir o modal de
+        // Premium (tempo de sobra). Configura o RevenueCat com o id do
+        // nosso próprio usuário como appUserID, pro webhook (ver
+        // model/RevenueCat.php) bater certo.
+        inicializarRevenueCat(data.user?.id);
+
         // AWAIT de propósito - loading só vira false depois disso (ver
         // finally abaixo), então nenhuma tela consegue montar e disparar
         // preloadAudio/playAudio antes da cota e da velocidade estarem
@@ -169,6 +178,7 @@ export function AuthProvider({ children }) {
       setUser(null);
       setLoading(false);
       setIsAuthenticating(false);
+      limparUsuarioRevenueCat();
     }
   }
 

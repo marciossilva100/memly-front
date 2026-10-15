@@ -1,6 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useEffect, useState, useRef } from 'react'
-import imgGlobe from "../assets/img/globe.png"
 import imgZaldemy from "../assets/img/zaldemy.png"
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 import { useAuth } from "../context/AuthContext";
@@ -21,7 +20,8 @@ import {
     Search,
     Share2,
     Camera,
-    Loader2
+    Loader2,
+    ArrowRight
 } from "lucide-react";
 
 // 🌍 Bandeiras
@@ -69,6 +69,7 @@ export default function Header({ titulo }) {
 
     const [open, setOpen] = useState(false)
     const [openSelect, setOpenSelect] = useState(false)
+    const [openSelectNativo, setOpenSelectNativo] = useState(false)
     const [idioma, setIdioma] = useState("")
     const [languageList, setLanguageList] = useState([])
     const [trocandoIdioma, setTrocandoIdioma] = useState(false)
@@ -127,7 +128,15 @@ export default function Header({ titulo }) {
         (l) => l.sigla !== user?.native_language
     );
 
+    // Mesma regra, espelhada: não faz sentido o nativo ser igual ao idioma
+    // que está aprendendo (idioma, não user?.native_language - precisa
+    // refletir uma troca de idioma aprender ainda não salva).
+    const idiomasParaNativo = languageList.filter(
+        (l) => l.sigla !== idioma
+    );
+
     const selectRef = useRef(null);
+    const selectNativoRef = useRef(null);
 
     async function handleShareApp() {
         const shareData = {
@@ -192,6 +201,9 @@ export default function Header({ titulo }) {
             if (selectRef.current && !selectRef.current.contains(e.target)) {
                 setOpenSelect(false);
             }
+            if (selectNativoRef.current && !selectNativoRef.current.contains(e.target)) {
+                setOpenSelectNativo(false);
+            }
         }
 
         document.addEventListener("mousedown", handleClickOutside);
@@ -243,6 +255,43 @@ export default function Header({ titulo }) {
         }
     };
 
+    // Espelha handleSelectLanguage - mesma action/endpoint (atualiza o par
+    // inteiro de uma vez), só invertendo qual lado muda. idiomaNativo não
+    // tem estado local otimista próprio (como "idioma" tem pro aprender)
+    // porque o overlay de tela cheia (trocandoIdioma) já cobre a tela
+    // inteira durante a troca - não tem o que mostrar otimisticamente.
+    const handleSelectNativeLanguage = async (item) => {
+        setOpenSelectNativo(false);
+        setTrocandoIdioma(true);
+
+        try {
+            const res = await fetch(`${API_URL}/controller/language.php`, {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({
+                    action: 'update_learning_reference',
+                    learning_language: idiomaSelecionado?.id,
+                    learning_native: item.id,
+                })
+            });
+
+            if (!res.ok) {
+                throw new Error(`Falha ao salvar idioma nativo (status ${res.status})`);
+            }
+
+            setUser(prev => ({
+                ...prev,
+                native_language: item.sigla
+            }));
+        } catch (error) {
+            console.error('Erro ao salvar idioma nativo:', error);
+        } finally {
+            setTrocandoIdioma(false);
+        }
+    };
+
     return (
         <div className={`w-full section-header ${rotaBase === '/home' ? 'shadow-md pb-1' : ''}`}>
 
@@ -270,36 +319,81 @@ export default function Header({ titulo }) {
                             </button>
 
                             {/* IDIOMA */}
-                            <div className="flex items-center w-full ms-3 py-2 justify-between">
+                            <div className="flex items-center w-full ms-3 py-2 justify-between gap-1">
 
-                                <span className="text-md font-semibold text-white">
-                                    {idiomaNativo ? t(idiomaNativo.sigla) : t("loading_dots")}
-                                </span>
+                                {/* SELECT CUSTOM - NATIVO */}
+                                <div
+                                    ref={selectNativoRef}
+                                    className="relative h-10 flex items-center rounded-2xl border border-slate-500 flex-1 min-w-0"
+                                >
+                                    {/* Botão */}
+                                    <div
+                                        onClick={() => setOpenSelectNativo(!openSelectNativo)}
+                                        className="flex items-center gap-1.5 px-2.5 w-full min-w-0 cursor-pointer"
+                                    >
+                                        {idiomaNativo ? (
+                                            <>
+                                                <img
+                                                    src={flags[idiomaNativo.sigla] || "https://flagcdn.com/w40/un.png"}
+                                                    className="w-5 h-5 rounded-full flex-shrink-0"
+                                                />
+                                                <span className="text-sm text-white truncate">
+                                                    {t(idiomaNativo.sigla)}
+                                                </span>
+                                            </>
+                                        ) : (
+                                            <span className="text-sm text-white truncate">
+                                                {t("loading_dots")}
+                                            </span>
+                                        )}
+                                    </div>
 
-                                <img src={imgGlobe} alt="" className="w-9" />
+                                    {/* Dropdown */}
+                                    {openSelectNativo && (
+                                        <div className="absolute top-12 left-0 w-full from-gray-800 to-gray-800 bg-gradient-to-br border rounded-xl shadow-lg z-50 max-h-60 overflow-auto">
+                                            {idiomasParaNativo.map((item) => (
+                                                <div
+                                                    key={item.id}
+                                                    onClick={() => handleSelectNativeLanguage(item)}
+                                                    className="flex items-center gap-2 px-4 py-2 hover:bg-white/10 cursor-pointer text-white"
+                                                >
+                                                    <img
+                                                        src={flags[item.sigla] || "https://flagcdn.com/w40/un.png"}
+                                                        className="w-5 h-5 rounded-full"
+                                                    />
+                                                    <span className="text-sm">
+                                                        {t(item.sigla)}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <ArrowRight className="w-4 h-4 text-slate-400 flex-shrink-0" />
 
                                 {/* SELECT CUSTOM */}
                                 <div
                                     ref={selectRef}
-                                    className="relative h-10 flex items-center rounded-2xl border border-slate-500  min-w-[180px]"
+                                    className="relative h-10 flex items-center rounded-2xl border border-slate-500 flex-1 min-w-0"
                                 >
                                     {/* Botão */}
                                     <div
                                         onClick={() => setOpenSelect(!openSelect)}
-                                        className="flex items-center gap-2 px-4 w-full cursor-pointer"
+                                        className="flex items-center gap-1.5 px-2.5 w-full min-w-0 cursor-pointer"
                                     >
                                         {idiomaSelecionado ? (
                                             <>
                                                 <img
                                                     src={flags[idiomaSelecionado.sigla] || "https://flagcdn.com/w40/un.png"}
-                                                    className="w-5 h-5 rounded-full"
+                                                    className="w-5 h-5 rounded-full flex-shrink-0"
                                                 />
-                                                <span className="text-sm text-white">
+                                                <span className="text-sm text-white truncate">
                                                     {t(idiomaSelecionado.sigla)}
                                                 </span>
                                             </>
                                         ) : (
-                                            <span className="text-sm text-white">
+                                            <span className="text-sm text-white truncate">
                                                 {t("select_a_language")}
                                             </span>
                                         )}
@@ -312,7 +406,7 @@ export default function Header({ titulo }) {
                                                 <div
                                                     key={item.id}
                                                     onClick={() => handleSelectLanguage(item)}
-                                                    className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer text-white"
+                                                    className="flex items-center gap-2 px-4 py-2 hover:bg-white/10 cursor-pointer text-white"
                                                 >
                                                     <img
                                                         src={flags[item.sigla] || "https://flagcdn.com/w40/un.png"}

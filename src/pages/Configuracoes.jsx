@@ -614,7 +614,7 @@ export default function Configuracoes() {
                                     setErroApelido('');
                                     setMensagemApelido('');
                                 }}
-                                className="flex-1 bg-gray-900 border border-gray-600 rounded-full px-4 py-2 text-white text-sm outline-none focus:border-green-400"
+                                className="flex-1 min-w-0 bg-gray-900 border border-gray-600 rounded-full px-4 py-2 text-white text-sm outline-none focus:border-green-400"
                             />
                             <button
                                 type="submit"
@@ -688,9 +688,9 @@ export default function Configuracoes() {
                     <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 mb-3">
                         {isPremium && (
                             <>
-                                <div className="flex items-center gap-3 mb-4">
-                                    <Volume2 className="w-5 h-5 text-[#4cb8c4]" />
-                                    <span className="text-white text-base">{t("voice_type")}</span>
+                                <div className="flex items-center gap-2 mb-3">
+                                    <Volume2 className="w-4 h-4 text-[#4cb8c4]" />
+                                    <span className="text-white text-sm">{t("voice_type")}</span>
                                 </div>
 
                                 <div className="space-y-1.5">
@@ -732,7 +732,7 @@ export default function Configuracoes() {
                             <div className={isPremium ? "mt-4 pt-4 border-t border-gray-700" : ""}>
                                 <div className="flex items-center gap-2 mb-2">
                                     <Gauge className="w-4 h-4 text-[#4cb8c4]" />
-                                    <span className="text-gray-300 text-sm">{t("voice_speed_natural")}</span>
+                                    <span className="text-white text-sm">{t("voice_speed_natural")}</span>
                                 </div>
                                 <div className="grid grid-cols-4 gap-2">
                                     {VELOCIDADES_TTS.map((velocidade) => {
@@ -763,7 +763,7 @@ export default function Configuracoes() {
                         <div className={temVozNatural || isPremium ? "mt-4 pt-4 border-t border-gray-700" : ""}>
                             <div className="flex items-center gap-2 mb-2">
                                 <Gauge className="w-4 h-4 text-[#4cb8c4]" />
-                                <span className="text-gray-300 text-sm">{t("voice_speed")}</span>
+                                <span className="text-white text-sm">{t("voice_speed")}</span>
                             </div>
                             <div className="grid grid-cols-4 gap-2">
                                 {VELOCIDADES_TTS.map((velocidade) => {
@@ -793,7 +793,7 @@ export default function Configuracoes() {
                         <div className="mt-4 pt-4 border-t border-gray-700 flex items-center justify-between gap-3">
                             <div className="flex items-center gap-2">
                                 <Play className="w-4 h-4 text-[#4cb8c4]" />
-                                <span className="text-gray-300 text-sm">{t("autoplay_front_card")}</span>
+                                <span className="text-white text-sm">{t("autoplay_front_card")}</span>
                             </div>
                             <button
                                 type="button"
@@ -847,8 +847,8 @@ export default function Configuracoes() {
                         <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 mb-3">
                             <div className="flex items-center justify-between gap-3">
                                 <div className="flex items-center gap-2">
-                                    <Bell className="w-5 h-5 text-[#4cb8c4]" />
-                                    <span className="text-white text-base">{t("notifications_title")}</span>
+                                    <Bell className="w-4 h-4 text-[#4cb8c4]" />
+                                    <span className="text-white text-sm">{t("notifications_title")}</span>
                                 </div>
                                 <button
                                     type="button"
@@ -892,9 +892,9 @@ export default function Configuracoes() {
 
                     {isPremium && (
                         <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 mb-3">
-                            <div className="flex items-center gap-3 mb-3">
-                                <CreditCard className="w-5 h-5 text-[#4cb8c4]" />
-                                <span className="text-white text-base">{t("subscription")}</span>
+                            <div className="flex items-center gap-2 mb-3">
+                                <CreditCard className="w-4 h-4 text-[#4cb8c4]" />
+                                <span className="text-white text-sm">{t("subscription")}</span>
                             </div>
 
                             {user?.assinatura_cancelamento_previsto ? (

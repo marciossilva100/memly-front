@@ -696,12 +696,14 @@ const gerarAudio = async (texto, isPreload = false) => {
                 // resposta não era JSON - segue pro fallback normal abaixo
             }
 
+            await descartarCacheAudioNatural(url);
             throw new Error("API não retornou áudio");
         }
 
         const blob = await res.blob();
 
         if (blob.size === 0) {
+            await descartarCacheAudioNatural(url);
             throw new Error("Áudio vazio");
         }
 
@@ -712,3 +714,21 @@ const gerarAudio = async (texto, isPreload = false) => {
         return null;
     }
 };
+
+// O service worker cacheia QUALQUER resposta 200 dessa URL por até 1 ano
+// (CacheFirst, ver src/sw.js, cache "tts-cache-natural-v3") - se o conteúdo
+// vier inválido (não-áudio ou vazio) por qualquer motivo pontual/transitório
+// no backend, essa mesma frase ficava presa reproduzindo o fallback de voz
+// padrão pra sempre, mesmo depois do backend voltar a funcionar, porque o SW
+// nunca mais ia à rede de novo pra essa URL exata. Apaga a entrada ruim do
+// cache do SW assim que detectada, pra próxima tentativa buscar de verdade.
+async function descartarCacheAudioNatural(url) {
+    try {
+        if (typeof caches === "undefined") return;
+        const cache = await caches.open("tts-cache-natural-v3");
+        await cache.delete(url);
+    } catch {
+        // Cache Storage indisponível (ex: contexto sem service worker) -
+        // sem problema, só perde a auto-recuperação, não quebra nada.
+    }
+}

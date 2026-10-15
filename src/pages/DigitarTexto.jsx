@@ -550,7 +550,7 @@ export default function DigitarTexto() {
 
                             <div className="rounded-lg card-front bg-[linear-gradient(to_right,#233245,#0d1425)] shadow-[0_10px_40px_rgba(0,0,0,0.08)] px-5 py-4 [@media(max-height:700px)]:py-2 text-center">
 
-                                <span className="text-2xl [@media(max-height:700px)]:text-lg">
+                                <span className="text-xl [@media(max-height:700px)]:text-lg">
                                     {frases[index].texto_nativo}
                                 </span>
                                 {!diff || diff.isCorrect && (
@@ -562,7 +562,7 @@ export default function DigitarTexto() {
 
                             <div className="rounded-lg card-back bg-[linear-gradient(to_right,#0d1425,#233245)] shadow-[0_10px_40px_rgba(0,0,0,0.09)] px-5 py-4 [@media(max-height:700px)]:py-2 text-center">
 
-                                <span className="text-2xl [@media(max-height:700px)]:text-lg text-white">
+                                <span className="text-xl [@media(max-height:700px)]:text-lg text-white">
                                     {showBackContent && frases[index].texto_traduzido}
                                 </span>
                                 {!diff || diff.isCorrect && (

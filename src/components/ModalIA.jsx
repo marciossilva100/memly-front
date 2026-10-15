@@ -95,6 +95,17 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA }) {
             motivo: "frase_dia_ia"
         },
         {
+            icon: Languages,
+            cor: "text-purple-400",
+            fundo: "bg-purple-400/10 border-purple-400/30",
+            titulo: t("traducao_reversa_training"),
+            descricao: t("traducao_reversa_training_desc"),
+            rota: "/traducaoreversa",
+            temAcesso: user?.plano === 3 ? true : temAcesso(),
+            disponivel: podeVerDisponibilidade && Boolean(acessoTraducaoReversa),
+            motivo: "traducao_reversa_ia"
+        },
+        {
             icon: MessageCircleQuestion,
             cor: "text-emerald-400",
             fundo: "bg-emerald-400/10 border-emerald-400/30",
@@ -108,17 +119,6 @@ export default function ModalIA({ setOpenTreinoIA, openTreinoIA }) {
             temAcesso: user?.plano === 3 ? true : temAcesso(),
             disponivel: podeVerDisponibilidade && Boolean(acessoPerguntas),
             motivo: "perguntas_ia"
-        },
-        {
-            icon: Languages,
-            cor: "text-purple-400",
-            fundo: "bg-purple-400/10 border-purple-400/30",
-            titulo: t("traducao_reversa_training"),
-            descricao: t("traducao_reversa_training_desc"),
-            rota: "/traducaoreversa",
-            temAcesso: user?.plano === 3 ? true : temAcesso(),
-            disponivel: podeVerDisponibilidade && Boolean(acessoTraducaoReversa),
-            motivo: "traducao_reversa_ia"
         }
     ];
 

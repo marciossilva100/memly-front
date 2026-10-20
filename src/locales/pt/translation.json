@@ -92,6 +92,7 @@
   "enter_category": "Digite a categoria",
   "inappropriate_content_error": "Este texto contém conteúdo impróprio. Ajuste e tente novamente.",
   "unexpected_error": "Erro inesperado",
+  "correction_unavailable_retry": "Não conseguimos avaliar sua resposta agora. Tenta enviar de novo em alguns segundos.",
   "edited_successfully": "Editado com sucesso",
   "edit_category": "Editar categoria",
   "category_name_placeholder": "Nome da categoria",

@@ -91,6 +91,7 @@
   "enter_category": "Wpisz talię",
   "inappropriate_content_error": "Ten tekst zawiera niestosowną treść. Popraw go i spróbuj ponownie.",
   "unexpected_error": "Nieoczekiwany błąd",
+  "correction_unavailable_retry": "Nie udało się teraz ocenić Twojej odpowiedzi. Spróbuj wysłać ją ponownie za kilka sekund.",
   "edited_successfully": "Edytowano pomyślnie",
   "edit_category": "Edytuj talię",
   "category_name_placeholder": "Nazwa talii",

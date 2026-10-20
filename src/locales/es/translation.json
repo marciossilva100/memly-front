@@ -92,6 +92,7 @@
   "enter_category": "Escribe el mazo",
   "inappropriate_content_error": "Este texto contiene contenido inapropiado. Ajústalo e inténtalo de nuevo.",
   "unexpected_error": "Error inesperado",
+  "correction_unavailable_retry": "No pudimos evaluar tu respuesta ahora. Intenta enviarla de nuevo en unos segundos.",
   "edited_successfully": "Editado con éxito",
   "edit_category": "Editar mazo",
   "category_name_placeholder": "Nombre del mazo",

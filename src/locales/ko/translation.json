@@ -91,6 +91,7 @@
   "enter_category": "덱을 입력하세요",
   "inappropriate_content_error": "이 텍스트에는 부적절한 내용이 포함되어 있습니다. 수정 후 다시 시도해 주세요.",
   "unexpected_error": "예기치 않은 오류",
+  "correction_unavailable_retry": "지금은 답변을 평가할 수 없었습니다. 몇 초 후에 다시 보내보세요.",
   "edited_successfully": "성공적으로 수정되었습니다",
   "edit_category": "덱 수정",
   "category_name_placeholder": "덱 이름",

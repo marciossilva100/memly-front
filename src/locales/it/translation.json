@@ -91,6 +91,7 @@
   "enter_category": "Inserisci il mazzo",
   "inappropriate_content_error": "Questo testo contiene contenuti inappropriati. Modificalo e riprova.",
   "unexpected_error": "Errore imprevisto",
+  "correction_unavailable_retry": "Non siamo riusciti a valutare la tua risposta ora. Prova a inviarla di nuovo tra qualche secondo.",
   "edited_successfully": "Modificato con successo",
   "edit_category": "Modifica mazzo",
   "category_name_placeholder": "Nome del mazzo",

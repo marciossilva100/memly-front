@@ -91,6 +91,7 @@
   "enter_category": "Desteyi gir",
   "inappropriate_content_error": "Bu metin uygunsuz içerik barındırıyor. Düzenleyip tekrar deneyin.",
   "unexpected_error": "Beklenmeyen hata",
+  "correction_unavailable_retry": "Cevabını şu anda değerlendiremedik. Birkaç saniye sonra tekrar göndermeyi dene.",
   "edited_successfully": "Başarıyla düzenlendi",
   "edit_category": "Desteyi düzenle",
   "category_name_placeholder": "Deste adı",

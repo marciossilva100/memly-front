@@ -91,6 +91,7 @@
   "enter_category": "Voer de stapel in",
   "inappropriate_content_error": "Deze tekst bevat ongepaste inhoud. Pas het aan en probeer opnieuw.",
   "unexpected_error": "Onverwachte fout",
+  "correction_unavailable_retry": "We konden je antwoord nu niet beoordelen. Probeer het over een paar seconden opnieuw te versturen.",
   "edited_successfully": "Succesvol bewerkt",
   "edit_category": "Stapel bewerken",
   "category_name_placeholder": "Naam van de stapel",

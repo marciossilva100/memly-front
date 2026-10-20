@@ -91,6 +91,7 @@
   "enter_category": "デッキを入力してください",
   "inappropriate_content_error": "このテキストには不適切な内容が含まれています。修正して再度お試しください。",
   "unexpected_error": "予期しないエラー",
+  "correction_unavailable_retry": "今は回答を評価できませんでした。数秒後にもう一度送信してみてください。",
   "edited_successfully": "正常に編集されました",
   "edit_category": "デッキを編集",
   "category_name_placeholder": "デッキ名",

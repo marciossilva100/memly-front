@@ -91,6 +91,7 @@
   "enter_category": "أدخل المجموعة",
   "inappropriate_content_error": "يحتوي هذا النص على محتوى غير لائق. يرجى تعديله والمحاولة مرة أخرى.",
   "unexpected_error": "خطأ غير متوقع",
+  "correction_unavailable_retry": "تعذّر تقييم إجابتك الآن. حاول إرسالها مرة أخرى بعد بضع ثوانٍ.",
   "edited_successfully": "تم التعديل بنجاح",
   "edit_category": "تعديل المجموعة",
   "category_name_placeholder": "اسم المجموعة",

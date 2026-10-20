@@ -91,6 +91,7 @@
   "enter_category": "输入牌组",
   "inappropriate_content_error": "该文本包含不当内容,请修改后重试。",
   "unexpected_error": "发生意外错误",
+  "correction_unavailable_retry": "暂时无法评估你的回答，请几秒后重新发送试试。",
   "edited_successfully": "编辑成功",
   "edit_category": "编辑牌组",
   "category_name_placeholder": "牌组名称",

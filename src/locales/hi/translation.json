@@ -91,6 +91,7 @@
   "enter_category": "डेक दर्ज करें",
   "inappropriate_content_error": "इस टेक्स्ट में अनुचित सामग्री है। इसे संपादित करके दोबारा प्रयास करें।",
   "unexpected_error": "अप्रत्याशित त्रुटि",
+  "correction_unavailable_retry": "हम अभी आपके उत्तर का मूल्यांकन नहीं कर सके। कुछ सेकंड में फिर से भेजने की कोशिश करें।",
   "edited_successfully": "सफलतापूर्वक संपादित किया गया",
   "edit_category": "डेक संपादित करें",
   "category_name_placeholder": "डेक का नाम",

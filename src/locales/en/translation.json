@@ -92,6 +92,7 @@
   "enter_category": "Enter the deck",
   "inappropriate_content_error": "This text contains inappropriate content. Please adjust it and try again.",
   "unexpected_error": "Unexpected error",
+  "correction_unavailable_retry": "We couldn't evaluate your answer right now. Try sending it again in a few seconds.",
   "edited_successfully": "Edited successfully",
   "edit_category": "Edit deck",
   "category_name_placeholder": "Deck name",

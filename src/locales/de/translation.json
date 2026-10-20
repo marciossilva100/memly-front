@@ -91,6 +91,7 @@
   "enter_category": "Stapel eingeben",
   "inappropriate_content_error": "Dieser Text enthält unangemessene Inhalte. Bitte ändern und erneut versuchen.",
   "unexpected_error": "Unerwarteter Fehler",
+  "correction_unavailable_retry": "Wir konnten deine Antwort gerade nicht auswerten. Versuch es in ein paar Sekunden noch einmal.",
   "edited_successfully": "Erfolgreich bearbeitet",
   "edit_category": "Stapel bearbeiten",
   "category_name_placeholder": "Name des Stapels",

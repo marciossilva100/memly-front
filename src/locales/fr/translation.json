@@ -91,6 +91,7 @@
   "enter_category": "Saisissez le paquet",
   "inappropriate_content_error": "Ce texte contient un contenu inapproprié. Modifiez-le et réessayez.",
   "unexpected_error": "Erreur inattendue",
+  "correction_unavailable_retry": "Nous n'avons pas pu évaluer votre réponse pour le moment. Réessayez de l'envoyer dans quelques secondes.",
   "edited_successfully": "Modifié avec succès",
   "edit_category": "Modifier le paquet",
   "category_name_placeholder": "Nom du paquet",

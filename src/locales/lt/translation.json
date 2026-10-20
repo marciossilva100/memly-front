@@ -92,6 +92,7 @@
   "enter_category": "Įveskite kategoriją",
   "inappropriate_content_error": "Šiame tekste yra netinkamo turinio. Pataisykite ir bandykite dar kartą.",
   "unexpected_error": "Netikėta klaida",
+  "correction_unavailable_retry": "Dabar nepavyko įvertinti jūsų atsakymo. Pabandykite išsiųsti dar kartą po kelių sekundžių.",
   "edited_successfully": "Sėkmingai redaguota",
   "edit_category": "Redaguoti kategoriją",
   "category_name_placeholder": "Kategorijos pavadinimas",

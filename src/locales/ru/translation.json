@@ -91,6 +91,7 @@
   "enter_category": "Введите колоду",
   "inappropriate_content_error": "Этот текст содержит неприемлемый контент. Измените его и попробуйте снова.",
   "unexpected_error": "Непредвиденная ошибка",
+  "correction_unavailable_retry": "Не удалось оценить ваш ответ сейчас. Попробуйте отправить его снова через несколько секунд.",
   "edited_successfully": "Успешно изменено",
   "edit_category": "Редактировать колоду",
   "category_name_placeholder": "Название колоды",

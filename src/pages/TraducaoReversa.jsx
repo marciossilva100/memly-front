@@ -118,7 +118,11 @@ export default function TraducaoReversa() {
                         setTextoNativo('');
                         return;
                     }
-                    setError(data.message || t("unexpected_error"));
+                    // correcao_indisponivel = falha técnica pontual da IA (ex:
+                // resposta vazia da API) - data.message nesse caso é só
+                // texto de debug em português, nunca mostra direto (quebraria
+                // os outros 15 idiomas do app).
+                setError(data.correcao_indisponivel ? t("correction_unavailable_retry") : (data.message || t("unexpected_error")));
                     setTextoNativo('');
                     return;
                 }
@@ -245,7 +249,11 @@ export default function TraducaoReversa() {
             const data = await res.json();
 
             if (!data.success) {
-                setError(data.message || t("unexpected_error"));
+                // correcao_indisponivel = falha técnica pontual da IA (ex:
+                // resposta vazia da API) - data.message nesse caso é só
+                // texto de debug em português, nunca mostra direto (quebraria
+                // os outros 15 idiomas do app).
+                setError(data.correcao_indisponivel ? t("correction_unavailable_retry") : (data.message || t("unexpected_error")));
                 if (data.audio_vazio) {
                     setAudioVazio(true);
                 }
@@ -287,7 +295,11 @@ export default function TraducaoReversa() {
             const data = await res.json();
 
             if (!data.success) {
-                setError(data.message || t("unexpected_error"));
+                // correcao_indisponivel = falha técnica pontual da IA (ex:
+                // resposta vazia da API) - data.message nesse caso é só
+                // texto de debug em português, nunca mostra direto (quebraria
+                // os outros 15 idiomas do app).
+                setError(data.correcao_indisponivel ? t("correction_unavailable_retry") : (data.message || t("unexpected_error")));
                 if (data.pode_tentar_novamente === false) {
                     setTextoEncerrado(true);
                 }

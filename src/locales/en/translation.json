@@ -175,6 +175,7 @@
   "server_connection_error": "Error connecting to the server",
   "choose_a_language": "Choose a language",
   "select_a_language": "Select a language",
+  "swap_languages": "Swap languages",
   "excellent_performance": "🔥 Excellent performance!",
   "back_to_home": "Back to home",
   "results_summary": "{{acertos}} correct • {{erros}} wrong",

@@ -174,6 +174,7 @@
   "server_connection_error": "サーバーへの接続エラー",
   "choose_a_language": "言語を選択してください",
   "select_a_language": "言語を選択",
+  "swap_languages": "言語を入れ替える",
   "excellent_performance": "🔥 素晴らしい成績です！",
   "back_to_home": "ホームに戻る",
   "results_summary": "正解 {{acertos}} 件・不正解 {{erros}} 件",

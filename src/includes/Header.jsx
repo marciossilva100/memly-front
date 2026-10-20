@@ -21,7 +21,7 @@ import {
     Share2,
     Camera,
     Loader2,
-    ArrowRight
+    ArrowRightLeft
 } from "lucide-react";
 
 // 🌍 Bandeiras
@@ -292,6 +292,52 @@ export default function Header({ titulo }) {
         }
     };
 
+    // Inverte nativo <-> aprendendo num clique só (botão no meio dos dois
+    // seletores, estilo Google Translate). Sem isso, trocar os dois lados
+    // ficava impossível em certos casos: cada dropdown já exclui o idioma
+    // que está do OUTRO lado (não faz sentido nativo == aprendendo), então
+    // pra inverter pt->en pra en->pt o usuário ficava preso (não dá pra
+    // escolher "en" como nativo enquanto "en" ainda é o aprendendo, e
+    // vice-versa) - bug real reportado.
+    const handleInverterIdiomas = async () => {
+        if (!idiomaNativo || !idiomaSelecionado) return;
+
+        const nativoAnterior = idiomaNativo;
+        const aprenderAnterior = idiomaSelecionado;
+
+        setIdioma(nativoAnterior.sigla);
+        setTrocandoIdioma(true);
+
+        try {
+            const res = await fetch(`${API_URL}/controller/language.php`, {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({
+                    action: 'update_learning_reference',
+                    learning_language: nativoAnterior.id,
+                    learning_native: aprenderAnterior.id,
+                })
+            });
+
+            if (!res.ok) {
+                throw new Error(`Falha ao inverter idiomas (status ${res.status})`);
+            }
+
+            setUser(prev => ({
+                ...prev,
+                native_language: aprenderAnterior.sigla,
+                learning_language: nativoAnterior.sigla
+            }));
+        } catch (error) {
+            console.error('Erro ao inverter idiomas:', error);
+            setIdioma(aprenderAnterior.sigla);
+        } finally {
+            setTrocandoIdioma(false);
+        }
+    };
+
     return (
         <div className={`w-full section-header ${rotaBase === '/home' ? 'shadow-md pb-1' : ''}`}>
 
@@ -370,7 +416,15 @@ export default function Header({ titulo }) {
                                     )}
                                 </div>
 
-                                <ArrowRight className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                                <button
+                                    type="button"
+                                    onClick={handleInverterIdiomas}
+                                    disabled={trocandoIdioma}
+                                    className="flex-shrink-0 p-1 rounded-full hover:bg-white/10 transition-colors disabled:opacity-50"
+                                    aria-label={t("swap_languages")}
+                                >
+                                    <ArrowRightLeft className="w-4 h-4 text-slate-400" />
+                                </button>
 
                                 {/* SELECT CUSTOM */}
                                 <div

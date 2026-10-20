@@ -175,6 +175,7 @@
   "server_connection_error": "Klaida jungiantis prie serverio",
   "choose_a_language": "Pasirinkite kalbą",
   "select_a_language": "Pasirinkite kalbą",
+  "swap_languages": "Sukeisti kalbas",
   "excellent_performance": "🔥 Puikus rezultatas!",
   "back_to_home": "Grįžti į pradžią",
   "results_summary": "{{acertos}} teisingi • {{erros}} klaidingi",

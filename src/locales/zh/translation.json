@@ -174,6 +174,7 @@
   "server_connection_error": "连接服务器时出错",
   "choose_a_language": "选择一种语言",
   "select_a_language": "请选择语言",
+  "swap_languages": "交换语言",
   "excellent_performance": "🔥 表现出色！",
   "back_to_home": "返回首页",
   "results_summary": "{{acertos}} 个正确 • {{erros}} 个错误",

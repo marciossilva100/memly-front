@@ -174,6 +174,7 @@
   "server_connection_error": "Fout bij verbinden met de server",
   "choose_a_language": "Kies een taal",
   "select_a_language": "Selecteer een taal",
+  "swap_languages": "Talen omwisselen",
   "excellent_performance": "🔥 Uitstekende prestatie!",
   "back_to_home": "Terug naar start",
   "results_summary": "{{acertos}} goed • {{erros}} fout",

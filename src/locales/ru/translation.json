@@ -174,6 +174,7 @@
   "server_connection_error": "Ошибка подключения к серверу",
   "choose_a_language": "Выберите язык",
   "select_a_language": "Выберите язык",
+  "swap_languages": "Поменять языки местами",
   "excellent_performance": "🔥 Отличный результат!",
   "back_to_home": "Вернуться на главную",
   "results_summary": "{{acertos}} правильных • {{erros}} ошибок",

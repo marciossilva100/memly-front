@@ -326,6 +326,7 @@
   "type_how_you_would_say": "이 문장을 어떻게 말할지 입력해 보세요.",
   "you_typed": "입력한 내용:",
   "type_your_answer_placeholder": "여기에 답변을 입력하세요...",
+  "hint_button": "힌트",
   "correct_label": "정답",
   "dont_remember": "기억 안 남",
   "answer_button": "답변하기",

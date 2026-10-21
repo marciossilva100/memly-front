@@ -326,6 +326,7 @@
   "type_how_you_would_say": "输入你会如何表达这句话。",
   "you_typed": "你输入的是：",
   "type_your_answer_placeholder": "在此输入你的答案...",
+  "hint_button": "提示",
   "correct_label": "正确",
   "dont_remember": "不记得了",
   "answer_button": "回答",

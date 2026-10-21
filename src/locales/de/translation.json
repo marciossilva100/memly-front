@@ -326,6 +326,7 @@
   "type_how_you_would_say": "Gib ein, wie du diesen Satz sagen würdest.",
   "you_typed": "Du hast eingegeben:",
   "type_your_answer_placeholder": "Gib hier deine Antwort ein...",
+  "hint_button": "Tipp",
   "correct_label": "Richtig",
   "dont_remember": "Ich erinnere mich nicht",
   "answer_button": "Antworten",

@@ -1,9 +1,9 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { makePerfectDiff } from "../utils/makePerfectDiff";
 import { playAudio, pararAudio, preloadAudio } from "../utils/audioPlayer";
 import '../digitartexto.css'
-import { Volume, Play, Check, RefreshCw, Loader2 } from "lucide-react";
+import { Volume, Play, Check, RefreshCw, Loader2, Lightbulb } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
@@ -20,6 +20,11 @@ export default function DigitarTexto() {
     const [isFlipped, setIsFlipped] = useState(false);
     const [showBackContent, setShowBackContent] = useState(false);
     const [resposta, setResposta] = useState('')
+    // Dica: mostra as palavras da resposta certa embaralhadas (sem ordem),
+    // pra lembrar o aluno do vocabulário sem entregar a frase pronta - ele
+    // ainda precisa descobrir a ordem/gramática certa. Pedido explícito do
+    // usuário.
+    const [mostrarDica, setMostrarDica] = useState(false)
     const [finished, setFinished] = useState(false);
     const [loading, setLoading] = useState(true);
     const API_URL = import.meta.env.VITE_API_URL;
@@ -74,6 +79,39 @@ export default function DigitarTexto() {
     function handleRespostaChange(e) {
         setResposta(e.target.value);
     }
+
+    // Palavras da resposta certa, embaralhadas - recalculado só quando o
+    // cartão muda (não a cada letra digitada), senão a ordem ficaria
+    // mudando sozinha enquanto o aluno olha pra dica. Embaralhar é um efeito
+    // colateral (usa Math.random), por isso fica num useEffect e não num
+    // useMemo - useMemo precisa ser puro (regra react-hooks/purity).
+    const palavrasDica = useMemo(() => {
+        const texto = frases[index]?.texto_traduzido || "";
+        const palavras = texto.split(/\s+/).filter(Boolean);
+
+        // Embaralhamento determinístico (seed = hash do próprio texto, não
+        // Math.random()) - mesma frase sempre embaralha igual, o que deixa
+        // essa conta uma função PURA de verdade (regra react-hooks/purity:
+        // useMemo não pode chamar Math.random direto, só funções que dão o
+        // mesmo resultado pro mesmo input). Não precisa parecer
+        // criptograficamente aleatório, só não ficar na ordem original.
+        let seed = 0;
+        for (let i = 0; i < texto.length; i++) {
+            seed = (seed * 31 + texto.charCodeAt(i)) >>> 0;
+        }
+
+        function proximoAleatorio() {
+            seed = (seed * 1664525 + 1013904223) >>> 0;
+            return seed / 4294967296;
+        }
+
+        for (let i = palavras.length - 1; i > 0; i--) {
+            const j = Math.floor(proximoAleatorio() * (i + 1));
+            [palavras[i], palavras[j]] = [palavras[j], palavras[i]];
+        }
+
+        return palavras;
+    }, [index, frases]);
 
     useEffect(() => {
         const vv = window.visualViewport;
@@ -279,6 +317,7 @@ export default function DigitarTexto() {
         setIsFlipped(false);
         setShowBackContent(false);
         setResposta("");
+        setMostrarDica(false);
 
         if (isLast) {
             if (mode === "traine") {
@@ -313,6 +352,7 @@ export default function DigitarTexto() {
         setIsFlipped(false);
         setShowBackContent(false);
         setResposta("");
+        setMostrarDica(false);
 
     };
 
@@ -663,6 +703,41 @@ export default function DigitarTexto() {
                                     className="text-xl [@media(max-height:700px)]:text-lg text-white toutline-none w-full min-h-[56px] max-h-[35vh] py-3 text-center rounded-lg  resize-none overflow-y-auto overscroll-contain bg-gray-800/50 backdrop-blur-sm  border border-gray-700 px-3 scroll-mb-28"
                                 />
 
+                                {/* Com menos de 3 palavras, mostrar a dica seria entregar a
+                                    resposta praticamente pronta (não sobra quase nada pra
+                                    descobrir) - esconde o botão inteiro nesse caso, em vez de
+                                    oferecer uma "ajuda" que na prática é a resposta. */}
+                                {palavrasDica.length >= 3 && (
+                                    <div className="flex justify-center mt-3 [@media(max-height:700px)]:mt-1.5">
+                                        <button
+                                            type="button"
+                                            onClick={() => setMostrarDica(prev => !prev)}
+                                            className="inline-flex items-center gap-2 px-3 py-1.5 [@media(max-height:700px)]:py-1 rounded-full bg-gray-700/50 border border-gray-600 text-gray-300 text-xs hover:bg-gray-700 transition-colors"
+                                        >
+                                            <Lightbulb className="w-3.5 h-3.5" />
+                                            {t("hint_button")}
+                                        </button>
+                                    </div>
+                                )}
+
+                                {palavrasDica.length >= 3 && mostrarDica && (
+                                    // max-h + overflow-y-auto próprios - sem isso, uma frase longa
+                                    // (muitas palavras, quebrando em várias linhas) podia empurrar o
+                                    // conteúdo pra baixo dos botões "Não lembro"/"Responder" (eles são
+                                    // absolute, não fazem parte do fluxo normal da página) em telas
+                                    // baixas - limitando a altura aqui, o pior caso vira "rola um
+                                    // pouco pra ver mais palavras" em vez de sobrepor os botões.
+                                    <div className="flex flex-wrap justify-center gap-1.5 [@media(max-height:700px)]:gap-1 mt-3 [@media(max-height:700px)]:mt-1.5 max-h-20 [@media(max-height:700px)]:max-h-12 overflow-y-auto overscroll-contain scrollbar-hide">
+                                        {palavrasDica.map((palavra, i) => (
+                                            <span
+                                                key={i}
+                                                className="shrink-0 px-3 py-1 [@media(max-height:700px)]:px-2 [@media(max-height:700px)]:py-0.5 rounded-full bg-gray-800/50 border border-gray-700 text-gray-300 text-sm [@media(max-height:700px)]:text-xs"
+                                            >
+                                                {palavra}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
 
                             </div>
 

@@ -326,6 +326,7 @@
   "type_how_you_would_say": "このフレーズをどう言うか入力してください。",
   "you_typed": "入力内容：",
   "type_your_answer_placeholder": "ここに回答を入力してください...",
+  "hint_button": "ヒント",
   "correct_label": "正解",
   "dont_remember": "思い出せない",
   "answer_button": "回答する",

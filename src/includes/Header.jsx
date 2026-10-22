@@ -542,10 +542,16 @@ export default function Header({ titulo }) {
                         />
                     </div>
 
-                    <div className="min-w-0">
-                        <p className="text-md font-semibold text-white">
+                    <div className="min-w-0 flex-1">
+                        <p className="text-md font-semibold text-white truncate">
                             {t("hello")}, {user?.name?.split(' ')[0]}
                         </p>
+                        {user?.apelido && (
+                            <p className="text-[#4cb8c4] text-xs truncate">@{user.apelido}</p>
+                        )}
+                        {user?.email && (
+                            <p className="text-gray-400 text-xs truncate">{user.email}</p>
+                        )}
                         {erroFoto && (
                             <p className="text-red-400 text-xs mt-0.5">{erroFoto}</p>
                         )}

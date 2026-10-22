@@ -16,9 +16,20 @@ let usuarioAtualId = null;
 // e carregar à toa no boot do app adicionaria peso sem necessidade pra quem
 // nunca vai usar essa função). Mesma técnica já usada em
 // src/utils/pushNotifications.js pro @capacitor/push-notifications.
+// Retorna embrulhado em { Purchases } de propósito - o objeto Purchases é
+// um Proxy do Capacitor que intercepta QUALQUER acesso de propriedade
+// (inclusive "then") pra despachar uma chamada nativa. Se essa função fosse
+// async e fizesse "return Purchases" direto, o próprio mecanismo de
+// resolução de Promise do JS veria que o valor resolvido tem uma propriedade
+// "then" e tentaria encadear chamando Purchases.then(...), o que dispara no
+// nativo um método "then" que não existe -> erro "Purchases.then() is not
+// implemented on android" e a Promise nunca resolve (foi exatamente o bug do
+// botão "Carregando..." infinito no PremiumModal, confirmado via log real no
+// dispositivo). Embrulhando num objeto plano, o valor resolvido não tem
+// "then" na raiz e esse auto-encadeamento não acontece.
 async function obterPurchases() {
     const { Purchases } = await import("@revenuecat/purchases-capacitor");
-    return Purchases;
+    return { Purchases };
 }
 
 // Chamado depois de um login bem-sucedido (ver AuthContext.jsx) - garante
@@ -39,7 +50,7 @@ export async function inicializarRevenueCat(userId) {
     }
 
     try {
-        const Purchases = await obterPurchases();
+        const { Purchases } = await obterPurchases();
 
         if (!configurado) {
             await Purchases.configure({ apiKey, appUserID: idString });
@@ -72,7 +83,7 @@ export async function obterPacotePremium() {
     if (!isNativePlatform()) return null;
 
     try {
-        const Purchases = await obterPurchases();
+        const { Purchases } = await obterPurchases();
         const offerings = await Purchases.getOfferings();
         return offerings?.current?.availablePackages?.[0] ?? null;
     } catch (err) {
@@ -90,7 +101,7 @@ export async function obterPacotePremium() {
 // polling curto depois da compra).
 export async function comprarPacotePremium(pacote) {
     try {
-        const Purchases = await obterPurchases();
+        const { Purchases } = await obterPurchases();
         const resultado = await Purchases.purchasePackage({ aPackage: pacote });
         return { sucesso: true, customerInfo: resultado.customerInfo };
     } catch (err) {
@@ -109,7 +120,7 @@ export async function temEntitlementPremiumAtivo() {
     if (!isNativePlatform()) return false;
 
     try {
-        const Purchases = await obterPurchases();
+        const { Purchases } = await obterPurchases();
         const { customerInfo } = await Purchases.getCustomerInfo();
         return Boolean(customerInfo?.entitlements?.active?.[ENTITLEMENT_PREMIUM]);
     } catch (err) {
@@ -122,7 +133,7 @@ export async function temEntitlementPremiumAtivo() {
 // reinstalou o app ou trocou de aparelho e já tinha assinatura ativa.
 export async function restaurarComprasPremium() {
     try {
-        const Purchases = await obterPurchases();
+        const { Purchases } = await obterPurchases();
         const { customerInfo } = await Purchases.restorePurchases();
         return { sucesso: true, premiumAtivo: Boolean(customerInfo?.entitlements?.active?.[ENTITLEMENT_PREMIUM]) };
     } catch (err) {

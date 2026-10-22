@@ -15,6 +15,9 @@
         "apple": false,
         "twitter": false
       }
+    },
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
     }
   }
 }

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Crown, Clock } from "lucide-react";
 import usePremiumLimitListener from "../hooks/usePremiumLimitListener";
 import PremiumModal from "./PremiumModal";
+import { pedirVez, liberarVez } from "../utils/toastLane";
 
 const DURACAO_VISIVEL_MS = 5000;
 const DURACAO_TRANSICAO_MS = 350;
@@ -22,23 +23,37 @@ export default function AudioLimitToast() {
     const [motivoAtivo, setMotivoAtivo] = useState(null);
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
     const timeoutsRef = useRef([]);
+    const ativoRef = useRef(false);
 
     const onLimiteAtingido = useCallback((motivo) => {
         if (motivo !== "audio" && motivo !== "audio_diario_premium") return;
 
-        timeoutsRef.current.forEach(clearTimeout);
+        function iniciar() {
+            ativoRef.current = true;
+            timeoutsRef.current.forEach(clearTimeout);
 
-        setMotivoAtivo(motivo);
-        setEstado("entrando");
+            setMotivoAtivo(motivo);
+            setEstado("entrando");
 
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => setEstado("visivel"));
-        });
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => setEstado("visivel"));
+            });
 
-        timeoutsRef.current = [
-            setTimeout(() => setEstado("saindo"), DURACAO_VISIVEL_MS),
-            setTimeout(() => setEstado("escondido"), DURACAO_VISIVEL_MS + DURACAO_TRANSICAO_MS),
-        ];
+            timeoutsRef.current = [
+                setTimeout(() => setEstado("saindo"), DURACAO_VISIVEL_MS),
+                setTimeout(() => {
+                    setEstado("escondido");
+                    ativoRef.current = false;
+                    liberarVez();
+                }, DURACAO_VISIVEL_MS + DURACAO_TRANSICAO_MS),
+            ];
+        }
+
+        if (ativoRef.current) {
+            iniciar();
+        } else {
+            pedirVez(iniciar);
+        }
     }, []);
 
     usePremiumLimitListener(onLimiteAtingido);
@@ -57,7 +72,12 @@ export default function AudioLimitToast() {
                     <button
                         type="button"
                         onClick={() => {
+                            timeoutsRef.current.forEach(clearTimeout);
                             setEstado("escondido");
+                            if (ativoRef.current) {
+                                ativoRef.current = false;
+                                liberarVez();
+                            }
                             if (!ehLimiteDiarioPremium) setIsPremiumModalOpen(true);
                         }}
                         className="w-full flex items-start gap-2 bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 border border-white/15 text-white text-sm font-bold px-4 py-3 rounded-xl shadow-lg text-left"

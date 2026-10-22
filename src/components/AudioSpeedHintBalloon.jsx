@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Volume2 } from "lucide-react";
 import useAudioSpeedHintListener from "../hooks/useAudioSpeedHintListener";
+import { pedirVez, liberarVez } from "../utils/toastLane";
 
 const DURACAO_VISIVEL_MS = 4500;
 const DURACAO_TRANSICAO_MS = 350;
@@ -19,22 +20,38 @@ export default function AudioSpeedHintBalloon() {
     const navigate = useNavigate();
     const [estado, setEstado] = useState("escondido"); // escondido | entrando | visivel | saindo
     const timeoutsRef = useRef([]);
+    const ativoRef = useRef(false);
 
     const onPrimeiroAudio = useCallback(() => {
-        timeoutsRef.current.forEach(clearTimeout);
+        function iniciar() {
+            ativoRef.current = true;
+            timeoutsRef.current.forEach(clearTimeout);
 
-        setEstado("entrando");
+            setEstado("entrando");
 
-        // monta fora da tela primeiro, só no frame seguinte anima pra dentro -
-        // senão o navegador funde os dois estados e não roda a transição.
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => setEstado("visivel"));
-        });
+            // monta fora da tela primeiro, só no frame seguinte anima pra dentro -
+            // senão o navegador funde os dois estados e não roda a transição.
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => setEstado("visivel"));
+            });
 
-        timeoutsRef.current = [
-            setTimeout(() => setEstado("saindo"), DURACAO_VISIVEL_MS),
-            setTimeout(() => setEstado("escondido"), DURACAO_VISIVEL_MS + DURACAO_TRANSICAO_MS),
-        ];
+            timeoutsRef.current = [
+                setTimeout(() => setEstado("saindo"), DURACAO_VISIVEL_MS),
+                setTimeout(() => {
+                    setEstado("escondido");
+                    ativoRef.current = false;
+                    liberarVez();
+                }, DURACAO_VISIVEL_MS + DURACAO_TRANSICAO_MS),
+            ];
+        }
+
+        // Se esse mesmo aviso já está na vez, só reinicia a animação (sem
+        // disputar a fila com ele mesmo) - senão, pede a vez normalmente.
+        if (ativoRef.current) {
+            iniciar();
+        } else {
+            pedirVez(iniciar);
+        }
     }, []);
 
     useAudioSpeedHintListener(onPrimeiroAudio);

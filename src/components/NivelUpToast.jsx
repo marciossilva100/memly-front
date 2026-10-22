@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TrendingUp, X } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { pedirVez, liberarVez } from "../utils/toastLane";
 
 const DURACAO_VISIVEL_MS = 8000;
 const DURACAO_TRANSICAO_MS = 350;
@@ -26,20 +27,30 @@ export default function NivelUpToast() {
     const [enviando, setEnviando] = useState(false);
     const timeoutsRef = useRef([]);
     const jaMostradoRef = useRef(false);
+    const ativoRef = useRef(false);
 
     useEffect(() => {
         if (!user?.nivel_sugerido || jaMostradoRef.current) return;
         jaMostradoRef.current = true;
 
-        setEstado("entrando");
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => setEstado("visivel"));
-        });
+        function iniciar() {
+            ativoRef.current = true;
+            setEstado("entrando");
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => setEstado("visivel"));
+            });
 
-        timeoutsRef.current = [
-            setTimeout(() => setEstado("saindo"), DURACAO_VISIVEL_MS),
-            setTimeout(() => setEstado("escondido"), DURACAO_VISIVEL_MS + DURACAO_TRANSICAO_MS),
-        ];
+            timeoutsRef.current = [
+                setTimeout(() => setEstado("saindo"), DURACAO_VISIVEL_MS),
+                setTimeout(() => {
+                    setEstado("escondido");
+                    ativoRef.current = false;
+                    liberarVez();
+                }, DURACAO_VISIVEL_MS + DURACAO_TRANSICAO_MS),
+            ];
+        }
+
+        pedirVez(iniciar);
 
         return () => timeoutsRef.current.forEach(clearTimeout);
     }, [user?.nivel_sugerido]);
@@ -48,6 +59,10 @@ export default function NivelUpToast() {
         timeoutsRef.current.forEach(clearTimeout);
         setEstado("saindo");
         setTimeout(() => setEstado("escondido"), DURACAO_TRANSICAO_MS);
+        if (ativoRef.current) {
+            ativoRef.current = false;
+            liberarVez();
+        }
     }
 
     async function aceitar() {

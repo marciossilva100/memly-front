@@ -44,6 +44,8 @@
   "hello": "Привет",
   "update_available_message": "Доступна новая версия приложения.",
   "update_available_button": "Обновить",
+  "update_required_title": "Требуется обновление",
+  "update_required_message": "Эта версия приложения больше не поддерживается. Обновите, чтобы продолжить пользоваться Zaldemy.",
   "faq": "Частые вопросы",
   "contact": "Контакты",
   "share_app": "Поделиться приложением",

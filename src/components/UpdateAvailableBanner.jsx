@@ -1,21 +1,26 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Download, X } from "lucide-react";
+import { Download, X, AlertTriangle } from "lucide-react";
 import { isNativePlatform } from "../utils/googleNativeAuth";
 
 const CHAVE_DISPENSADO = "zaldemy_update_dispensado_versao";
 
 // Compara o versionCode instalado (App.getInfo().build, Android) com o
-// mínimo recomendado pelo backend (controller/appVersion.php) - só existe
-// pro app nativo Android, PWA/web não tem conceito de "versão instalada
-// desatualizada" dessa forma (atualiza sozinho a cada load). Banner no topo
-// (não entra na fila dos avisos laterais de toastLane.js de propósito -
-// esse é mais importante e não deve competir/ser escondido por eles, nem
-// sumir sozinho depois de alguns segundos).
+// mínimo do backend (controller/appVersion.php) - só existe pro app nativo
+// Android, PWA/web não tem esse conceito (atualiza sozinho a cada load).
+//
+// Dois níveis, de propósito (ver comentário em appVersion.php):
+// - "recomendado": banner dispensável no topo, não atrapalha quem tá
+//   usando - não entra na fila dos avisos laterais de toastLane.js (esse é
+//   mais importante e fica até ser dispensado, sem timer de auto-esconder).
+// - "obrigatorio": tela cheia, sem botão de fechar - reservado pra bug
+//   grave o suficiente pra justificar travar o app até atualizar. Sempre
+//   mostra de novo (não usa a flag de dispensado), já que não é opcional.
 export default function UpdateAvailableBanner() {
     const { t } = useTranslation();
+    const [modo, setModo] = useState(null); // null | "recomendado" | "obrigatorio"
     const [urlPlayStore, setUrlPlayStore] = useState(null);
-    const [versaoMinima, setVersaoMinima] = useState(null);
+    const [versaoRecomendada, setVersaoRecomendada] = useState(null);
 
     useEffect(() => {
         if (!isNativePlatform()) return;
@@ -31,16 +36,25 @@ export default function UpdateAvailableBanner() {
                 const API_URL = import.meta.env.VITE_API_URL;
                 const res = await fetch(`${API_URL}/controller/appVersion.php`);
                 const data = await res.json();
-                const minima = Number(data.android_min_version_code);
+                const recomendado = Number(data.android_min_version_code);
+                const obrigatorio = Number(data.android_min_version_code_obrigatorio);
+                const url = data.android_play_store_url || "https://play.google.com/store/apps/details?id=com.zaldemy.app";
 
-                if (cancelado || !minima || Number.isNaN(buildAtual)) return;
+                if (cancelado || Number.isNaN(buildAtual)) return;
 
-                if (buildAtual < minima) {
+                if (obrigatorio > 0 && buildAtual < obrigatorio) {
+                    setModo("obrigatorio");
+                    setUrlPlayStore(url);
+                    return;
+                }
+
+                if (recomendado && buildAtual < recomendado) {
                     const jaDispensado = localStorage.getItem(CHAVE_DISPENSADO);
-                    if (jaDispensado === String(minima)) return;
+                    if (jaDispensado === String(recomendado)) return;
 
-                    setVersaoMinima(minima);
-                    setUrlPlayStore(data.android_play_store_url || "https://play.google.com/store/apps/details?id=com.zaldemy.app");
+                    setModo("recomendado");
+                    setUrlPlayStore(url);
+                    setVersaoRecomendada(recomendado);
                 }
             } catch {
                 // sem conexão ou endpoint fora do ar - não trava o app, só
@@ -52,13 +66,35 @@ export default function UpdateAvailableBanner() {
         return () => { cancelado = true; };
     }, []);
 
-    if (!urlPlayStore) return null;
+    if (!modo) return null;
 
     function dispensar() {
-        if (versaoMinima) {
-            localStorage.setItem(CHAVE_DISPENSADO, String(versaoMinima));
+        if (versaoRecomendada) {
+            localStorage.setItem(CHAVE_DISPENSADO, String(versaoRecomendada));
         }
-        setUrlPlayStore(null);
+        setModo(null);
+    }
+
+    if (modo === "obrigatorio") {
+        return (
+            <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-5">
+                <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-red-500/40 rounded-2xl max-w-sm w-full p-6 text-center">
+                    <div className="w-14 h-14 mx-auto rounded-full bg-red-500/15 flex items-center justify-center mb-4">
+                        <AlertTriangle className="w-7 h-7 text-red-400" />
+                    </div>
+                    <h2 className="text-white text-lg font-bold mb-2">{t("update_required_title")}</h2>
+                    <p className="text-gray-400 text-sm mb-5">{t("update_required_message")}</p>
+                    <a
+                        href={urlPlayStore}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="block w-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-semibold py-3 rounded-full transition-colors"
+                    >
+                        {t("update_available_button")}
+                    </a>
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -69,12 +105,16 @@ export default function UpdateAvailableBanner() {
                 href={urlPlayStore}
                 target="_blank"
                 rel="noreferrer"
-                onClick={dispensar}
+                onClick={() => setModo(null)}
                 className="shrink-0 bg-white/20 hover:bg-white/30 px-3 py-1 rounded-full font-semibold transition-colors"
             >
                 {t("update_available_button")}
             </a>
-            <button type="button" onClick={dispensar} className="shrink-0 text-white/80 hover:text-white">
+            <button
+                type="button"
+                onClick={dispensar}
+                className="shrink-0 text-white/80 hover:text-white"
+            >
                 <X className="w-4 h-4" />
             </button>
         </div>

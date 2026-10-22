@@ -44,6 +44,8 @@
   "hello": "Hello",
   "update_available_message": "A new app version is available.",
   "update_available_button": "Update",
+  "update_required_title": "Update required",
+  "update_required_message": "This app version is no longer supported. Please update to keep using Zaldemy.",
   "faq": "FAQ",
   "contact": "Contact",
   "share_app": "Share app",

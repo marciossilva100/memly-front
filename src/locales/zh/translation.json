@@ -44,6 +44,8 @@
   "hello": "你好",
   "update_available_message": "有新版本的应用可用。",
   "update_available_button": "更新",
+  "update_required_title": "需要更新",
+  "update_required_message": "此版本的应用已不再受支持。请更新以继续使用 Zaldemy。",
   "faq": "常见问题",
   "contact": "联系我们",
   "share_app": "分享应用",

@@ -44,6 +44,8 @@
   "hello": "안녕하세요",
   "update_available_message": "앱의 새 버전을 사용할 수 있습니다.",
   "update_available_button": "업데이트",
+  "update_required_title": "업데이트 필요",
+  "update_required_message": "이 앱 버전은 더 이상 지원되지 않습니다. Zaldemy를 계속 사용하려면 업데이트하세요.",
   "faq": "자주 묻는 질문",
   "contact": "문의하기",
   "share_app": "앱 공유하기",

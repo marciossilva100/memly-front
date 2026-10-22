@@ -44,6 +44,8 @@
   "hello": "Merhaba",
   "update_available_message": "Uygulamanın yeni bir sürümü mevcut.",
   "update_available_button": "Güncelle",
+  "update_required_title": "Güncelleme gerekli",
+  "update_required_message": "Bu uygulama sürümü artık desteklenmiyor. Zaldemy'yi kullanmaya devam etmek için güncelleyin.",
   "faq": "SSS",
   "contact": "İletişim",
   "share_app": "Uygulamayı paylaş",

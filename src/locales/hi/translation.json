@@ -44,6 +44,8 @@
   "hello": "नमस्ते",
   "update_available_message": "ऐप का नया वर्शन उपलब्ध है।",
   "update_available_button": "अपडेट करें",
+  "update_required_title": "अपडेट आवश्यक है",
+  "update_required_message": "ऐप का यह वर्शन अब सपोर्टेड नहीं है। Zaldemy का उपयोग जारी रखने के लिए अपडेट करें।",
   "faq": "सामान्य प्रश्न",
   "contact": "संपर्क करें",
   "share_app": "ऐप साझा करें",

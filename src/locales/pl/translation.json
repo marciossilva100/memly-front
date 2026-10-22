@@ -44,6 +44,8 @@
   "hello": "Cześć",
   "update_available_message": "Dostępna jest nowa wersja aplikacji.",
   "update_available_button": "Aktualizuj",
+  "update_required_title": "Wymagana aktualizacja",
+  "update_required_message": "Ta wersja aplikacji nie jest już obsługiwana. Zaktualizuj, aby dalej korzystać z Zaldemy.",
   "faq": "FAQ",
   "contact": "Kontakt",
   "share_app": "Udostępnij aplikację",

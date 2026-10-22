@@ -9,4 +9,9 @@
     <color name="colorPrimary">#111827</color>
     <color name="colorPrimaryDark">#111827</color>
     <color name="colorAccent">#111827</color>
+
+    <!-- Cor de marca (teal) usada só pra colorir o círculo atrás do ícone
+         branco de notificação (ver notification_icon_color abaixo) - mesma
+         cor usada no botão/destaque do resto do app. -->
+    <color name="notification_icon_color">#4cb8c4</color>
 </resources>

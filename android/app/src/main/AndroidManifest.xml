@@ -27,6 +27,18 @@
             android:grantUriPermissions="true">
             <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
         </provider>
+
+        <!-- Sem isso, o FCM usa o ícone do launcher (colorido, cheio de
+             detalhe) como ícone da notificação - o Android não consegue
+             recortar uma silhueta decente dele e mostra só uma bolinha
+             branca na barra de status em vez do chapéu de formatura (bug
+             real reportado pelo usuário, confirmado testando notificação de
+             verdade no celular). ic_stat_notify é o mesmo chapéu em branco
+             sólido com fundo transparente (chapeu_formatura-white.png),
+             gerado em res/drawable-*dpi/ - formato que o Android sabe
+             desenhar certo em qualquer tamanho/cor de fundo. -->
+        <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_notify" />
+        <meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/notification_icon_color" />
     </application>
 
     <!-- Permissions -->

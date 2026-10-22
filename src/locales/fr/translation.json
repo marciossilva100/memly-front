@@ -42,6 +42,8 @@
   "existing_categories": "Paquets existants",
   "share_category_description": "En laissant cette option cochée, vous partagez votre paquet avec d'autres utilisateurs.",
   "hello": "Bonjour",
+  "update_available_message": "Une nouvelle version de l'application est disponible.",
+  "update_available_button": "Mettre à jour",
   "faq": "FAQ",
   "contact": "Contact",
   "share_app": "Partager l'application",

@@ -42,6 +42,8 @@
   "existing_categories": "Существующие колоды",
   "share_category_description": "Отметив эту опцию, вы делитесь своей колодой с другими пользователями.",
   "hello": "Привет",
+  "update_available_message": "Доступна новая версия приложения.",
+  "update_available_button": "Обновить",
   "faq": "Частые вопросы",
   "contact": "Контакты",
   "share_app": "Поделиться приложением",

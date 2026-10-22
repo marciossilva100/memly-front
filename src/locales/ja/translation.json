@@ -42,6 +42,8 @@
   "existing_categories": "既存のデッキ",
   "share_category_description": "このオプションをオンにすると、デッキを他のユーザーと共有できます。",
   "hello": "こんにちは",
+  "update_available_message": "新しいバージョンのアプリが利用可能です。",
+  "update_available_button": "更新",
   "faq": "よくある質問",
   "contact": "お問い合わせ",
   "share_app": "アプリを共有",

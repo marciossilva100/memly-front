@@ -42,6 +42,8 @@
   "existing_categories": "Existing decks",
   "share_category_description": "By leaving this option checked, you share your deck with other users.",
   "hello": "Hello",
+  "update_available_message": "A new app version is available.",
+  "update_available_button": "Update",
   "faq": "FAQ",
   "contact": "Contact",
   "share_app": "Share app",

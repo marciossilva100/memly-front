@@ -42,6 +42,8 @@
   "existing_categories": "Vorhandene Stapel",
   "share_category_description": "Wenn du diese Option aktiviert lässt, teilst du deinen Stapel mit anderen Nutzern.",
   "hello": "Hallo",
+  "update_available_message": "Eine neue App-Version ist verfügbar.",
+  "update_available_button": "Aktualisieren",
   "faq": "FAQ",
   "contact": "Kontakt",
   "share_app": "App teilen",

@@ -47,6 +47,7 @@ import AudioSpeedHintBalloon from './components/AudioSpeedHintBalloon';
 import AudioLimitToast from './components/AudioLimitToast';
 import FrasesLimitToast from './components/FrasesLimitToast';
 import NivelUpToast from './components/NivelUpToast';
+import UpdateAvailableBanner from './components/UpdateAvailableBanner';
 
 import imgChapeuFormatura from "./assets/img/chapeu_formatura.png"
 import PremiumPlan from './components/PremiumModal';
@@ -190,6 +191,7 @@ function Layout({ titulo, setTitulo }) {
 
   return (
     <>
+      <UpdateAvailableBanner />
       {/* Indicador de status de conexão */}
       <ConnectionStatus />
       <AudioSpeedHintBalloon />

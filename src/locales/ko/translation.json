@@ -42,6 +42,8 @@
   "existing_categories": "기존 덱",
   "share_category_description": "이 옵션을 선택하면 다른 사용자와 덱을 공유하게 됩니다.",
   "hello": "안녕하세요",
+  "update_available_message": "앱의 새 버전을 사용할 수 있습니다.",
+  "update_available_button": "업데이트",
   "faq": "자주 묻는 질문",
   "contact": "문의하기",
   "share_app": "앱 공유하기",

@@ -42,6 +42,8 @@
   "existing_categories": "Mazos existentes",
   "share_category_description": "Dejando esta opción marcada, compartes tu mazo con otros usuarios.",
   "hello": "Hola",
+  "update_available_message": "Hay una nueva versión de la app disponible.",
+  "update_available_button": "Actualizar",
   "faq": "Preguntas Frecuentes",
   "contact": "Contacto",
   "share_app": "Compartir app",

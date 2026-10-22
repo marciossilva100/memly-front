@@ -42,6 +42,8 @@
   "existing_categories": "现有牌组",
   "share_category_description": "勾选此选项后，你的牌组将与其他用户共享。",
   "hello": "你好",
+  "update_available_message": "有新版本的应用可用。",
+  "update_available_button": "更新",
   "faq": "常见问题",
   "contact": "联系我们",
   "share_app": "分享应用",

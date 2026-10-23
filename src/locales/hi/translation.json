@@ -545,6 +545,7 @@
   "level_up_dismiss": "अभी नहीं",
   "premium_feature_native_notice": "यह एक प्रीमियम-विशेष सुविधा है।",
   "confirming_premium_purchase": "आपकी खरीद की पुष्टि हो रही है...",
+  "premium_confirmation_delayed": "पुष्टि में सामान्य से ज़्यादा समय लग रहा है। आपकी खरीदारी पूरी हो गई है और Premium जल्द ही सक्रिय हो जाएगा — आप इस स्क्रीन को बंद करके ऐप का सामान्य रूप से उपयोग जारी रख सकते हैं।",
   "redirecting_to_checkout": "भुगतान की ओर रीडायरेक्ट किया जा रहा है...",
   "subscription_success_title": "सदस्यता की पुष्टि हो गई!",
   "subscription_confirming": "हम आपके भुगतान की पुष्टि कर रहे हैं, एक क्षण रुकें...",

@@ -545,6 +545,7 @@
   "level_up_dismiss": "나중에",
   "premium_feature_native_notice": "이것은 프리미엄 플랜 전용 기능입니다.",
   "confirming_premium_purchase": "구매를 확인하는 중입니다...",
+  "premium_confirmation_delayed": "확인이 평소보다 오래 걸리고 있습니다. 구매는 완료되었으며 곧 프리미엄이 활성화됩니다 — 이 화면을 닫고 앱을 평소처럼 계속 사용하셔도 됩니다.",
   "redirecting_to_checkout": "결제 페이지로 이동 중...",
   "subscription_success_title": "구독이 확인되었습니다!",
   "subscription_confirming": "결제를 확인하는 중입니다. 잠시만 기다려주세요...",

@@ -545,6 +545,7 @@
   "level_up_dismiss": "ليس الآن",
   "premium_feature_native_notice": "هذه ميزة حصرية لخطة Premium.",
   "confirming_premium_purchase": "جارٍ تأكيد عملية الشراء...",
+  "premium_confirmation_delayed": "التأكيد يستغرق وقتًا أطول من المعتاد. تم إتمام عملية الشراء وسيتم تفعيل Premium قريبًا - يمكنك إغلاق هذه الشاشة ومواصلة استخدام التطبيق بشكل طبيعي.",
   "redirecting_to_checkout": "جارٍ التحويل إلى الدفع...",
   "subscription_success_title": "تم تأكيد الاشتراك!",
   "subscription_confirming": "نقوم بتأكيد دفعتك، لحظة من فضلك...",

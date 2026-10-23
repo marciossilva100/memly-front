@@ -547,6 +547,7 @@
   "level_up_dismiss": "Not now",
   "premium_feature_native_notice": "This is a Premium-exclusive feature.",
   "confirming_premium_purchase": "Confirming your purchase...",
+  "premium_confirmation_delayed": "Confirmation is taking longer than usual. Your purchase went through and Premium should activate shortly — you can close this screen and keep using the app normally.",
   "redirecting_to_checkout": "Redirecting to checkout...",
   "subscription_success_title": "Subscription confirmed!",
   "subscription_confirming": "We're confirming your payment, just a moment...",

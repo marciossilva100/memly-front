@@ -545,6 +545,7 @@
   "level_up_dismiss": "Не сейчас",
   "premium_feature_native_notice": "Это функция, доступная только в тарифе Premium.",
   "confirming_premium_purchase": "Подтверждаем вашу покупку...",
+  "premium_confirmation_delayed": "Подтверждение занимает больше времени, чем обычно. Ваша покупка прошла успешно, и Premium должен активироваться в ближайшее время — можете закрыть этот экран и продолжить пользоваться приложением как обычно.",
   "redirecting_to_checkout": "Перенаправление к оплате...",
   "subscription_success_title": "Подписка подтверждена!",
   "subscription_confirming": "Мы подтверждаем ваш платёж, один момент...",

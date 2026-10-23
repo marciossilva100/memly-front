@@ -547,6 +547,7 @@
   "level_up_dismiss": "Ne dabar",
   "premium_feature_native_notice": "Tai – tik „Premium“ plano funkcija.",
   "confirming_premium_purchase": "Patvirtinamas jūsų pirkinys...",
+  "premium_confirmation_delayed": "Patvirtinimas užtrunka ilgiau nei įprastai. Jūsų pirkimas buvo užbaigtas, o „Premium“ turėtų aktyvuotis netrukus — galite uždaryti šį langą ir toliau įprastai naudotis programėle.",
   "redirecting_to_checkout": "Nukreipiama į apmokėjimą...",
   "subscription_success_title": "Prenumerata patvirtinta!",
   "subscription_confirming": "Patvirtiname jūsų mokėjimą, palaukite akimirką...",

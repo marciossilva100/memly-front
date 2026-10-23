@@ -545,6 +545,7 @@
   "level_up_dismiss": "现在不要",
   "premium_feature_native_notice": "这是高级版专属功能。",
   "confirming_premium_purchase": "正在确认您的购买...",
+  "premium_confirmation_delayed": "确认时间比平时长。您的购买已完成，高级版即将激活——您可以关闭此屏幕并照常使用应用。",
   "redirecting_to_checkout": "正在跳转到付款页面...",
   "subscription_success_title": "订阅已确认！",
   "subscription_confirming": "正在确认您的付款，请稍候...",

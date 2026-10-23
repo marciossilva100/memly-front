@@ -96,6 +96,14 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
   // usuarios.plano virar 1 de verdade. A confirmação da LOJA é instantânea,
   // mas o nosso backend só sabe depois do webhook chegar (assíncrono).
   const [compraNativaConcluida, setCompraNativaConcluida] = useState(false);
+  // Vira true se os 10 polls (20s) esgotarem sem o plano confirmar - bug
+  // real reportado: usuário ficou preso vendo "Confirmando sua compra..."
+  // pra sempre sem nenhuma explicação (causa raiz foi webhook do
+  // RevenueCat rejeitado por segredo desatualizado, já corrigido, mas esse
+  // estado de "demorou demais" pode acontecer de novo por qualquer outro
+  // motivo de rede/fila - precisa de uma saída clara em vez de ficar preso
+  // num texto que nunca muda).
+  const [confirmacaoDemorada, setConfirmacaoDemorada] = useState(false);
 
   useEffect(() => {
     if (!isNativePlatform() || isOpen !== true || user?.plano === 1) return;
@@ -151,7 +159,10 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
     const intervalo = setInterval(() => {
       tentativas += 1;
       checkAuth(true);
-      if (tentativas >= 10) clearInterval(intervalo);
+      if (tentativas >= 10) {
+        clearInterval(intervalo);
+        setConfirmacaoDemorada(true);
+      }
     }, 2000);
 
     return () => clearInterval(intervalo);
@@ -454,7 +465,21 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
               </button>
             )}
 
-            {isNativePlatform() && pacoteNativo && (
+            {isNativePlatform() && pacoteNativo && confirmacaoDemorada && (
+              <div className="mb-4">
+                <p className="w-full bg-gray-800/50 border border-gray-700 text-gray-200 text-sm text-center py-4 px-6 rounded-xl mb-3">
+                  {t("premium_confirmation_delayed")}
+                </p>
+                <button
+                  onClick={onClose}
+                  className="w-full bg-gray-700/60 hover:bg-gray-700 text-white font-bold py-3.5 px-6 rounded-xl transition-colors"
+                >
+                  {t("close")}
+                </button>
+              </div>
+            )}
+
+            {isNativePlatform() && pacoteNativo && !confirmacaoDemorada && (
               <button
                 onClick={assinarNativo}
                 disabled={assinando || compraNativaConcluida}

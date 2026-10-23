@@ -545,6 +545,7 @@
   "level_up_dismiss": "今はしない",
   "premium_feature_native_notice": "これはプレミアムプラン限定の機能です。",
   "confirming_premium_purchase": "購入を確認しています...",
+  "premium_confirmation_delayed": "確認に通常より時間がかかっています。購入は完了しており、まもなくPremiumが有効になります — この画面を閉じて、アプリを通常どおりご利用いただけます。",
   "redirecting_to_checkout": "決済ページへ移動しています...",
   "subscription_success_title": "登録が確認されました！",
   "subscription_confirming": "お支払いを確認しています。少々お待ちください...",

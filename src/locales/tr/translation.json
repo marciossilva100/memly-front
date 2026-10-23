@@ -545,6 +545,7 @@
   "level_up_dismiss": "Şimdi değil",
   "premium_feature_native_notice": "Bu, yalnızca Premium plana özel bir özelliktir.",
   "confirming_premium_purchase": "Satın alman onaylanıyor...",
+  "premium_confirmation_delayed": "Onay her zamankinden daha uzun sürüyor. Satın alımınız tamamlandı ve Premium kısa süre içinde etkinleşecek — bu ekranı kapatıp uygulamayı normal şekilde kullanmaya devam edebilirsiniz.",
   "redirecting_to_checkout": "Ödemeye yönlendiriliyor...",
   "subscription_success_title": "Abonelik onaylandı!",
   "subscription_confirming": "Ödemenizi onaylıyoruz, bir dakika...",

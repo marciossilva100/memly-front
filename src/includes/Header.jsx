@@ -546,9 +546,6 @@ export default function Header({ titulo }) {
                         <p className="text-md font-semibold text-white truncate">
                             {t("hello")}, {user?.name?.split(' ')[0]}
                         </p>
-                        {user?.apelido && (
-                            <p className="text-[#4cb8c4] text-xs truncate">@{user.apelido}</p>
-                        )}
                         {user?.email && (
                             <p className="text-gray-400 text-xs truncate">{user.email}</p>
                         )}

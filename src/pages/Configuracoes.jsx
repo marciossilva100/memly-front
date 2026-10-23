@@ -916,15 +916,18 @@ export default function Configuracoes() {
                                             })}
                                         </p>
                                         {ehRevenueCat ? (
-                                            <a
-                                                href="https://play.google.com/store/account/subscriptions?package=com.zaldemy.app"
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#4cb8c4] hover:bg-[#3da5b0] text-white text-sm font-medium transition-colors"
-                                            >
-                                                <RotateCcw className="w-4 h-4" />
-                                                {t("manage_subscription_play_store")}
-                                            </a>
+                                            <>
+                                                <a
+                                                    href="https://play.google.com/store/account/subscriptions"
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#4cb8c4] hover:bg-[#3da5b0] text-white text-sm font-medium transition-colors"
+                                                >
+                                                    <RotateCcw className="w-4 h-4" />
+                                                    {t("manage_subscription_play_store")}
+                                                </a>
+                                                <p className="text-gray-500 text-xs mt-2 text-center">{t("manage_subscription_play_store_hint")}</p>
+                                            </>
                                         ) : (
                                             <button
                                                 type="button"
@@ -944,15 +947,18 @@ export default function Configuracoes() {
                                             {t("subscription_payment_failed")}
                                         </p>
                                         {ehRevenueCat ? (
-                                            <a
-                                                href="https://play.google.com/store/account/subscriptions?package=com.zaldemy.app"
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#4cb8c4] hover:bg-[#3da5b0] text-white text-sm font-medium transition-colors"
-                                            >
-                                                <CreditCard className="w-4 h-4" />
-                                                {t("manage_subscription_play_store")}
-                                            </a>
+                                            <>
+                                                <a
+                                                    href="https://play.google.com/store/account/subscriptions"
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#4cb8c4] hover:bg-[#3da5b0] text-white text-sm font-medium transition-colors"
+                                                >
+                                                    <CreditCard className="w-4 h-4" />
+                                                    {t("manage_subscription_play_store")}
+                                                </a>
+                                                <p className="text-gray-500 text-xs mt-2 text-center">{t("manage_subscription_play_store_hint")}</p>
+                                            </>
                                         ) : (
                                             <button
                                                 type="button"
@@ -969,14 +975,17 @@ export default function Configuracoes() {
                                     <>
                                         <p className="text-gray-300 text-sm mb-3">{t("subscription_active")}</p>
                                         {ehRevenueCat ? (
-                                            <a
-                                                href="https://play.google.com/store/account/subscriptions?package=com.zaldemy.app"
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-gray-700 hover:bg-gray-700/50 text-gray-300 text-sm font-medium transition-colors"
-                                            >
-                                                {t("manage_subscription_play_store")}
-                                            </a>
+                                            <>
+                                                <a
+                                                    href="https://play.google.com/store/account/subscriptions"
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-gray-700 hover:bg-gray-700/50 text-gray-300 text-sm font-medium transition-colors"
+                                                >
+                                                    {t("manage_subscription_play_store")}
+                                                </a>
+                                                <p className="text-gray-500 text-xs mt-2 text-center">{t("manage_subscription_play_store_hint")}</p>
+                                            </>
                                         ) : (
                                             <button
                                                 type="button"

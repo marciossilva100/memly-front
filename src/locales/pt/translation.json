@@ -582,6 +582,7 @@
   "cancel_subscription": "Cancelar assinatura",
   "reactivate_subscription": "Reativar assinatura",
   "manage_subscription_play_store": "Gerenciar na Play Store",
+  "manage_subscription_play_store_hint": "Procure por \"Zaldemy\" na lista de assinaturas da sua conta Google",
   "cancel_subscription_confirm_message": "Cancelar sua assinatura Zaldemy+? Você continua com acesso premium até o fim do período já pago.",
   "based_on_vocabulary_title": "Baseado no seu vocabulário",
   "based_on_vocabulary_desc": "O conteúdo gerado por IA usa principalmente palavras que você já estuda",

@@ -580,6 +580,7 @@
   "cancel_subscription": "Отменить подписку",
   "reactivate_subscription": "Возобновить подписку",
   "manage_subscription_play_store": "Управлять в Play Store",
+  "manage_subscription_play_store_hint": "Найдите «Zaldemy» в списке подписок вашего аккаунта Google",
   "cancel_subscription_confirm_message": "Отменить подписку Zaldemy+? У вас сохранится премиум-доступ до конца уже оплаченного периода.",
   "based_on_vocabulary_title": "На основе вашего словарного запаса",
   "based_on_vocabulary_desc": "Контент, созданный ИИ, использует в основном слова, которые вы уже изучаете",

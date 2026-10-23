@@ -83,7 +83,8 @@ export default function UpdateAvailableBanner() {
                         <AlertTriangle className="w-7 h-7 text-red-400" />
                     </div>
                     <h2 className="text-white text-lg font-bold mb-2">{t("update_required_title")}</h2>
-                    <p className="text-gray-400 text-sm mb-5">{t("update_required_message")}</p>
+                    <p className="text-gray-400 text-sm mb-2">{t("update_required_message")}</p>
+                    <p className="text-gray-500 text-xs mb-5">{t("update_restart_hint")}</p>
                     <a
                         href={urlPlayStore}
                         target="_blank"
@@ -98,25 +99,28 @@ export default function UpdateAvailableBanner() {
     }
 
     return (
-        <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-2.5 flex items-center gap-3 text-sm">
-            <Download className="w-4 h-4 shrink-0" />
-            <span className="flex-1">{t("update_available_message")}</span>
-            <a
-                href={urlPlayStore}
-                target="_blank"
-                rel="noreferrer"
-                onClick={() => setModo(null)}
-                className="shrink-0 bg-white/20 hover:bg-white/30 px-3 py-1 rounded-full font-semibold transition-colors"
-            >
-                {t("update_available_button")}
-            </a>
-            <button
-                type="button"
-                onClick={dispensar}
-                className="shrink-0 text-white/80 hover:text-white"
-            >
-                <X className="w-4 h-4" />
-            </button>
+        <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white text-sm">
+            <div className="px-4 py-2.5 flex items-center gap-3">
+                <Download className="w-4 h-4 shrink-0" />
+                <span className="flex-1">{t("update_available_message")}</span>
+                <a
+                    href={urlPlayStore}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => setModo(null)}
+                    className="shrink-0 bg-white/20 hover:bg-white/30 px-3 py-1 rounded-full font-semibold transition-colors"
+                >
+                    {t("update_available_button")}
+                </a>
+                <button
+                    type="button"
+                    onClick={dispensar}
+                    className="shrink-0 text-white/80 hover:text-white"
+                >
+                    <X className="w-4 h-4" />
+                </button>
+            </div>
+            <p className="px-4 pb-2 -mt-1 text-xs text-white/80">{t("update_restart_hint")}</p>
         </div>
     );
 }

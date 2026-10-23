@@ -44,6 +44,7 @@
   "hello": "Hallo",
   "update_available_message": "Eine neue App-Version ist verfügbar.",
   "update_available_button": "Aktualisieren",
+  "update_restart_hint": "Schließe die App nach dem Update im Play Store vollständig (aus den letzten Apps wegwischen) und öffne sie erneut.",
   "update_required_title": "Update erforderlich",
   "update_required_message": "Diese App-Version wird nicht mehr unterstützt. Aktualisiere, um Zaldemy weiter zu nutzen.",
   "faq": "FAQ",

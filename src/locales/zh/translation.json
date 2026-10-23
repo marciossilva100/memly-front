@@ -44,6 +44,7 @@
   "hello": "你好",
   "update_available_message": "有新版本的应用可用。",
   "update_available_button": "更新",
+  "update_restart_hint": "在 Play 商店更新后，请完全关闭应用（从最近任务列表中划掉）再重新打开。",
   "update_required_title": "需要更新",
   "update_required_message": "此版本的应用已不再受支持。请更新以继续使用 Zaldemy。",
   "faq": "常见问题",

@@ -44,6 +44,7 @@
   "hello": "こんにちは",
   "update_available_message": "新しいバージョンのアプリが利用可能です。",
   "update_available_button": "更新",
+  "update_restart_hint": "Playストアで更新した後は、アプリを完全に終了してから（最近使ったアプリ一覧からスワイプして閉じる）再度開いてください。",
   "update_required_title": "アップデートが必要です",
   "update_required_message": "このバージョンのアプリはサポートされなくなりました。Zaldemyを使い続けるには更新してください。",
   "faq": "よくある質問",

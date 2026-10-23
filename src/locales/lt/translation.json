@@ -44,6 +44,7 @@
   "hello": "Sveiki",
   "update_available_message": "Yra pasiekiama nauja programos versija.",
   "update_available_button": "Atnaujinti",
+  "update_restart_hint": "Atnaujinę programėlę „Play Store“, visiškai ją uždarykite (nubraukite iš neseniai naudotų programėlių sąrašo) ir atidarykite iš naujo.",
   "update_required_title": "Būtina atnaujinti",
   "update_required_message": "Ši programos versija nebepalaikoma. Atnaujinkite, kad galėtumėte toliau naudotis „Zaldemy“.",
   "faq": "DUK",

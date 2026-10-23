@@ -579,6 +579,7 @@
   "subscription_ends_on": "你的订阅将于 {{date}} 结束，在此之前你仍可使用高级功能。",
   "cancel_subscription": "取消订阅",
   "reactivate_subscription": "重新激活订阅",
+  "manage_subscription_play_store": "在 Play 商店管理",
   "cancel_subscription_confirm_message": "确定要取消 Zaldemy+ 订阅吗？在已付费周期结束前你仍可使用高级功能。",
   "based_on_vocabulary_title": "基于你的词汇量",
   "based_on_vocabulary_desc": "AI 生成的内容主要使用你已经在学习的单词",

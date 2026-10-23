@@ -579,6 +579,7 @@
   "subscription_ends_on": "Il tuo abbonamento terminerà il {{date}}. Manterrai l'accesso premium fino ad allora.",
   "cancel_subscription": "Annulla abbonamento",
   "reactivate_subscription": "Riattiva abbonamento",
+  "manage_subscription_play_store": "Gestisci su Play Store",
   "cancel_subscription_confirm_message": "Annullare il tuo abbonamento Zaldemy+? Manterrai l'accesso premium fino alla fine del periodo già pagato.",
   "based_on_vocabulary_title": "Basato sul tuo vocabolario",
   "based_on_vocabulary_desc": "I contenuti generati dall'IA usano principalmente parole che stai già studiando",

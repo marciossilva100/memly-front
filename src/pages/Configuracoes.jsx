@@ -890,65 +890,112 @@ export default function Configuracoes() {
                         </div>
                     )}
 
-                    {isPremium && (
-                        <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 mb-3">
-                            <div className="flex items-center gap-2 mb-3">
-                                <CreditCard className="w-4 h-4 text-[#4cb8c4]" />
-                                <span className="text-white text-sm">{t("subscription")}</span>
+                    {isPremium && (() => {
+                        // Assinatura via RevenueCat (comprada dentro do app Android, Google
+                        // Play Billing) não é gerenciável pelos botões abaixo - eles chamam
+                        // controller/assinatura.php, que só sabe lidar com
+                        // stripe_subscription_id. Bug real: usuário Android clicava em
+                        // "Cancelar assinatura" aqui e recebia "Nenhuma assinatura ativa
+                        // encontrada", mesmo sendo premium de verdade - o cancelamento de
+                        // assinatura do Google Play só pode ser feito pela própria Play
+                        // Store mesmo (nunca por uma chamada de API nossa).
+                        const ehRevenueCat = user?.assinatura_origem === 'revenuecat';
+
+                        return (
+                            <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 mb-3">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <CreditCard className="w-4 h-4 text-[#4cb8c4]" />
+                                    <span className="text-white text-sm">{t("subscription")}</span>
+                                </div>
+
+                                {user?.assinatura_cancelamento_previsto ? (
+                                    <>
+                                        <p className="text-amber-300 text-sm mb-3">
+                                            {t("subscription_ends_on", {
+                                                date: new Date(user.assinatura_cancelamento_previsto).toLocaleDateString()
+                                            })}
+                                        </p>
+                                        {ehRevenueCat ? (
+                                            <a
+                                                href="https://play.google.com/store/account/subscriptions"
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#4cb8c4] hover:bg-[#3da5b0] text-white text-sm font-medium transition-colors"
+                                            >
+                                                <RotateCcw className="w-4 h-4" />
+                                                {t("manage_subscription_play_store")}
+                                            </a>
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                onClick={handleReativarAssinatura}
+                                                disabled={processandoAssinatura}
+                                                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#4cb8c4] hover:bg-[#3da5b0] disabled:opacity-60 text-white text-sm font-medium transition-colors"
+                                            >
+                                                <RotateCcw className="w-4 h-4" />
+                                                {t("reactivate_subscription")}
+                                            </button>
+                                        )}
+                                    </>
+                                ) : (user?.assinatura_status === 'past_due' || user?.assinatura_status === 'unpaid') ? (
+                                    <>
+                                        <p className="flex items-start gap-2 text-amber-300 text-sm mb-3">
+                                            <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+                                            {t("subscription_payment_failed")}
+                                        </p>
+                                        {ehRevenueCat ? (
+                                            <a
+                                                href="https://play.google.com/store/account/subscriptions"
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#4cb8c4] hover:bg-[#3da5b0] text-white text-sm font-medium transition-colors"
+                                            >
+                                                <CreditCard className="w-4 h-4" />
+                                                {t("manage_subscription_play_store")}
+                                            </a>
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                onClick={handleAtualizarPagamento}
+                                                disabled={processandoAssinatura}
+                                                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#4cb8c4] hover:bg-[#3da5b0] disabled:opacity-60 text-white text-sm font-medium transition-colors"
+                                            >
+                                                <CreditCard className="w-4 h-4" />
+                                                {t("update_payment_method")}
+                                            </button>
+                                        )}
+                                    </>
+                                ) : (
+                                    <>
+                                        <p className="text-gray-300 text-sm mb-3">{t("subscription_active")}</p>
+                                        {ehRevenueCat ? (
+                                            <a
+                                                href="https://play.google.com/store/account/subscriptions"
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-gray-700 hover:bg-gray-700/50 text-gray-300 text-sm font-medium transition-colors"
+                                            >
+                                                {t("manage_subscription_play_store")}
+                                            </a>
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                onClick={() => setOpenModalCancelarAssinatura(true)}
+                                                disabled={processandoAssinatura}
+                                                className="w-full px-4 py-2.5 rounded-lg border border-gray-700 hover:bg-gray-700/50 disabled:opacity-60 text-gray-300 text-sm font-medium transition-colors"
+                                            >
+                                                {t("cancel_subscription")}
+                                            </button>
+                                        )}
+                                    </>
+                                )}
+
+                                {erroAssinatura && (
+                                    <p className="text-red-400 text-xs mt-3">{erroAssinatura}</p>
+                                )}
                             </div>
-
-                            {user?.assinatura_cancelamento_previsto ? (
-                                <>
-                                    <p className="text-amber-300 text-sm mb-3">
-                                        {t("subscription_ends_on", {
-                                            date: new Date(user.assinatura_cancelamento_previsto).toLocaleDateString()
-                                        })}
-                                    </p>
-                                    <button
-                                        type="button"
-                                        onClick={handleReativarAssinatura}
-                                        disabled={processandoAssinatura}
-                                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#4cb8c4] hover:bg-[#3da5b0] disabled:opacity-60 text-white text-sm font-medium transition-colors"
-                                    >
-                                        <RotateCcw className="w-4 h-4" />
-                                        {t("reactivate_subscription")}
-                                    </button>
-                                </>
-                            ) : (user?.assinatura_status === 'past_due' || user?.assinatura_status === 'unpaid') ? (
-                                <>
-                                    <p className="flex items-start gap-2 text-amber-300 text-sm mb-3">
-                                        <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
-                                        {t("subscription_payment_failed")}
-                                    </p>
-                                    <button
-                                        type="button"
-                                        onClick={handleAtualizarPagamento}
-                                        disabled={processandoAssinatura}
-                                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#4cb8c4] hover:bg-[#3da5b0] disabled:opacity-60 text-white text-sm font-medium transition-colors"
-                                    >
-                                        <CreditCard className="w-4 h-4" />
-                                        {t("update_payment_method")}
-                                    </button>
-                                </>
-                            ) : (
-                                <>
-                                    <p className="text-gray-300 text-sm mb-3">{t("subscription_active")}</p>
-                                    <button
-                                        type="button"
-                                        onClick={() => setOpenModalCancelarAssinatura(true)}
-                                        disabled={processandoAssinatura}
-                                        className="w-full px-4 py-2.5 rounded-lg border border-gray-700 hover:bg-gray-700/50 disabled:opacity-60 text-gray-300 text-sm font-medium transition-colors"
-                                    >
-                                        {t("cancel_subscription")}
-                                    </button>
-                                </>
-                            )}
-
-                            {erroAssinatura && (
-                                <p className="text-red-400 text-xs mt-3">{erroAssinatura}</p>
-                            )}
-                        </div>
-                    )}
+                        );
+                    })()}
 
                     <div className="space-y-3">
                         <ItemMenu

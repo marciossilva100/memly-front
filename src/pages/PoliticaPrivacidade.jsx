@@ -48,10 +48,15 @@ export default function PoliticaPrivacidade() {
                                     transcrito e a correção gerada;</li>
                                 <li>Informações técnicas básicas de acesso, como token de sessão armazenado no
                                     dispositivo, endereço IP, tipo de dispositivo/navegador e data/hora de login;</li>
-                                <li>Dados de notificação push, quando você ativa essa opção: um identificador de
-                                    inscrição e chaves de criptografia gerados pelo próprio navegador (necessários
-                                    pra enviar a notificação com segurança), além do tipo de navegador/dispositivo.
-                                    Não revelam seu conteúdo nem sua localização;</li>
+                                <li>Dados de notificação push, quando você ativa essa opção: no navegador/PWA, um
+                                    identificador de inscrição e chaves de criptografia gerados pelo próprio
+                                    navegador; no app Android, um token de notificação gerado pelo Firebase Cloud
+                                    Messaging (Google) - em ambos os casos, apenas o necessário pra enviar a
+                                    notificação com segurança, sem revelar conteúdo nem localização;</li>
+                                <li>Dados de assinatura, quando você assina o Zaldemy+: no site/PWA, processados pelo
+                                    Stripe; no app Android, processados pelo Google Play Billing através do
+                                    RevenueCat (identificador da compra, status da assinatura e país de compra) -
+                                    não temos acesso aos dados do seu cartão ou método de pagamento em nenhum caso;</li>
                             </ul>
                         </section>
 
@@ -91,8 +96,16 @@ export default function PoliticaPrivacidade() {
                                     áudio enviado para transcrição não é retido por nós nem pela OpenAI após o
                                     processamento;</li>
                                 <li><strong>Stripe</strong> (<a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#4cb8c4] underline">política de privacidade</a>),
-                                    processador de pagamento da assinatura Zaldemy+ - dados de cartão são tratados
-                                    diretamente pelo Stripe, o Zaldemy não armazena número de cartão;</li>
+                                    processador de pagamento da assinatura Zaldemy+ no site/PWA - dados de cartão são
+                                    tratados diretamente pelo Stripe, o Zaldemy não armazena número de cartão;</li>
+                                <li><strong>RevenueCat</strong> (<a href="https://www.revenuecat.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#4cb8c4] underline">política de privacidade</a>),
+                                    intermediário que processa a assinatura Zaldemy+ comprada dentro do app Android
+                                    via Google Play Billing - recebe seu identificador de usuário no Zaldemy e os
+                                    dados da compra repassados pelo Google; o Zaldemy não tem acesso aos dados do seu
+                                    cartão ou forma de pagamento nesse fluxo;</li>
+                                <li><strong>Firebase Cloud Messaging</strong>, serviço do Google usado para entregar
+                                    notificações push no app Android - recebe um token de notificação do seu
+                                    dispositivo, sem acesso ao conteúdo das suas frases ou respostas;</li>
                                 <li><strong>Hostinger</strong> (<a href="https://www.hostinger.com/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-[#4cb8c4] underline">política de privacidade</a>),
                                     provedor usado pra enviar e-mails transacionais (confirmação de cadastro,
                                     redefinição de senha, avisos sobre sua assinatura) - recebe seu nome e e-mail

@@ -80,10 +80,13 @@ export default function TermosDeUso() {
                             <p>
                                 O Zaldemy oferece um plano gratuito com funcionalidades essenciais e um plano pago
                                 (Zaldemy+) com recursos adicionais, como os treinos com IA (Perguntas, Frase do Dia e
-                                Tradução Reversa). Ao cancelar o Zaldemy+, o acesso premium continua até o fim do
-                                período já pago; depois disso, a conta passa a um nível com cotas reduzidas de uso,
-                                não ao plano gratuito original. Preços e benefícios podem ser alterados mediante
-                                aviso prévio dentro do app.
+                                Tradução Reversa). A assinatura pode ser feita pelo site/PWA (via Stripe) ou dentro
+                                do app Android (via Google Play Billing) - cada uma é gerenciada e cancelada
+                                separadamente, pelo portal de pagamento do Stripe ou pelas assinaturas da sua conta
+                                Google Play, conforme onde você assinou. Ao cancelar o Zaldemy+, o acesso premium
+                                continua até o fim do período já pago; depois disso, a conta passa a um nível com
+                                cotas reduzidas de uso, não ao plano gratuito original. Preços e benefícios podem ser
+                                alterados mediante aviso prévio dentro do app.
                             </p>
                         </section>
 
@@ -91,15 +94,18 @@ export default function TermosDeUso() {
                             <h2 className="text-lg font-semibold text-white mb-1">7. Serviços de terceiros</h2>
                             <p>
                                 O Zaldemy utiliza serviços de terceiros para funcionar corretamente: Google (login
-                                social, tradução automática e voz padrão), OpenAI (voz natural premium, transcrição
-                                de áudio e recursos de IA como perguntas, correções e sugestões dos treinos com IA),
-                                Stripe (processamento de pagamento da assinatura Zaldemy+), Hostinger (envio de
-                                e-mails transacionais, como confirmação de cadastro e avisos de cobrança),
-                                ip-api.com (identificação de país por IP no cadastro), além de YouTube e Open
-                                Library (busca de vídeos e livros). Se você ativa notificações push, usamos esse
-                                recurso nativo do navegador pra te avisar sobre o app. O uso desses recursos está
-                                sujeito também aos termos dos respectivos provedores. Podemos adicionar ou trocar
-                                fornecedores conforme o app evolui.
+                                social, tradução automática, voz padrão e, no app Android, entrega de notificações
+                                push via Firebase Cloud Messaging), OpenAI (voz natural premium, transcrição de áudio
+                                e recursos de IA como perguntas, correções e sugestões dos treinos com IA), Stripe
+                                (processamento de pagamento da assinatura Zaldemy+ no site/PWA), RevenueCat
+                                (processamento da assinatura Zaldemy+ comprada dentro do app Android via Google Play
+                                Billing), Hostinger (envio de e-mails transacionais, como confirmação de cadastro e
+                                avisos de cobrança), ip-api.com (identificação de país por IP no cadastro), além de
+                                YouTube e Open Library (busca de vídeos e livros). Se você ativa notificações push,
+                                usamos esse recurso do navegador (no site/PWA) ou do Firebase Cloud Messaging (no
+                                app Android) pra te avisar sobre o app. O uso desses recursos está sujeito também
+                                aos termos dos respectivos provedores. Podemos adicionar ou trocar fornecedores
+                                conforme o app evolui.
                             </p>
                         </section>
 

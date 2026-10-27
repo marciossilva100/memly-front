@@ -586,8 +586,14 @@ export default function TraducaoReversa() {
                             </p>
                         )}
 
-                        <div className="perspective flex justify-center">
-                            <div className="flashcard w-full min-h-[180px]">
+                        {/* Altura fixa de propósito (perspective/flashcard/card são compartilhados
+                            com outras telas, não dá pra mexer nessas classes globais sem afetar
+                            Flashcards/Digitar Texto) - mas se o texto/gabarito for longo demais
+                            pro espaço, rola DENTRO do card (overflow-y-auto abaixo) em vez de
+                            estourar/quebrar o layout por fora. Mesmo padrão já usado em
+                            treinoIA.jsx/Perguntas.jsx. */}
+                        <div className="perspective flex justify-center h-[260px]">
+                            <div className="flashcard w-full h-full">
                                 <div className={`card w-full h-full ${flipped ? "flip" : ""}`}>
                                     <div className="card-front rounded-2xl border border-gray-700 bg-gradient-to-br from-[#233245] to-[#0d1425] px-6 py-5 shadow-md flex flex-col items-center gap-2">
                                         <div className="flex items-center justify-between w-full shrink-0">
@@ -601,8 +607,8 @@ export default function TraducaoReversa() {
                                             )}
                                         </div>
 
-                                        <div className="flex-1 flex items-center min-h-0">
-                                            <p className="text-lg [@media(max-height:700px)]:text-base text-white leading-relaxed text-center">
+                                        <div className="flex-1 w-full min-h-0 overflow-y-auto scrollbar-hide flex items-center">
+                                            <p className="text-lg [@media(max-height:700px)]:text-base text-white leading-relaxed text-center w-full">
                                                 {textoNativo}
                                             </p>
                                         </div>
@@ -610,8 +616,8 @@ export default function TraducaoReversa() {
 
                                     <div className="card-back rounded-2xl border border-purple-400/30 bg-gradient-to-br from-[#0d1425] to-[#233245] px-6 py-5 shadow-md flex flex-col items-center gap-2">
                                         <p className="text-purple-400 text-xs uppercase tracking-wide font-semibold shrink-0">{t("suggested_translation_label")}</p>
-                                        <div className="flex-1 flex items-center min-h-0">
-                                            <p className="text-lg [@media(max-height:700px)]:text-base text-white leading-relaxed text-center">
+                                        <div className="flex-1 w-full min-h-0 overflow-y-auto scrollbar-hide flex items-center">
+                                            <p className="text-lg [@media(max-height:700px)]:text-base text-white leading-relaxed text-center w-full">
                                                 {traducaoGabarito}
                                             </p>
                                         </div>
@@ -620,7 +626,7 @@ export default function TraducaoReversa() {
                             </div>
                         </div>
 
-                        <div className={`flex justify-center mt-3 ${flipped ? "hidden" : ""}`}>
+                        <div className={`flex justify-center gap-2 mt-3 ${flipped ? "hidden" : ""}`}>
                             <button
                                 // forcarVozPadrao=true - o áudio do texto nativo tem que ser sempre a
                                 // voz padrão (Google, via LibreTranslate::getAudio no backend), nunca
@@ -636,6 +642,14 @@ export default function TraducaoReversa() {
                                 {buscandoAudio ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Volume2 className="w-3.5 h-3.5" />}
                                 {buscandoAudio ? t("generating_audio") : t("listen")}
                             </button>
+
+                            <button
+                                type="button"
+                                onClick={handleNaoSei}
+                                className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs hover:bg-red-500/20 transition-colors"
+                            >
+                                {t("dont_know_button")}
+                            </button>
                         </div>
 
                         {naoSeiClicado &&
@@ -644,31 +658,21 @@ export default function TraducaoReversa() {
 
                         <div className={`mt-10 flex flex-col items-center gap-4 ${naoSeiClicado ? "hidden" : ""}`}>
                             {!modoTexto && !audioUrl && !gravando && (
-                                <div className="flex flex-col items-center gap-3">
-                                    <div className="flex items-center gap-4">
-                                        <button
-                                            onClick={() => { setError(null); setAudioVazio(false); iniciarGravacao(); }}
-                                            className="relative w-14 h-14 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] flex items-center justify-center shadow-lg shadow-[#4cb8c4]/20 transition"
-                                        >
-                                            <Mic className="w-5 h-5 text-white" />
-                                        </button>
-
-                                        <button
-                                            type="button"
-                                            onClick={() => { setError(null); setModoTexto(true); }}
-                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-gray-300 text-xs hover:bg-gray-700/50 transition-colors"
-                                        >
-                                            <Keyboard className="w-3.5 h-3.5" />
-                                            {t("type_answer")}
-                                        </button>
-                                    </div>
+                                <div className="flex items-center gap-4">
+                                    <button
+                                        onClick={() => { setError(null); setAudioVazio(false); iniciarGravacao(); }}
+                                        className="relative w-14 h-14 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] flex items-center justify-center shadow-lg shadow-[#4cb8c4]/20 transition"
+                                    >
+                                        <Mic className="w-5 h-5 text-white" />
+                                    </button>
 
                                     <button
                                         type="button"
-                                        onClick={handleNaoSei}
-                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs hover:bg-red-500/20 transition-colors"
+                                        onClick={() => { setError(null); setModoTexto(true); }}
+                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-gray-300 text-xs hover:bg-gray-700/50 transition-colors"
                                     >
-                                        {t("dont_know_button")}
+                                        <Keyboard className="w-3.5 h-3.5" />
+                                        {t("type_answer")}
                                     </button>
                                 </div>
                             )}
@@ -744,14 +748,6 @@ export default function TraducaoReversa() {
                                         >
                                             <Mic className="w-4 h-4" />
                                             {t("answer_by_voice")}
-                                        </button>
-
-                                        <button
-                                            type="button"
-                                            onClick={handleNaoSei}
-                                            className="w-full px-4 py-2.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-medium flex items-center justify-center gap-2 hover:bg-red-500/20 transition-colors"
-                                        >
-                                            {t("dont_know_button")}
                                         </button>
                                     </div>
                                 </div>

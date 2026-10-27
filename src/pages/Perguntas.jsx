@@ -652,6 +652,12 @@ export default function Perguntas() {
 
                 {!resultado &&
                     <div>
+                        {/* Altura fixa de propósito (perspective/flashcard/card são compartilhados
+                            com outras telas, não dá pra mexer nessas classes globais sem
+                            afetar Flashcards/Digitar Texto) - mas se a pergunta/tradução for
+                            longa demais pro espaço, o texto rola DENTRO do card (overflow-y-auto
+                            abaixo) em vez de estourar/quebrar o layout por fora. Mesmo padrão já
+                            usado em treinoIA.jsx. */}
                         <div className="perspective flex justify-center h-[260px]">
                             <div className="flashcard w-full h-full">
                                 <div
@@ -671,16 +677,16 @@ export default function Perguntas() {
                                             )}
                                         </div>
 
-                                        <div className="flex-1 flex items-center min-h-0">
-                                            <p className="text-lg [@media(max-height:700px)]:text-base text-white leading-relaxed text-center">
+                                        <div className="flex-1 w-full min-h-0 overflow-y-auto scrollbar-hide flex items-center">
+                                            <p className="text-lg [@media(max-height:700px)]:text-base text-white leading-relaxed text-center w-full">
                                                 <TextoDestacado tokens={mostrarVocabulario ? questionDestacada : null} texto={question} />
                                             </p>
                                         </div>
                                     </div>
 
                                     <div className="card-back rounded-2xl border border-gray-700 bg-gradient-to-br from-[#0d1425] to-[#233245] px-6 py-5 shadow-md flex flex-col items-center gap-2">
-                                        <div className="flex-1 flex items-center min-h-0">
-                                            <p className="text-lg [@media(max-height:700px)]:text-base text-white leading-relaxed text-center">{questionTraducao}</p>
+                                        <div className="flex-1 w-full min-h-0 overflow-y-auto scrollbar-hide flex items-center">
+                                            <p className="text-lg [@media(max-height:700px)]:text-base text-white leading-relaxed text-center w-full">{questionTraducao}</p>
                                         </div>
                                     </div>
                                 </div>

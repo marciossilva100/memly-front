@@ -185,7 +185,10 @@ export default function LandingPage() {
                             <div className="absolute -left-[3px] top-[27%] w-[3px] h-11 md:h-14 bg-gray-700 rounded-l-sm" />
                             <div className="absolute -right-[3px] top-[20%] w-[3px] h-14 md:h-16 bg-gray-700 rounded-r-sm" />
 
-                            <div className="relative aspect-[9/19.5] rounded-[2.2rem] md:rounded-[2.6rem] border-[8px] md:border-[10px] border-gray-950 bg-black overflow-hidden ring-1 ring-white/10">
+                            {/* aspect igual ao dos screenshots reais (988x2012) de propósito -
+                                diferente da proporção genérica de celular de antes, que forçava
+                                o object-cover a cortar as laterais da imagem pra preencher. */}
+                            <div className="relative aspect-[988/2012] rounded-[2.2rem] md:rounded-[2.6rem] border-[8px] md:border-[10px] border-gray-950 bg-black overflow-hidden ring-1 ring-white/10">
                                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 md:w-20 h-3.5 md:h-4 bg-gray-950 rounded-b-2xl z-20" />
                                 {slidesApp.map((src, index) => (
                                     <img

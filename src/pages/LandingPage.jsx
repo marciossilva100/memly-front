@@ -10,7 +10,6 @@ import {
     Menu,
     X,
     Download,
-    Play,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -19,6 +18,7 @@ import imgSlideCategorias from "../assets/img/landing-screenshot-categorias.png"
 import imgSlideDigitar from "../assets/img/landing-screenshot-digitar.png";
 import imgSlideCorreto from "../assets/img/landing-screenshot-correto.png";
 import imgSlideChuva from "../assets/img/landing-screenshot-chuva.png";
+import imgGooglePlayBadge from "../assets/img/google-play-badge.png";
 
 const iconesRecursos = [Languages, Layers, RotateCcw, Volume2, BarChart3, Bot];
 
@@ -275,15 +275,13 @@ export default function LandingPage() {
                                 href={PLAY_STORE_URL}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-3 bg-black border border-gray-700 text-white px-6 py-3 rounded-2xl hover:brightness-110 transition"
+                                className="hover:brightness-110 transition"
                             >
-                                <Play className="fill-white shrink-0" size={26} />
-                                <span className="text-left leading-tight">
-                                    <span className="block text-[10px] text-gray-300 uppercase tracking-wide">
-                                        {t("landing_app_playstore_eyebrow")}
-                                    </span>
-                                    <span className="block text-lg font-semibold -mt-0.5">Google Play</span>
-                                </span>
+                                <img
+                                    src={imgGooglePlayBadge}
+                                    alt={t("landing_app_playstore_eyebrow") + " Google Play"}
+                                    className="h-14"
+                                />
                             </a>
                         ) : (
                             <Link

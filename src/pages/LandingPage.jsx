@@ -175,19 +175,29 @@ export default function LandingPage() {
                         </div>
                     </div>
 
-                    {/* SLIDE DAS TELAS DO APP */}
+                    {/* SLIDE DAS TELAS DO APP - moldura de celular em CSS (sem depender de
+                        imagem de moldura pronta), pra qualquer screenshot novo encaixar
+                        igual, sempre parecendo um celular de verdade. */}
                     <div className="w-48 sm:w-56 md:w-72 shrink-0">
-                        <div className="relative aspect-[894/1930] drop-shadow-2xl">
-                            {slidesApp.map((src, index) => (
-                                <img
-                                    key={src}
-                                    src={src}
-                                    alt=""
-                                    className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-700 ${
-                                        index === slideAtual ? "opacity-100" : "opacity-0"
-                                    }`}
-                                />
-                            ))}
+                        <div className="relative drop-shadow-2xl">
+                            {/* botões laterais (decorativos) */}
+                            <div className="absolute -left-[3px] top-[16%] w-[3px] h-7 md:h-9 bg-gray-700 rounded-l-sm" />
+                            <div className="absolute -left-[3px] top-[27%] w-[3px] h-11 md:h-14 bg-gray-700 rounded-l-sm" />
+                            <div className="absolute -right-[3px] top-[20%] w-[3px] h-14 md:h-16 bg-gray-700 rounded-r-sm" />
+
+                            <div className="relative aspect-[9/19.5] rounded-[2.2rem] md:rounded-[2.6rem] border-[8px] md:border-[10px] border-gray-950 bg-black overflow-hidden ring-1 ring-white/10">
+                                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 md:w-20 h-3.5 md:h-4 bg-gray-950 rounded-b-2xl z-20" />
+                                {slidesApp.map((src, index) => (
+                                    <img
+                                        key={src}
+                                        src={src}
+                                        alt=""
+                                        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                                            index === slideAtual ? "opacity-100" : "opacity-0"
+                                        }`}
+                                    />
+                                ))}
+                            </div>
                         </div>
 
                         <div className="flex justify-center gap-2 mt-4">

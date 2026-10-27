@@ -586,15 +586,21 @@ export default function TraducaoReversa() {
                             </p>
                         )}
 
-                        {/* Altura fixa de propósito (perspective/flashcard/card são compartilhados
-                            com outras telas, não dá pra mexer nessas classes globais sem afetar
-                            Flashcards/Digitar Texto) - mas se o texto/gabarito for longo demais
-                            pro espaço, rola DENTRO do card (overflow-y-auto abaixo) em vez de
-                            estourar/quebrar o layout por fora. Mesmo padrão já usado em
-                            treinoIA.jsx/Perguntas.jsx. */}
-                        <div className="perspective flex justify-center h-[260px]">
-                            <div className="flashcard w-full h-full">
-                                <div className={`card w-full h-full ${flipped ? "flip" : ""}`}>
+                        {/* card-cresce-com-texto (ver index.css) - texto/gabarito gerado por IA
+                            tem tamanho variável; o card cresce de verdade com o texto (sem
+                            scroll, sem cortar) em vez da altura fixa do card de flip padrão.
+                            Classe extra isolada - não afeta Flashcards/Digitar Texto/Emparelhar. */}
+                        <div className="perspective flex justify-center">
+                            <div className="flashcard w-full min-h-[260px]">
+                                <div
+                                    className={`card card-cresce-com-texto w-full h-full ${flipped ? "flip" : ""}`}
+                                    // Só pode virar o card manualmente DEPOIS do "Não sei" - antes disso o
+                                    // verso mostra o gabarito, que não pode ser espiado antes de responder
+                                    // (viraria cópia). Depois de desistir, liberado pra ir e voltar olhar o
+                                    // texto nativo de novo.
+                                    onClick={naoSeiClicado ? () => setFlipped(!flipped) : undefined}
+                                    style={naoSeiClicado ? { cursor: "pointer" } : undefined}
+                                >
                                     <div className="card-front rounded-2xl border border-gray-700 bg-gradient-to-br from-[#233245] to-[#0d1425] px-6 py-5 shadow-md flex flex-col items-center gap-2">
                                         <div className="flex items-center justify-between w-full shrink-0">
                                             <div className="w-10 h-10 rounded-full bg-purple-400/10 border border-purple-400/30 flex items-center justify-center">
@@ -607,7 +613,7 @@ export default function TraducaoReversa() {
                                             )}
                                         </div>
 
-                                        <div className="flex-1 w-full min-h-0 overflow-y-auto scrollbar-hide flex items-center">
+                                        <div className="flex-1 w-full flex items-center">
                                             <p className="text-lg [@media(max-height:700px)]:text-base text-white leading-relaxed text-center w-full">
                                                 {textoNativo}
                                             </p>
@@ -616,7 +622,7 @@ export default function TraducaoReversa() {
 
                                     <div className="card-back rounded-2xl border border-purple-400/30 bg-gradient-to-br from-[#0d1425] to-[#233245] px-6 py-5 shadow-md flex flex-col items-center gap-2">
                                         <p className="text-purple-400 text-xs uppercase tracking-wide font-semibold shrink-0">{t("suggested_translation_label")}</p>
-                                        <div className="flex-1 w-full min-h-0 overflow-y-auto scrollbar-hide flex items-center">
+                                        <div className="flex-1 w-full flex items-center">
                                             <p className="text-lg [@media(max-height:700px)]:text-base text-white leading-relaxed text-center w-full">
                                                 {traducaoGabarito}
                                             </p>
@@ -626,11 +632,13 @@ export default function TraducaoReversa() {
                             </div>
                         </div>
 
-                        <div className={`flex justify-center gap-2 mt-3 ${flipped ? "hidden" : ""}`}>
+                        <div className="flex justify-center gap-2 mt-3">
                             <button
                                 // forcarVozPadrao=true - o áudio do texto nativo tem que ser sempre a
                                 // voz padrão (Google, via LibreTranslate::getAudio no backend), nunca
-                                // a voz natural/premium (OpenAI) - pedido explícito do usuário.
+                                // a voz natural/premium (OpenAI) - pedido explícito do usuário. Continua
+                                // disponível depois do "Não sei" (card virado) - toca sempre o texto
+                                // nativo, não depende de qual lado do card está visível.
                                 disabled={buscandoAudio}
                                 onClick={() => {
                                     setBuscandoAudio(true);
@@ -643,14 +651,20 @@ export default function TraducaoReversa() {
                                 {buscandoAudio ? t("generating_audio") : t("listen")}
                             </button>
 
-                            <button
-                                type="button"
-                                onClick={handleNaoSei}
-                                className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs hover:bg-red-500/20 transition-colors"
-                            >
-                                {t("dont_know_button")}
-                            </button>
+                            {!naoSeiClicado &&
+                                <button
+                                    type="button"
+                                    onClick={handleNaoSei}
+                                    className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs hover:bg-red-500/20 transition-colors"
+                                >
+                                    {t("dont_know_button")}
+                                </button>
+                            }
                         </div>
+
+                        {naoSeiClicado &&
+                            <p className="text-center text-gray-500 text-xs mt-2">{t("tap_card_to_flip")}</p>
+                        }
 
                         {naoSeiClicado &&
                             <p className="text-center text-gray-400 text-xs mt-10">{t("next_question")} ↓</p>

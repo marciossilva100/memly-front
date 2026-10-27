@@ -238,6 +238,32 @@ input{
     pointer-events: none;
 }
 
+/* Perguntas/Tradução Reversa (treino de IA): o card de flip padrão (acima)
+   usa card-front/card-back com position:absolute;inset:0 - sempre esticam
+   pra caber na altura do ANCESTRAL (fixa em cada tela), nunca crescem com
+   o próprio texto. Texto gerado por IA tem tamanho variável e as vezes bem
+   maior que o normal, então isso cortava/estourava o conteúdo pra fora do
+   card. Scroll por dentro foi tentado e rejeitado (usuário não quer
+   scroll ali) - a solução é fazer o card crescer de verdade.
+   .card-cresce-com-texto troca pra grid: as duas faces ocupam a MESMA
+   célula (grid-row/column:1, sem position:absolute), então a altura da
+   célula - e do card - passa a ser a da face mais alta, crescendo com o
+   texto sem overflow e sem scroll. Só dentro dessa classe extra, que SÓ
+   existe nessas 2 telas - Flashcards/Digitar Texto/Emparelhar/Frase do Dia
+   continuam com a técnica antiga (position:absolute) intocada, suas
+   regras de .card-front/.card-back de cima continuam valendo pra elas. */
+.card-cresce-com-texto.card {
+    display: grid;
+    height: auto;
+}
+
+.card-cresce-com-texto .card-front,
+.card-cresce-com-texto .card-back {
+    position: static;
+    grid-row: 1;
+    grid-column: 1;
+}
+
 /* Guia da primeira categoria (Home) */
 @keyframes pulse-glow-ring {
   0%, 100% { box-shadow: 0 0 0 0 rgba(76, 184, 196, 0.55); }

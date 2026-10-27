@@ -10,6 +10,7 @@ import {
     Menu,
     X,
     Download,
+    Play,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -23,9 +24,7 @@ const iconesRecursos = [Languages, Layers, RotateCcw, Volume2, BarChart3, Bot];
 
 const slidesApp = [imgSlideCategorias, imgSlideDigitar, imgSlideCorreto, imgSlideChuva];
 
-// TODO: trocar para true e colocar o link real assim que o app for aprovado na Aptoide
-const APTOIDE_DISPONIVEL = false;
-const APTOIDE_URL = "https://zaldemy.pt.aptoide.com/";
+const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.zaldemy.app&pcampaignid=web_share";
 
 export default function LandingPage() {
     const { t } = useTranslation();
@@ -60,7 +59,9 @@ export default function LandingPage() {
         };
     }, []);
 
-    const mostrarAptoide = plataforma === "android" && APTOIDE_DISPONIVEL;
+    // Android baixa direto da Play Store (link real da ficha do app) - iOS/outro
+    // continua com o fluxo de instalar como PWA (não existe app nativo iOS).
+    const mostrarPlayStore = plataforma === "android";
 
     const recursos = [1, 2, 3, 4, 5, 6].map((n, index) => ({
         icone: iconesRecursos[index],
@@ -248,34 +249,37 @@ export default function LandingPage() {
                             <p className="text-gray-400 text-sm mt-1 max-w-md">
                                 {plataforma === "ios"
                                     ? t("landing_app_description_ios")
-                                    : t("landing_app_description")}
+                                    : mostrarPlayStore
+                                        ? t("landing_app_description_android")
+                                        : t("landing_app_description")}
                             </p>
                         </div>
                     </div>
 
                     <div className="shrink-0 flex flex-col sm:flex-row items-center gap-3">
-                        {mostrarAptoide && (
+                        {mostrarPlayStore ? (
                             <a
-                                href={APTOIDE_URL}
+                                href={PLAY_STORE_URL}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-2 bg-[#4cb8c4] text-white px-8 py-3 rounded-full text-lg font-semibold hover:brightness-110 transition"
+                                className="flex items-center gap-3 bg-black border border-gray-700 text-white px-6 py-3 rounded-2xl hover:brightness-110 transition"
                             >
-                                <Download size={20} />
-                                {t("landing_app_aptoide_cta")}
+                                <Play className="fill-white shrink-0" size={26} />
+                                <span className="text-left leading-tight">
+                                    <span className="block text-[10px] text-gray-300 uppercase tracking-wide">
+                                        {t("landing_app_playstore_eyebrow")}
+                                    </span>
+                                    <span className="block text-lg font-semibold -mt-0.5">Google Play</span>
+                                </span>
                             </a>
+                        ) : (
+                            <Link
+                                to="/cadastrar"
+                                className="bg-[#4cb8c4] text-white px-8 py-3 rounded-full text-lg font-semibold hover:brightness-110 transition"
+                            >
+                                {t("landing_app_cta")}
+                            </Link>
                         )}
-
-                        <Link
-                            to="/cadastrar"
-                            className={
-                                mostrarAptoide
-                                    ? "text-white px-8 py-3 rounded-full text-lg border border-gray-700 hover:bg-white/5 transition-colors"
-                                    : "bg-[#4cb8c4] text-white px-8 py-3 rounded-full text-lg font-semibold hover:brightness-110 transition"
-                            }
-                        >
-                            {t("landing_app_cta")}
-                        </Link>
                     </div>
                 </div>
             </section>

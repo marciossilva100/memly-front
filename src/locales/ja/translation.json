@@ -399,6 +399,8 @@
   "contact_page_description": "Zaldemyについてご質問、ご提案、不具合などがありますか？お問い合わせください：",
   "landing_app_description_ios": "Safariから直接Zaldemyをホーム画面に追加して、続きから学習を再開しましょう。",
   "landing_app_aptoide_cta": "Aptoideでダウンロード",
+  "landing_app_description_android": "Google PlayでZaldemyをダウンロードして、続きから学習を再開しましょう。",
+  "landing_app_playstore_eyebrow": "Google Play で",
   "desktop_only_title": "スマートフォンからアクセスしてください",
   "desktop_only_message": "Zaldemyはスマートフォンでの利用を想定しています。Aptoide（Android）からアプリをダウンロードするか、スマートフォンのブラウザでzaldemy.comを開いてアプリとしてインストールしてください（Android・iPhone対応）。",
   "desktop_only_back_button": "サイトに戻る",

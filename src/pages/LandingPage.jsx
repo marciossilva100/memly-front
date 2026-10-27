@@ -252,21 +252,20 @@ export default function LandingPage() {
 
             {/* APP */}
             <section className="max-w-6xl mx-auto px-5 py-16">
-                <div className="rounded-3xl bg-gray-800/40 border border-gray-700 px-8 py-12 flex flex-col md:flex-row items-center justify-between gap-8">
-                    <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 rounded-2xl bg-[#4cb8c4]/15 flex items-center justify-center shrink-0">
-                            <Smartphone className="text-[#4cb8c4]" size={28} />
-                        </div>
-                        <div>
-                            <h3 className="text-xl font-semibold">{t("landing_app_title")}</h3>
-                            <p className="text-gray-400 text-sm mt-1 max-w-md">
-                                {plataforma === "ios"
-                                    ? t("landing_app_description_ios")
-                                    : mostrarPlayStore
-                                        ? t("landing_app_description_android")
-                                        : t("landing_app_description")}
-                            </p>
-                        </div>
+                <div className="rounded-3xl bg-gray-800/40 border border-gray-700 px-8 py-12 flex flex-col items-center text-center gap-5">
+                    <div className="w-14 h-14 rounded-2xl bg-[#4cb8c4]/15 flex items-center justify-center shrink-0">
+                        <Smartphone className="text-[#4cb8c4]" size={28} />
+                    </div>
+
+                    <div>
+                        <h3 className="text-xl font-semibold">{t("landing_app_title")}</h3>
+                        <p className="text-gray-400 text-sm mt-2 max-w-md mx-auto">
+                            {plataforma === "ios"
+                                ? t("landing_app_description_ios")
+                                : mostrarPlayStore
+                                    ? t("landing_app_description_android")
+                                    : t("landing_app_description")}
+                        </p>
                     </div>
 
                     <div className="shrink-0 flex flex-col sm:flex-row items-center gap-3">

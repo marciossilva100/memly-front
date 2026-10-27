@@ -138,19 +138,10 @@ export default function TreinoIA() {
             });
     }
 
+    // Só 1 categoria por vez (não mais até 2) - pedido do usuário pra evitar
+    // frases geradas pela IA misturando assuntos sem coesão/concordância.
     function alternarCategoria(id) {
-        setCategoriasSelecionadas((prev) => {
-            if (prev.includes(id)) {
-                return prev.filter((c) => c !== id);
-            }
-            // Máximo 2 categorias escolhidas à mão - mesma regra do backend
-            // (MAX_CATEGORIAS_ESCOLHA_MANUAL), evita voltar a misturar
-            // assuntos demais na mesma frase.
-            if (prev.length >= 2) {
-                return [prev[1], id];
-            }
-            return [...prev, id];
-        });
+        setCategoriasSelecionadas((prev) => (prev.includes(id) ? [] : [id]));
     }
 
     function confirmarCategoria() {

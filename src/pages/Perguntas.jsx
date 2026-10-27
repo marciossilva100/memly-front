@@ -60,7 +60,7 @@ export default function Perguntas() {
     const API_URL = import.meta.env.VITE_API_URL;
 
     // Seletor de categoria (só aparece 1x por dia, mesmo padrão de
-    // treinoIA.jsx/Frase do Dia) - obrigatório escolher até 2 categorias,
+    // treinoIA.jsx/Frase do Dia) - obrigatório escolher 1 categoria,
     // sem opção de sorteio automático.
     const [mostrarSeletor, setMostrarSeletor] = useState(false);
     const [categorias, setCategorias] = useState([]);
@@ -223,16 +223,10 @@ export default function Perguntas() {
             });
     }
 
+    // Só 1 categoria por vez (não mais até 2) - pedido do usuário pra evitar
+    // frases geradas pela IA misturando assuntos sem coesão/concordância.
     function alternarCategoria(id) {
-        setCategoriasSelecionadas((prev) => {
-            if (prev.includes(id)) {
-                return prev.filter((c) => c !== id);
-            }
-            if (prev.length >= 2) {
-                return [prev[1], id];
-            }
-            return [...prev, id];
-        });
+        setCategoriasSelecionadas((prev) => (prev.includes(id) ? [] : [id]));
     }
 
     function confirmarCategoria() {

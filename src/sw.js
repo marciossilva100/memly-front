@@ -55,19 +55,17 @@ registerRoute(
         url.pathname.includes("/controller/tts.php") &&
         url.searchParams.get("action") === "stream_audio",
     new CacheFirst({
-        // Nome trocado de novo (era "tts-cache-natural-v2") pelo mesmo
-        // motivo de antes - o servidor mandava a velocidade configurada pro
-        // parâmetro nativo "speed" da API da OpenAI, gerando o áudio já
-        // acelerado/desacelerado (ver api/OpenAiTts.php), e o cliente
-        // TAMBÉM aplicava playbackRate em cima, dobrando o efeito. O fix
-        // parou de gerar áudio errado dali pra frente, mas quem já tinha
-        // frases cacheadas de ANTES (geradas com alguma velocidade ≠ 1.0
-        // "assada" no arquivo) continuaria ouvindo essas frases específicas
-        // erradas pra sempre - o cache aqui é CacheFirst por até 1 ano, e a
-        // chave é só o texto, sem nenhuma informação de velocidade pra
+        // Nome trocado de novo (era "tts-cache-natural-v3") pelo mesmo
+        // motivo de sempre - troca de modelo de voz natural (gpt-4o-mini-tts
+        // pra tts-1-hd, ver api/OpenAiTts.php: o modelo antigo às vezes
+        // "fugia" do texto no meio do áudio em frases longas/complexas).
+        // Quem já tinha essa frase específica cacheada de ANTES (com a fuga
+        // de texto já "assada" no arquivo) continuaria ouvindo esse mesmo
+        // áudio errado pra sempre - o cache aqui é CacheFirst por até 1 ano,
+        // e a chave é só o texto, sem nenhuma informação de modelo pra
         // invalidar sozinho. Trocar o nome descarta tudo de uma vez, sem
         // depender de cada usuário limpar o cache manualmente.
-        cacheName: "tts-cache-natural-v3",
+        cacheName: "tts-cache-natural-v4",
         plugins: [
             new ExpirationPlugin({ maxEntries: 500, maxAgeSeconds: 60 * 60 * 24 * 365 }),
             new CacheableResponsePlugin({ statuses: [200] }),

@@ -39,6 +39,12 @@ export default function TraducaoReversa() {
     const [enviando, setEnviando] = useState(false)
     const [modoTexto, setModoTexto] = useState(false)
     const [respostaTexto, setRespostaTexto] = useState("")
+    // "Não sei" - desiste do texto atual sem responder, vira o card e mostra
+    // o gabarito direto. flipped controla a virada visual do card (mesmas
+    // classes de Perguntas.jsx); depois disso nenhuma resposta é mais aceita.
+    const [naoSeiClicado, setNaoSeiClicado] = useState(false)
+    const [traducaoGabarito, setTraducaoGabarito] = useState('')
+    const [flipped, setFlipped] = useState(false)
     const jaBuscou = useRef(false);
     const navigate = useNavigate();
     const { user } = useAuth();
@@ -54,7 +60,7 @@ export default function TraducaoReversa() {
     const API_URL = import.meta.env.VITE_API_URL;
 
     // Seletor de categoria (só aparece 1x por dia, mesmo padrão de
-    // treinoIA.jsx/Perguntas.jsx) - obrigatório escolher até 2 categorias.
+    // treinoIA.jsx/Perguntas.jsx) - obrigatório escolher 1 categoria.
     const [mostrarSeletor, setMostrarSeletor] = useState(false);
     const [categorias, setCategorias] = useState([]);
     const [categoriasSelecionadas, setCategoriasSelecionadas] = useState([]);
@@ -80,6 +86,9 @@ export default function TraducaoReversa() {
         setTextoEncerrado(false);
         setModoTexto(false);
         setRespostaTexto("");
+        setNaoSeiClicado(false);
+        setTraducaoGabarito('');
+        setFlipped(false);
         limpar();
 
         const query = categoriaIds?.length > 0 ? `?category_ids=${categoriaIds.join(',')}` : '';
@@ -190,16 +199,10 @@ export default function TraducaoReversa() {
             });
     }
 
+    // Só 1 categoria por vez (não mais até 2) - pedido do usuário pra evitar
+    // frases geradas pela IA misturando assuntos sem coesão/concordância.
     function alternarCategoria(id) {
-        setCategoriasSelecionadas((prev) => {
-            if (prev.includes(id)) {
-                return prev.filter((c) => c !== id);
-            }
-            if (prev.length >= 2) {
-                return [prev[1], id];
-            }
-            return [...prev, id];
-        });
+        setCategoriasSelecionadas((prev) => (prev.includes(id) ? [] : [id]));
     }
 
     function confirmarCategoria() {
@@ -224,6 +227,39 @@ export default function TraducaoReversa() {
             fetchTexto(categoriasSelecionadas);
         } catch (err) {
             console.error(err);
+        }
+    };
+
+    const handleNaoSei = async () => {
+        try {
+            pararAudio();
+            setError(null);
+
+            const formData = new FormData();
+            formData.append('action', 'nao_sei');
+            formData.append('id', id);
+
+            const res = await fetch(`${API_URL}/controller/TraducaoReversaController.php`, {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: formData
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                setError(t("unexpected_error"));
+                return;
+            }
+
+            setTraducaoGabarito(data.traducao_gabarito || '');
+            setNaoSeiClicado(true);
+            setFlipped(true);
+        } catch (err) {
+            console.error(err);
+            setError(t("server_connection_error"));
         }
     };
 
@@ -550,28 +586,41 @@ export default function TraducaoReversa() {
                             </p>
                         )}
 
-                        <div className="flex justify-center">
-                            <div className="w-full rounded-2xl border border-gray-700 bg-gradient-to-br from-[#233245] to-[#0d1425] px-6 py-5 shadow-md flex flex-col items-center gap-2 min-h-[180px]">
-                                <div className="flex items-center justify-between w-full shrink-0">
-                                    <div className="w-10 h-10 rounded-full bg-purple-400/10 border border-purple-400/30 flex items-center justify-center">
-                                        <Languages className="w-5 h-5 text-purple-400" />
-                                    </div>
-                                    {numero && total && (
-                                        <span className="text-xs text-gray-400 font-medium px-2.5 py-1 rounded-full bg-gray-800/60 border border-gray-700">
-                                            {t("text_counter", { numero, total })}
-                                        </span>
-                                    )}
-                                </div>
+                        <div className="perspective flex justify-center">
+                            <div className="flashcard w-full min-h-[180px]">
+                                <div className={`card w-full h-full ${flipped ? "flip" : ""}`}>
+                                    <div className="card-front rounded-2xl border border-gray-700 bg-gradient-to-br from-[#233245] to-[#0d1425] px-6 py-5 shadow-md flex flex-col items-center gap-2">
+                                        <div className="flex items-center justify-between w-full shrink-0">
+                                            <div className="w-10 h-10 rounded-full bg-purple-400/10 border border-purple-400/30 flex items-center justify-center">
+                                                <Languages className="w-5 h-5 text-purple-400" />
+                                            </div>
+                                            {numero && total && (
+                                                <span className="text-xs text-gray-400 font-medium px-2.5 py-1 rounded-full bg-gray-800/60 border border-gray-700">
+                                                    {t("text_counter", { numero, total })}
+                                                </span>
+                                            )}
+                                        </div>
 
-                                <div className="flex-1 flex items-center min-h-0">
-                                    <p className="text-lg [@media(max-height:700px)]:text-base text-white leading-relaxed text-center">
-                                        {textoNativo}
-                                    </p>
+                                        <div className="flex-1 flex items-center min-h-0">
+                                            <p className="text-lg [@media(max-height:700px)]:text-base text-white leading-relaxed text-center">
+                                                {textoNativo}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="card-back rounded-2xl border border-purple-400/30 bg-gradient-to-br from-[#0d1425] to-[#233245] px-6 py-5 shadow-md flex flex-col items-center gap-2">
+                                        <p className="text-purple-400 text-xs uppercase tracking-wide font-semibold shrink-0">{t("suggested_translation_label")}</p>
+                                        <div className="flex-1 flex items-center min-h-0">
+                                            <p className="text-lg [@media(max-height:700px)]:text-base text-white leading-relaxed text-center">
+                                                {traducaoGabarito}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex justify-center mt-3">
+                        <div className={`flex justify-center mt-3 ${flipped ? "hidden" : ""}`}>
                             <button
                                 // forcarVozPadrao=true - o áudio do texto nativo tem que ser sempre a
                                 // voz padrão (Google, via LibreTranslate::getAudio no backend), nunca
@@ -589,23 +638,37 @@ export default function TraducaoReversa() {
                             </button>
                         </div>
 
-                        <div className="mt-10 flex flex-col items-center gap-4">
+                        {naoSeiClicado &&
+                            <p className="text-center text-gray-400 text-xs mt-10">{t("next_question")} ↓</p>
+                        }
+
+                        <div className={`mt-10 flex flex-col items-center gap-4 ${naoSeiClicado ? "hidden" : ""}`}>
                             {!modoTexto && !audioUrl && !gravando && (
-                                <div className="flex items-center gap-4">
-                                    <button
-                                        onClick={() => { setError(null); setAudioVazio(false); iniciarGravacao(); }}
-                                        className="relative w-14 h-14 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] flex items-center justify-center shadow-lg shadow-[#4cb8c4]/20 transition"
-                                    >
-                                        <Mic className="w-5 h-5 text-white" />
-                                    </button>
+                                <div className="flex flex-col items-center gap-3">
+                                    <div className="flex items-center gap-4">
+                                        <button
+                                            onClick={() => { setError(null); setAudioVazio(false); iniciarGravacao(); }}
+                                            className="relative w-14 h-14 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] flex items-center justify-center shadow-lg shadow-[#4cb8c4]/20 transition"
+                                        >
+                                            <Mic className="w-5 h-5 text-white" />
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={() => { setError(null); setModoTexto(true); }}
+                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-gray-300 text-xs hover:bg-gray-700/50 transition-colors"
+                                        >
+                                            <Keyboard className="w-3.5 h-3.5" />
+                                            {t("type_answer")}
+                                        </button>
+                                    </div>
 
                                     <button
                                         type="button"
-                                        onClick={() => { setError(null); setModoTexto(true); }}
-                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-gray-300 text-xs hover:bg-gray-700/50 transition-colors"
+                                        onClick={handleNaoSei}
+                                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs hover:bg-red-500/20 transition-colors"
                                     >
-                                        <Keyboard className="w-3.5 h-3.5" />
-                                        {t("type_answer")}
+                                        {t("dont_know_button")}
                                     </button>
                                 </div>
                             )}
@@ -682,6 +745,14 @@ export default function TraducaoReversa() {
                                             <Mic className="w-4 h-4" />
                                             {t("answer_by_voice")}
                                         </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={handleNaoSei}
+                                            className="w-full px-4 py-2.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-medium flex items-center justify-center gap-2 hover:bg-red-500/20 transition-colors"
+                                        >
+                                            {t("dont_know_button")}
+                                        </button>
                                     </div>
                                 </div>
                             )}
@@ -735,13 +806,23 @@ export default function TraducaoReversa() {
                 }
             </div>
 
-            {!resultado &&
+            {!resultado && !naoSeiClicado &&
                 <div className="fixed bottom-0 left-0 w-full px-6 py-4 text-center bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent">
                     <button
                         onClick={handleSkip}
                         disabled={gravando}
                         className="px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white w-full flex items-center justify-center gap-2 hover:bg-gray-700/50 disabled:opacity-50 transition-colors">
                         <SkipForward className="w-4 h-4" />
+                        {t("next_question")}
+                    </button>
+                </div>
+            }
+
+            {naoSeiClicado &&
+                <div className="fixed bottom-0 left-0 w-full px-6 py-4 text-center bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent">
+                    <button
+                        onClick={proximoTexto}
+                        className="px-6 py-3 w-full rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors">
                         {t("next_question")}
                     </button>
                 </div>

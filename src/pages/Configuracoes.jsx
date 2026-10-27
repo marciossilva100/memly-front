@@ -12,11 +12,14 @@ import PremiumModal from "../components/PremiumModal";
 const QUANTIDADE_FRASES_MIN = 1;
 const QUANTIDADE_FRASES_MAX = 8;
 
+// valores trocados pra vozes do tts-1-hd (ver api/OpenAiTts.php) - coral e
+// ash eram só do gpt-4o-mini-tts, não existem nesse modelo. shimmer e echo
+// mantêm o mesmo par feminino/masculino nos nomes amigáveis (Emma/Michael).
 const VOZES_TTS = [
-    { valor: "coral", emoji: "👩", nome: "Emma" },
+    { valor: "shimmer", emoji: "👩", nome: "Emma" },
     { valor: "nova", emoji: "👩", nome: "Sophia" },
     { valor: "onyx", emoji: "👨", nome: "David" },
-    { valor: "ash", emoji: "👨", nome: "Michael" },
+    { valor: "echo", emoji: "👨", nome: "Michael" },
 ];
 
 const VELOCIDADES_TTS = [0.75, 1.00, 1.25, 1.50];

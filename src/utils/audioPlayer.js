@@ -367,7 +367,7 @@ export async function limparCacheVozNatural() {
 
     if (typeof caches !== "undefined") {
         try {
-            await caches.delete("tts-cache-natural-v3");
+            await caches.delete("tts-cache-natural-v4");
         } catch {
             // sem Cache Storage disponível (ex: navegador sem suporte) - a
             // troca de voz ainda funciona pras próximas frases nunca
@@ -716,7 +716,7 @@ const gerarAudio = async (texto, isPreload = false) => {
 };
 
 // O service worker cacheia QUALQUER resposta 200 dessa URL por até 1 ano
-// (CacheFirst, ver src/sw.js, cache "tts-cache-natural-v3") - se o conteúdo
+// (CacheFirst, ver src/sw.js, cache "tts-cache-natural-v4") - se o conteúdo
 // vier inválido (não-áudio ou vazio) por qualquer motivo pontual/transitório
 // no backend, essa mesma frase ficava presa reproduzindo o fallback de voz
 // padrão pra sempre, mesmo depois do backend voltar a funcionar, porque o SW
@@ -725,7 +725,7 @@ const gerarAudio = async (texto, isPreload = false) => {
 async function descartarCacheAudioNatural(url) {
     try {
         if (typeof caches === "undefined") return;
-        const cache = await caches.open("tts-cache-natural-v3");
+        const cache = await caches.open("tts-cache-natural-v4");
         await cache.delete(url);
     } catch {
         // Cache Storage indisponível (ex: contexto sem service worker) -

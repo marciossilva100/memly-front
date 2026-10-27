@@ -188,8 +188,11 @@ export default function LandingPage() {
                             {/* aspect igual ao dos screenshots reais (988x2012) de propósito -
                                 diferente da proporção genérica de celular de antes, que forçava
                                 o object-cover a cortar as laterais da imagem pra preencher. */}
+                            {/* Sem notch decorativo de propósito - os screenshots não têm uma
+                                área reservada pra ele (o conteúdo real começa já na primeira
+                                linha), então um notch sobreposto tapava parte da tela de
+                                verdade (menu/seletor de idioma) em vez de só decorar a moldura. */}
                             <div className="relative aspect-[988/2012] rounded-[2.2rem] md:rounded-[2.6rem] border-[8px] md:border-[10px] border-gray-950 bg-black overflow-hidden ring-1 ring-white/10">
-                                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 md:w-20 h-3.5 md:h-4 bg-gray-950 rounded-b-2xl z-20" />
                                 {slidesApp.map((src, index) => (
                                     <img
                                         key={src}

@@ -170,6 +170,7 @@
   "send": "送信",
   "search": "検索",
   "listen": "聞く",
+  "stop": "停止",
   "generating_audio": "音声を生成中...",
   "vocabulary_button": "語彙",
   "vocabulary_modal_title": "カテゴリーの語彙",

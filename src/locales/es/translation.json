@@ -171,6 +171,7 @@
   "send": "Enviar",
   "search": "Buscar",
   "listen": "Escuchar",
+  "stop": "Detener",
   "generating_audio": "Generando audio...",
   "vocabulary_button": "Vocabulario",
   "vocabulary_modal_title": "Vocabulario de la categoría",

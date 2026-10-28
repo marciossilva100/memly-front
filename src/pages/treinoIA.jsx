@@ -24,6 +24,13 @@ export default function TreinoIA() {
     // Indicador visual pro "Ouvir" - sem preload, o clique podia parecer
     // travado (nada acontece por 1-2s até a voz natural terminar de gerar).
     const [buscandoAudio, setBuscandoAudio] = useState(false);
+    // true enquanto o áudio do "Ouvir" está tocando de verdade (depois da
+    // busca/geração) - mostra ícone de parar em vez de alto-falante, e o
+    // clique nesse estado interrompe em vez de tocar de novo. playAudio()
+    // sempre resolve (nunca rejeita, mesmo interrompido por pararAudio() ou
+    // por outra chamada mais recente - ver onpause em audioPlayer.js), então
+    // o .finally() abaixo cobre todo caminho de término sozinho.
+    const [tocandoOuvir, setTocandoOuvir] = useState(false);
     const [error, setError] = useState(null);
     const [audioVazio, setAudioVazio] = useState(false);
     const [fraseEncerrada, setFraseEncerrada] = useState(false);
@@ -560,14 +567,25 @@ export default function TreinoIA() {
                                 <button
                                     disabled={buscandoAudio}
                                     onClick={() => {
+                                        if (tocandoOuvir) {
+                                            pararAudio();
+                                            setTocandoOuvir(false);
+                                            return;
+                                        }
                                         setBuscandoAudio(true);
-                                        playAudio(frase, user, true, null, false, false, () => setBuscandoAudio(false))
-                                            .finally(() => setBuscandoAudio(false));
+                                        playAudio(frase, user, true, null, false, false, () => {
+                                            setBuscandoAudio(false);
+                                            setTocandoOuvir(true);
+                                        })
+                                            .finally(() => {
+                                                setBuscandoAudio(false);
+                                                setTocandoOuvir(false);
+                                            });
                                     }}
                                     className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors disabled:opacity-70"
                                 >
-                                    {buscandoAudio ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Volume2 className="w-3.5 h-3.5" />}
-                                    {buscandoAudio ? t("generating_audio") : t("listen")}
+                                    {buscandoAudio ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : tocandoOuvir ? <Square className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+                                    {buscandoAudio ? t("generating_audio") : tocandoOuvir ? t("stop") : t("listen")}
                                 </button>
                             </div>
                         )}

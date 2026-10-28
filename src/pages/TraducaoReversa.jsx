@@ -27,6 +27,13 @@ export default function TraducaoReversa() {
     // Indicador visual pro "Ouvir" - sem preload, o clique podia parecer
     // travado (nada acontece por 1-2s até o áudio terminar de gerar).
     const [buscandoAudio, setBuscandoAudio] = useState(false);
+    // true enquanto o áudio do "Ouvir" está tocando de verdade (depois da
+    // busca/geração) - mostra ícone de parar em vez de alto-falante, e o
+    // clique nesse estado interrompe em vez de tocar de novo. playAudio()
+    // sempre resolve (nunca rejeita, mesmo interrompido por pararAudio() ou
+    // por outra chamada mais recente - ver onpause em audioPlayer.js), então
+    // o .finally() abaixo cobre todo caminho de término sozinho.
+    const [tocandoOuvir, setTocandoOuvir] = useState(false);
     const [error, setError] = useState(null)
     const [audioVazio, setAudioVazio] = useState(false)
     const [textoEncerrado, setTextoEncerrado] = useState(false)
@@ -632,14 +639,25 @@ export default function TraducaoReversa() {
                                 // nativo, não depende de qual lado do card está visível.
                                 disabled={buscandoAudio}
                                 onClick={() => {
+                                    if (tocandoOuvir) {
+                                        pararAudio();
+                                        setTocandoOuvir(false);
+                                        return;
+                                    }
                                     setBuscandoAudio(true);
-                                    playAudio(textoNativo, user, true, user?.native_language, true, false, () => setBuscandoAudio(false))
-                                        .finally(() => setBuscandoAudio(false));
+                                    playAudio(textoNativo, user, true, user?.native_language, true, false, () => {
+                                        setBuscandoAudio(false);
+                                        setTocandoOuvir(true);
+                                    })
+                                        .finally(() => {
+                                            setBuscandoAudio(false);
+                                            setTocandoOuvir(false);
+                                        });
                                 }}
                                 className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-400/10 border border-purple-400/30 text-purple-400 text-xs hover:bg-purple-400/20 transition-colors disabled:opacity-70"
                             >
-                                {buscandoAudio ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Volume2 className="w-3.5 h-3.5" />}
-                                {buscandoAudio ? t("generating_audio") : t("listen")}
+                                {buscandoAudio ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : tocandoOuvir ? <Square className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+                                {buscandoAudio ? t("generating_audio") : tocandoOuvir ? t("stop") : t("listen")}
                             </button>
 
                             {!naoSeiClicado &&

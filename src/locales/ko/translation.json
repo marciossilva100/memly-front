@@ -170,6 +170,7 @@
   "send": "보내기",
   "search": "검색",
   "listen": "듣기",
+  "stop": "정지",
   "generating_audio": "오디오 생성 중...",
   "vocabulary_button": "어휘",
   "vocabulary_modal_title": "카테고리 어휘",

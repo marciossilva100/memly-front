@@ -170,6 +170,7 @@
   "send": "Envoyer",
   "search": "Rechercher",
   "listen": "Écouter",
+  "stop": "Arrêter",
   "generating_audio": "Génération de l'audio...",
   "vocabulary_button": "Vocabulaire",
   "vocabulary_modal_title": "Vocabulaire de la catégorie",

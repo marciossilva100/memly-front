@@ -40,6 +40,18 @@ export default function JogoFrases() {
   const [bloqueado, setBloqueado] = useState(false);
 
   const [totalPerguntas, setTotalPerguntas] = useState(0);
+  // Diferencia "ainda não carreguei as frases" (totalPerguntas=0 por padrão,
+  // antes do fetch de carregarFrases() resolver) de "carreguei e não tem
+  // frase nenhuma de verdade" - sem essa distinção, a checagem abaixo (ver
+  // "if (carregado && totalPerguntas < 1)") disparava navigate("/home") em
+  // TODO mount/remount desse componente, só que normalmente perdia a corrida
+  // contra o fetch (rápido o bastante localmente pra setTotalPerguntas correr
+  // antes do React processar a navegação). Bug real reportado: aumentar a
+  // quantidade de frases por treino (mais tempo de sessão = mais chance de um
+  // remonte nesse meio tempo, mesmo padrão de remonte sem causa identificada
+  // já documentado no HintBalloon) fazia cair nessa corrida e voltar pra Home
+  // no meio do /learn, antes de chegar no Flashcards.
+  const [carregado, setCarregado] = useState(false);
   const [acertos, setAcertos] = useState(0);
   const [erros, setErros] = useState(0);
   const API_URL = import.meta.env.VITE_API_URL;
@@ -108,6 +120,8 @@ export default function JogoFrases() {
     let endpoint =
       mode === "traine" ? "controller/treino.php" : "controller/frases.php";
 
+    setCarregado(false);
+
     fetch(`${API_URL}/${endpoint}`, {
       method: "POST",
       headers: {
@@ -139,6 +153,7 @@ export default function JogoFrases() {
         setTraduzidas(shuffleArray(lote));
 
         resetEstados();
+        setCarregado(true);
       });
   }
 
@@ -283,7 +298,7 @@ export default function JogoFrases() {
     return t("keep_training");
   }
 
-  if (totalPerguntas < 1) {
+  if (carregado && totalPerguntas < 1) {
     navigate(`/home`);
     return null;
   }

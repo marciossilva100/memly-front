@@ -426,6 +426,52 @@ input{
   will-change: transform, opacity;
 }
 
+/* Tela "gerando conteúdo com IA" (IaLoading.jsx) - chapéu saltitando. */
+@keyframes ia-loading-bounce {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-12px) rotate(4deg); }
+}
+
+.animate-ia-loading-bounce {
+  animation: ia-loading-bounce 1.3s ease-in-out infinite;
+}
+
+/* Barra de progresso falsa - cresce rápido no início e desacelera, parando
+   em 90% (nunca 100%, já que não existe progresso real vindo do backend) e
+   fica ali com um brilho passando por cima, pra não parecer travada se a
+   geração demorar mais que a animação de crescimento. */
+@keyframes ia-loading-grow {
+  0% { width: 6%; }
+  20% { width: 38%; }
+  45% { width: 60%; }
+  70% { width: 78%; }
+  100% { width: 90%; }
+}
+
+@keyframes ia-loading-shimmer {
+  0% { background-position: 0% 0%; }
+  100% { background-position: -200% 0%; }
+}
+
+.ia-loading-bar-fill {
+  background-image: linear-gradient(90deg, #4cb8c4, #a8f0e6, #4cb8c4);
+  background-size: 200% 100%;
+  animation:
+    ia-loading-grow 7s cubic-bezier(0.22, 0.8, 0.3, 1) forwards,
+    ia-loading-shimmer 1.6s linear infinite;
+}
+
+@keyframes ia-loading-fade {
+  0% { opacity: 0; transform: translateY(4px); }
+  15% { opacity: 1; transform: translateY(0); }
+  85% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.animate-ia-loading-fade {
+  animation: ia-loading-fade 2.2s ease-in-out;
+}
+
 
 
 

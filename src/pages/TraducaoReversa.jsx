@@ -8,7 +8,7 @@ import useAudioRecorder from "../hooks/useAudioRecorder";
 import AudioPreviewPlayer from "../components/AudioPreviewPlayer";
 import PremiumModal from "../components/PremiumModal";
 import LimiteDiarioModal from "../components/LimiteDiarioModal";
-import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
+import IaLoading from "../components/IaLoading"
 
 function corNota(nota) {
     if (nota >= 8) return "text-green-400 border-green-400/30 bg-green-400/10";
@@ -363,16 +363,7 @@ export default function TraducaoReversa() {
     }
 
     if (loading) {
-        return (
-            <div className="flex h-screen flex-col items-center justify-center gap-4 from-gray-900 to-gray-800 bg-gradient-to-br">
-                <img
-                    src={imgChapeuFormatura}
-                    alt={t("loading")}
-                    className="w-28 animate-pulse"
-                />
-                <p className="text-gray-400 text-sm">{t("ia_gerando_conteudo")}</p>
-            </div>
-        );
+        return <IaLoading />;
     }
 
     if (premiumRequired) {

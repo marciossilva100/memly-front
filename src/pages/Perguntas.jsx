@@ -12,7 +12,7 @@ import DuvidaChat from "../components/DuvidaChat";
 import TextoDestacado from "../components/TextoDestacado";
 import VocabularioHintBalloon from "../components/VocabularioHintBalloon";
 import VocabularioCategoriaModal from "../components/VocabularioCategoriaModal";
-import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
+import IaLoading from "../components/IaLoading"
 
 function corNota(nota) {
     if (nota >= 8) return "text-green-400 border-green-400/30 bg-green-400/10";
@@ -411,16 +411,7 @@ export default function Perguntas() {
     }
 
     if (loading) {
-        return (
-            <div className="flex h-screen flex-col items-center justify-center gap-4 from-gray-900 to-gray-800 bg-gradient-to-br">
-                <img
-                    src={imgChapeuFormatura}
-                    alt={t("loading")}
-                    className="w-28 animate-pulse"
-                />
-                <p className="text-gray-400 text-sm">{t("ia_gerando_conteudo")}</p>
-            </div>
-        );
+        return <IaLoading />;
     }
 
     if (premiumRequired) {

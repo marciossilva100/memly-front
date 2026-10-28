@@ -131,6 +131,13 @@ export default function Configuracoes() {
     const [mensagemQuantidade, setMensagemQuantidade] = useState('');
     const [erroQuantidade, setErroQuantidade] = useState('');
 
+    // Frase diária automática por categoria (plano Premium, opt-in) - cron
+    // gera 1 frase nova por dia pra cada categoria ativa quando ligado (ver
+    // model/CategoriaFraseDiariaIA.php no backend).
+    const [gerarFraseDiaria, setGerarFraseDiaria] = useState(false);
+    const [salvandoFraseDiaria, setSalvandoFraseDiaria] = useState(false);
+    const [erroFraseDiaria, setErroFraseDiaria] = useState('');
+
     const [vozTts, setVozTts] = useState('nova');
     const [salvandoVoz, setSalvandoVoz] = useState(false);
     const [erroVoz, setErroVoz] = useState('');
@@ -414,6 +421,7 @@ export default function Configuracoes() {
 
                 if (data.success) {
                     setQuantidadeFrases(String(data.quantidade_frases_aprender));
+                    setGerarFraseDiaria(Boolean(data.gerar_frase_diaria_categorias));
                     setVozTts(data.voz_tts || 'nova');
                     setVelocidadeTts(data.velocidade_tts ?? 1.00);
                     localStorage.setItem('zaldemy_velocidade_tts', String(data.velocidade_tts ?? 1.00));
@@ -470,6 +478,49 @@ export default function Configuracoes() {
             setErroQuantidade(t("server_connection_error"));
         } finally {
             setSalvandoQuantidade(false);
+        }
+    }
+
+    // Toggle otimista (muda a UI na hora, desfaz se o backend recusar) -
+    // mesmo padrão de handleSelecionarVoz logo abaixo. Não-premium nem chega
+    // a chamar o endpoint - abre o PremiumModal direto, já que o backend ia
+    // recusar de qualquer forma (ver Configuracoes::atualizarGerarFraseDiariaCategorias).
+    async function handleToggleFraseDiaria() {
+        if (!isPremium) {
+            setMotivoPremium("frase_diaria_categoria");
+            setIsPremiumModalOpen(true);
+            return;
+        }
+
+        if (salvandoFraseDiaria) return;
+
+        const novoValor = !gerarFraseDiaria;
+        setGerarFraseDiaria(novoValor);
+        setErroFraseDiaria('');
+        setSalvandoFraseDiaria(true);
+
+        try {
+            const res = await fetch(`${API_URL}/controller/configuracoes.php`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({ action: 'atualizar_gerar_frase_diaria_categorias', gerar_frase_diaria_categorias: novoValor })
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                setGerarFraseDiaria(!novoValor);
+                setErroFraseDiaria(data.message || t("unexpected_error"));
+            }
+        } catch (error) {
+            console.error('Erro ao salvar frase diária por categoria:', error);
+            setGerarFraseDiaria(!novoValor);
+            setErroFraseDiaria(t("server_connection_error"));
+        } finally {
+            setSalvandoFraseDiaria(false);
         }
     }
 
@@ -685,6 +736,34 @@ export default function Configuracoes() {
                         )}
                         {mensagemQuantidade && (
                             <p className="text-green-400 text-xs mt-2">{mensagemQuantidade}</p>
+                        )}
+                    </div>
+
+                    <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-3 mb-3">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 min-w-0">
+                                <Bot className="w-4 h-4 text-green-400 shrink-0" />
+                                <span className="text-white text-sm">{t("daily_category_phrase_title")}</span>
+                                {!isPremium && <Crown className="w-3.5 h-3.5 text-yellow-400 shrink-0" />}
+                            </div>
+                            <button
+                                type="button"
+                                role="switch"
+                                aria-checked={gerarFraseDiaria}
+                                disabled={salvandoFraseDiaria}
+                                onClick={handleToggleFraseDiaria}
+                                className={`relative inline-flex h-5 w-10 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${gerarFraseDiaria ? "bg-[#4cb8c4]" : "bg-gray-700"
+                                    }`}
+                            >
+                                <span
+                                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${gerarFraseDiaria ? "translate-x-5" : "translate-x-0.5"
+                                        }`}
+                                />
+                            </button>
+                        </div>
+                        <p className="text-gray-400 text-xs mt-2">{t("daily_category_phrase_desc")}</p>
+                        {erroFraseDiaria && (
+                            <p className="text-red-400 text-xs mt-2">{erroFraseDiaria}</p>
                         )}
                     </div>
 

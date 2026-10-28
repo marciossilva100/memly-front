@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { HelpCircle, ChevronDown } from "lucide-react";
 
-const TOTAL_PERGUNTAS = 12;
+const TOTAL_PERGUNTAS = 13;
 
 export default function Faq() {
     const { t } = useTranslation();

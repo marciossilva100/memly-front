@@ -70,6 +70,9 @@ export default function PoliticaPrivacidade() {
                                 <li>Transcrever e corrigir suas respostas faladas ou digitadas nos exercícios de IA
                                     (Perguntas, Frase do Dia e Tradução Reversa), gerando nota e feedback sobre
                                     gramática, pronúncia e fluência;</li>
+                                <li>Quando você ativa a frase diária automática por categoria (Configurações, plano
+                                    Zaldemy+), gerar 1 frase nova por dia em cada categoria ativa da sua conta, com
+                                    base no nome da categoria e nas frases já cadastradas nela;</li>
                                 <li>Exibir seu progresso e estatísticas na tela de Métricas;</li>
                                 <li>Manter um histórico de acessos à sua conta, por segurança;</li>
                                 <li>Enviar comunicações importantes sobre sua conta ou o serviço, por e-mail e,
@@ -92,7 +95,8 @@ export default function PoliticaPrivacidade() {
                                 <li><strong>OpenAI</strong> (<a href="https://openai.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#4cb8c4] underline">política de privacidade</a>),
                                     para gerar a voz natural (premium) das frases, transcrever sua resposta falada
                                     nos exercícios de IA (Perguntas, Frase do Dia e Tradução Reversa) e gerar
-                                    perguntas, textos, correções, sugestões de tradução e categorias por IA - o
+                                    perguntas, textos, correções, sugestões de tradução, categorias por IA e a frase
+                                    diária automática por categoria (quando ativada) - o
                                     áudio enviado para transcrição não é retido por nós nem pela OpenAI após o
                                     processamento;</li>
                                 <li><strong>Stripe</strong> (<a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[#4cb8c4] underline">política de privacidade</a>),

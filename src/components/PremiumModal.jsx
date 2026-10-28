@@ -21,6 +21,7 @@ import {
   Languages,
   Gamepad2,
   ArrowLeftRight,
+  RefreshCw,
   X
 } from 'lucide-react';
 
@@ -305,6 +306,11 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
       icon: <Gamepad2 className="w-5 h-5" />,
       title: t("games_feature_title"),
       description: t("games_feature_desc")
+    },
+    {
+      icon: <RefreshCw className="w-5 h-5" />,
+      title: t("daily_category_phrase_feature_title"),
+      description: t("daily_category_phrase_feature_desc")
     }
   ];
 
@@ -344,6 +350,7 @@ const PremiumModal = ({ isOpen, onClose, motivo }) => {
                 {motivo === "frase_dia_ia" ? t("premium_reason_frase_dia_ia") : null}
                 {motivo === "traducao_reversa_ia" ? t("premium_reason_traducao_reversa_ia") : null}
                 {motivo === "frases" ? t("premium_reason_frases") : null}
+                {motivo === "frase_diaria_categoria" ? t("premium_reason_frase_diaria_categoria") : null}
               </div>
             )}
 

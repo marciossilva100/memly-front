@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { isNativePlatform, signInWithGoogleNative } from "../utils/googleNativeAuth";
 import { startGoogleRedirectLogin, consumeGoogleRedirectToken, hasGoogleRedirectToken } from "../utils/googleRedirectAuth";
 import { getInstallPrompt, onInstallPromptChange, clearInstallPrompt } from "../utils/pwaInstallPrompt";
+import { notificacoesDisponiveis, statusNotificacoes } from "../utils/pushNotifications";
 import useEnableBodyScroll from "../hooks/useEnableBodyScroll";
 
 export default function Login({ setTitulo }) {
@@ -87,6 +88,31 @@ export default function Login({ setTitulo }) {
         }
     }, [])
 
+    // Pra onde mandar depois de um login bem-sucedido de uma conta já
+    // configurada (step > 2) - normalmente "/home" direto, mas quando a
+    // permissão de notificação nunca foi decidida (nem concedida nem
+    // negada), manda primeiro pra tela de pedir ativação. Cobre o caso real
+    // reportado: onboarding-tutorial (onde esse pedido normalmente acontece)
+    // só é alcançado pelo fluxo de CADASTRO - um usuário que desinstala o
+    // app, reinstala e faz LOGIN de novo (já tem conta, step > 2) nunca via
+    // esse pedido, ficando sem notificação pra sempre a não ser que soubesse
+    // ativar manualmente em Configurações. Falha ao checar o status nunca
+    // deve travar o login - segue pra Home normalmente nesse caso.
+    async function destinoAposLogin() {
+        if (!notificacoesDisponiveis()) return "/home";
+
+        try {
+            const status = await statusNotificacoes();
+            if (status.suportado && !status.ativado && !status.negado) {
+                return "/ativar-notificacoes";
+            }
+        } catch {
+            // segue pro Home normalmente
+        }
+
+        return "/home";
+    }
+
     async function instalarApp() {
         if (!installPrompt) return
 
@@ -133,7 +159,7 @@ export default function Login({ setTitulo }) {
             }
 
             if (loggedUser.step > 2) {
-                navigate("/home", { replace: true });
+                navigate(await destinoAposLogin(), { replace: true });
             } else {
                 navigate("/escolheridioma", { replace: true });
             }
@@ -233,7 +259,7 @@ export default function Login({ setTitulo }) {
             }
 
             if (loggedUser.step > 2) {
-                navigate("/home", { replace: true });
+                navigate(await destinoAposLogin(), { replace: true });
             } else {
                 navigate("/escolheridioma", { replace: true });
             }

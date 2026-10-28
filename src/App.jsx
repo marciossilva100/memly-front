@@ -23,6 +23,7 @@ import AssinaturaCancelada from './pages/AssinaturaCancelada'
 import Header from './includes/Header'
 import ReferenciaUsuario from './pages/ReferenciaUsuário'
 import OnboardingTutorial from './pages/OnboardingTutorial'
+import AtivarNotificacoes from './pages/AtivarNotificacoes'
 import Home from './pages/Home'
 import Frases from './pages/Frases'
 import Flashcards from './pages/Flashcards'
@@ -267,6 +268,15 @@ function Layout({ titulo, setTitulo }) {
           element={
             <PrivateRoute>
               <OnboardingTutorial />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/ativar-notificacoes"
+          element={
+            <PrivateRoute>
+              <AtivarNotificacoes />
             </PrivateRoute>
           }
         />

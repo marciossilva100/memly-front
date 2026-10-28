@@ -81,8 +81,8 @@ export default function TermosDeUso() {
                                 O Zaldemy oferece um plano gratuito com funcionalidades essenciais e um plano pago
                                 (Zaldemy+) com recursos adicionais, como os treinos com IA (Perguntas, Frase do Dia e
                                 Tradução Reversa) e a frase diária automática por categoria (opcional, ativada por
-                                você em Configurações - quando ligada, a IA adiciona 1 frase nova por dia em cada
-                                categoria ativa da sua conta). A assinatura pode ser feita pelo site/PWA (via Stripe) ou dentro
+                                você na edição de cada categoria - quando ligada numa categoria que você estuda
+                                ativamente, a IA adiciona 1 frase nova por dia nela). A assinatura pode ser feita pelo site/PWA (via Stripe) ou dentro
                                 do app Android (via Google Play Billing) - cada uma é gerenciada e cancelada
                                 separadamente, pelo portal de pagamento do Stripe ou pelas assinaturas da sua conta
                                 Google Play, conforme onde você assinou. Ao cancelar o Zaldemy+, o acesso premium

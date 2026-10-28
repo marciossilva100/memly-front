@@ -1,27 +1,41 @@
 import { Dialog } from "@headlessui/react";
 import { useState, useEffect } from "react";
 import { FaList, FaPlus } from "react-icons/fa";
-import { HelpCircle } from 'lucide-react';
+import { HelpCircle, Crown } from 'lucide-react';
 import { useTranslation } from "react-i18next";
 import { containsProfanity } from '../utils/contentFilter';
 
-export default function ModalCategoriasEditar({ setOpenCategoriaEditar,open,categoriaEditar,categoriaIdEditar,categoriaPublicaEditar,onOpenModalSucesso,onSuccess}) {
+export default function ModalCategoriasEditar({ setOpenCategoriaEditar,open,categoriaEditar,categoriaIdEditar,categoriaPublicaEditar,categoriaGerarFraseDiariaEditar,isPremium,onOpenPremium,onOpenModalSucesso,onSuccess}) {
     const { t } = useTranslation();
     const [categoria, setCategoria] = useState()
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [yourCategory, setYourCategory] = useState(false)
     const [categoriaPublica, setCategoriaPublica] = useState(0)
+    const [gerarFraseDiaria, setGerarFraseDiaria] = useState(0)
     const [showTooltip, setShowTooltip] = useState(false)
 const API_URL = import.meta.env.VITE_API_URL;
     useEffect(() => {
         setCategoria(categoriaEditar)
         setCategoriaPublica(categoriaPublicaEditar ? 1 : 0)
+        setGerarFraseDiaria(categoriaGerarFraseDiariaEditar ? 1 : 0)
         setYourCategory(false)
         if (open) {
             setError('');
         }
     }, [open]);
+
+    // Não-premium nem mostra o toggle ativo - abre o PremiumModal direto,
+    // já que o backend ia forçar 0 de qualquer forma (ver
+    // Categorias::editarCategoria). Mesmo padrão do toggle equivalente que
+    // existia em Configurações antes de virar por categoria.
+    function handleToggleFraseDiaria() {
+        if (!isPremium) {
+            onOpenPremium?.("frase_diaria_categoria");
+            return;
+        }
+        setGerarFraseDiaria((prev) => (prev ? 0 : 1));
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -51,6 +65,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                     categoria_id: categoriaIdEditar,
                     categoria: categoria,
                     categoria_publica: categoriaPublica,
+                    gerar_frase_diaria: Boolean(gerarFraseDiaria),
                 })
             });
 
@@ -140,6 +155,23 @@ const API_URL = import.meta.env.VITE_API_URL;
                                         </div>
                                     </div>
                                 </div>
+
+                                <div className="flex items-center mt-3">
+                                    <label className="relative inline-flex items-center cursor-pointer me-2">
+                                        <input
+                                            type="checkbox"
+                                            className="sr-only peer"
+                                            checked={Boolean(gerarFraseDiaria)}
+                                            onChange={handleToggleFraseDiaria}
+                                        />
+                                        <div className="w-10 h-5 bg-gray-200 rounded-full peer peer-checked:bg-[#4cb8c4] peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
+                                    </label>
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="text-md font-medium text-white">{t("daily_category_phrase_title")}</span>
+                                        {!isPremium && <Crown className="w-3.5 h-3.5 text-yellow-400 shrink-0" />}
+                                    </div>
+                                </div>
+                                <p className="text-gray-400 text-xs mt-1">{t("daily_category_phrase_desc")}</p>
                             </div>
 
                             <div className="mt-6 flex justify-end gap-2">

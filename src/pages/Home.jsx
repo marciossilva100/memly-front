@@ -89,6 +89,7 @@ export default function Home() {
     const [categoriaId, setCategoriaId] = useState(0)
     const [categoriaClick, setCategoriaClick] = useState('')
     const [categoriaPublicaClick, setCategoriaPublicaClick] = useState(0)
+    const [categoriaGerarFraseDiariaClick, setCategoriaGerarFraseDiariaClick] = useState(0)
     const [msgModalSucesso, setMsgModalSucesso] = useState('')
     const [frase, openFrase] = useState('')
     const [error, setError] = useState('')
@@ -318,6 +319,7 @@ export default function Home() {
                     idiomaNativo: cat.idioma_nativo ?? cat.idiomaNativo ?? cat.idioma_nativo_data ?? null,
                     idiomaAprendendo: cat.idioma_aprendendo ?? cat.idiomaAprendendo ?? cat.idioma_aprendendo_data ?? null,
                     categoriaPublica: Number(cat.public ?? cat.categoria_publica ?? 0),
+                    gerarFraseDiaria: Number(cat.gerar_frase_diaria ?? 0),
                     categoriaDados: cat.categoria_dados ?? cat.categoriaDados ?? null,
                     tipo: cat.tipo ?? null,
                 }));
@@ -750,6 +752,7 @@ export default function Home() {
                                                     e.stopPropagation();
                                                     setCategoriaClick(item.categoria);
                                                     setCategoriaPublicaClick(item.categoriaPublica);
+                                                    setCategoriaGerarFraseDiariaClick(item.gerarFraseDiaria);
                                                     setOpenCategoriaEditar(true);
                                                     setCategoriaId(item.id);
                                                     setMenuOpenId(false);
@@ -911,8 +914,15 @@ export default function Home() {
                 categoriaEditar={categoriaClick}
                 categoriaIdEditar={categoriaId}
                 categoriaPublicaEditar={categoriaPublicaClick}
+                categoriaGerarFraseDiariaEditar={categoriaGerarFraseDiariaClick}
+                isPremium={user?.plano === 1}
                 onSuccess={carregarCategorias}
 
+                onOpenPremium={(motivo) => {
+                    setOpenCategoriaEditar(false);
+                    setMotivoPremium(motivo ?? "frase_diaria_categoria");
+                    setIsPremiumModalOpen(true);
+                }}
 
                 onOpenModalSucesso={(msgSucesso) => {
                     setOpenModalSucesso(true);

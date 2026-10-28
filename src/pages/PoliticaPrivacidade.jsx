@@ -70,9 +70,10 @@ export default function PoliticaPrivacidade() {
                                 <li>Transcrever e corrigir suas respostas faladas ou digitadas nos exercícios de IA
                                     (Perguntas, Frase do Dia e Tradução Reversa), gerando nota e feedback sobre
                                     gramática, pronúncia e fluência;</li>
-                                <li>Quando você ativa a frase diária automática por categoria (Configurações, plano
-                                    Zaldemy+), gerar 1 frase nova por dia em cada categoria ativa da sua conta, com
-                                    base no nome da categoria e nas frases já cadastradas nela;</li>
+                                <li>Quando você ativa a frase diária automática numa categoria (opção na edição dela,
+                                    plano Zaldemy+), gerar 1 frase nova por dia nessa categoria enquanto você estiver
+                                    estudando-a ativamente, com base no nome da categoria e nas frases já cadastradas
+                                    nela;</li>
                                 <li>Exibir seu progresso e estatísticas na tela de Métricas;</li>
                                 <li>Manter um histórico de acessos à sua conta, por segurança;</li>
                                 <li>Enviar comunicações importantes sobre sua conta ou o serviço, por e-mail e,

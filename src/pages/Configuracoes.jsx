@@ -131,11 +131,12 @@ export default function Configuracoes() {
     const [mensagemQuantidade, setMensagemQuantidade] = useState('');
     const [erroQuantidade, setErroQuantidade] = useState('');
 
-    // Frase diária automática por categoria (plano Premium, opt-in) - cron
-    // gera 1 frase nova por dia pra cada categoria ativa quando ligado (ver
-    // model/CategoriaFraseDiariaIA.php no backend).
-    const [gerarFraseDiaria, setGerarFraseDiaria] = useState(false);
-    const [salvandoFraseDiaria, setSalvandoFraseDiaria] = useState(false);
+    // Frase diária automática por categoria (plano Premium) - liga/desliga
+    // fica na edição de cada categoria (ver ModalCategoriasEditar.jsx); aqui
+    // em Configurações só o atalho "desativar todas" (ver
+    // Categorias::desativarTodasFraseDiaria no backend).
+    const [desativandoTodasFraseDiaria, setDesativandoTodasFraseDiaria] = useState(false);
+    const [mensagemFraseDiaria, setMensagemFraseDiaria] = useState('');
     const [erroFraseDiaria, setErroFraseDiaria] = useState('');
 
     const [vozTts, setVozTts] = useState('nova');
@@ -421,7 +422,6 @@ export default function Configuracoes() {
 
                 if (data.success) {
                     setQuantidadeFrases(String(data.quantidade_frases_aprender));
-                    setGerarFraseDiaria(Boolean(data.gerar_frase_diaria_categorias));
                     setVozTts(data.voz_tts || 'nova');
                     setVelocidadeTts(data.velocidade_tts ?? 1.00);
                     localStorage.setItem('zaldemy_velocidade_tts', String(data.velocidade_tts ?? 1.00));
@@ -481,46 +481,41 @@ export default function Configuracoes() {
         }
     }
 
-    // Toggle otimista (muda a UI na hora, desfaz se o backend recusar) -
-    // mesmo padrão de handleSelecionarVoz logo abaixo. Não-premium nem chega
-    // a chamar o endpoint - abre o PremiumModal direto, já que o backend ia
-    // recusar de qualquer forma (ver Configuracoes::atualizarGerarFraseDiariaCategorias).
-    async function handleToggleFraseDiaria() {
-        if (!isPremium) {
-            setMotivoPremium("frase_diaria_categoria");
-            setIsPremiumModalOpen(true);
-            return;
-        }
+    // Atalho "desativar todas" - desliga categorias.gerar_frase_diaria em
+    // toda categoria do usuário de uma vez (ver
+    // Categorias::desativarTodasFraseDiaria), sem precisar entrar categoria
+    // por categoria. Disponível pra qualquer plano (desligar nunca precisa
+    // de premium, só ligar precisa - ver ModalCategoriasEditar.jsx).
+    async function handleDesativarTodasFraseDiaria() {
+        if (desativandoTodasFraseDiaria) return;
 
-        if (salvandoFraseDiaria) return;
-
-        const novoValor = !gerarFraseDiaria;
-        setGerarFraseDiaria(novoValor);
         setErroFraseDiaria('');
-        setSalvandoFraseDiaria(true);
+        setMensagemFraseDiaria('');
+        setDesativandoTodasFraseDiaria(true);
 
         try {
-            const res = await fetch(`${API_URL}/controller/configuracoes.php`, {
+            const res = await fetch(`${API_URL}/controller/categorias.php`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 },
-                body: JSON.stringify({ action: 'atualizar_gerar_frase_diaria_categorias', gerar_frase_diaria_categorias: novoValor })
+                body: JSON.stringify({ action: 'desativar_todas_frase_diaria' })
             });
 
             const data = await res.json();
 
             if (!data.success) {
-                setGerarFraseDiaria(!novoValor);
                 setErroFraseDiaria(data.message || t("unexpected_error"));
+                return;
             }
+
+            setMensagemFraseDiaria(t("daily_category_phrase_disabled_all", { count: data.desativadas ?? 0 }));
         } catch (error) {
-            console.error('Erro ao salvar frase diária por categoria:', error);
-            setGerarFraseDiaria(!novoValor);
+            console.error('Erro ao desativar frase diária em todas as categorias:', error);
             setErroFraseDiaria(t("server_connection_error"));
         } finally {
-            setSalvandoFraseDiaria(false);
+            setDesativandoTodasFraseDiaria(false);
         }
     }
 
@@ -740,28 +735,22 @@ export default function Configuracoes() {
                     </div>
 
                     <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-3 mb-3">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2 min-w-0">
-                                <Bot className="w-4 h-4 text-green-400 shrink-0" />
-                                <span className="text-white text-sm">{t("daily_category_phrase_title")}</span>
-                                {!isPremium && <Crown className="w-3.5 h-3.5 text-yellow-400 shrink-0" />}
-                            </div>
-                            <button
-                                type="button"
-                                role="switch"
-                                aria-checked={gerarFraseDiaria}
-                                disabled={salvandoFraseDiaria}
-                                onClick={handleToggleFraseDiaria}
-                                className={`relative inline-flex h-5 w-10 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${gerarFraseDiaria ? "bg-[#4cb8c4]" : "bg-gray-700"
-                                    }`}
-                            >
-                                <span
-                                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${gerarFraseDiaria ? "translate-x-5" : "translate-x-0.5"
-                                        }`}
-                                />
-                            </button>
+                        <div className="flex items-center gap-2 min-w-0 mb-1">
+                            <Bot className="w-4 h-4 text-green-400 shrink-0" />
+                            <span className="text-white text-sm">{t("daily_category_phrase_title")}</span>
                         </div>
-                        <p className="text-gray-400 text-xs mt-2">{t("daily_category_phrase_desc")}</p>
+                        <p className="text-gray-400 text-xs mb-3">{t("daily_category_phrase_settings_desc")}</p>
+                        <button
+                            type="button"
+                            disabled={desativandoTodasFraseDiaria}
+                            onClick={handleDesativarTodasFraseDiaria}
+                            className="w-full px-4 py-2 rounded-lg border border-gray-700 hover:bg-gray-700/50 disabled:opacity-60 text-gray-300 text-sm font-medium transition-colors"
+                        >
+                            {desativandoTodasFraseDiaria ? t("saving") : t("daily_category_phrase_disable_all")}
+                        </button>
+                        {mensagemFraseDiaria && (
+                            <p className="text-green-400 text-xs mt-2">{mensagemFraseDiaria}</p>
+                        )}
                         {erroFraseDiaria && (
                             <p className="text-red-400 text-xs mt-2">{erroFraseDiaria}</p>
                         )}

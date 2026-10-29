@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 import { treinoStatsCache } from "../utils/treinoStatsCache";
 
 
-import { BookOpen, BarChart3, Bot, Plus, Home as HomeIcon, CheckCircle2, Flame, Gamepad2, Crown, Search } from "lucide-react";
+import { BookOpen, BarChart3, Bot, Plus, Home as HomeIcon, CheckCircle2, Flame, Gamepad2, Crown, Search, AlertTriangle, RefreshCw } from "lucide-react";
 
 const AVATAR_COLORS = [
     'bg-emerald-500',
@@ -64,7 +64,11 @@ export default function Home() {
     // mesmo em outro dispositivo/sessão. Antes disso ser persistido no
     // servidor, um estado só em memória fazia o balão reaparecer a cada
     // recarregamento da página.
-    const mostrarGuiaCategoria = !categoriasLoading && !temCategoriaPropria && !user?.guia_categoria_dispensado;
+    // !erroCategorias - sem isso, uma falha de rede ao buscar categorias
+    // (lista vem vazia por erro, não por o usuário realmente não ter
+    // nenhuma) mostrava esse guia de "crie sua primeira categoria" de forma
+    // enganosa, por cima do erro real. Ver erroCategorias/carregarCategorias.
+    const mostrarGuiaCategoria = !categoriasLoading && !temCategoriaPropria && !user?.guia_categoria_dispensado && !erroCategorias;
     // Guia de "próximo passo" - continuação do guia acima, cobrindo os
     // estágios seguintes (usuário já tem categoria mas ainda fica perdido
     // sobre o que fazer). Nunca aparece junto com mostrarGuiaCategoria -
@@ -82,6 +86,15 @@ export default function Home() {
     const totalTreinadas = categorias.reduce((soma, cat) => soma + (cat.treinadas || 0), 0);
     const mostrarGuiaTreinar = !categoriasLoading && !mostrarGuiaCategoria && totalFrases > 0 && totalTreinadas === 0 && !user?.guia_treino_dispensado;
     const categoriaComConteudo = categorias.find((cat) => cat.quantidade > 0);
+    // true só quando a busca de categorias falhou de verdade (erro de rede/
+    // servidor) - diferente de "usuário não tem categoria nenhuma", que é um
+    // resultado válido e não deve mostrar erro nenhum. Bug real reportado: o
+    // processo do app foi morto pelo Android por pressão de memória
+    // enquanto em segundo plano; ao reabrir, a busca de categorias falhou
+    // (rede ainda se recuperando logo depois do processo reiniciar) e a
+    // tela ficava com a lista vazia sem nenhum aviso nem jeito de tentar de
+    // novo sem fechar e abrir o app inteiro.
+    const [erroCategorias, setErroCategorias] = useState(false);
     const [revisarPorCategoria, setRevisarPorCategoria] = useState({});
     const [openTreinoAdvinhar, setOpenTreinoAdvinhar] = useState(false)
     const [openTreinoIA, setOpenTreinoIA] = useState(false)
@@ -278,6 +291,7 @@ export default function Home() {
 
         setRecarregar(false)
         setCategoriasLoading(true)
+        setErroCategorias(false)
         fetch(`${API_URL}/controller/categorias.php`, {
             method: 'POST',
             headers: {
@@ -329,6 +343,7 @@ export default function Home() {
             })
             .catch((error) => {
                 console.error('Erro ao carregar categorias:', error);
+                setErroCategorias(true);
             })
             .finally(() => {
                 setCategoriasLoading(false)
@@ -676,6 +691,23 @@ export default function Home() {
                             value={buscaCategoria}
                             onChange={(e) => setBuscaCategoria(e.target.value)}
                         />
+                    </div>
+                </div>
+            )}
+
+            {erroCategorias && !categoriasLoading && (
+                <div className="px-4 pt-4">
+                    <div className="flex flex-col items-center gap-2 bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-center">
+                        <AlertTriangle className="text-red-400" size={24} />
+                        <p className="text-sm text-gray-300">{t("server_connection_error")}</p>
+                        <button
+                            type="button"
+                            onClick={carregarCategorias}
+                            className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-red-500/20 hover:bg-red-500/30 text-red-300 text-sm font-medium transition-colors"
+                        >
+                            <RefreshCw size={14} />
+                            {t("try_again")}
+                        </button>
                     </div>
                 </div>
             )}

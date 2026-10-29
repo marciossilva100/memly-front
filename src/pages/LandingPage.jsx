@@ -91,18 +91,31 @@ export default function LandingPage() {
                     </nav>
 
                     <div className="hidden md:flex items-center gap-3">
-                        <Link
-                            to="/login"
-                            className="text-sm text-white px-5 py-2 rounded-full border border-gray-700 hover:bg-white/5 transition-colors"
-                        >
-                            {t("sign_in")}
-                        </Link>
-                        <Link
-                            to="/cadastrar"
-                            className="text-sm text-white px-5 py-2 rounded-full bg-[#4cb8c4] hover:brightness-110 transition"
-                        >
-                            {t("landing_signup_button")}
-                        </Link>
+                        {mostrarPlayStore ? (
+                            <a
+                                href={PLAY_STORE_URL}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-sm text-white px-5 py-2 rounded-full bg-[#4cb8c4] hover:brightness-110 transition"
+                            >
+                                {t("landing_android_download_cta")}
+                            </a>
+                        ) : (
+                            <>
+                                <Link
+                                    to="/login"
+                                    className="text-sm text-white px-5 py-2 rounded-full border border-gray-700 hover:bg-white/5 transition-colors"
+                                >
+                                    {t("sign_in")}
+                                </Link>
+                                <Link
+                                    to="/cadastrar"
+                                    className="text-sm text-white px-5 py-2 rounded-full bg-[#4cb8c4] hover:brightness-110 transition"
+                                >
+                                    {t("landing_signup_button")}
+                                </Link>
+                            </>
+                        )}
                     </div>
 
                     <button
@@ -125,18 +138,31 @@ export default function LandingPage() {
                         <Link to="/contato" onClick={() => setMenuAberto(false)} className="text-gray-300">
                             {t("contact")}
                         </Link>
-                        <Link
-                            to="/login"
-                            className="text-center text-white px-5 py-2 rounded-full border border-gray-700"
-                        >
-                            {t("sign_in")}
-                        </Link>
-                        <Link
-                            to="/cadastrar"
-                            className="text-center text-white px-5 py-2 rounded-full bg-[#4cb8c4]"
-                        >
-                            {t("landing_signup_button")}
-                        </Link>
+                        {mostrarPlayStore ? (
+                            <a
+                                href={PLAY_STORE_URL}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-center text-white px-5 py-2 rounded-full bg-[#4cb8c4]"
+                            >
+                                {t("landing_android_download_cta")}
+                            </a>
+                        ) : (
+                            <>
+                                <Link
+                                    to="/login"
+                                    className="text-center text-white px-5 py-2 rounded-full border border-gray-700"
+                                >
+                                    {t("sign_in")}
+                                </Link>
+                                <Link
+                                    to="/cadastrar"
+                                    className="text-center text-white px-5 py-2 rounded-full bg-[#4cb8c4]"
+                                >
+                                    {t("landing_signup_button")}
+                                </Link>
+                            </>
+                        )}
                     </div>
                 )}
             </header>
@@ -157,22 +183,35 @@ export default function LandingPage() {
 
                         <div className="inline-flex items-center gap-2 bg-[#4cb8c4]/10 text-[#4cb8c4] px-4 py-2 rounded-full mt-6 border border-[#4cb8c4]/30 font-medium text-sm">
                             <Download size={16} className="shrink-0" />
-                            {t("landing_hero_install_hint")}
+                            {mostrarPlayStore ? t("landing_hero_install_hint_android") : t("landing_hero_install_hint")}
                         </div>
 
                         <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-3 mt-6">
-                            <Link
-                                to="/cadastrar"
-                                className="text-center bg-[#4cb8c4] text-white px-8 py-3 rounded-full text-lg font-semibold hover:brightness-110 transition"
-                            >
-                                {t("landing_hero_cta_primary")}
-                            </Link>
-                            <Link
-                                to="/login"
-                                className="text-center text-white px-8 py-3 rounded-full text-lg border border-gray-700 hover:bg-white/5 transition-colors"
-                            >
-                                {t("landing_hero_cta_secondary")}
-                            </Link>
+                            {mostrarPlayStore ? (
+                                <a
+                                    href={PLAY_STORE_URL}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-center bg-[#4cb8c4] text-white px-8 py-3 rounded-full text-lg font-semibold hover:brightness-110 transition"
+                                >
+                                    {t("landing_android_download_cta")}
+                                </a>
+                            ) : (
+                                <>
+                                    <Link
+                                        to="/cadastrar"
+                                        className="text-center bg-[#4cb8c4] text-white px-8 py-3 rounded-full text-lg font-semibold hover:brightness-110 transition"
+                                    >
+                                        {t("landing_hero_cta_primary")}
+                                    </Link>
+                                    <Link
+                                        to="/login"
+                                        className="text-center text-white px-8 py-3 rounded-full text-lg border border-gray-700 hover:bg-white/5 transition-colors"
+                                    >
+                                        {t("landing_hero_cta_secondary")}
+                                    </Link>
+                                </>
+                            )}
                         </div>
                     </div>
 
@@ -193,7 +232,12 @@ export default function LandingPage() {
                                 área reservada pra ele (o conteúdo real começa já na primeira
                                 linha), então um notch sobreposto tapava parte da tela de
                                 verdade (menu/seletor de idioma) em vez de só decorar a moldura. */}
-                            <div className="relative aspect-[988/2012] rounded-[2.2rem] md:rounded-[2.6rem] border-[8px] md:border-[10px] border-gray-950 bg-black overflow-hidden ring-1 ring-white/10">
+                            {/* Raio em % (não rem fixo) de propósito - um raio fixo vira uma
+                                fração bem maior da largura no celular (w-48) do que no desktop
+                                (w-72), cortando elementos reais que ficam coladas aos cantos nos
+                                screenshots (seta de voltar, engrenagem). Em % o raio escala junto
+                                com o tamanho da moldura e nunca invade esse conteúdo. */}
+                            <div className="relative aspect-[988/2012] rounded-[3%] border-[8px] md:border-[10px] border-gray-950 bg-black overflow-hidden ring-1 ring-white/10">
                                 {slidesApp.map((src, index) => (
                                     <img
                                         key={src}

@@ -1,9 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation, Trans } from "react-i18next";
-import { Download, Smartphone, Share2, Globe, Loader2, CheckCircle2 } from "lucide-react";
+import { Download, Smartphone, Share2, Globe, Loader2, CheckCircle2, PlayCircle } from "lucide-react";
 import imgZaldemy from "../assets/img/zaldemy.png";
 import { getInstallPrompt, onInstallPromptChange, clearInstallPrompt, isPwaKnownInstalled, clearPwaInstalled } from "../utils/pwaInstallPrompt";
 import useEnableBodyScroll from "../hooks/useEnableBodyScroll";
+
+// Mesmo link usado na landing page (ver LandingPage.jsx) - já existe um app
+// nativo Android de verdade, então quem chega aqui (ex: abriu /login ou
+// /cadastrar direto, fora do fluxo normal da landing) deve baixar o app pela
+// Play Store, não instalar a PWA como alternativa (fluxo pensado pra quem
+// não tem app nativo disponível, como iOS).
+const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.zaldemy.app&pcampaignid=web_share";
 
 // Aguarda o evento appinstalled (instalação de fato concluída) com um limite
 // de tempo, já que em alguns navegadores/versões ele pode nunca disparar.
@@ -38,6 +45,7 @@ export default function InstallPwaNotice() {
         setInstalledFlag(false);
     }
     const [isIOS, setIsIOS] = useState(false);
+    const [isAndroid, setIsAndroid] = useState(false);
     const [isInAppBrowser, setIsInAppBrowser] = useState(false);
     const [showManualFallback, setShowManualFallback] = useState(false);
     // idle | awaiting | installing | installed
@@ -47,6 +55,7 @@ export default function InstallPwaNotice() {
     useEffect(() => {
         const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         setIsIOS(ios);
+        setIsAndroid(/Android/i.test(navigator.userAgent));
 
         const inApp = /Instagram|FBAN|FBAV|FB_IAB|Line\/|MicroMessenger|TikTok|BytedanceWebview/i.test(navigator.userAgent);
         setIsInAppBrowser(inApp);
@@ -124,6 +133,21 @@ export default function InstallPwaNotice() {
                             {t("pwa_not_installed_anymore")}
                         </button>
                     </div>
+                ) : isAndroid ? (
+                    // Já existe app nativo Android - baixar ele direto da Play Store é
+                    // estritamente melhor que instalar como PWA (e o link da Play Store
+                    // funciona mesmo de dentro de navegadores internos de apps via
+                    // intent, diferente do fluxo de instalação de PWA), por isso esse
+                    // branch vem antes do de isInAppBrowser.
+                    <a
+                        href={PLAY_STORE_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full font-bold py-4 px-6 rounded-xl transition-all transform shadow-xl flex items-center justify-center space-x-3 group bg-gradient-to-r from-[#4cb8c4] to-[#085078] text-white hover:scale-[1.02] hover:shadow-2xl"
+                    >
+                        <PlayCircle className="w-5 h-5 group-hover:animate-bounce" />
+                        <span>{t("landing_android_download_cta")}</span>
+                    </a>
                 ) : isInAppBrowser ? (
                     // Navegadores internos de apps (Instagram, Facebook, TikTok, etc.)
                     // não suportam a instalação de PWA - orientar a abrir no navegador padrão

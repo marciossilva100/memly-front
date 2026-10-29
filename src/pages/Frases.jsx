@@ -18,8 +18,25 @@ import {
     BookOpen,
     MoreVertical,
     FolderInput,
-    CheckCircle2
+    CheckCircle2,
+    Sparkles
 } from "lucide-react";
+
+// Frases geradas automaticamente pela IA (1 por dia, por categoria - ver
+// CategoriaFraseDiariaIA no backend) ganham um selo "Nova" piscando até o
+// usuário interagir com elas (abrir pra editar/ver) OU até essa janela de
+// dias passar, o que vier primeiro - sem isso, uma frase que o usuário nunca
+// abre ficaria marcada como "nova" pra sempre.
+const NOVA_FRASE_IA_JANELA_DIAS = 3;
+const FRASES_IA_VISTAS_STORAGE_KEY = "zaldemy_frases_ia_vistas";
+
+function carregarFrasesIaVistas() {
+    try {
+        return new Set(JSON.parse(localStorage.getItem(FRASES_IA_VISTAS_STORAGE_KEY) || "[]"));
+    } catch {
+        return new Set();
+    }
+}
 
 
 export default function Frases() {
@@ -56,8 +73,33 @@ export default function Frases() {
     // Nome da categoria de destino depois de mover com sucesso - enquanto
     // preenchido, o modal mostra a mensagem de sucesso no lugar da lista.
     const [moverSucessoNome, setMoverSucessoNome] = useState(null);
+    const [frasesIaVistas, setFrasesIaVistas] = useState(() => carregarFrasesIaVistas());
     const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
+
+    function ehFraseIaRecente(item) {
+        if (Number(item.gerada_ia_diaria) !== 1) return false;
+        if (frasesIaVistas.has(item.id)) return false;
+        if (!item.data_criacao) return false;
+
+        const criada = new Date(item.data_criacao.replace(" ", "T"));
+        const diasPassados = (Date.now() - criada.getTime()) / (1000 * 60 * 60 * 24);
+        return diasPassados <= NOVA_FRASE_IA_JANELA_DIAS;
+    }
+
+    function marcarFraseIaVista(id) {
+        setFrasesIaVistas((prev) => {
+            if (prev.has(id)) return prev;
+            const novo = new Set(prev);
+            novo.add(id);
+            try {
+                localStorage.setItem(FRASES_IA_VISTAS_STORAGE_KEY, JSON.stringify([...novo]));
+            } catch {
+                // localStorage indisponível - o selo só não some entre sessões, sem quebrar nada
+            }
+            return novo;
+        });
+    }
 
     // Para o áudio em reprodução ao sair da tela (troca de rota) - sem isso,
     // o áudio seguia tocando mesmo depois do usuário já ter navegado embora.
@@ -303,12 +345,19 @@ export default function Frases() {
 
                 {frasesFiltradas.map((item) => (
                     <div key={item.id}
-                        className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-3 flex items-center justify-between gap-3 cursor-pointer hover:bg-gray-700/50 transition-colors"
+                        className="relative bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-3 flex items-center justify-between gap-3 cursor-pointer hover:bg-gray-700/50 transition-colors"
                         onClick={() => {
+                            if (ehFraseIaRecente(item)) marcarFraseIaVista(item.id);
                             setFraseEditando(item);
                             setOpenFrase(true);
                         }}
                     >
+                        {ehFraseIaRecente(item) && (
+                            <span className="absolute -top-2 -left-2 flex items-center gap-1 bg-[#4cb8c4] text-white text-[11px] font-semibold px-2 py-0.5 rounded-full shadow-lg animate-pulse">
+                                <Sparkles size={11} />
+                                {t("daily_phrase_new_badge")}
+                            </span>
+                        )}
                         <div className="min-w-0 flex-1">
                             <p className="text-white truncate">{item.texto_nativo}</p>
                             <p className="text-[#4cb8c4] text-sm truncate mt-0.5">{item.texto_traduzido}</p>

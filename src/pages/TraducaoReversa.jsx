@@ -550,7 +550,11 @@ export default function TraducaoReversa() {
 
     return (
         <div className="p-4 justify-center w-full px-6 h-screen flex flex-col h-dvh from-gray-900 to-gray-800 bg-gradient-to-br">
-            <div className="flex-1 overflow-y-auto scrollbar-hide pb-24">
+            {/* pb-40 (não pb-24) - precisa do mesmo respiro de Perguntas.jsx,
+                que tem a mesma barra fixa de 2 botões embaixo (ver
+                "pode_tentar_novamente" mais abaixo); com menos padding, um
+                feedback longo da IA ficava cortado atrás dessa barra. */}
+            <div className="flex-1 overflow-y-auto scrollbar-hide pb-40">
                 <div className="relative mb-6 flex items-center justify-between">
                     <div
                         className="cursor-pointer"

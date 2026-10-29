@@ -730,8 +730,16 @@ export default function Home() {
                             ? Math.min(100, Math.round((paraRevisar / item.quantidade) * 100))
                             : 0;
 
+                        const temFraseNova = item.fraseNovaId && !frasesIaVistas.has(item.fraseNovaId);
+
                         return (
-                            <div key={item.id} onClick={() => validar(item.quantidade, item.id)} className="flex bg-gray-800/50   border border-gray-700 items-center justify-between py-3 px-4  rounded-xl  shadow-lg mb-4 ">
+                            <div key={item.id} onClick={() => validar(item.quantidade, item.id)} className="relative flex bg-gray-800/50   border border-gray-700 items-center justify-between py-3 px-4  rounded-xl  shadow-lg mb-4 ">
+                                {temFraseNova && (
+                                    <span className="absolute -top-2 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1 bg-[#4cb8c4] text-white text-[11px] font-semibold px-2.5 py-0.5 rounded-full shadow-lg animate-pulse whitespace-nowrap">
+                                        <Sparkles size={11} />
+                                        {t("new_phrase_available")}
+                                    </span>
+                                )}
                                 <div className="flex items-center gap-3 min-w-0">
                                     <div className={`flex items-center justify-center w-9 h-9 shrink-0 rounded-full text-white font-semibold text-lg ${AVATAR_COLORS[index % AVATAR_COLORS.length]}`}>
                                         {item.categoria?.charAt(0)?.toUpperCase()}
@@ -743,12 +751,6 @@ export default function Home() {
                                         <div className="flex flex-col text-xs text-gray-400">
                                             <span>{item.quantidade} {t("words")}</span>
                                             <span className="text-emerald-400">{paraRevisar} {t("to_review")}</span>
-                                            {item.fraseNovaId && !frasesIaVistas.has(item.fraseNovaId) && (
-                                                <span className="flex items-center gap-1 text-[#4cb8c4] font-medium mt-0.5">
-                                                    <Sparkles size={11} />
-                                                    {t("new_phrase_available")}
-                                                </span>
-                                            )}
                                         </div>
                                         <div className="mt-1.5 h-1.5 w-32 max-w-full rounded-full bg-gray-700 overflow-hidden">
                                             <div

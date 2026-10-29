@@ -308,7 +308,12 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                                     outline-none"
                             ></textarea>
 
-                            {(phrase?.length > 1 || translatedPhrase?.length > 1) && (
+                            {/* Só faz sentido oferecer ajuda da IA quando falta preencher UM dos
+                                lados - com os dois já preenchidos não há nada pra traduzir/melhorar
+                                (melhorarComIA só olha pro campo vazio, ver direcaoTraducao() acima).
+                                Pedido do usuário: o botão deve sumir com os dois preenchidos e
+                                voltar assim que um dos campos ficar vazio de novo. */}
+                            {(phrase?.length > 1 || translatedPhrase?.length > 1) && !(phrase?.length > 1 && translatedPhrase?.length > 1) && (
                                 <div className="flex flex-wrap gap-2 mt-3">
                                     {/* Botão "Sugerir tradução" desativado - ver comentário
                                         completo junto de sugerirTraducao() acima.

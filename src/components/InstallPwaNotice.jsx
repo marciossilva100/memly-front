@@ -4,13 +4,7 @@ import { Download, Smartphone, Share2, Globe, Loader2, CheckCircle2, PlayCircle 
 import imgZaldemy from "../assets/img/zaldemy.png";
 import { getInstallPrompt, onInstallPromptChange, clearInstallPrompt, isPwaKnownInstalled, clearPwaInstalled } from "../utils/pwaInstallPrompt";
 import useEnableBodyScroll from "../hooks/useEnableBodyScroll";
-
-// Mesmo link usado na landing page (ver LandingPage.jsx) - já existe um app
-// nativo Android de verdade, então quem chega aqui (ex: abriu /login ou
-// /cadastrar direto, fora do fluxo normal da landing) deve baixar o app pela
-// Play Store, não instalar a PWA como alternativa (fluxo pensado pra quem
-// não tem app nativo disponível, como iOS).
-const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.zaldemy.app&pcampaignid=web_share";
+import { PLAY_STORE_URL } from "../utils/links";
 
 // Aguarda o evento appinstalled (instalação de fato concluída) com um limite
 // de tempo, já que em alguns navegadores/versões ele pode nunca disparar.

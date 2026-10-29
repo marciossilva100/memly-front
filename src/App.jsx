@@ -68,6 +68,7 @@ import LandingPage from './pages/LandingPage';
 import DesktopBlockedNotice from './components/DesktopBlockedNotice';
 import InstallPwaNotice from './components/InstallPwaNotice';
 import { isMobileWeb, isStandaloneApp, isNativePlatform } from './utils/googleNativeAuth';
+import { PLAY_STORE_URL } from './utils/links';
 
 // Contexto de conexão
 import { ConnectionProvider, useConnection } from './context/ConnectionContext';
@@ -534,6 +535,23 @@ function App() {
     setShowUpdateModal(false);
     updateSWRef.current?.(true);
   }
+
+  // Quem abre o site a partir de um link no Instagram (bio, story, anúncio)
+  // navega dentro do navegador embutido do app do Instagram, identificável
+  // pelo user agent. No Android já existe app nativo - manda direto pra
+  // Play Store em vez de deixar a pessoa passar pelo site/PWA. No iOS não
+  // existe app nativo, então não tem pra onde mandar: fica na página normal.
+  useEffect(() => {
+    if (isNativePlatform()) return;
+
+    const ua = navigator.userAgent;
+    const vemDoInstagram = /Instagram/i.test(ua);
+    const isAndroid = /Android/i.test(ua);
+
+    if (vemDoInstagram && isAndroid) {
+      window.location.href = PLAY_STORE_URL;
+    }
+  }, []);
 
   useEffect(() => {
     // Esse aviso é especificamente pra PWA/site (nova versão publicada no

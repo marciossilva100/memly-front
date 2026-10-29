@@ -20,12 +20,11 @@ import imgSlideCorreto from "../assets/img/landing-screenshot-correto.png";
 import imgSlideChuva from "../assets/img/landing-screenshot-chuva.png";
 import imgSlideTiro from "../assets/img/landing-screenshot-tiro.png";
 import imgGooglePlayBadge from "../assets/img/google-play-badge.png";
+import { PLAY_STORE_URL } from "../utils/links";
 
 const iconesRecursos = [Languages, Layers, RotateCcw, Volume2, BarChart3, Bot];
 
 const slidesApp = [imgSlideCategorias, imgSlideDigitar, imgSlideCorreto, imgSlideChuva, imgSlideTiro];
-
-const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.zaldemy.app&pcampaignid=web_share";
 
 export default function LandingPage() {
     const { t } = useTranslation();

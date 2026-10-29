@@ -19,7 +19,9 @@ import {
     MoreVertical,
     FolderInput,
     CheckCircle2,
-    Sparkles
+    Sparkles,
+    AlertTriangle,
+    RefreshCw
 } from "lucide-react";
 
 // Frases geradas automaticamente pela IA (1 por dia, por categoria - ver
@@ -46,6 +48,11 @@ export default function Frases() {
 
     const [frases, setFrases] = useState([]);
     const [loading, setLoading] = useState(false);
+    // Erro de verdade (servidor fora do ar, resposta inesperada) - diferente
+    // de "lista vazia porque não tem frase ainda". Sem essa distinção, um
+    // erro do backend que devolve um objeto em vez de array (ex: erro 500)
+    // quebrava a tela inteira ao tentar fazer .map() nele.
+    const [erroFrases, setErroFrases] = useState(false);
     const [textoBusca, setTextoBusca] = useState("")
     const [openFrase, setOpenFrase] = useState(false)
     const [fraseEditando, setFraseEditando] = useState(null)
@@ -134,6 +141,7 @@ export default function Frases() {
 
     async function listPhrase() {
         setLoading(true);
+        setErroFrases(false);
 
         fetch(`${API_URL}/controller/frases.php`, {
             method: 'POST',
@@ -147,10 +155,16 @@ export default function Frases() {
         })
             .then(res => res.json())
             .then(data => {
+                if (!Array.isArray(data)) {
+                    setErroFrases(true);
+                    setLoading(false);
+                    return;
+                }
                 setFrases(data);
                 setLoading(false);
             })
             .catch(() => {
+                setErroFrases(true);
                 setLoading(false);
             });
     }
@@ -337,13 +351,28 @@ export default function Frases() {
                 junto quando a lista era grande. */}
             <div className="flex-1 overflow-y-auto scrollbar-hide mt-4 pb-24 space-y-2">
 
-                {frasesFiltradas.length === 0 && (
+                {erroFrases && !loading && (
+                    <div className="flex flex-col items-center gap-2 bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-center">
+                        <AlertTriangle className="text-red-400" size={24} />
+                        <p className="text-sm text-gray-300">{t("server_connection_error")}</p>
+                        <button
+                            type="button"
+                            onClick={listPhrase}
+                            className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-red-500/20 hover:bg-red-500/30 text-red-300 text-sm font-medium transition-colors"
+                        >
+                            <RefreshCw size={14} />
+                            {t("try_again")}
+                        </button>
+                    </div>
+                )}
+
+                {!erroFrases && frasesFiltradas.length === 0 && (
                     <div className="text-center py-10 text-gray-400 text-sm">
                         {frases.length === 0 ? t("no_phrase_registered_yet") : t("no_phrase_found")}
                     </div>
                 )}
 
-                {frasesFiltradas.map((item) => (
+                {!erroFrases && frasesFiltradas.map((item) => (
                     <div key={item.id}
                         className="relative bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-3 flex items-center justify-between gap-3 cursor-pointer hover:bg-gray-700/50 transition-colors"
                         onClick={() => {

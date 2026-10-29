@@ -382,7 +382,7 @@ export default function Frases() {
                         }}
                     >
                         {ehFraseIaRecente(item) && (
-                            <span className="absolute -top-2 -left-2 flex items-center gap-1 bg-[#4cb8c4] text-white text-[11px] font-semibold px-2 py-0.5 rounded-full shadow-lg animate-pulse">
+                            <span className="absolute top-2 right-2 z-10 flex items-center gap-1 bg-[#4cb8c4] text-white text-[11px] font-semibold px-2 py-0.5 rounded-full shadow-lg animate-pulse">
                                 <Sparkles size={11} />
                                 {t("daily_phrase_new_badge")}
                             </span>

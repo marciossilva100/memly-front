@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
-import { FileText, Shield, ShieldCheck, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2, Volume2, Check, Gauge, Bot, Crown, Play, CreditCard, RotateCcw, User, Bell, AlertTriangle, Info } from "lucide-react";
+import { FileText, Shield, ShieldCheck, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2, Volume2, Check, Gauge, Bot, Crown, Play, CreditCard, RotateCcw, User, Bell, AlertTriangle, Info, Sprout, TrendingUp, Trophy } from "lucide-react";
 import { notificacoesDisponiveis, statusNotificacoes, ativarNotificacoes, desativarNotificacoes } from "../utils/pushNotifications";
 import { limparCacheVozNatural } from "../utils/audioPlayer";
 import ModalConfirm from "../components/ModalConfirm";
@@ -23,6 +23,22 @@ const VOZES_TTS = [
 ];
 
 const VELOCIDADES_TTS = [0.75, 1.00, 1.25, 1.50];
+
+// Mesma lista/mesmas chaves de tradução de EscolherNivel.jsx (onboarding) -
+// só repetida aqui porque o usuário não tinha nenhum jeito de ver ou trocar
+// o nível depois do cadastro, a não ser aceitando (ou sem querer tocando) o
+// toast de sugestão de promoção (NivelUpToast.jsx). Pedido explícito do
+// usuário: "não tenho certeza que modo eu estou".
+// cefr: só rótulo visual (padrão CEFR, pedido do usuário) - o backend
+// (Nivel::nomeParaPrompt) já mapeia cada um desses 3 níveis pra mesma faixa
+// na hora de montar o prompt da IA (iniciante=A1/A2, intermediário=B1/B2,
+// avançado=C1/C2); não existe granularidade real pra separar A1 de A2 (ou
+// B1 de B2) sem reformular como a IA gera o conteúdo pra cada nível.
+const NIVEIS = [
+    { id: 1, icon: Sprout, key: "iniciante", cefr: "A1-A2" },
+    { id: 2, icon: TrendingUp, key: "intermediario", cefr: "B1-B2" },
+    { id: 3, icon: Trophy, key: "avancado", cefr: "C1-C2" },
+];
 
 // Segundos que o card da frente fica visível em Flashcards.jsx antes de
 // virar sozinho.
@@ -50,7 +66,7 @@ function ItemMenu({ icone: Icone, titulo, onClick, cor = "text-gray-300" }) {
 export default function Configuracoes() {
     const navigate = useNavigate();
     const { t } = useTranslation();
-    const { logout, user, checkAuth } = useAuth();
+    const { logout, user, setUser, checkAuth } = useAuth();
     const isPremium = user?.plano === 1;
     // Premium e limitado ouvem voz natural (limitado com cota diária); só o
     // free (plano 2) nunca recebe voz natural, sempre cai na voz padrão
@@ -145,6 +161,12 @@ export default function Configuracoes() {
     // nenhuma diferença visual, especialmente quando já não tinha nenhuma
     // categoria ativada pra começo de conversa).
     const [categoriasComFraseDiaria, setCategoriasComFraseDiaria] = useState(0);
+
+    // Nível de proficiência (iniciante/intermediário/avançado) - já vem
+    // pronto no user carregado pelo AuthContext (controller/me.php), sem
+    // precisar de fetch próprio.
+    const [salvandoNivel, setSalvandoNivel] = useState(false);
+    const [erroNivel, setErroNivel] = useState('');
 
     const [vozTts, setVozTts] = useState('nova');
     const [salvandoVoz, setSalvandoVoz] = useState(false);
@@ -551,6 +573,42 @@ export default function Configuracoes() {
         }
     }
 
+    // Mesma action/endpoint que EscolherNivel.jsx (onboarding) e
+    // NivelUpToast.jsx (aceitar sugestão) já usam - não precisa de rota nova
+    // no backend. Atualiza o user global (AuthContext) direto, sem precisar
+    // de checkAuth() completo de novo.
+    async function handleSelecionarNivel(novoNivel) {
+        if (novoNivel === user?.nivel || salvandoNivel) return;
+
+        setErroNivel('');
+        setSalvandoNivel(true);
+
+        try {
+            const res = await fetch(`${API_URL}/controller/nivel.php`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({ action: 'set_level', nivel: novoNivel })
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                setErroNivel(data.message || t("unexpected_error"));
+                return;
+            }
+
+            setUser((prev) => prev && { ...prev, nivel: novoNivel });
+        } catch (error) {
+            console.error('Erro ao salvar nível:', error);
+            setErroNivel(t("server_connection_error"));
+        } finally {
+            setSalvandoNivel(false);
+        }
+    }
+
     async function handleSelecionarVoz(voz) {
         if (voz === vozTts || salvandoVoz) return;
 
@@ -797,6 +855,50 @@ export default function Configuracoes() {
                         )}
                         {erroFraseDiaria && (
                             <p className="text-red-400 text-xs mt-2">{erroFraseDiaria}</p>
+                        )}
+                    </div>
+
+                    <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 mb-3">
+                        <div className="flex items-center gap-2 mb-3">
+                            <Gauge className="w-4 h-4 text-[#4cb8c4]" />
+                            <span className="text-white text-sm">{t("your_level")}</span>
+                        </div>
+
+                        <div className="space-y-1.5">
+                            {NIVEIS.map((item) => {
+                                const selecionado = (user?.nivel || 2) === item.id;
+                                return (
+                                    <button
+                                        key={item.id}
+                                        type="button"
+                                        disabled={salvandoNivel}
+                                        onClick={() => handleSelecionarNivel(item.id)}
+                                        className={`w-full flex items-center gap-3 rounded-lg border px-3 py-2 transition-colors disabled:opacity-60 ${selecionado
+                                            ? "border-[#4cb8c4] bg-[#4cb8c4]/10"
+                                            : "border-gray-700 bg-gray-900/40 hover:bg-gray-700/40"
+                                            }`}
+                                    >
+                                        <span className={`w-8 h-8 flex items-center justify-center rounded-full shrink-0 ${selecionado ? "bg-[#4cb8c4]/20" : "bg-gray-800"}`}>
+                                            <item.icon className={`w-4 h-4 ${selecionado ? "text-[#4cb8c4]" : "text-gray-400"}`} />
+                                        </span>
+                                        <span className="flex-1 text-left">
+                                            <span className={`block text-sm font-medium ${selecionado ? "text-[#4cb8c4]" : "text-gray-300"}`}>
+                                                {t(`level_${item.key}_title`)} <span className="text-gray-500 font-normal">({item.cefr})</span>
+                                            </span>
+                                            <span className="block text-xs text-gray-500">
+                                                {t(`level_${item.key}_desc`)}
+                                            </span>
+                                        </span>
+                                        {selecionado && (
+                                            <Check className="w-4 h-4 text-[#4cb8c4] shrink-0" />
+                                        )}
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        {erroNivel && (
+                            <p className="text-red-400 text-xs mt-3">{erroNivel}</p>
                         )}
                     </div>
 

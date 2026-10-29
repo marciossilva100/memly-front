@@ -44,6 +44,15 @@ export default function Home() {
     const [openCategoriaEditar, setOpenCategoriaEditar] = useState(false);
     const [openTreino, setOpenTreino] = useState(false)
     const [categorias, setCategorias] = useState([]);
+    // true só quando a busca de categorias falhou de verdade (erro de rede/
+    // servidor) - diferente de "usuário não tem categoria nenhuma", que é um
+    // resultado válido e não deve mostrar erro nenhum. Bug real reportado: o
+    // processo do app foi morto pelo Android por pressão de memória
+    // enquanto em segundo plano; ao reabrir, a busca de categorias falhou
+    // (rede ainda se recuperando logo depois do processo reiniciar) e a
+    // tela ficava com a lista vazia sem nenhum aviso nem jeito de tentar de
+    // novo sem fechar e abrir o app inteiro.
+    const [erroCategorias, setErroCategorias] = useState(false);
     const [buscaCategoria, setBuscaCategoria] = useState("");
     // Balão "crie sua primeira categoria" - baseado no estado real (usuário
     // sem nenhuma categoria ainda), não numa flag solta que só era limpa
@@ -86,15 +95,6 @@ export default function Home() {
     const totalTreinadas = categorias.reduce((soma, cat) => soma + (cat.treinadas || 0), 0);
     const mostrarGuiaTreinar = !categoriasLoading && !mostrarGuiaCategoria && totalFrases > 0 && totalTreinadas === 0 && !user?.guia_treino_dispensado;
     const categoriaComConteudo = categorias.find((cat) => cat.quantidade > 0);
-    // true só quando a busca de categorias falhou de verdade (erro de rede/
-    // servidor) - diferente de "usuário não tem categoria nenhuma", que é um
-    // resultado válido e não deve mostrar erro nenhum. Bug real reportado: o
-    // processo do app foi morto pelo Android por pressão de memória
-    // enquanto em segundo plano; ao reabrir, a busca de categorias falhou
-    // (rede ainda se recuperando logo depois do processo reiniciar) e a
-    // tela ficava com a lista vazia sem nenhum aviso nem jeito de tentar de
-    // novo sem fechar e abrir o app inteiro.
-    const [erroCategorias, setErroCategorias] = useState(false);
     const [revisarPorCategoria, setRevisarPorCategoria] = useState({});
     const [openTreinoAdvinhar, setOpenTreinoAdvinhar] = useState(false)
     const [openTreinoIA, setOpenTreinoIA] = useState(false)

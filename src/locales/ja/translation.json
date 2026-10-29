@@ -16,6 +16,7 @@
   "phrases_per_learning_session": "学習トレーニングごとのフレーズ数",
   "daily_category_phrase_title": "カテゴリごとの毎日のフレーズ",
   "daily_category_phrase_desc": "AIは、直近7日間に実際に練習したカテゴリに毎日1つ新しいフレーズを追加します。",
+  "daily_category_phrase_active_count": "{{count}} 件のカテゴリで有効。タップするとすべてオフになります。",
   "daily_category_phrase_settings_desc": "オン/オフの切り替えは各カテゴリの編集画面で行います。ここでは一括でオフにできます。",
   "daily_category_phrase_disable_all": "すべてのカテゴリでオフにする",
   "daily_category_phrase_disabled_all": "{{count}} 件のカテゴリでオフにしました。",

@@ -138,6 +138,13 @@ export default function Configuracoes() {
     const [desativandoTodasFraseDiaria, setDesativandoTodasFraseDiaria] = useState(false);
     const [mensagemFraseDiaria, setMensagemFraseDiaria] = useState('');
     const [erroFraseDiaria, setErroFraseDiaria] = useState('');
+    // Quantas categorias estão com o recurso ligado agora - busca leve só
+    // pra saber se tem algo pra desativar (o toggle abaixo reflete esse
+    // estado de verdade, em vez de ser um botão "cego" que não mostra nada
+    // mudando quando clicado - bug real reportado: usuário clicava e não via
+    // nenhuma diferença visual, especialmente quando já não tinha nenhuma
+    // categoria ativada pra começo de conversa).
+    const [categoriasComFraseDiaria, setCategoriasComFraseDiaria] = useState(0);
 
     const [vozTts, setVozTts] = useState('nova');
     const [salvandoVoz, setSalvandoVoz] = useState(false);
@@ -486,8 +493,32 @@ export default function Configuracoes() {
     // Categorias::desativarTodasFraseDiaria), sem precisar entrar categoria
     // por categoria. Disponível pra qualquer plano (desligar nunca precisa
     // de premium, só ligar precisa - ver ModalCategoriasEditar.jsx).
+    // Busca só pra saber QUANTAS categorias estão com o recurso ligado -
+    // dá pro toggle abaixo refletir o estado real (ligado/desligado) em vez
+    // de ser um botão sem nenhum feedback visual de estado.
+    useEffect(() => {
+        if (!isPremium) return;
+
+        fetch(`${API_URL}/controller/categorias.php`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({ action: 'listar-com-quantidade' })
+        })
+            .then(res => res.json())
+            .then(data => {
+                const lista = Array.isArray(data) ? data : [];
+                const qtd = lista.filter(cat => Number(cat.gerar_frase_diaria) === 1).length;
+                setCategoriasComFraseDiaria(qtd);
+            })
+            .catch(() => { });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isPremium]);
+
     async function handleDesativarTodasFraseDiaria() {
-        if (desativandoTodasFraseDiaria) return;
+        if (desativandoTodasFraseDiaria || categoriasComFraseDiaria === 0) return;
 
         setErroFraseDiaria('');
         setMensagemFraseDiaria('');
@@ -510,6 +541,7 @@ export default function Configuracoes() {
                 return;
             }
 
+            setCategoriasComFraseDiaria(0);
             setMensagemFraseDiaria(t("daily_category_phrase_disabled_all", { count: data.desativadas ?? 0 }));
         } catch (error) {
             console.error('Erro ao desativar frase diária em todas as categorias:', error);
@@ -735,19 +767,31 @@ export default function Configuracoes() {
                     </div>
 
                     <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-3 mb-3">
-                        <div className="flex items-center gap-2 min-w-0 mb-1">
-                            <Bot className="w-4 h-4 text-green-400 shrink-0" />
-                            <span className="text-white text-sm">{t("daily_category_phrase_title")}</span>
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 min-w-0">
+                                <Bot className="w-4 h-4 text-green-400 shrink-0" />
+                                <span className="text-white text-sm">{t("daily_category_phrase_title")}</span>
+                            </div>
+                            <button
+                                type="button"
+                                role="switch"
+                                aria-checked={categoriasComFraseDiaria > 0}
+                                disabled={desativandoTodasFraseDiaria || categoriasComFraseDiaria === 0}
+                                onClick={handleDesativarTodasFraseDiaria}
+                                className={`relative inline-flex h-5 w-10 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${categoriasComFraseDiaria > 0 ? "bg-[#4cb8c4]" : "bg-gray-700"
+                                    }`}
+                            >
+                                <span
+                                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${categoriasComFraseDiaria > 0 ? "translate-x-5" : "translate-x-0.5"
+                                        }`}
+                                />
+                            </button>
                         </div>
-                        <p className="text-gray-400 text-xs mb-3">{t("daily_category_phrase_settings_desc")}</p>
-                        <button
-                            type="button"
-                            disabled={desativandoTodasFraseDiaria}
-                            onClick={handleDesativarTodasFraseDiaria}
-                            className="w-full px-4 py-2 rounded-lg border border-gray-700 hover:bg-gray-700/50 disabled:opacity-60 text-gray-300 text-sm font-medium transition-colors"
-                        >
-                            {desativandoTodasFraseDiaria ? t("saving") : t("daily_category_phrase_disable_all")}
-                        </button>
+                        <p className="text-gray-400 text-xs mt-2">
+                            {categoriasComFraseDiaria > 0
+                                ? t("daily_category_phrase_active_count", { count: categoriasComFraseDiaria })
+                                : t("daily_category_phrase_settings_desc")}
+                        </p>
                         {mensagemFraseDiaria && (
                             <p className="text-green-400 text-xs mt-2">{mensagemFraseDiaria}</p>
                         )}

@@ -16,6 +16,7 @@
   "phrases_per_learning_session": "Sätze pro Lerneinheit",
   "daily_category_phrase_title": "Täglicher Satz pro Kategorie",
   "daily_category_phrase_desc": "Die KI fügt jeden Tag 1 neuen Satz zu den Kategorien hinzu, die du aktiv lernst (in den letzten 7 Tagen geübt).",
+  "daily_category_phrase_active_count": "In {{count}} Kategorien aktiv. Tippe, um alle zu deaktivieren.",
   "daily_category_phrase_settings_desc": "Ein- und Ausschalten geschieht in der Bearbeitung jeder Kategorie. Hier kannst du es überall auf einmal deaktivieren.",
   "daily_category_phrase_disable_all": "In allen Kategorien deaktivieren",
   "daily_category_phrase_disabled_all": "Für {{count}} Kategorien deaktiviert.",

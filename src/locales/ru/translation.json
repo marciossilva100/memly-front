@@ -16,6 +16,7 @@
   "phrases_per_learning_session": "Фраз за тренировку изучения",
   "daily_category_phrase_title": "Ежедневная фраза по категории",
   "daily_category_phrase_desc": "ИИ добавляет 1 новую фразу в день в категории, которые вы активно изучаете (тренировались в последние 7 дней).",
+  "daily_category_phrase_active_count": "Включено в {{count}} категориях. Нажмите, чтобы отключить все.",
   "daily_category_phrase_settings_desc": "Включение и выключение находится в редактировании каждой категории. Здесь можно отключить сразу везде.",
   "daily_category_phrase_disable_all": "Отключить во всех категориях",
   "daily_category_phrase_disabled_all": "Отключено для {{count}} категорий.",

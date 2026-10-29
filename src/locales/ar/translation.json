@@ -16,6 +16,7 @@
   "phrases_per_learning_session": "عدد الجمل لكل جلسة تعلم",
   "daily_category_phrase_title": "جملة يومية لكل فئة",
   "daily_category_phrase_desc": "يضيف الذكاء الاصطناعي جملة جديدة واحدة يوميًا للفئات التي تدرسها بنشاط (تدربت عليها خلال آخر 7 أيام).",
+  "daily_category_phrase_active_count": "مفعّل في {{count}} فئة. اضغط لإيقافه في الجميع.",
   "daily_category_phrase_settings_desc": "التفعيل والإلغاء يتم من شاشة تعديل كل فئة. هنا يمكنك الإيقاف في جميع الفئات دفعة واحدة.",
   "daily_category_phrase_disable_all": "إيقاف في جميع الفئات",
   "daily_category_phrase_disabled_all": "تم الإيقاف لعدد {{count}} فئة.",

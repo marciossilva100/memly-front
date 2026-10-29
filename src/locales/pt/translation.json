@@ -16,6 +16,7 @@
   "phrases_per_learning_session": "Frases por treino de aprendizagem",
   "daily_category_phrase_title": "Frase diária por categoria",
   "daily_category_phrase_desc": "A IA adiciona 1 frase nova por dia nas categorias que você está estudando ativamente (treinou nos últimos 7 dias).",
+  "daily_category_phrase_active_count": "Ativado em {{count}} categorias. Toque para desativar em todas.",
   "daily_category_phrase_settings_desc": "O liga/desliga fica na edição de cada categoria (ícone de editar). Aqui você pode desativar em todas de uma vez.",
   "daily_category_phrase_disable_all": "Desativar em todas as categorias",
   "daily_category_phrase_disabled_all": "Desativado em {{count}} categorias.",

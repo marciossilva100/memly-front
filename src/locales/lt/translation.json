@@ -16,6 +16,7 @@
   "phrases_per_learning_session": "Frazių per mokymosi seansą",
   "daily_category_phrase_title": "Kasdienis sakinys kiekvienai kategorijai",
   "daily_category_phrase_desc": "DI prideda po 1 naują sakinį kiekvieną dieną prie kategorijų, kurias aktyviai mokotės (mokėtės per pastarąsias 7 dienas).",
+  "daily_category_phrase_active_count": "Aktyvu {{count}} kategorijose. Palieskite, kad išjungtumėte visas.",
   "daily_category_phrase_settings_desc": "Įjungimas ir išjungimas yra kiekvienos kategorijos redagavimo lange. Čia galite išjungti visose iš karto.",
   "daily_category_phrase_disable_all": "Išjungti visose kategorijose",
   "daily_category_phrase_disabled_all": "Išjungta {{count}} kategorijose.",

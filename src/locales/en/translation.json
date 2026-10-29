@@ -16,6 +16,7 @@
   "phrases_per_learning_session": "Phrases per learning session",
   "daily_category_phrase_title": "Daily phrase per category",
   "daily_category_phrase_desc": "The AI adds 1 new phrase per day to the categories you're actively studying (trained in the last 7 days).",
+  "daily_category_phrase_active_count": "Active in {{count}} categories. Tap to disable in all.",
   "daily_category_phrase_settings_desc": "Turn it on or off from each category's edit screen. Here you can disable it everywhere at once.",
   "daily_category_phrase_disable_all": "Disable in all categories",
   "daily_category_phrase_disabled_all": "Disabled for {{count}} categories.",

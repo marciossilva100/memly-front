@@ -16,6 +16,7 @@
   "phrases_per_learning_session": "Öğrenme antrenmanı başına cümle sayısı",
   "daily_category_phrase_title": "Kategori başına günlük cümle",
   "daily_category_phrase_desc": "Yapay zeka, son 7 gün içinde gerçekten çalıştığın kategorilere her gün 1 yeni cümle ekler.",
+  "daily_category_phrase_active_count": "{{count}} kategoride etkin. Tümünü kapatmak için dokun.",
   "daily_category_phrase_settings_desc": "Açma/kapama her kategorinin düzenleme ekranında yapılır. Burada hepsini tek seferde kapatabilirsin.",
   "daily_category_phrase_disable_all": "Tüm kategorilerde devre dışı bırak",
   "daily_category_phrase_disabled_all": "{{count}} kategoride devre dışı bırakıldı.",

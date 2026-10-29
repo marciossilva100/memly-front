@@ -16,6 +16,7 @@
   "phrases_per_learning_session": "प्रति अभ्यास सीखने वाले वाक्यों की संख्या",
   "daily_category_phrase_title": "हर श्रेणी के लिए रोज़ाना एक वाक्य",
   "daily_phrase_new_badge": "नया",
+  "new_phrase_available": "नया वाक्य उपलब्ध है",
   "daily_category_phrase_desc": "AI हर दिन उन श्रेणियों में 1 नया वाक्य जोड़ता है जिन्हें आप सक्रिय रूप से पढ़ रहे हैं (पिछले 7 दिनों में अभ्यास किया)।",
   "daily_category_phrase_active_count": "{{count}} श्रेणियों में सक्रिय। सभी में बंद करने के लिए टैप करें।",
   "daily_category_phrase_settings_desc": "चालू/बंद करना हर श्रेणी के एडिट स्क्रीन में होता है। यहाँ से आप एक साथ सभी में बंद कर सकते हैं।",

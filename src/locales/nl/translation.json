@@ -16,6 +16,7 @@
   "phrases_per_learning_session": "Zinnen per leersessie",
   "daily_category_phrase_title": "Dagelijkse zin per categorie",
   "daily_phrase_new_badge": "Nieuw",
+  "new_phrase_available": "Nieuwe zin beschikbaar",
   "daily_category_phrase_desc": "De AI voegt elke dag 1 nieuwe zin toe aan de categorieën die je actief aan het leren bent (de afgelopen 7 dagen geoefend).",
   "daily_category_phrase_active_count": "Actief in {{count}} categorieën. Tik om alles uit te schakelen.",
   "daily_category_phrase_settings_desc": "In- en uitschakelen doe je bij het bewerken van elke categorie. Hier kun je het overal in één keer uitschakelen.",

@@ -13,9 +13,10 @@ import TermometroEstudo from '../components/TermometroEstudo';
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { treinoStatsCache } from "../utils/treinoStatsCache";
+import { carregarFrasesIaVistas } from "../utils/frasesIaVistas";
 
 
-import { BookOpen, BarChart3, Bot, Plus, Home as HomeIcon, CheckCircle2, Flame, Gamepad2, Crown, Search, AlertTriangle, RefreshCw } from "lucide-react";
+import { BookOpen, BarChart3, Bot, Plus, Home as HomeIcon, CheckCircle2, Flame, Gamepad2, Crown, Search, AlertTriangle, RefreshCw, Sparkles } from "lucide-react";
 
 const AVATAR_COLORS = [
     'bg-emerald-500',
@@ -40,6 +41,9 @@ function truncarNomeCategoria(nome) {
 
 export default function Home() {
     const { user, setUser, setCategoriasLoading, categoriasLoading } = useAuth();
+    // Mesmo estado de "frases da IA já vistas" usado em Frases.jsx (chave
+    // compartilhada) - marcar como vista lá também soma o indicador daqui.
+    const [frasesIaVistas] = useState(() => carregarFrasesIaVistas());
     const [open, setOpen] = useState(false);
     const [openCategoriaEditar, setOpenCategoriaEditar] = useState(false);
     const [openTreino, setOpenTreino] = useState(false)
@@ -334,6 +338,7 @@ export default function Home() {
                     idiomaAprendendo: cat.idioma_aprendendo ?? cat.idiomaAprendendo ?? cat.idioma_aprendendo_data ?? null,
                     categoriaPublica: Number(cat.public ?? cat.categoria_publica ?? 0),
                     gerarFraseDiaria: Number(cat.gerar_frase_diaria ?? 0),
+                    fraseNovaId: cat.frase_nova_id ?? null,
                     categoriaDados: cat.categoria_dados ?? cat.categoriaDados ?? null,
                     tipo: cat.tipo ?? null,
                 }));
@@ -738,6 +743,12 @@ export default function Home() {
                                         <div className="flex flex-col text-xs text-gray-400">
                                             <span>{item.quantidade} {t("words")}</span>
                                             <span className="text-emerald-400">{paraRevisar} {t("to_review")}</span>
+                                            {item.fraseNovaId && !frasesIaVistas.has(item.fraseNovaId) && (
+                                                <span className="flex items-center gap-1 text-[#4cb8c4] font-medium mt-0.5">
+                                                    <Sparkles size={11} />
+                                                    {t("new_phrase_available")}
+                                                </span>
+                                            )}
                                         </div>
                                         <div className="mt-1.5 h-1.5 w-32 max-w-full rounded-full bg-gray-700 overflow-hidden">
                                             <div

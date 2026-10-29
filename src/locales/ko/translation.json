@@ -16,6 +16,7 @@
   "phrases_per_learning_session": "학습 훈련당 문장 수",
   "daily_category_phrase_title": "카테고리별 매일 문장",
   "daily_phrase_new_badge": "새 문장",
+  "new_phrase_available": "새 문장이 있어요",
   "daily_category_phrase_desc": "AI는 최근 7일 이내에 실제로 학습한 카테고리에만 매일 새 문장을 1개씩 추가합니다.",
   "daily_category_phrase_active_count": "{{count}}개 카테고리에서 활성화됨. 탭하면 모두 끕니다.",
   "daily_category_phrase_settings_desc": "켜고 끄는 것은 각 카테고리의 수정 화면에서 합니다. 여기서는 한 번에 모두 끌 수 있습니다.",

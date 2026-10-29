@@ -9,6 +9,7 @@ import ModalConfirm from '../components/ModalConfirm';
 import { useTranslation } from "react-i18next";
 import imgChapeuFormatura from "../assets/img/chapeu_formatura.png"
 import { playAudio, pararAudio } from "../utils/audioPlayer";
+import { NOVA_FRASE_IA_JANELA_DIAS, carregarFrasesIaVistas, salvarFrasesIaVistas } from "../utils/frasesIaVistas";
 
 import {
     Trash,
@@ -23,23 +24,6 @@ import {
     AlertTriangle,
     RefreshCw
 } from "lucide-react";
-
-// Frases geradas automaticamente pela IA (1 por dia, por categoria - ver
-// CategoriaFraseDiariaIA no backend) ganham um selo "Nova" piscando até o
-// usuário interagir com elas (abrir pra editar/ver) OU até essa janela de
-// dias passar, o que vier primeiro - sem isso, uma frase que o usuário nunca
-// abre ficaria marcada como "nova" pra sempre.
-const NOVA_FRASE_IA_JANELA_DIAS = 3;
-const FRASES_IA_VISTAS_STORAGE_KEY = "zaldemy_frases_ia_vistas";
-
-function carregarFrasesIaVistas() {
-    try {
-        return new Set(JSON.parse(localStorage.getItem(FRASES_IA_VISTAS_STORAGE_KEY) || "[]"));
-    } catch {
-        return new Set();
-    }
-}
-
 
 export default function Frases() {
     const { t } = useTranslation();
@@ -99,11 +83,7 @@ export default function Frases() {
             if (prev.has(id)) return prev;
             const novo = new Set(prev);
             novo.add(id);
-            try {
-                localStorage.setItem(FRASES_IA_VISTAS_STORAGE_KEY, JSON.stringify([...novo]));
-            } catch {
-                // localStorage indisponível - o selo só não some entre sessões, sem quebrar nada
-            }
+            salvarFrasesIaVistas(novo);
             return novo;
         });
     }

@@ -735,7 +735,7 @@ export default function Home() {
                         return (
                             <div key={item.id} onClick={() => validar(item.quantidade, item.id)} className="relative flex bg-gray-800/50   border border-gray-700 items-center justify-between py-3 px-4  rounded-xl  shadow-lg mb-4 ">
                                 {temFraseNova && (
-                                    <span className="absolute -top-2 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1 bg-[#4cb8c4] text-white text-[11px] font-semibold px-2.5 py-0.5 rounded-full shadow-lg animate-pulse whitespace-nowrap">
+                                    <span className="absolute -top-2 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1 bg-purple-500 text-white text-[11px] font-semibold px-2.5 py-0.5 rounded-full shadow-lg animate-pulse whitespace-nowrap">
                                         <Sparkles size={11} />
                                         {t("new_phrase_available")}
                                     </span>

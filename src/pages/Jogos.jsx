@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { CloudRain, Target, Gamepad2 } from "lucide-react";
+import { Gamepad2 } from "lucide-react";
+import imgNave from "../assets/img/nave.png";
 
 function CardJogo({ icon, titulo, descricao, onClick }) {
     return (
@@ -9,7 +10,7 @@ function CardJogo({ icon, titulo, descricao, onClick }) {
             onClick={onClick}
             className="relative w-full text-left flex items-center gap-4 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-2xl p-4 hover:bg-gray-700/50 transition-colors"
         >
-            <span className="flex items-center justify-center w-14 h-14 shrink-0 rounded-2xl bg-gradient-to-br from-[#4cb8c4]/20 to-[#085078]/20 text-[#4cb8c4]">
+            <span className="flex items-center justify-center w-14 h-14 shrink-0 rounded-2xl bg-gradient-to-br from-[#4cb8c4]/15 to-[#085078]/15">
                 {icon}
             </span>
             <div className="min-w-0 flex-1">
@@ -44,13 +45,13 @@ export default function Jogos() {
 
             <div className="flex flex-col gap-3">
                 <CardJogo
-                    icon={<CloudRain className="w-6 h-6" />}
+                    icon={<span className="text-3xl leading-none" role="img" aria-hidden="true">🌧️</span>}
                     titulo={t("phrase_rain_title")}
                     descricao={t("phrase_rain_card_desc")}
                     onClick={() => navigate('/chuvadefrases')}
                 />
                 <CardJogo
-                    icon={<Target className="w-6 h-6" />}
+                    icon={<img src={imgNave} alt="" className="w-10 h-10 object-contain" />}
                     titulo={t("sure_shot_title")}
                     descricao={t("sure_shot_card_desc")}
                     onClick={() => navigate('/tirocerteiro')}

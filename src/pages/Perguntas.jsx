@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { Volume2, Mic, Square, RotateCcw, History, SkipForward, Send, MessageCircleQuestion, Ban, AlertCircle, Eye, EyeOff, Keyboard, Loader2, Check, ArrowRight, BookOpen } from "lucide-react";
+import { Volume2, Mic, Square, RotateCcw, History, SkipForward, Send, MessageCircleQuestion, Ban, AlertCircle, Lightbulb, Keyboard, Loader2, Check, ArrowRight, BookOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { playAudio, pararAudio } from "../utils/audioPlayer";
 import { useAuth } from "../context/AuthContext";
@@ -637,7 +637,7 @@ export default function Perguntas() {
                                         : "bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-700/50"
                                 }`}
                             >
-                                {mostrarVocabulario ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                                <Lightbulb className="w-3.5 h-3.5" />
                                 {t("toggle_vocabulary_hint")}
                             </button>
                             <VocabularioHintBalloon />

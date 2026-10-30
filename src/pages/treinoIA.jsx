@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Volume2, Mic, Square, RotateCcw, History, Send, BookOpenText, Ban, AlertCircle, Eye, EyeOff, Loader2, Check, ArrowRight } from "lucide-react";
+import { Volume2, Mic, Square, RotateCcw, History, Send, BookOpenText, Ban, AlertCircle, Lightbulb, Loader2, Check, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -520,7 +520,7 @@ export default function TreinoIA() {
                                         : "bg-gray-800/50 border-gray-700 text-gray-400 hover:bg-gray-700/50"
                                 }`}
                             >
-                                {mostrarVocabulario ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                                <Lightbulb className="w-3.5 h-3.5" />
                                 {t("toggle_vocabulary_hint")}
                             </button>
                             <VocabularioHintBalloon />

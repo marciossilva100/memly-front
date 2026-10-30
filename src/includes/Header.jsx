@@ -485,10 +485,15 @@ export default function Header({ titulo }) {
                             (muda por par de idioma, ver Nivel.php). Fora da
                             linha das bandeiras (que é um flex-row de altura
                             fixa h-16) de propósito - senão vira mais um item
-                            NA MESMA linha em vez de aparecer embaixo. */}
-                        <div className="ms-3 pb-2 -mt-1">
-                            <span className="flex items-center gap-1 text-xs text-gray-400">
-                                <nivelAtual.icon className="w-3.5 h-3.5 text-[#4cb8c4]" />
+                            NA MESMA linha em vez de aparecer embaixo. Altura
+                            mínima de propósito (leading-none, sem padding
+                            próprio) - a Home usa h-dvh sem scroll no
+                            container inteiro, então toda altura extra aqui
+                            cortava a barra de ícones lá embaixo (bug real
+                            reportado). */}
+                        <div className="ms-3 -mt-1.5 leading-none">
+                            <span className="flex items-center gap-1 text-xs text-gray-400 leading-none">
+                                <nivelAtual.icon className="w-3 h-3 text-[#4cb8c4] shrink-0" />
                                 {t("current_level")}: {t(`level_${nivelAtual.key}_title`)}
                             </span>
                         </div>

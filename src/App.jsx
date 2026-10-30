@@ -201,8 +201,18 @@ function Layout({ titulo, setTitulo }) {
       <FrasesLimitToast />
       <NivelUpToast />
 
-      {mostrarHeader && <Header titulo={titulo} />}
-
+      {/* Quando o Header aparece (Home/Métricas/Admin/ListCategorias), ele e a
+          página viram irmãos num container de altura real (h-dvh flex-col) -
+          sem isso, uma página com root h-dvh (ex: Home.jsx) reivindicava
+          100% da altura da TELA pra si mesma, além da altura que o Header
+          (acima dela) já ocupava, sempre estourando o viewport pela altura
+          exata do Header (bug real: cortava a barra de ícones de baixo da
+          Home sempre que o Header crescia um pouco). "contents" faz os dois
+          wrappers não participarem do layout quando não há Header (a grande
+          maioria das rotas), preservando o comportamento de sempre. */}
+      <div className={mostrarHeader ? "h-dvh flex flex-col" : "contents"}>
+        {mostrarHeader && <Header titulo={titulo} />}
+        <div className={mostrarHeader ? "flex-1 min-h-0" : "contents"}>
       <Routes>
         <Route path="/" element={isStandaloneApp() ? <Login setTitulo={setTitulo} /> : <LandingPage />} />
         <Route path="/login" element={<MobileOnlyRoute><Login setTitulo={setTitulo} /></MobileOnlyRoute>} />
@@ -519,6 +529,8 @@ function Layout({ titulo, setTitulo }) {
         <Route path="/sobre" element={<Sobre />} />
         <Route path="/videos" element={<EnglishVideos query="english listening practice" />} />
       </Routes>
+        </div>
+      </div>
     </>
   )
 }

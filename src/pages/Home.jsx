@@ -605,8 +605,14 @@ export default function Home() {
     }, [user?.native_language, user?.learning_language, user?.id]);
 
 
+    // h-full (não h-dvh) de propósito - o Layout (App.jsx) já reserva a
+    // altura certa da tela pra essa página numa linha flex-1, contando com a
+    // altura real do Header acima. h-dvh aqui reivindicava a tela INTEIRA de
+    // novo, além do espaço do Header, sempre cortando a barra de ícones de
+    // baixo pela altura exata do Header (bug real reportado - piorou quando
+    // o Header cresceu com o indicador de nível).
     return (
-        <div className="h-dvh flex flex-col max-w-7xl mx-auto  from-gray-900 to-gray-800 bg-gradient-to-br">
+        <div className="h-full flex flex-col max-w-7xl mx-auto  from-gray-900 to-gray-800 bg-gradient-to-br">
 
             <div className="px-4 pt-4">
                 <p className="text-lg font-semibold text-white">
@@ -763,7 +769,7 @@ export default function Home() {
 
                                 <div className="flex items-center gap-3 relative z-60 shrink-0">
                                     <button
-                                        className="shadow-md px-4 py-1 text-md  rounded-full bg-[#4cb8c4] text-white hover:opacity-90"
+                                        className="shadow-md px-3 py-1 text-sm rounded-full bg-[#4cb8c4] text-white hover:opacity-90"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             dispensarGuiaTreino();

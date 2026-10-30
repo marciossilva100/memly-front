@@ -17,7 +17,7 @@
   "daily_category_phrase_title": "Codzienne zdanie dla każdej kategorii",
   "daily_phrase_new_badge": "Nowe",
   "new_phrase_available": "Dostępne nowe zdanie",
-  "daily_category_phrase_desc": "AI dodaje 1 nowe zdanie dziennie do kategorii, które aktywnie się uczysz (ćwiczonych w ciągu ostatnich 7 dni).",
+  "daily_category_phrase_desc": "AI dodaje 1 nowe zdanie dziennie do tej kategorii (Premium). Działa tylko wtedy, gdy ćwiczyłeś tę kategorię co najmniej raz w ciągu ostatnich 7 dni - nie musi być codziennie, po prostu nie porzucaj jej całkowicie.",
   "daily_category_phrase_active_count": "Aktywne w {{count}} kategoriach. Dotknij, aby wyłączyć wszystkie.",
   "daily_category_phrase_settings_desc": "Włączanie i wyłączanie znajdziesz w edycji każdej kategorii. Tutaj możesz wyłączyć wszystko naraz.",
   "daily_category_phrase_disable_all": "Wyłącz we wszystkich kategoriach",

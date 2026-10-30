@@ -17,7 +17,7 @@
   "daily_category_phrase_title": "Frase diaria por categoría",
   "daily_phrase_new_badge": "Nueva",
   "new_phrase_available": "Nueva frase disponible",
-  "daily_category_phrase_desc": "La IA añade 1 frase nueva por día en las categorías que estás estudiando activamente (entrenaste en los últimos 7 días).",
+  "daily_category_phrase_desc": "La IA agrega 1 frase nueva por día a esta categoría (Premium). Solo funciona si practicaste esta categoría al menos una vez en los últimos 7 días - no hace falta todos los días, solo no abandonarla por completo.",
   "daily_category_phrase_active_count": "Activado en {{count}} categorías. Toca para desactivar en todas.",
   "daily_category_phrase_settings_desc": "El interruptor está en la edición de cada categoría. Aquí puedes desactivarlo en todas a la vez.",
   "daily_category_phrase_disable_all": "Desactivar en todas las categorías",

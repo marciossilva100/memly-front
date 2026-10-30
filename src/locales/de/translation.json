@@ -17,7 +17,7 @@
   "daily_category_phrase_title": "Täglicher Satz pro Kategorie",
   "daily_phrase_new_badge": "Neu",
   "new_phrase_available": "Neuer Satz verfügbar",
-  "daily_category_phrase_desc": "Die KI fügt jeden Tag 1 neuen Satz zu den Kategorien hinzu, die du aktiv lernst (in den letzten 7 Tagen geübt).",
+  "daily_category_phrase_desc": "Die KI fügt dieser Kategorie täglich einen neuen Satz hinzu (Premium). Funktioniert nur, wenn du diese Kategorie in den letzten 7 Tagen mindestens einmal geübt hast - nicht jeden Tag nötig, nur nicht ganz aufgeben.",
   "daily_category_phrase_active_count": "In {{count}} Kategorien aktiv. Tippe, um alle zu deaktivieren.",
   "daily_category_phrase_settings_desc": "Ein- und Ausschalten geschieht in der Bearbeitung jeder Kategorie. Hier kannst du es überall auf einmal deaktivieren.",
   "daily_category_phrase_disable_all": "In allen Kategorien deaktivieren",

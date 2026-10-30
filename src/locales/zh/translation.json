@@ -17,7 +17,7 @@
   "daily_category_phrase_title": "每个分类每日一句",
   "daily_phrase_new_badge": "新",
   "new_phrase_available": "有新句子",
-  "daily_category_phrase_desc": "AI 会每天为你最近 7 天内真正在学习的分类添加 1 个新句子。",
+  "daily_category_phrase_desc": "AI每天为这个分类添加1个新句子（高级版）。只有在过去7天内至少练习过这个分类一次才会生效——不需要每天都练，只是不能完全放弃它。",
   "daily_category_phrase_active_count": "已在 {{count}} 个分类中开启。点击可全部关闭。",
   "daily_category_phrase_settings_desc": "开关在每个分类的编辑页面里。在这里你可以一次性关闭所有分类。",
   "daily_category_phrase_disable_all": "关闭所有分类",

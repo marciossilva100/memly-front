@@ -17,7 +17,7 @@
   "daily_category_phrase_title": "Kategori başına günlük cümle",
   "daily_phrase_new_badge": "Yeni",
   "new_phrase_available": "Yeni cümle mevcut",
-  "daily_category_phrase_desc": "Yapay zeka, son 7 gün içinde gerçekten çalıştığın kategorilere her gün 1 yeni cümle ekler.",
+  "daily_category_phrase_desc": "Yapay zeka bu kategoriye günde 1 yeni cümle ekler (Premium). Sadece son 7 gün içinde bu kategoriyi en az bir kez çalıştıysanız işe yarar - her gün gerekmez, sadece tamamen bırakmayın.",
   "daily_category_phrase_active_count": "{{count}} kategoride etkin. Tümünü kapatmak için dokun.",
   "daily_category_phrase_settings_desc": "Açma/kapama her kategorinin düzenleme ekranında yapılır. Burada hepsini tek seferde kapatabilirsin.",
   "daily_category_phrase_disable_all": "Tüm kategorilerde devre dışı bırak",

@@ -17,7 +17,7 @@
   "daily_category_phrase_title": "Kasdienis sakinys kiekvienai kategorijai",
   "daily_phrase_new_badge": "Nauja",
   "new_phrase_available": "Yra nauja frazė",
-  "daily_category_phrase_desc": "DI prideda po 1 naują sakinį kiekvieną dieną prie kategorijų, kurias aktyviai mokotės (mokėtės per pastarąsias 7 dienas).",
+  "daily_category_phrase_desc": "DI kasdien prideda 1 naują frazę šiai kategorijai (Premium). Tai veikia tik jei per pastarąsias 7 dienas bent kartą mokėtės šios kategorijos - nebūtina kasdien, tiesiog nepamirškite jos visai.",
   "daily_category_phrase_active_count": "Aktyvu {{count}} kategorijose. Palieskite, kad išjungtumėte visas.",
   "daily_category_phrase_settings_desc": "Įjungimas ir išjungimas yra kiekvienos kategorijos redagavimo lange. Čia galite išjungti visose iš karto.",
   "daily_category_phrase_disable_all": "Išjungti visose kategorijose",

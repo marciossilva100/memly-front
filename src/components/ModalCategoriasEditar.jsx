@@ -14,6 +14,7 @@ export default function ModalCategoriasEditar({ setOpenCategoriaEditar,open,cate
     const [categoriaPublica, setCategoriaPublica] = useState(0)
     const [gerarFraseDiaria, setGerarFraseDiaria] = useState(0)
     const [showTooltip, setShowTooltip] = useState(false)
+    const [showTooltipFraseDiaria, setShowTooltipFraseDiaria] = useState(false)
 const API_URL = import.meta.env.VITE_API_URL;
     useEffect(() => {
         setCategoria(categoriaEditar)
@@ -169,9 +170,34 @@ const API_URL = import.meta.env.VITE_API_URL;
                                     <div className="flex items-center gap-1.5">
                                         <span className="text-md font-medium text-white">{t("daily_category_phrase_title")}</span>
                                         {!isPremium && <Crown className="w-3.5 h-3.5 text-yellow-400 shrink-0" />}
+                                        {/* Mesmo padrão do "?" de Compartilhar categoria acima - pedido
+                                            explícito do usuário pra deixar claro, sem precisar perguntar,
+                                            que a regra não é "7 dias seguidos estudando" e sim "treinou
+                                            essa categoria pelo menos 1x nos últimos 7 dias". */}
+                                        <div className="relative">
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowTooltipFraseDiaria(!showTooltipFraseDiaria)}
+                                                className="focus:outline-none mt-1"
+                                            >
+                                                <HelpCircle size={16} className="text-gray-400 hover:text-blue-500 transition-colors cursor-pointer" />
+                                            </button>
+
+                                            {showTooltipFraseDiaria && (
+                                                <>
+                                                    <div
+                                                        className="fixed inset-0 z-40"
+                                                        onClick={() => setShowTooltipFraseDiaria(false)}
+                                                    />
+                                                    <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg z-50 max-w-[260px] w-max">
+                                                        <p className="break-words">{t("daily_category_phrase_desc")}</p>
+                                                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-                                <p className="text-gray-400 text-xs mt-1">{t("daily_category_phrase_desc")}</p>
                             </div>
 
                             <div className="mt-6 flex justify-end gap-2">

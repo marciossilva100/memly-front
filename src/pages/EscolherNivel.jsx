@@ -23,7 +23,7 @@ export default function EscolherNivel() {
   useEffect(() => {
     if (user?.step <= 1) {
       navigate("/escolheridiomaaprender", { replace: true });
-    } else if (user?.nivel && !location.state?.fromBack) {
+    } else if (user?.nivel_definido && !location.state?.fromBack) {
       navigate(user?.interesses_definidos ? "/referenciausuario" : "/escolhercategorias", { replace: true });
     }
   }, [user]);

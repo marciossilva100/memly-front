@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import PremiumModal from "../components/PremiumModal";
 import { fetchComTimeout } from "../utils/fetchComTimeout";
+import { NIVEIS } from "../utils/niveis";
 
 
 import {
@@ -214,6 +215,12 @@ export default function Header({ titulo }) {
         (l) => l.sigla === idioma
     );
 
+    // Nível do PAR DE IDIOMA ativo agora (user.nivel já vem assim do backend,
+    // ver controller/me.php e model/Idioma.php::atualizarReferenciaAprendizado)
+    // - cada par (nativo + aprendendo) tem o seu próprio, nunca um nível só
+    // pro usuário inteiro.
+    const nivelAtual = NIVEIS.find((n) => n.id === (user?.nivel || 1)) || NIVEIS[0];
+
     const handleSelectLanguage = async (item) => {
         const idiomaAnterior = idioma;
 
@@ -238,13 +245,19 @@ export default function Header({ titulo }) {
                 throw new Error(`Falha ao salvar idioma (status ${res.status})`);
             }
 
+            const data = await res.json();
+
             // Só atualiza o usuário (o que dispara o carregamento das categorias em
             // Home.jsx) depois do backend confirmar -- ele é quem cadastra a
             // categoria/frases padrão desse par de idiomas. Atualizar antes cria uma
             // corrida onde a Home busca as categorias antes delas existirem no banco.
+            // nivel vem do par NOVO (cada par de idioma tem o seu, ver Nivel.php) -
+            // sem isso o indicador de nível na Home ficava mostrando o nível do
+            // par anterior até a próxima vez que o usuário mexesse nele.
             setUser(prev => ({
                 ...prev,
-                learning_language: item.sigla
+                learning_language: item.sigla,
+                nivel: data.nivel ?? prev?.nivel
             }));
         } catch (error) {
             console.error('Erro ao salvar idioma:', error);
@@ -281,9 +294,12 @@ export default function Header({ titulo }) {
                 throw new Error(`Falha ao salvar idioma nativo (status ${res.status})`);
             }
 
+            const data = await res.json();
+
             setUser(prev => ({
                 ...prev,
-                native_language: item.sigla
+                native_language: item.sigla,
+                nivel: data.nivel ?? prev?.nivel
             }));
         } catch (error) {
             console.error('Erro ao salvar idioma nativo:', error);
@@ -325,10 +341,13 @@ export default function Header({ titulo }) {
                 throw new Error(`Falha ao inverter idiomas (status ${res.status})`);
             }
 
+            const data = await res.json();
+
             setUser(prev => ({
                 ...prev,
                 native_language: aprenderAnterior.sigla,
-                learning_language: nativoAnterior.sigla
+                learning_language: nativoAnterior.sigla,
+                nivel: data.nivel ?? prev?.nivel
             }));
         } catch (error) {
             console.error('Erro ao inverter idiomas:', error);
@@ -476,6 +495,20 @@ export default function Header({ titulo }) {
                                 </div>
                             </div>
 
+                        </div>
+
+                        {/* Nível do par de idioma ativo agora - pedido explícito
+                            do usuário pra ficar visível aqui, logo abaixo do
+                            idioma nativo, já que o nível não é mais global
+                            (muda por par de idioma, ver Nivel.php). Fora da
+                            linha das bandeiras (que é um flex-row de altura
+                            fixa h-16) de propósito - senão vira mais um item
+                            NA MESMA linha em vez de aparecer embaixo. */}
+                        <div className="ms-3 pb-2 -mt-1">
+                            <span className="flex items-center gap-1 text-xs text-gray-400">
+                                <nivelAtual.icon className="w-3.5 h-3.5 text-[#4cb8c4]" />
+                                {t("current_level")}: {t(`level_${nivelAtual.key}_title`)} ({nivelAtual.cefr})
+                            </span>
                         </div>
                     </div>
                 </header>

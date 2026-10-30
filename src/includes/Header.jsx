@@ -507,7 +507,7 @@ export default function Header({ titulo }) {
                         <div className="ms-3 pb-2 -mt-1">
                             <span className="flex items-center gap-1 text-xs text-gray-400">
                                 <nivelAtual.icon className="w-3.5 h-3.5 text-[#4cb8c4]" />
-                                {t("current_level")}: {t(`level_${nivelAtual.key}_title`)} ({nivelAtual.cefr})
+                                {t("current_level")}: {t(`level_${nivelAtual.key}_title`)}
                             </span>
                         </div>
                     </div>

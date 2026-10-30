@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { FileText, Shield, ShieldCheck, LogOut, ChevronRight, Settings, BookOpen, Home, BarChart3, Trash2, Volume2, Check, Gauge, Bot, Crown, Play, CreditCard, RotateCcw, User, Bell, AlertTriangle, Info } from "lucide-react";
 import { NIVEIS } from "../utils/niveis";
+import { flags, FALLBACK_FLAG } from "../utils/flags";
 import { notificacoesDisponiveis, statusNotificacoes, ativarNotificacoes, desativarNotificacoes } from "../utils/pushNotifications";
 import { limparCacheVozNatural } from "../utils/audioPlayer";
 import ModalConfirm from "../components/ModalConfirm";
@@ -849,12 +850,21 @@ export default function Configuracoes() {
                             <span className="text-white text-sm">{t("your_level")}</span>
                         </div>
                         {user?.native_language && user?.learning_language && (
-                            <p className="text-xs text-gray-400 mb-3">
-                                {t("level_applies_to_pair", {
-                                    nativo: t(user.native_language),
-                                    aprendendo: t(user.learning_language),
-                                })}
-                            </p>
+                            <div className="flex items-center gap-1.5 text-xs text-gray-400 mb-3">
+                                <img
+                                    src={flags[user.native_language] || FALLBACK_FLAG}
+                                    alt=""
+                                    className="w-4 h-4 rounded-full"
+                                />
+                                <span>{t(user.native_language)}</span>
+                                <span>→</span>
+                                <img
+                                    src={flags[user.learning_language] || FALLBACK_FLAG}
+                                    alt=""
+                                    className="w-4 h-4 rounded-full"
+                                />
+                                <span>{t(user.learning_language)}</span>
+                            </div>
                         )}
 
                         <div className="space-y-1.5">

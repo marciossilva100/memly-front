@@ -636,11 +636,13 @@ export default function TraducaoReversa() {
 
                         <div className="flex justify-center gap-2 mt-3">
                             <button
-                                // forcarVozPadrao=true - o áudio do texto nativo tem que ser sempre a
-                                // voz padrão (Google, via LibreTranslate::getAudio no backend), nunca
-                                // a voz natural/premium (OpenAI) - pedido explícito do usuário. Continua
-                                // disponível depois do "Não sei" (card virado) - toca sempre o texto
-                                // nativo, não depende de qual lado do card está visível.
+                                // forcarVozPadrao=true - o áudio tem que ser sempre a voz padrão
+                                // (Google, via LibreTranslate::getAudio no backend), nunca a voz
+                                // natural/premium (OpenAI) - pedido explícito do usuário. Depois do
+                                // "Não sei", o card pode ser virado pra ver o gabarito (traducaoGabarito,
+                                // no idioma aprendendo) - o Ouvir toca o lado que está visível no
+                                // momento, não sempre o texto nativo (bug real reportado: virava o
+                                // card mas o áudio continuava sendo sempre do nativo).
                                 disabled={buscandoAudio}
                                 onClick={() => {
                                     if (tocandoOuvir) {
@@ -648,8 +650,12 @@ export default function TraducaoReversa() {
                                         setTocandoOuvir(false);
                                         return;
                                     }
+                                    const verso = naoSeiClicado && flipped;
+                                    const texto = verso ? traducaoGabarito : textoNativo;
+                                    const idioma = verso ? user?.learning_language : user?.native_language;
+
                                     setBuscandoAudio(true);
-                                    playAudio(textoNativo, user, true, user?.native_language, true, false, () => {
+                                    playAudio(texto, user, true, idioma, true, false, () => {
                                         setBuscandoAudio(false);
                                         setTocandoOuvir(true);
                                     })

@@ -356,6 +356,10 @@ export default function ListCategoria() {
             <div
                 className="sticky inset-x-0 bottom-0 z-10 text-center w-full justify-items-center justify-center items-center pb-4"
                 style={{
+                    backgroundImage: "none",
+                    boxShadow: "none",
+                    outline: "none",
+                    borderTop: "0px transparent",
                     paddingTop: "60px",
                     marginTop: "-60px",
                     backgroundColor: "rgb(17, 24, 39)",

@@ -868,7 +868,14 @@ export default function Home() {
             )}
 
             <div
-                className="relative sticky z-10 bottom-0 text-center w-full justify-items-center justify-center items-center pb-16"
+                // pb-4 (antes pb-16) - com a altura da Home corrigida (ver commit
+                // sobre h-full/h-dvh), essa barra passou a ficar de fato encostada
+                // no fim de verdade da tela, e os 64px de padding que antes
+                // ajudavam a compensar o cálculo errado de altura viraram um vão
+                // vazio visível entre os ícones e a barra de navegação do Android
+                // (bug real reportado, confirmado inspecionando o app de verdade
+                // via chrome://inspect).
+                className="relative sticky z-10 bottom-0 text-center w-full justify-items-center justify-center items-center pb-4"
                 style={{
                     backgroundImage: "none",
                     boxShadow: "none",

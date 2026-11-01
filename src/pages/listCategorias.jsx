@@ -293,7 +293,7 @@ export default function ListCategoria() {
                                     {item.categoria?.charAt(0)?.toUpperCase()}
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="text-lg text-white font-medium truncate">
+                                    <p className="text-base text-white font-medium truncate">
                                         {item.categoria}
                                     </p>
                                     <div className="flex items-center gap-3">
@@ -350,7 +350,19 @@ export default function ListCategoria() {
                 motivo={motivoPremium}
             />
 
-            <div className="sticky inset-x-0 bottom-0 z-10 text-center w-full justify-items-center justify-center items-center   ">
+            {/* Mesmo fundo/fade da barra de baixo da Home (Home.jsx) - faltava
+                aqui, então a lista de categorias aparecia "por trás" dos
+                ícones ao rolar (bug real reportado: sem background nenhum). */}
+            <div
+                className="sticky inset-x-0 bottom-0 z-10 text-center w-full justify-items-center justify-center items-center pb-4"
+                style={{
+                    paddingTop: "60px",
+                    marginTop: "-60px",
+                    backgroundColor: "rgb(17, 24, 39)",
+                    WebkitMaskImage: "linear-gradient(to top, black 0%, black 70%, transparent 100%)",
+                    maskImage: "linear-gradient(to top, black 0%, black 70%, transparent 100%)",
+                }}
+            >
 
 
                 <div className=" w-full ">

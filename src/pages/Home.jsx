@@ -884,8 +884,13 @@ export default function Home() {
                     paddingTop: "60px",
                     marginTop: "-60px",
                     backgroundColor: "rgb(17, 24, 39)",
-                    WebkitMaskImage: "linear-gradient(to top, black 0%, black 70%, transparent 100%)",
-                    maskImage: "linear-gradient(to top, black 0%, black 70%, transparent 100%)",
+                    // fade começando em 40% (não 70%) - com uma lista de categorias
+                    // comprida o bastante pra passar por trás dessa barra, o fade
+                    // curto deixava uma linha visível onde o card "era cortado" pelo
+                    // início da zona 100% opaca (bug real reportado na tela de
+                    // categorias existentes, mesmo elemento/técnica usada aqui).
+                    WebkitMaskImage: "linear-gradient(to top, black 0%, black 40%, transparent 100%)",
+                    maskImage: "linear-gradient(to top, black 0%, black 40%, transparent 100%)",
                 }}
             >
 

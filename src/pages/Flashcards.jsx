@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { playAudio, preloadAudio, pararAudio } from "../utils/audioPlayer";
 import { Volume, RefreshCw, Loader2 } from "lucide-react";
 import { fetchComTimeout } from "../utils/fetchComTimeout";
+import { carregarFrasesIaVistas, salvarFrasesIaVistas } from "../utils/frasesIaVistas";
 
 // import { gerarAudio } from "../services/elevenlabs";
 import { useAuth } from "../context/AuthContext";
@@ -144,6 +145,20 @@ export default function Flashcards() {
         for (let i = embaralhadas.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [embaralhadas[i], embaralhadas[j]] = [embaralhadas[j], embaralhadas[i]];
+        }
+
+        // Frase gerada pela IA diária (selo "Nova" em Frases.jsx, balão "Nova
+        // frase disponível" na Home) marcada como vista assim que entra no
+        // deck de flashcards - o usuário já tá estudando ela aqui, não faz
+        // sentido o aviso continuar depois disso (bug real reportado: usuário
+        // estudou a frase e o balão da Home continuava aparecendo).
+        const idsFraseIaDoDeck = embaralhadas
+          .filter((f) => Number(f.gerada_ia_diaria) === 1)
+          .map((f) => f.id);
+        if (idsFraseIaDoDeck.length) {
+          const vistas = carregarFrasesIaVistas();
+          idsFraseIaDoDeck.forEach((fid) => vistas.add(fid));
+          salvarFrasesIaVistas(vistas);
         }
 
         setFrases(embaralhadas);

@@ -636,13 +636,13 @@ export default function TraducaoReversa() {
 
                         <div className="flex justify-center gap-2 mt-3">
                             <button
-                                // forcarVozPadrao=true - o áudio tem que ser sempre a voz padrão
-                                // (Google, via LibreTranslate::getAudio no backend), nunca a voz
-                                // natural/premium (OpenAI) - pedido explícito do usuário. Depois do
-                                // "Não sei", o card pode ser virado pra ver o gabarito (traducaoGabarito,
-                                // no idioma aprendendo) - o Ouvir toca o lado que está visível no
-                                // momento, não sempre o texto nativo (bug real reportado: virava o
-                                // card mas o áudio continuava sendo sempre do nativo).
+                                // No texto NATIVO, forcarVozPadrao=true sempre (voz padrão/Google,
+                                // nunca a natural/premium) - pedido explícito do usuário, não faz
+                                // sentido gastar voz natural no idioma que o aluno já fala. Depois
+                                // do "Não sei", o card pode virar pra mostrar o gabarito
+                                // (traducaoGabarito, no idioma APRENDENDO) - aí sim deve valer a voz
+                                // natural pra quem é premium, igual nos outros treinos de IA (bug
+                                // real reportado: o verso também tocava sempre com voz padrão).
                                 disabled={buscandoAudio}
                                 onClick={() => {
                                     if (tocandoOuvir) {
@@ -655,7 +655,7 @@ export default function TraducaoReversa() {
                                     const idioma = verso ? user?.learning_language : user?.native_language;
 
                                     setBuscandoAudio(true);
-                                    playAudio(texto, user, true, idioma, true, false, () => {
+                                    playAudio(texto, user, true, idioma, !verso, false, () => {
                                         setBuscandoAudio(false);
                                         setTocandoOuvir(true);
                                     })

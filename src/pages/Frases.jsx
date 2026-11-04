@@ -70,6 +70,7 @@ export default function Frases() {
 
     function ehFraseIaRecente(item) {
         if (Number(item.gerada_ia_diaria) !== 1) return false;
+        if (Number(item.id_treino) >= 2) return false;
         if (frasesIaVistas.has(item.id)) return false;
         if (!item.data_criacao) return false;
 

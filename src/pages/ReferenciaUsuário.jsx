@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { MoreHorizontal } from "lucide-react"
 import youtubeIcone from '../assets/img/youtube.png'
 import playstoreIcone from '../assets/img/app.png'
 import instagramIcone from '../assets/img/instagram.png'
@@ -182,6 +183,14 @@ export default function ReferenciaUsuario({ setTitulo }) {
                     >
                         <img src={speakyIcone} alt="Speaky" className="w-7 h-7 object-contain rounded-full" />
                         <span className="text-sm font-medium text-white">Speaky</span>
+                    </button>
+
+                    <button
+                        onClick={() => enviarCanal('outro')}
+                        className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-800/50 backdrop-blur-sm  border border-gray-700  hover:bg-white/5 transition col-span-2"
+                    >
+                        <MoreHorizontal className="w-7 h-7 text-white" />
+                        <span className="text-sm font-medium text-white">{t("how_did_you_hear_other")}</span>
                     </button>
 
                 </div>

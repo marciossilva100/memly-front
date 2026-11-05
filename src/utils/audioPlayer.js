@@ -425,6 +425,17 @@ export function preloadAudio(text, user, lang = null, forcarVozPadrao = false) {
         promiseNatural.then((resultado) => {
             if (resultado?.limiteAtingido) {
                 marcarCotaNaturalEsgotada(user);
+                // Tira do cache em memória assim que resolvido - mesma razão
+                // de playAudio (ver comentário lá): sem isso, essa frase
+                // específica ficava presa com "limite atingido" cacheado pro
+                // resto da sessão, mesmo depois da cota voltar (virada de
+                // dia sem fechar o app/PWA, upgrade de plano) - playAudio()
+                // reaproveitava esse resultado velho em vez de tentar de
+                // novo, caindo sempre na voz/velocidade padrão pra essa
+                // frase específica mesmo com a voz natural já disponível de
+                // novo. Reportado como "a voz natural volta com a
+                // velocidade da voz do Google, só nessa frase".
+                cacheAudio.delete(chaveNatural);
             }
             if (!resultado?.url) {
                 const cleanText = text.trim().replace(/^"|"$/g, '');
@@ -519,10 +530,14 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
             // acabar) volta a tentar voz natural nesta sessão/dia.
             marcarCotaNaturalEsgotada(user);
 
-            if (avisarLimiteAudioSeNecessario(user)) {
-                return;
-            }
-            // Modal já foi exibido antes - segue pro fallback de voz padrão abaixo.
+            // Mostra o toast (só uma vez por conta/dia, ver
+            // avisarLimiteAudioSeNecessario), mas SEMPRE segue pro fallback
+            // de voz padrão abaixo - antes, só na primeira vez que o limite
+            // aparecia na sessão o código dava "return" aqui, deixando o
+            // clique em "Ouvir" sem tocar nada (nem o fallback), parecendo
+            // travado. Da segunda vez em diante já caía certo no fallback -
+            // agora é sempre consistente.
+            avisarLimiteAudioSeNecessario(user);
         } else if (resultado?.url) {
             // uma chamada mais recente já assumiu o controle enquanto aguardávamos o áudio
             if (myToken !== currentToken) {

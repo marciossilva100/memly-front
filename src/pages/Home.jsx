@@ -884,13 +884,20 @@ export default function Home() {
                     paddingTop: "60px",
                     marginTop: "-60px",
                     backgroundColor: "rgb(17, 24, 39)",
-                    // fade começando em 40% (não 70%) - com uma lista de categorias
-                    // comprida o bastante pra passar por trás dessa barra, o fade
-                    // curto deixava uma linha visível onde o card "era cortado" pelo
-                    // início da zona 100% opaca (bug real reportado na tela de
-                    // categorias existentes, mesmo elemento/técnica usada aqui).
-                    WebkitMaskImage: "linear-gradient(to top, black 0%, black 40%, transparent 100%)",
-                    maskImage: "linear-gradient(to top, black 0%, black 40%, transparent 100%)",
+                    // Pontos em px (não %) - o fade existe só pra suavizar a
+                    // extensão de 60px criada pelo paddingTop/marginTop acima
+                    // (onde o conteúdo da lista passa por trás antes da barra
+                    // "de verdade" começar). Com % relativo à altura TOTAL do
+                    // elemento (que inclui o botão "Adicionar categoria" + a
+                    // fileira de ícones), o fade acabava cobrindo boa parte do
+                    // próprio botão, deixando-o parcialmente transparente -
+                    // bug real reportado ("botão parece estar sob uma
+                    // sombra"). Com calc(100% - 60px), a opacidade plena
+                    // sempre cobre exatamente até o fim da extensão de 60px,
+                    // não importa a altura total (conteúdo real nunca entra
+                    // na zona de fade).
+                    WebkitMaskImage: "linear-gradient(to top, black 0, black calc(100% - 60px), transparent 100%)",
+                    maskImage: "linear-gradient(to top, black 0, black calc(100% - 60px), transparent 100%)",
                 }}
             >
 

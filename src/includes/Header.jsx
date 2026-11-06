@@ -157,7 +157,12 @@ export default function Header({ titulo }) {
                 })
             })
                 .then(res => res.json())
-                .then(data => { if (!cancelado) setLanguageList(data); })
+                // Sem autenticação válida (ou qualquer outra resposta de erro
+                // do endpoint), `data` vem como objeto de erro, não array -
+                // sem essa checagem, languageList.find()/.filter() mais
+                // abaixo quebra o <Header> inteiro (TypeError: ... is not a
+                // function), travando a página inteira que o estiver usando.
+                .then(data => { if (!cancelado) setLanguageList(Array.isArray(data) ? data : []); })
                 .catch(() => {
                     if (!cancelado && tentativa < 4) {
                         setTimeout(() => buscarIdiomas(tentativa + 1), 2000 * tentativa);

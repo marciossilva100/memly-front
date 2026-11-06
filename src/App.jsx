@@ -54,6 +54,7 @@ import imgChapeuFormatura from "./assets/img/chapeu_formatura.png"
 import PremiumPlan from './components/PremiumModal';
 import Metricas from './pages/Metricas';
 import DashboardAdmin from './pages/DashboardAdmin';
+import DashboardAdminLogin from './pages/DashboardAdminLogin';
 import Configuracoes from './pages/Configuracoes';
 import ChuvaFrases from './pages/ChuvaFrases';
 import Jogos from './pages/Jogos';
@@ -150,7 +151,6 @@ function Layout({ titulo, setTitulo }) {
   const rotasComHeader = new Set([
     '/home',
     '/metricas',
-    '/dashboard-admin',
     '/listcategorias'
   ])
 
@@ -490,14 +490,11 @@ function Layout({ titulo, setTitulo }) {
           }
         />
 
-        <Route
-          path="/dashboard-admin"
-          element={
-            <PrivateRoute>
-              <DashboardAdmin />
-            </PrivateRoute>
-          }
-        />
+        {/* Login/2FA próprio do dashboard, independente da conta do app
+            de propósito - por isso SEM PrivateRoute aqui (não exige estar
+            logado no Zaldemy pra acessar nenhuma das duas rotas). */}
+        <Route path="/dashboard-admin-login" element={<DashboardAdminLogin />} />
+        <Route path="/dashboard-admin" element={<DashboardAdmin />} />
 
         <Route
           path="/configuracoes"

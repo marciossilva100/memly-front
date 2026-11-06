@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { isAdminEmail } from "../utils/adminEmails";
 import {
-    AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer
+    AreaChart, Area, LineChart, Line, Legend, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer
 } from "recharts";
 import {
     Users,
@@ -17,13 +15,14 @@ import {
     ShieldAlert,
     Globe,
     X,
-    Plus
+    Plus,
+    LogOut,
+    Activity
 } from 'lucide-react';
 
 const CORES = ['#00ff88', '#4ecdc4', '#ffe66d', '#c3447a', '#a78bfa', '#f472b6'];
 
 export default function DashboardAdmin() {
-    const { user } = useAuth();
     const navigate = useNavigate();
     const API_URL = import.meta.env.VITE_API_URL;
 
@@ -34,6 +33,8 @@ export default function DashboardAdmin() {
     const [usuariosPorPlano, setUsuariosPorPlano] = useState([]);
     const [canaisAquisicao, setCanaisAquisicao] = useState([]);
     const [idiomas, setIdiomas] = useState([]);
+    const [atividadeDiaria, setAtividadeDiaria] = useState([]);
+    const [usoPorModo, setUsoPorModo] = useState([]);
 
     const [paises, setPaises] = useState([]);
     const [novoCodigoPais, setNovoCodigoPais] = useState('');
@@ -41,14 +42,36 @@ export default function DashboardAdmin() {
     const [erroPaises, setErroPaises] = useState('');
     const [salvandoPais, setSalvandoPais] = useState(false);
 
-    const autorizado = isAdminEmail(user?.email);
+    // Login próprio do dashboard (DashboardAdminLogin.jsx), independente da
+    // conta de usuário do app - ver model/DashboardAuth.php. Token ausente
+    // ou rejeitado (403, sessão expirada) manda de volta pro login; nunca
+    // tenta reaproveitar o token da conta normal do Zaldemy.
+    const adminToken = localStorage.getItem("dashboard_admin_token");
+    const autorizado = !!adminToken;
+
+    useEffect(() => {
+        if (!autorizado) {
+            navigate('/dashboard-admin-login', { replace: true });
+        }
+    }, [autorizado]);
+
+    function sairDoAdmin() {
+        fetch(`${API_URL}/controller/dashboardAuth.php`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action: 'logout', token: adminToken })
+        }).catch(() => { });
+
+        localStorage.removeItem("dashboard_admin_token");
+        navigate('/dashboard-admin-login', { replace: true });
+    }
 
     async function carregarPaises() {
         try {
             const response = await fetch(`${API_URL}/controller/dashboard.php`, {
                 method: 'POST',
                 headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token"),
+                    "Authorization": "Bearer " + adminToken,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({ action: 'listar_paises' })
@@ -81,7 +104,7 @@ export default function DashboardAdmin() {
             const response = await fetch(`${API_URL}/controller/dashboard.php`, {
                 method: 'POST',
                 headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token"),
+                    "Authorization": "Bearer " + adminToken,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({ action: 'adicionar_pais', codigo, nome })
@@ -109,7 +132,7 @@ export default function DashboardAdmin() {
             const response = await fetch(`${API_URL}/controller/dashboard.php`, {
                 method: 'POST',
                 headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token"),
+                    "Authorization": "Bearer " + adminToken,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({ action: 'remover_pais', codigo })
@@ -129,13 +152,20 @@ export default function DashboardAdmin() {
             const response = await fetch(`${API_URL}/controller/dashboard.php`, {
                 method: 'POST',
                 headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token"),
+                    "Authorization": "Bearer " + adminToken,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({ action: 'dashboard', dias: 30 })
             });
 
             const data = await response.json();
+
+            // Sessão de admin expirada/rejeitada (ver DashboardAuth::validarSessaoAtiva)
+            // - manda de volta pro login em vez de só mostrar erro genérico.
+            if (response.status === 403) {
+                sairDoAdmin();
+                return;
+            }
 
             if (!response.ok) {
                 setErro(data.error || 'Não foi possível carregar o dashboard.');
@@ -147,6 +177,8 @@ export default function DashboardAdmin() {
             setUsuariosPorPlano(data.usuarios_por_plano || []);
             setCanaisAquisicao(data.canais_aquisicao || []);
             setIdiomas(data.idiomas_mais_aprendidos || []);
+            setAtividadeDiaria(data.atividade_diaria || []);
+            setUsoPorModo(data.uso_por_modo_treino || []);
         } catch (error) {
             console.error('Erro ao carregar dashboard admin:', error);
             setErro('Erro de conexão ao carregar o dashboard.');
@@ -225,24 +257,18 @@ export default function DashboardAdmin() {
         );
     };
 
+    // Sem token: o useEffect acima já redireciona pro login - evita
+    // renderizar o dashboard por 1 frame antes do redirect acontecer.
     if (!autorizado) {
         return (
-            <div className="h-[calc(100dvh-64px)] flex flex-col items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br text-center px-6">
-                <ShieldAlert className="w-12 h-12 text-red-400 mb-3" />
-                <p className="text-white font-semibold">Acesso restrito</p>
-                <p className="text-gray-400 text-sm mt-1">Esta página é exclusiva para administradores.</p>
-                <button
-                    onClick={() => navigate('/home')}
-                    className="mt-4 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm"
-                >
-                    Voltar para o início
-                </button>
+            <div className="h-dvh flex flex-col items-center justify-center from-gray-900 to-gray-800 bg-gradient-to-br text-center px-6">
+                <ShieldAlert className="w-12 h-12 text-gray-500 mb-3" />
             </div>
         );
     }
 
     return (
-        <div className="h-[calc(100dvh-64px)] flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
+        <div className="h-dvh flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
             <div className="flex-1 overflow-y-auto scrollbar-hide p-3 md:p-6 max-w-5xl mx-auto w-full px-6 pb-[120px]">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-6">
                     <div>
@@ -250,12 +276,21 @@ export default function DashboardAdmin() {
                         <p className="text-sm text-gray-400 mt-1">Visão geral de usuários, conteúdo e aquisição</p>
                     </div>
 
-                    <button
-                        onClick={carregar}
-                        className="bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-lg transition-colors"
-                    >
-                        <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={carregar}
+                            className="bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-lg transition-colors"
+                        >
+                            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                        </button>
+                        <button
+                            onClick={sairDoAdmin}
+                            className="bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-lg transition-colors"
+                            title="Sair"
+                        >
+                            <LogOut className="w-4 h-4" />
+                        </button>
+                    </div>
                 </div>
 
                 {erro && (
@@ -341,6 +376,49 @@ export default function DashboardAdmin() {
                                 </div>
                             )}
                         </div>
+                    </Secao>
+
+                    {/* Engajamento: quem está treinando/jogando/usando IA de fato,
+                        não só quem se cadastrou - pedido explícito pra acompanhar
+                        uso real do app dia a dia. */}
+                    <Secao titulo="Atividade diária por tipo de treino (30 dias)" icone={Activity} cor="text-emerald-400">
+                        <div className="h-56 md:h-72">
+                            {loading ? (
+                                <div className="flex items-center justify-center h-full">
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-400"></div>
+                                </div>
+                            ) : atividadeDiaria.length > 0 ? (
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <LineChart data={atividadeDiaria}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                                        <XAxis dataKey="data" stroke="#9CA3AF" tick={{ fontSize: 12 }} />
+                                        <YAxis allowDecimals={false} stroke="#9CA3AF" tick={{ fontSize: 12 }} />
+                                        <Tooltip
+                                            contentStyle={{
+                                                backgroundColor: '#1F2937',
+                                                border: 'none',
+                                                borderRadius: '8px',
+                                                fontSize: '12px'
+                                            }}
+                                        />
+                                        <Legend wrapperStyle={{ fontSize: '12px' }} />
+                                        <Line type="monotone" dataKey="treino_geral" name="Flashcards/treino geral" stroke={CORES[0]} strokeWidth={2} dot={false} />
+                                        <Line type="monotone" dataKey="jogos" name="Jogos" stroke={CORES[1]} strokeWidth={2} dot={false} />
+                                        <Line type="monotone" dataKey="treino_ia" name="Treino com IA" stroke={CORES[2]} strokeWidth={2} dot={false} />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                                    <AlertCircle className="w-12 h-12 mb-2 text-gray-600" />
+                                    <p className="text-sm">Sem dados no período</p>
+                                </div>
+                            )}
+                        </div>
+                        <p className="text-gray-500 text-xs mt-2">Usuários únicos por dia em cada tipo de atividade.</p>
+                    </Secao>
+
+                    <Secao titulo="Uso por modo de treino (30 dias)" icone={BookOpen} cor="text-orange-400">
+                        <ListaComBarra dados={usoPorModo} vazio="Nenhum uso registrado no período" />
                     </Secao>
 
                     <div className="grid md:grid-cols-2 gap-4">

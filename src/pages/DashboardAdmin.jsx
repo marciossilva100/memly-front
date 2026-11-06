@@ -20,7 +20,9 @@ import {
     ChevronRight,
     X,
     TrendingUp,
-    Clock
+    Clock,
+    BarChart3,
+    PieChart
 } from 'lucide-react';
 
 const CORES = ['#00ff88', '#4ecdc4', '#ffe66d', '#c3447a', '#a78bfa', '#f472b6'];
@@ -43,6 +45,7 @@ export default function DashboardAdmin() {
     // agregados, nunca um usuário específico pra abrir e ver a evolução dele.
     const [usuarios, setUsuarios] = useState([]);
     const [carregandoUsuarios, setCarregandoUsuarios] = useState(false);
+    const [erroUsuarios, setErroUsuarios] = useState('');
     const [buscaUsuario, setBuscaUsuario] = useState('');
     const [paginaUsuarios, setPaginaUsuarios] = useState(1);
     const [totalPaginasUsuarios, setTotalPaginasUsuarios] = useState(1);
@@ -50,6 +53,17 @@ export default function DashboardAdmin() {
     const [usuarioSelecionadoId, setUsuarioSelecionadoId] = useState(null);
     const [detalhesUsuario, setDetalhesUsuario] = useState(null);
     const [carregandoDetalhes, setCarregandoDetalhes] = useState(false);
+    const [erroDetalhes, setErroDetalhes] = useState('');
+
+    // Aba do menu lateral - antes tudo ficava empilhado numa página só e
+    // comprida demais; agora cada aba mostra só o conteúdo dela.
+    const [abaSelecionada, setAbaSelecionada] = useState('visao_geral');
+    const ABAS = [
+        { id: 'visao_geral', titulo: 'Visão geral', icone: BarChart3 },
+        { id: 'engajamento', titulo: 'Engajamento', icone: Activity },
+        { id: 'usuarios', titulo: 'Usuários', icone: Users },
+        { id: 'distribuicao', titulo: 'Distribuição', icone: PieChart },
+    ];
 
     // Login próprio do dashboard (DashboardAdminLogin.jsx), independente da
     // conta de usuário do app - ver model/DashboardAuth.php. Token ausente
@@ -77,6 +91,7 @@ export default function DashboardAdmin() {
 
     async function carregarUsuarios(pagina = 1, busca = buscaUsuario) {
         setCarregandoUsuarios(true);
+        setErroUsuarios('');
         try {
             const response = await fetch(`${API_URL}/controller/dashboard.php`, {
                 method: 'POST',
@@ -93,11 +108,22 @@ export default function DashboardAdmin() {
                 return;
             }
 
+            // Sem essa checagem, uma resposta de erro (ex: backend ainda sem
+            // essa action, deploy desatualizado) caía direto em "usuarios: []"
+            // e a tela mostrava "nenhum usuário encontrado" como se a busca
+            // tivesse batido zero, escondendo o erro de verdade.
+            if (!response.ok || data.error) {
+                setErroUsuarios(data.error || 'Não foi possível carregar os usuários.');
+                setUsuarios([]);
+                return;
+            }
+
             setUsuarios(data.usuarios || []);
             setPaginaUsuarios(data.pagina || 1);
             setTotalPaginasUsuarios(data.total_paginas || 1);
         } catch (error) {
             console.error('Erro ao carregar usuários:', error);
+            setErroUsuarios('Erro de conexão ao carregar os usuários.');
         } finally {
             setCarregandoUsuarios(false);
         }
@@ -106,6 +132,7 @@ export default function DashboardAdmin() {
     async function abrirDetalhesUsuario(id) {
         setUsuarioSelecionadoId(id);
         setDetalhesUsuario(null);
+        setErroDetalhes('');
         setCarregandoDetalhes(true);
         try {
             const response = await fetch(`${API_URL}/controller/dashboard.php`, {
@@ -117,9 +144,20 @@ export default function DashboardAdmin() {
                 body: JSON.stringify({ action: 'detalhes_usuario', user_id: id })
             });
             const data = await response.json();
+
+            // Mesmo cuidado de carregarUsuarios - uma resposta de erro aqui
+            // (ex: deploy desatualizado) não pode ser tratada como
+            // detalhesUsuario de verdade, senão o modal tenta ler
+            // data.usuario.nome de um objeto sem essa chave e quebra.
+            if (!response.ok || data.error) {
+                setErroDetalhes(data.error || 'Não foi possível carregar os detalhes.');
+                return;
+            }
+
             setDetalhesUsuario(data);
         } catch (error) {
             console.error('Erro ao carregar detalhes do usuário:', error);
+            setErroDetalhes('Erro de conexão ao carregar os detalhes.');
         } finally {
             setCarregandoDetalhes(false);
         }
@@ -255,8 +293,8 @@ export default function DashboardAdmin() {
 
     return (
         <div className="h-dvh flex flex-col from-gray-900 to-gray-800 bg-gradient-to-br">
-            <div className="flex-1 overflow-y-auto scrollbar-hide p-3 md:p-6 max-w-5xl mx-auto w-full px-6 pb-[120px]">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-6">
+            <div className="flex-1 min-h-0 flex flex-col p-3 md:p-6 max-w-6xl mx-auto w-full px-6 pb-[90px]">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4 shrink-0">
                     <div>
                         <h1 className="text-2xl md:text-3xl font-bold text-white">Dashboard do sistema</h1>
                         <p className="text-sm text-gray-400 mt-1">Visão geral de usuários, conteúdo e aquisição</p>
@@ -280,13 +318,13 @@ export default function DashboardAdmin() {
                 </div>
 
                 {erro && (
-                    <div className="mb-4 bg-red-500/10 border border-red-500/30 text-red-300 text-sm rounded-lg p-3">
+                    <div className="mb-4 bg-red-500/10 border border-red-500/30 text-red-300 text-sm rounded-lg p-3 shrink-0">
                         {erro}
                     </div>
                 )}
 
-                {/* KPIs */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-6">
+                {/* KPIs - sempre visíveis, independente da aba selecionada */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-4 shrink-0">
                     <CardKpi
                         titulo="Usuários"
                         valor={resumo?.total_usuarios ?? '-'}
@@ -317,8 +355,31 @@ export default function DashboardAdmin() {
                     />
                 </div>
 
-                <div className="space-y-4">
-                    {/* Crescimento de usuários */}
+                <div className="flex-1 min-h-0 flex flex-col md:flex-row gap-4">
+                    {/* Menu lateral - linha horizontal rolável no celular, coluna
+                        fixa à esquerda a partir de md. */}
+                    <nav className="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible shrink-0 md:w-48 pb-1 md:pb-0">
+                        {ABAS.map((aba) => {
+                            const Icone = aba.icone;
+                            const ativa = abaSelecionada === aba.id;
+                            return (
+                                <button
+                                    key={aba.id}
+                                    onClick={() => setAbaSelecionada(aba.id)}
+                                    className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors border ${ativa
+                                        ? 'bg-[#4cb8c4]/15 text-[#4cb8c4] border-[#4cb8c4]/40'
+                                        : 'text-gray-400 border-transparent hover:bg-gray-800/50 hover:text-white'
+                                        }`}
+                                >
+                                    <Icone className="w-4 h-4" />
+                                    {aba.titulo}
+                                </button>
+                            );
+                        })}
+                    </nav>
+
+                    <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hide space-y-4">
+                    {abaSelecionada === 'visao_geral' && (
                     <Secao titulo="Crescimento de usuários (30 dias)" icone={UserPlus} cor="text-blue-400">
                         <div className="h-56 md:h-72">
                             {loading ? (
@@ -363,10 +424,13 @@ export default function DashboardAdmin() {
                             )}
                         </div>
                     </Secao>
+                    )}
 
                     {/* Engajamento: quem está treinando/jogando/usando IA de fato,
                         não só quem se cadastrou - pedido explícito pra acompanhar
                         uso real do app dia a dia. */}
+                    {abaSelecionada === 'engajamento' && (
+                    <>
                     <Secao titulo="Atividade diária por tipo de treino (30 dias)" icone={Activity} cor="text-emerald-400">
                         <div className="h-56 md:h-72">
                             {loading ? (
@@ -406,7 +470,11 @@ export default function DashboardAdmin() {
                     <Secao titulo="Uso por modo de treino (30 dias)" icone={BookOpen} cor="text-orange-400">
                         <ListaComBarra dados={usoPorModo} vazio="Nenhum uso registrado no período" />
                     </Secao>
+                    </>
+                    )}
 
+                    {abaSelecionada === 'distribuicao' && (
+                    <>
                     <div className="grid md:grid-cols-2 gap-4">
                         <Secao titulo="Usuários por plano" icone={Users} cor="text-green-400">
                             <ListaComBarra dados={usuariosPorPlano} vazio="Nenhum dado de plano encontrado" />
@@ -420,7 +488,10 @@ export default function DashboardAdmin() {
                     <Secao titulo="Canais de aquisição" icone={BadgeCheck} cor="text-purple-400">
                         <ListaComBarra dados={canaisAquisicao} vazio="Nenhum canal registrado" />
                     </Secao>
+                    </>
+                    )}
 
+                    {abaSelecionada === 'usuarios' && (
                     <Secao titulo="Usuários" icone={Users} cor="text-cyan-400">
                         <form onSubmit={buscarUsuarios} className="flex gap-2 mb-4">
                             <div className="relative flex-1">
@@ -441,11 +512,17 @@ export default function DashboardAdmin() {
                             </button>
                         </form>
 
+                        {erroUsuarios && (
+                            <div className="mb-3 bg-red-500/10 border border-red-500/30 text-red-300 text-sm rounded-lg p-3">
+                                {erroUsuarios}
+                            </div>
+                        )}
+
                         {carregandoUsuarios ? (
                             <div className="flex items-center justify-center py-10">
                                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-400"></div>
                             </div>
-                        ) : usuarios.length === 0 ? (
+                        ) : erroUsuarios ? null : usuarios.length === 0 ? (
                             <div className="text-center py-6 text-gray-400 text-sm">
                                 <AlertCircle className="w-10 h-10 mx-auto mb-2 text-gray-600" />
                                 <p>Nenhum usuário encontrado</p>
@@ -491,6 +568,8 @@ export default function DashboardAdmin() {
                             </div>
                         )}
                     </Secao>
+                    )}
+                    </div>
                 </div>
             </div>
 
@@ -524,7 +603,11 @@ export default function DashboardAdmin() {
                         </div>
 
                         <div className="p-4 space-y-4">
-                            {carregandoDetalhes || !detalhesUsuario ? (
+                            {erroDetalhes ? (
+                                <div className="bg-red-500/10 border border-red-500/30 text-red-300 text-sm rounded-lg p-3">
+                                    {erroDetalhes}
+                                </div>
+                            ) : carregandoDetalhes || !detalhesUsuario ? (
                                 <div className="flex items-center justify-center py-10">
                                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-400"></div>
                                 </div>

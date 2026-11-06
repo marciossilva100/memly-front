@@ -8,6 +8,7 @@ import googleIcone from '../assets/img/google.png'
 import linkedinIcone from '../assets/img/linkedin.png'
 import tandemIcone from '../assets/img/tandem.png'
 import speakyIcone from '../assets/img/speaky.png'
+import kwaiIcone from '../assets/img/kwai.png'
 import imgChapeuFormatura from "../assets/img/chapeu_formatura-v2.png"
 import { useAuth } from "../context/AuthContext";
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
@@ -183,6 +184,14 @@ export default function ReferenciaUsuario({ setTitulo }) {
                     >
                         <img src={speakyIcone} alt="Speaky" className="w-7 h-7 object-contain rounded-full" />
                         <span className="text-sm font-medium text-white">Speaky</span>
+                    </button>
+
+                    <button
+                        onClick={() => enviarCanal('kwai')}
+                        className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-gray-800/50 backdrop-blur-sm  border border-gray-700  hover:bg-white/5 transition"
+                    >
+                        <img src={kwaiIcone} alt="Kwai" className="w-7 h-7 object-contain rounded-full" />
+                        <span className="text-sm font-medium text-white">Kwai</span>
                     </button>
 
                     <button

@@ -9,14 +9,13 @@ import ModalSucesso from '../components/ModalSucesso';
 import PremiumModal from '../components/PremiumModal'
 import LimiteDiarioModal from '../components/LimiteDiarioModal';
 import ModalConfirm from '../components/ModalConfirm';
-import TermometroEstudo from '../components/TermometroEstudo';
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { treinoStatsCache } from "../utils/treinoStatsCache";
 import { carregarFrasesIaVistas } from "../utils/frasesIaVistas";
 
 
-import { BookOpen, BarChart3, Bot, Plus, Home as HomeIcon, CheckCircle2, Flame, Gamepad2, Crown, Search, AlertTriangle, RefreshCw, Sparkles } from "lucide-react";
+import { BookOpen, BarChart3, Bot, Plus, Home as HomeIcon, CheckCircle2, Flame, Gamepad2, Crown, Search, AlertTriangle, RefreshCw, Sparkles, MoreVertical, Star } from "lucide-react";
 
 const AVATAR_COLORS = [
     'bg-emerald-500',
@@ -37,6 +36,20 @@ const MAX_CARACTERES_NOME_CATEGORIA_HOME = 15;
 function truncarNomeCategoria(nome) {
     if (!nome || nome.length <= MAX_CARACTERES_NOME_CATEGORIA_HOME) return nome;
     return nome.slice(0, MAX_CARACTERES_NOME_CATEGORIA_HOME) + "…";
+}
+
+// Mesma fórmula que existia só dentro do TermometroEstudo (removido da Home -
+// a barra vertical ao lado da lista tinha baixa descoberta e o modal dela
+// duplicava streak/treino IA que a tela de Métricas já mostra bem melhor).
+// O conceito de nível em si é único (não existe em Métricas), por isso
+// virou só mais um card na mesma fileira de Categorias/Palavras, em vez de
+// um elemento à parte.
+const PALAVRAS_POR_NIVEL = 20;
+const PONTOS_POR_DIA_ACESSO = 5;
+
+function calcularNivelEstudo(totalAprendidas, diasAcesso) {
+    const pontosTotais = totalAprendidas + diasAcesso * PONTOS_POR_DIA_ACESSO;
+    return Math.floor(pontosTotais / PALAVRAS_POR_NIVEL) + 1;
 }
 
 export default function Home() {
@@ -122,9 +135,7 @@ export default function Home() {
     const [streak, setStreak] = useState(0)
     const [diasAcesso, setDiasAcesso] = useState(0)
     const [totalAprendidas, setTotalAprendidas] = useState(0)
-    const [treinoIaStats, setTreinoIaStats] = useState(null)
-    const [jogoResumo, setJogoResumo] = useState(null)
-    const [jogoTiroResumo, setJogoTiroResumo] = useState(null)
+    const nivelEstudo = calcularNivelEstudo(totalAprendidas, diasAcesso)
     const [treinoIaDisponivel, setTreinoIaDisponivel] = useState(false)
     const { t } = useTranslation();
     const API_URL = import.meta.env.VITE_API_URL;
@@ -205,49 +216,6 @@ export default function Home() {
                 setDiasAcesso(0);
             });
     }, [user?.native_language, user?.learning_language, user?.id]);
-
-    // Estatísticas do treino com IA (frase do dia + perguntas) e do jogo
-    // Chuva de Frases - só pro popover explicativo do termômetro de
-    // progresso, não afetam o cálculo do nível/preenchimento dele.
-    useEffect(() => {
-        if (!user?.id) return;
-
-        fetch(`${API_URL}/controller/metricas.php`, {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            },
-            body: JSON.stringify({ action: 'treino_ia' })
-        })
-            .then(res => res.json())
-            .then(data => setTreinoIaStats(data ?? null))
-            .catch(() => setTreinoIaStats(null));
-
-        fetch(`${API_URL}/controller/jogoChuvaFrases.php`, {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            },
-            body: JSON.stringify({ action: 'resumo' })
-        })
-            .then(res => res.json())
-            .then(data => setJogoResumo(data?.success ? data : null))
-            .catch(() => setJogoResumo(null));
-
-        fetch(`${API_URL}/controller/tiroCerteiro.php`, {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            },
-            body: JSON.stringify({ action: 'resumo' })
-        })
-            .then(res => res.json())
-            .then(data => setJogoTiroResumo(data?.success ? data : null))
-            .catch(() => setJogoTiroResumo(null));
-    }, [user?.id]);
 
     // Bolinha de notificação no ícone de Treino com IA quando ainda sobra
     // frase do dia OU pergunta disponível hoje - 'acesso' já cobre os dois
@@ -623,30 +591,55 @@ export default function Home() {
                 </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 px-4 pt-4">
-                <div className="bg-gray-800/50 border border-gray-700 rounded-xl px-3 py-1 flex items-center">
+            {/* Só mostra com pelo menos 1 categoria - sem isso, usuário novo
+                via "Categorias: 0" e "Palavras aprendidas: 0" bem na
+                primeira tela, antes mesmo de ele criar algo, o que passa
+                sensação de vazio em vez de motivar. Também evita o flash de
+                "0" por um instante enquanto carrega, antes do número real
+                chegar (mesmo raciocínio do skeleton da lista logo abaixo). */}
+            {categorias.length > 0 && (
+            <div className="grid grid-cols-3 gap-2 px-4 pt-4">
+                <div className="bg-gray-800/50 border border-gray-700 rounded-xl px-2 py-1 flex items-center min-w-0">
                     <div>
-                        <BookOpen className="text-emerald-400 me-3" size={30} />
+                        <BookOpen className="text-emerald-400 me-2" size={26} />
                     </div>
-                    <div>
-                        <p className="text-xs text-gray-400 lowercase">{t("categories")}</p>
-                        <p className="text-xl font-bold text-white">{categorias.length}</p>
-                        <p className="text-xs text-gray-400">{t("active")}</p>
+                    <div className="min-w-0">
+                        <p className="text-[11px] text-gray-400 lowercase truncate">{t("categories")}</p>
+                        <p className="text-lg font-bold text-white">{categorias.length}</p>
+                        <p className="text-[11px] text-gray-400 truncate">{t("active")}</p>
                     </div>
                 </div>
 
-                <div className="bg-gray-800/50 border border-gray-700 rounded-xl px-3 py-2 flex items-center">
+                <div className="bg-gray-800/50 border border-gray-700 rounded-xl px-2 py-1 flex items-center min-w-0">
                     <div>
-                        <CheckCircle2 className="text-purple-400 me-3" size={30} />
+                        <CheckCircle2 className="text-purple-400 me-2" size={26} />
                     </div>
-                    <div>
-                        <p className="text-xs text-gray-400 flex"> {t("words")}</p>
-                        <p className="text-xl font-bold text-white">{totalAprendidas}</p>
-                        <p className="text-xs text-gray-400">{t("learned")}</p>
+                    <div className="min-w-0">
+                        <p className="text-[11px] text-gray-400 truncate"> {t("words")}</p>
+                        <p className="text-lg font-bold text-white">{totalAprendidas}</p>
+                        <p className="text-[11px] text-gray-400 truncate">{t("learned")}</p>
                     </div>
-
-
                 </div>
+
+                {/* Nível de estudo - único conceito aqui que não existe na
+                    tela de Métricas (streak/treino IA/jogos já aparecem
+                    melhor lá, ver TermometroEstudo removido). Leva pra
+                    Métricas ao tocar, em vez de abrir um modal próprio que
+                    só repetiria o que já tem lá. */}
+                <button
+                    type="button"
+                    onClick={() => navigate('/metricas')}
+                    className="bg-gray-800/50 border border-gray-700 rounded-xl px-2 py-1 flex items-center min-w-0 text-left"
+                >
+                    <div>
+                        <Star className="text-cyan-400 me-2" size={26} fill="currentColor" />
+                    </div>
+                    <div className="min-w-0">
+                        <p className="text-[11px] text-gray-400 truncate">{t("study_level_short_label")}</p>
+                        <p className="text-lg font-bold text-white">{nivelEstudo}</p>
+                        <p className="text-[11px] text-gray-400 truncate">{t("study_level_card_hint")}</p>
+                    </div>
+                </button>
 
                 {/* <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-3 flex items-center">
                     <div>
@@ -661,6 +654,7 @@ export default function Home() {
 
                 </div> */}
             </div>
+            )}
 
             {(mostrarGuiaAdicionarFrases || mostrarGuiaTreinar) && (
                 <div className="px-4 pt-4">
@@ -723,9 +717,39 @@ export default function Home() {
                 </div>
             )}
 
-            <div className="flex-1 flex min-h-0 mt-4 pl-4 pr-2 gap-0 listagem">
-                <div className="lista-categoria flex-1 overflow-y-auto  scrollbar-hide" id="lista-categoria">
+            <div className="flex-1 min-h-0 mt-4 px-4">
+                <div className="lista-categoria h-full overflow-y-auto  scrollbar-hide" id="lista-categoria">
                 <div className=" items-center justify-center pr-2 ">
+
+                    {/* Skeleton de carregamento - antes a área ficava
+                        totalmente vazia (nem spinner, nem esqueleto) entre o
+                        mount da Home e a resposta de listar-com-quantidade,
+                        dando a impressão de glitch/tela quebrada por um
+                        instante, principalmente em rede mais lenta. Só no
+                        carregamento INICIAL (categorias ainda vazio) - uma
+                        atualização em segundo plano com a lista já
+                        preenchida não deve substituir os cards reais por
+                        esqueletos. */}
+                    {categoriasLoading && categorias.length === 0 && (
+                        <div className="animate-pulse" aria-hidden="true">
+                            {[0, 1, 2, 3].map((i) => (
+                                <div
+                                    key={i}
+                                    className="flex bg-gray-800/50 border border-gray-700 items-center justify-between py-3 px-4 rounded-xl shadow-lg mb-4"
+                                >
+                                    <div className="flex items-center gap-3 min-w-0 w-full">
+                                        <div className="w-9 h-9 shrink-0 rounded-full bg-gray-700" />
+                                        <div className="min-w-0 flex-1">
+                                            <div className="h-4 w-24 rounded bg-gray-700" />
+                                            <div className="h-3 w-16 rounded bg-gray-700 mt-2" />
+                                            <div className="h-1.5 w-32 max-w-full rounded-full bg-gray-700 mt-2" />
+                                        </div>
+                                    </div>
+                                    <div className="h-7 w-16 rounded-full bg-gray-700 shrink-0" />
+                                </div>
+                            ))}
+                        </div>
+                    )}
 
                     {/* Item */}
                     {categorias
@@ -739,8 +763,13 @@ export default function Home() {
                         const temFraseNova = item.fraseNovaId && !frasesIaVistas.has(item.fraseNovaId);
 
                         return (
-                            <div key={item.id} onClick={() => validar(item.quantidade, item.id)} className="relative flex bg-gray-800/50   border border-gray-700 items-center justify-between py-3 px-4  rounded-xl  shadow-lg mb-4 ">
+                            <div key={item.id} onClick={() => validar(item.quantidade, item.id)} className={`relative flex bg-gray-800/50   border border-gray-700 items-center justify-between py-3 px-4  rounded-xl  shadow-lg mb-4 ${temFraseNova ? "mt-3" : ""}`}>
                                 {temFraseNova && (
+                                    // mt-3 no card (acima) reserva espaço pra esse selo não
+                                    // encostar/ficar apertado contra o card anterior - com
+                                    // vários cards seguidos tendo frase nova, só o mb-4 padrão
+                                    // entre eles não deixava respiro nenhum (reportado:
+                                    // "ficou tudo muito apertado ali").
                                     <span className="absolute -top-2 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1 bg-purple-500 text-white text-[11px] font-semibold px-2.5 py-0.5 rounded-full shadow-lg animate-pulse whitespace-nowrap">
                                         <Sparkles size={11} />
                                         {t("new_phrase_available")}
@@ -780,15 +809,19 @@ export default function Home() {
                                         {t("training")}
                                     </button>
 
-                                    {/* Botão dos 3 pontinhos */}
+                                    {/* Botão dos 3 pontinhos - ícone de verdade
+                                        (lucide-react), não mais o caractere
+                                        "⋮" cru estilizado como texto grande,
+                                        inconsistente com o resto dos ícones
+                                        da interface. */}
                                     <button
-                                        className="text-slate-300 text-3xl"
+                                        className="text-slate-300 p-1"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             setMenuOpenId(menuOpenId === item.id ? null : item.id);
                                         }}
                                     >
-                                        ⋮
+                                        <MoreVertical size={20} />
                                     </button>
 
                                     {/* Menu */}
@@ -837,15 +870,6 @@ export default function Home() {
                 </div>
 
             </div>
-
-                <TermometroEstudo
-                    totalAprendidas={totalAprendidas}
-                    streak={streak}
-                    diasAcesso={diasAcesso}
-                    treinoIaStats={treinoIaStats}
-                    jogoResumo={jogoResumo}
-                    jogoTiroResumo={jogoTiroResumo}
-                />
             </div>
             {/* Fica FORA da barra de baixo (abaixo) de propósito - essa barra
                 usa mask-image pra dar o efeito de fade, e mask-image recorta

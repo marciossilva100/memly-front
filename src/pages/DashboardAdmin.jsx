@@ -13,11 +13,14 @@ import {
     AlertCircle,
     Home,
     ShieldAlert,
-    Globe,
-    X,
-    Plus,
     LogOut,
-    Activity
+    Activity,
+    Search,
+    ChevronLeft,
+    ChevronRight,
+    X,
+    TrendingUp,
+    Clock
 } from 'lucide-react';
 
 const CORES = ['#00ff88', '#4ecdc4', '#ffe66d', '#c3447a', '#a78bfa', '#f472b6'];
@@ -36,11 +39,17 @@ export default function DashboardAdmin() {
     const [atividadeDiaria, setAtividadeDiaria] = useState([]);
     const [usoPorModo, setUsoPorModo] = useState([]);
 
-    const [paises, setPaises] = useState([]);
-    const [novoCodigoPais, setNovoCodigoPais] = useState('');
-    const [novoNomePais, setNovoNomePais] = useState('');
-    const [erroPaises, setErroPaises] = useState('');
-    const [salvandoPais, setSalvandoPais] = useState(false);
+    // Lista de usuários individuais - o dashboard até aqui só tinha números
+    // agregados, nunca um usuário específico pra abrir e ver a evolução dele.
+    const [usuarios, setUsuarios] = useState([]);
+    const [carregandoUsuarios, setCarregandoUsuarios] = useState(false);
+    const [buscaUsuario, setBuscaUsuario] = useState('');
+    const [paginaUsuarios, setPaginaUsuarios] = useState(1);
+    const [totalPaginasUsuarios, setTotalPaginasUsuarios] = useState(1);
+
+    const [usuarioSelecionadoId, setUsuarioSelecionadoId] = useState(null);
+    const [detalhesUsuario, setDetalhesUsuario] = useState(null);
+    const [carregandoDetalhes, setCarregandoDetalhes] = useState(false);
 
     // Login próprio do dashboard (DashboardAdminLogin.jsx), independente da
     // conta de usuário do app - ver model/DashboardAuth.php. Token ausente
@@ -66,7 +75,8 @@ export default function DashboardAdmin() {
         navigate('/dashboard-admin-login', { replace: true });
     }
 
-    async function carregarPaises() {
+    async function carregarUsuarios(pagina = 1, busca = buscaUsuario) {
+        setCarregandoUsuarios(true);
         try {
             const response = await fetch(`${API_URL}/controller/dashboard.php`, {
                 method: 'POST',
@@ -74,60 +84,29 @@ export default function DashboardAdmin() {
                     "Authorization": "Bearer " + adminToken,
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ action: 'listar_paises' })
-            });
-            const data = await response.json();
-            setPaises(data.paises || []);
-        } catch (error) {
-            console.error('Erro ao carregar países liberados:', error);
-        }
-    }
-
-    async function adicionarPais(e) {
-        e.preventDefault();
-        setErroPaises('');
-
-        const codigo = novoCodigoPais.trim().toUpperCase();
-        const nome = novoNomePais.trim();
-
-        if (codigo.length !== 2) {
-            setErroPaises('O código do país tem 2 letras (ex: BR, PT, US).');
-            return;
-        }
-        if (!nome) {
-            setErroPaises('Informe o nome do país.');
-            return;
-        }
-
-        setSalvandoPais(true);
-        try {
-            const response = await fetch(`${API_URL}/controller/dashboard.php`, {
-                method: 'POST',
-                headers: {
-                    "Authorization": "Bearer " + adminToken,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ action: 'adicionar_pais', codigo, nome })
+                body: JSON.stringify({ action: 'listar_usuarios', pagina, por_pagina: 20, busca })
             });
             const data = await response.json();
 
-            if (!response.ok) {
-                setErroPaises(data.error || 'Não foi possível adicionar o país.');
+            if (response.status === 403) {
+                sairDoAdmin();
                 return;
             }
 
-            setPaises(data.paises || []);
-            setNovoCodigoPais('');
-            setNovoNomePais('');
+            setUsuarios(data.usuarios || []);
+            setPaginaUsuarios(data.pagina || 1);
+            setTotalPaginasUsuarios(data.total_paginas || 1);
         } catch (error) {
-            console.error('Erro ao adicionar país:', error);
-            setErroPaises('Erro de conexão ao adicionar o país.');
+            console.error('Erro ao carregar usuários:', error);
         } finally {
-            setSalvandoPais(false);
+            setCarregandoUsuarios(false);
         }
     }
 
-    async function removerPais(codigo) {
+    async function abrirDetalhesUsuario(id) {
+        setUsuarioSelecionadoId(id);
+        setDetalhesUsuario(null);
+        setCarregandoDetalhes(true);
         try {
             const response = await fetch(`${API_URL}/controller/dashboard.php`, {
                 method: 'POST',
@@ -135,13 +114,20 @@ export default function DashboardAdmin() {
                     "Authorization": "Bearer " + adminToken,
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ action: 'remover_pais', codigo })
+                body: JSON.stringify({ action: 'detalhes_usuario', user_id: id })
             });
             const data = await response.json();
-            setPaises(data.paises || []);
+            setDetalhesUsuario(data);
         } catch (error) {
-            console.error('Erro ao remover país:', error);
+            console.error('Erro ao carregar detalhes do usuário:', error);
+        } finally {
+            setCarregandoDetalhes(false);
         }
+    }
+
+    function buscarUsuarios(e) {
+        e.preventDefault();
+        carregarUsuarios(1, buscaUsuario);
     }
 
     async function carregar() {
@@ -190,7 +176,7 @@ export default function DashboardAdmin() {
     useEffect(() => {
         if (autorizado) {
             carregar();
-            carregarPaises();
+            carregarUsuarios(1, '');
         }
     }, [autorizado]);
 
@@ -435,68 +421,74 @@ export default function DashboardAdmin() {
                         <ListaComBarra dados={canaisAquisicao} vazio="Nenhum canal registrado" />
                     </Secao>
 
-                    <Secao titulo="Países liberados para cadastro" icone={Globe} cor="text-cyan-400">
-                        <p className="text-gray-400 text-xs mb-4">
-                            Só afeta cadastro novo (tradicional e primeiro login com Google) - quem já tem conta continua acessando de qualquer país.
-                        </p>
-
-                        <div className="flex flex-wrap gap-2 mb-4">
-                            {paises.length === 0 && (
-                                <p className="text-gray-500 text-sm">Nenhum país liberado - ninguém consegue se cadastrar.</p>
-                            )}
-                            {paises.map((pais) => (
-                                <div
-                                    key={pais.codigo}
-                                    className="flex items-center gap-2 bg-gray-700/60 border border-gray-600 rounded-full pl-3 pr-1.5 py-1"
-                                >
-                                    <span className="text-white text-sm">{pais.nome}</span>
-                                    <span className="text-gray-400 text-xs">{pais.codigo}</span>
-                                    <button
-                                        type="button"
-                                        onClick={() => removerPais(pais.codigo)}
-                                        className="text-gray-400 hover:text-red-400 rounded-full p-0.5"
-                                        title="Remover"
-                                    >
-                                        <X className="w-3.5 h-3.5" />
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-
-                        <form onSubmit={adicionarPais} className="flex flex-wrap items-end gap-2">
-                            <div>
-                                <label className="block text-xs text-gray-400 mb-1">Código</label>
+                    <Secao titulo="Usuários" icone={Users} cor="text-cyan-400">
+                        <form onSubmit={buscarUsuarios} className="flex gap-2 mb-4">
+                            <div className="relative flex-1">
+                                <Search className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
                                 <input
                                     type="text"
-                                    maxLength={2}
-                                    placeholder="PT"
-                                    value={novoCodigoPais}
-                                    onChange={(e) => setNovoCodigoPais(e.target.value)}
-                                    className="w-20 bg-gray-900 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm uppercase"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs text-gray-400 mb-1">Nome</label>
-                                <input
-                                    type="text"
-                                    placeholder="Portugal"
-                                    value={novoNomePais}
-                                    onChange={(e) => setNovoNomePais(e.target.value)}
-                                    className="bg-gray-900 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm"
+                                    placeholder="Buscar por nome, apelido ou e-mail..."
+                                    value={buscaUsuario}
+                                    onChange={(e) => setBuscaUsuario(e.target.value)}
+                                    className="w-full bg-gray-900 border border-gray-600 rounded-lg pl-9 pr-3 py-2 text-white text-sm"
                                 />
                             </div>
                             <button
                                 type="submit"
-                                disabled={salvandoPais}
-                                className="flex items-center gap-1 bg-cyan-600 hover:bg-cyan-500 disabled:brightness-75 text-white text-sm font-medium px-3 py-2 rounded-lg"
+                                className="bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-medium px-4 py-2 rounded-lg"
                             >
-                                <Plus className="w-4 h-4" />
-                                Adicionar
+                                Buscar
                             </button>
                         </form>
 
-                        {erroPaises && (
-                            <p className="text-red-400 text-xs mt-2">{erroPaises}</p>
+                        {carregandoUsuarios ? (
+                            <div className="flex items-center justify-center py-10">
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-400"></div>
+                            </div>
+                        ) : usuarios.length === 0 ? (
+                            <div className="text-center py-6 text-gray-400 text-sm">
+                                <AlertCircle className="w-10 h-10 mx-auto mb-2 text-gray-600" />
+                                <p>Nenhum usuário encontrado</p>
+                            </div>
+                        ) : (
+                            <div className="space-y-2">
+                                {usuarios.map((u) => (
+                                    <button
+                                        key={u.id}
+                                        onClick={() => abrirDetalhesUsuario(u.id)}
+                                        className="w-full flex items-center justify-between gap-3 bg-gray-900/50 hover:bg-gray-900 border border-gray-700 rounded-lg px-3 py-2.5 text-left transition-colors"
+                                    >
+                                        <div className="min-w-0">
+                                            <p className="text-white text-sm font-medium truncate">{u.nome || u.apelido}</p>
+                                            <p className="text-gray-500 text-xs truncate">{u.email}</p>
+                                        </div>
+                                        <div className="flex items-center gap-3 shrink-0">
+                                            <span className="text-xs text-gray-400 hidden sm:inline">{u.total_categorias} cat · {u.total_frases} frases</span>
+                                            <span className="text-xs px-2 py-1 rounded-full bg-gray-700 text-gray-300 capitalize">{u.plano_nome}</span>
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+
+                        {totalPaginasUsuarios > 1 && (
+                            <div className="flex items-center justify-center gap-3 mt-4">
+                                <button
+                                    onClick={() => carregarUsuarios(paginaUsuarios - 1)}
+                                    disabled={paginaUsuarios <= 1}
+                                    className="p-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 disabled:opacity-40 text-white"
+                                >
+                                    <ChevronLeft className="w-4 h-4" />
+                                </button>
+                                <span className="text-sm text-gray-400">{paginaUsuarios} / {totalPaginasUsuarios}</span>
+                                <button
+                                    onClick={() => carregarUsuarios(paginaUsuarios + 1)}
+                                    disabled={paginaUsuarios >= totalPaginasUsuarios}
+                                    className="p-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 disabled:opacity-40 text-white"
+                                >
+                                    <ChevronRight className="w-4 h-4" />
+                                </button>
+                            </div>
                         )}
                     </Secao>
                 </div>
@@ -511,6 +503,92 @@ export default function DashboardAdmin() {
                     </button>
                 </div>
             </div>
+
+            {usuarioSelecionadoId && (
+                <div
+                    className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4"
+                    onClick={() => setUsuarioSelecionadoId(null)}
+                >
+                    <div
+                        className="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto scrollbar-hide"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="sticky top-0 bg-gray-800 border-b border-gray-700 flex items-center justify-between p-4">
+                            <h3 className="text-white font-semibold">Detalhes do usuário</h3>
+                            <button
+                                onClick={() => setUsuarioSelecionadoId(null)}
+                                className="text-gray-400 hover:text-white p-1"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        <div className="p-4 space-y-4">
+                            {carregandoDetalhes || !detalhesUsuario ? (
+                                <div className="flex items-center justify-center py-10">
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-400"></div>
+                                </div>
+                            ) : (
+                                <>
+                                    <div>
+                                        <p className="text-white text-lg font-semibold">{detalhesUsuario.usuario.nome || detalhesUsuario.usuario.apelido}</p>
+                                        <p className="text-gray-400 text-sm">{detalhesUsuario.usuario.email}</p>
+                                        <div className="flex flex-wrap gap-2 mt-2">
+                                            <span className="text-xs px-2 py-1 rounded-full bg-gray-700 text-gray-300 capitalize">{detalhesUsuario.usuario.plano_nome}</span>
+                                            {detalhesUsuario.usuario.email_verified && (
+                                                <span className="text-xs px-2 py-1 rounded-full bg-green-500/20 text-green-400">E-mail verificado</span>
+                                            )}
+                                            {detalhesUsuario.usuario.idioma_nativo && detalhesUsuario.usuario.idioma_aprendendo && (
+                                                <span className="text-xs px-2 py-1 rounded-full bg-gray-700 text-gray-300">
+                                                    {detalhesUsuario.usuario.idioma_nativo} → {detalhesUsuario.usuario.idioma_aprendendo}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <p className="text-gray-500 text-xs mt-2">
+                                            Cadastrado em {new Date(detalhesUsuario.usuario.create_date).toLocaleDateString('pt-BR')}
+                                        </p>
+                                    </div>
+
+                                    <div className="grid grid-cols-3 gap-3">
+                                        <div className="bg-gray-900/50 rounded-lg p-3 text-center">
+                                            <p className="text-xl font-bold text-white">{detalhesUsuario.total_categorias}</p>
+                                            <p className="text-xs text-gray-400">Categorias</p>
+                                        </div>
+                                        <div className="bg-gray-900/50 rounded-lg p-3 text-center">
+                                            <p className="text-xl font-bold text-white">{detalhesUsuario.total_frases}</p>
+                                            <p className="text-xs text-gray-400">Frases</p>
+                                        </div>
+                                        <div className="bg-gray-900/50 rounded-lg p-3 text-center">
+                                            <Clock className="w-4 h-4 text-gray-500 mx-auto mb-1" />
+                                            <p className="text-xs text-gray-400">
+                                                {detalhesUsuario.ultimo_treino
+                                                    ? new Date(detalhesUsuario.ultimo_treino).toLocaleDateString('pt-BR')
+                                                    : 'Nunca treinou'}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <TrendingUp className="w-4 h-4 text-emerald-400" />
+                                            <h4 className="text-sm font-semibold text-white">Evolução das frases</h4>
+                                        </div>
+                                        <ListaComBarra dados={detalhesUsuario.distribuicao_treino} vazio="Nenhuma frase cadastrada" />
+                                    </div>
+
+                                    <div>
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <Activity className="w-4 h-4 text-orange-400" />
+                                            <h4 className="text-sm font-semibold text-white">Atividade nos últimos {detalhesUsuario.dias_considerados} dias</h4>
+                                        </div>
+                                        <ListaComBarra dados={detalhesUsuario.uso_por_modo} vazio="Sem atividade no período" />
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

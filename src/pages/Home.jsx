@@ -604,9 +604,9 @@ export default function Home() {
                         <BookOpen className="text-emerald-400 me-2" size={26} />
                     </div>
                     <div className="min-w-0">
-                        <p className="text-[11px] text-gray-400 lowercase truncate">{t("categories")}</p>
+                        <p className="text-[11px] text-gray-400 lowercase leading-tight">{t("categories")}</p>
                         <p className="text-lg font-bold text-white">{categorias.length}</p>
-                        <p className="text-[11px] text-gray-400 truncate">{t("active")}</p>
+                        <p className="text-[11px] text-gray-400 leading-tight">{t("active")}</p>
                     </div>
                 </div>
 
@@ -615,9 +615,9 @@ export default function Home() {
                         <CheckCircle2 className="text-purple-400 me-2" size={26} />
                     </div>
                     <div className="min-w-0">
-                        <p className="text-[11px] text-gray-400 truncate"> {t("words")}</p>
+                        <p className="text-[11px] text-gray-400 leading-tight"> {t("words")}</p>
                         <p className="text-lg font-bold text-white">{totalAprendidas}</p>
-                        <p className="text-[11px] text-gray-400 truncate">{t("learned")}</p>
+                        <p className="text-[11px] text-gray-400 leading-tight">{t("learned")}</p>
                     </div>
                 </div>
 
@@ -635,9 +635,9 @@ export default function Home() {
                         <Star className="text-cyan-400 me-2" size={26} fill="currentColor" />
                     </div>
                     <div className="min-w-0">
-                        <p className="text-[11px] text-gray-400 truncate">{t("study_level_short_label")}</p>
+                        <p className="text-[11px] text-gray-400 leading-tight">{t("study_level_short_label")}</p>
                         <p className="text-lg font-bold text-white">{nivelEstudo}</p>
-                        <p className="text-[11px] text-gray-400 truncate">{t("study_level_card_hint")}</p>
+                        <p className="text-[11px] text-gray-400 leading-tight">{t("study_level_card_hint")}</p>
                     </div>
                 </button>
 

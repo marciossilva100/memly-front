@@ -545,6 +545,8 @@
   "premium_reason_tiro_certeiro": "Je hebt je potjes Zeker Schot van vandaag al gespeeld. Word premium om zonder limiet te spelen.",
   "daily_limit_reached_title": "Dagelijkse credits op",
   "daily_limit_premium_cta": "Abonneer op Premium",
+  "daily_limit_premium_hint_traducao": "Abonneer op Premium en krijg tot 10 vertalingen per dag in plaats van 2.",
+  "daily_limit_premium_hint_perguntas": "Abonneer op Premium en krijg tot 10 vragen per dag in plaats van 1.",
   "premium_reason_perguntas_ia": "Je hebt je vraag van vandaag gebruikt. Ga premium voor meer vragen per dag.",
   "premium_reason_frase_dia_ia": "Je hebt je gratis proefversie van de dagelijkse uitspraaktraining gebruikt. Ga premium voor dagelijkse toegang.",
   "question_counter": "Vraag {{numero}} van {{total}}",

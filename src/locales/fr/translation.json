@@ -545,6 +545,8 @@
   "premium_reason_tiro_certeiro": "Vous avez déjà joué vos parties du jour de Tir Précis. Passez premium pour jouer sans limite.",
   "daily_limit_reached_title": "Crédits quotidiens épuisés",
   "daily_limit_premium_cta": "S'abonner à Premium",
+  "daily_limit_premium_hint_traducao": "Abonnez-vous à Premium et obtenez jusqu'à 10 traductions par jour au lieu de 2.",
+  "daily_limit_premium_hint_perguntas": "Abonnez-vous à Premium et obtenez jusqu'à 10 questions par jour au lieu d'une seule.",
   "premium_reason_perguntas_ia": "Vous avez utilisé votre question du jour. Passez premium pour plus de questions par jour.",
   "premium_reason_frase_dia_ia": "Vous avez utilisé votre essai gratuit de l'entraînement quotidien de prononciation. Passez premium pour un accès quotidien.",
   "question_counter": "Question {{numero}} sur {{total}}",

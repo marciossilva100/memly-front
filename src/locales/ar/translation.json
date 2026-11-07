@@ -545,6 +545,8 @@
   "premium_reason_tiro_certeiro": "لقد لعبت مبارياتك لهذا اليوم في لعبة الرمية الدقيقة. اشترك في البريميوم للعب بلا حدود.",
   "daily_limit_reached_title": "انتهت أرصدتك اليومية",
   "daily_limit_premium_cta": "اشترك في بريميوم",
+  "daily_limit_premium_hint_traducao": "اشترك في بريميوم واحصل على ما يصل إلى 10 ترجمات يوميًا بدلاً من 2.",
+  "daily_limit_premium_hint_perguntas": "اشترك في بريميوم واحصل على ما يصل إلى 10 أسئلة يوميًا بدلاً من 1.",
   "premium_reason_perguntas_ia": "لقد استخدمت سؤالك لهذا اليوم. قم بالترقية إلى بريميوم لمزيد من الأسئلة يوميًا.",
   "premium_reason_frase_dia_ia": "لقد استخدمت تجربتك المجانية لتدريب النطق اليومي. قم بالترقية إلى بريميوم للوصول اليومي.",
   "question_counter": "السؤال {{numero}} من {{total}}",

@@ -545,6 +545,8 @@
   "premium_reason_tiro_certeiro": "Rozegrałeś już dzisiejsze partie Celnego Strzału. Przejdź na premium, żeby grać bez limitu.",
   "daily_limit_reached_title": "Dzienne kredyty wyczerpane",
   "daily_limit_premium_cta": "Subskrybuj Premium",
+  "daily_limit_premium_hint_traducao": "Subskrybuj Premium i otrzymaj do 10 tłumaczeń dziennie zamiast 2.",
+  "daily_limit_premium_hint_perguntas": "Subskrybuj Premium i otrzymaj do 10 pytań dziennie zamiast 1.",
   "premium_reason_perguntas_ia": "Wykorzystałeś dzisiejsze pytanie. Przejdź na premium, aby mieć więcej pytań dziennie.",
   "premium_reason_frase_dia_ia": "Wykorzystałeś darmową próbkę codziennego treningu wymowy. Przejdź na premium, aby mieć codzienny dostęp.",
   "question_counter": "Pytanie {{numero}} z {{total}}",

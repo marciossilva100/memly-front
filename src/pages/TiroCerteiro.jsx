@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Target, Trophy, Loader2, AlertCircle, Crosshair, ChevronLeft, ChevronRight, Flame, Settings, X, Check } from "lucide-react";
+import { Target, Trophy, Loader2, AlertCircle, Crosshair, ChevronLeft, ChevronRight, Flame, Settings, X, Check, Sparkles } from "lucide-react";
 import PremiumModal from "../components/PremiumModal";
-import LimiteDiarioModal from "../components/LimiteDiarioModal";
 import { useAuth } from "../context/AuthContext";
 import { playAudio, pararAudio, preloadAudio } from "../utils/audioPlayer";
 import { tocarSomTiro, tocarSomMissil, tocarSomAcerto, tocarSomErro } from "../utils/somJogo";
@@ -313,16 +312,26 @@ export default function TiroCerteiro() {
 
     // escolher | carregando | jogando | fimDeJogo
     const [fase, setFase] = useState("escolher");
+    // Trava os botões da tela de fim de jogo por um instante - sem isso, o
+    // toque reflexo de quem ainda estava jogando (atirar/mover) no exato
+    // momento em que a vida/munição zera caía em cima de um desses botões
+    // (ocupam a mesma região da tela), saindo da tela de resultado sem dar
+    // tempo de ver nada. Reportado pelo usuário.
+    const [resultadoPronto, setResultadoPronto] = useState(false);
     // Alterna a mensagem da tela de carregamento pra dar sensação de
     // progresso durante os ~3-5s reais da geração por IA, em vez de um texto
     // parado (que parece travado quando a chamada demora mais que o normal).
     const [mensagemCarregandoIdx, setMensagemCarregandoIdx] = useState(0);
     const [bloqueado, setBloqueado] = useState(false);
     const [mensagemBloqueio, setMensagemBloqueio] = useState(null);
+    // Distingue "cota diária do limitado esgotada" (pode virar premium pra
+    // jogar sem limite) de "recurso exclusivo Premium/Limitado" (free puro,
+    // já tem sua própria vitrine completa via PremiumModal) - só o primeiro
+    // caso ganha o botão dourado de upsell na tela de bloqueio.
+    const [limiteAtingido, setLimiteAtingido] = useState(false);
     const [conteudoInsuficiente, setConteudoInsuficiente] = useState(false);
     const [erro, setErro] = useState(null);
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
-    const [limiteModalOpen, setLimiteModalOpen] = useState(false);
     const [motivoPremium, setMotivoPremium] = useState(null);
     const [saindoParaHome, setSaindoParaHome] = useState(false);
 
@@ -475,9 +484,15 @@ export default function TiroCerteiro() {
         // Cota diária acabou (usuário limitado) é diferente de precisar
         // virar premium do zero (free) - aqui já é um usuário engajado que
         // só bateu no teto de hoje, não precisa da vitrine completa de
-        // funcionalidades de novo, só um aviso claro + opção de assinar.
+        // funcionalidades de novo, só um aviso claro + opção de assinar
+        // direto na própria tela de bloqueio (sem modal duplicando o mesmo
+        // aviso por cima - mesmo ajuste já feito nos treinos de IA,
+        // reportado pelo usuário acontecendo aqui também). Único caso onde
+        // limite_atingido existe nesse jogo é plano limitado (premium nunca
+        // tem teto aqui, ver TiroCerteiro::verificarAcesso) - upsell sempre
+        // faz sentido.
         if (data.limite_atingido) {
-            setLimiteModalOpen(true);
+            setLimiteAtingido(true);
         } else {
             setMotivoPremium("tiro_certeiro");
             setIsPremiumModalOpen(true);
@@ -566,7 +581,7 @@ export default function TiroCerteiro() {
                 if (acessoBloqueadoAgora) {
                     setMensagemBloqueio(data?.message ?? null);
                     if (data?.limite_atingido) {
-                        setLimiteModalOpen(true);
+                        setLimiteAtingido(true);
                     } else {
                         setMotivoPremium("tiro_certeiro");
                         setIsPremiumModalOpen(true);
@@ -702,6 +717,7 @@ export default function TiroCerteiro() {
         if (fase === "jogando" && (vidas <= 0 || municao <= 0) && tirosEmVoo === 0) {
             setCaindo([]);
             setFase("fimDeJogo");
+            setResultadoPronto(false);
 
             fetch(`${API_URL}/controller/tiroCerteiro.php`, {
                 method: "POST",
@@ -717,6 +733,15 @@ export default function TiroCerteiro() {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [vidas, municao, tirosEmVoo]);
+
+    // Janela de 600ms com os botões da tela de resultado travados (ver
+    // resultadoPronto acima) - tempo suficiente pra qualquer toque reflexo
+    // do fim da partida "esfriar" antes de qualquer botão aceitar clique.
+    useEffect(() => {
+        if (fase !== "fimDeJogo") return;
+        const timer = setTimeout(() => setResultadoPronto(true), 600);
+        return () => clearTimeout(timer);
+    }, [fase]);
 
     // Pré-carrega o áudio da tradução certa assim que o texto da rodada
     // aparece (não só quando o jogador acerta) - sem isso, o TTS só começava
@@ -1007,17 +1032,32 @@ export default function TiroCerteiro() {
                         )}
 
                         {acessoBloqueado === true && !saindoParaHome && (
-                            <div className="text-center py-10">
+                            <div className="text-center py-10 flex flex-col items-center">
                                 <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center">
                                     <Trophy className="w-6 h-6 text-yellow-400" />
                                 </div>
-                                <p className="text-gray-300 mb-4">{mensagemBloqueio}</p>
-                                <button
-                                    onClick={() => { setSaindoParaHome(true); navigate(-1); }}
-                                    className="px-6 py-3 rounded-full bg-gray-800/50 border border-gray-700 text-white font-medium hover:bg-gray-700/50 transition-colors"
-                                >
-                                    {t("back_to_home")}
-                                </button>
+                                <p className="text-gray-300 mb-4 max-w-xs">{mensagemBloqueio}</p>
+                                <div className="flex flex-col gap-3 w-full max-w-xs">
+                                    {limiteAtingido && (
+                                        <button
+                                            onClick={() => {
+                                                setMotivoPremium("tiro_certeiro");
+                                                setIsPremiumModalOpen(true);
+                                            }}
+                                            className="px-6 py-3 rounded-full bg-gradient-to-r from-[#4cb8c4] to-[#085078] hover:from-[#3da5b0] hover:to-[#064060] text-white font-bold shadow-lg shadow-[#4cb8c4]/20 transition-all flex items-center justify-center gap-2 group"
+                                        >
+                                            <Sparkles className="w-4 h-4" />
+                                            {t("daily_limit_premium_cta")}
+                                            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={() => { setSaindoParaHome(true); navigate(-1); }}
+                                        className="px-6 py-3 rounded-full bg-gray-800/50 border border-gray-700 text-white font-medium hover:bg-gray-700/50 transition-colors"
+                                    >
+                                        {t("back_to_home")}
+                                    </button>
+                                </div>
                             </div>
                         )}
 
@@ -1114,13 +1154,28 @@ export default function TiroCerteiro() {
                     <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center">
                         <Trophy className="w-6 h-6 text-yellow-400" />
                     </div>
-                    <p className="text-gray-300 mb-4">{mensagemBloqueio}</p>
-                    <button
-                        onClick={() => { setSaindoParaHome(true); navigate(-1); }}
-                        className="px-6 py-3 rounded-full bg-gray-800/50 border border-gray-700 text-white font-medium hover:bg-gray-700/50 transition-colors"
-                    >
-                        {t("back")}
-                    </button>
+                    <p className="text-gray-300 mb-4 max-w-xs">{mensagemBloqueio}</p>
+                    <div className="flex flex-col gap-3 w-full max-w-xs">
+                        {limiteAtingido && (
+                            <button
+                                onClick={() => {
+                                    setMotivoPremium("tiro_certeiro");
+                                    setIsPremiumModalOpen(true);
+                                }}
+                                className="px-6 py-3 rounded-full bg-gradient-to-r from-[#4cb8c4] to-[#085078] hover:from-[#3da5b0] hover:to-[#064060] text-white font-bold shadow-lg shadow-[#4cb8c4]/20 transition-all flex items-center justify-center gap-2 group"
+                            >
+                                <Sparkles className="w-4 h-4" />
+                                {t("daily_limit_premium_cta")}
+                                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </button>
+                        )}
+                        <button
+                            onClick={() => { setSaindoParaHome(true); navigate(-1); }}
+                            className="px-6 py-3 rounded-full bg-gray-800/50 border border-gray-700 text-white font-medium hover:bg-gray-700/50 transition-colors"
+                        >
+                            {t("back")}
+                        </button>
+                    </div>
                 </div>
             )}
 
@@ -1294,17 +1349,19 @@ export default function TiroCerteiro() {
 
                     <div className="flex flex-col gap-3 w-full max-w-xs mt-auto shrink-0">
                         <button
+                            disabled={!resultadoPronto}
                             onClick={() => iniciarPartida(categoriasEscolhidas)}
-                            className="w-full px-6 py-3 rounded-full bg-gradient-to-r from-fuchsia-500 to-cyan-400 hover:opacity-90 text-white font-medium transition-opacity"
+                            className="w-full px-6 py-3 rounded-full bg-gradient-to-r from-fuchsia-500 to-cyan-400 hover:opacity-90 disabled:opacity-40 text-white font-medium transition-opacity"
                         >
                             {t("play_again")}
                         </button>
                         <button
+                            disabled={!resultadoPronto}
                             onClick={() => {
                                 setSelecionadas([]);
                                 setFase("escolher");
                             }}
-                            className="w-full px-6 py-3 rounded-full bg-gray-800/50 border border-gray-700 text-white font-medium hover:bg-gray-700/50 transition-colors"
+                            className="w-full px-6 py-3 rounded-full bg-gray-800/50 border border-gray-700 text-white font-medium hover:bg-gray-700/50 disabled:opacity-40 transition-colors"
                         >
                             {t("choose_category_to_play")}
                         </button>
@@ -1315,8 +1372,9 @@ export default function TiroCerteiro() {
                             // cima fazia o botão físico de voltar do celular
                             // (que volta 1 passo no histórico) cair de novo nessa
                             // tela de fim de jogo em vez de ir pra Home.
+                            disabled={!resultadoPronto}
                             onClick={() => navigate(-1)}
-                            className="w-full px-6 py-3 rounded-full text-gray-400 hover:text-white transition-colors"
+                            className="w-full px-6 py-3 rounded-full text-gray-400 hover:text-white disabled:opacity-40 transition-colors"
                         >
                             {t("back")}
                         </button>
@@ -1416,23 +1474,6 @@ export default function TiroCerteiro() {
                     setMotivoPremium(null);
                 }}
                 motivo={motivoPremium}
-            />
-
-            <LimiteDiarioModal
-                isOpen={limiteModalOpen}
-                mensagem={mensagemBloqueio}
-                onClose={() => {
-                    setLimiteModalOpen(false);
-                    if (bloqueado) {
-                        setSaindoParaHome(true);
-                        navigate(-1);
-                    }
-                }}
-                onAssinarPremium={() => {
-                    setLimiteModalOpen(false);
-                    setMotivoPremium("tiro_certeiro");
-                    setIsPremiumModalOpen(true);
-                }}
             />
         </div>
     );

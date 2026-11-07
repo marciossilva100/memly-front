@@ -547,6 +547,8 @@
   "premium_reason_tiro_certeiro": "You've already played today's Sure Shot matches. Go premium to play without limits.",
   "daily_limit_reached_title": "Daily credits used up",
   "daily_limit_premium_cta": "Subscribe to Premium",
+  "daily_limit_premium_hint_traducao": "Subscribe to Premium and get up to 10 translations a day instead of 2.",
+  "daily_limit_premium_hint_perguntas": "Subscribe to Premium and get up to 10 questions a day instead of 1.",
   "premium_reason_perguntas_ia": "You've used your question for today. Go premium for more questions per day.",
   "premium_reason_frase_dia_ia": "You've used your free sample of the Daily Pronunciation Training. Go premium for daily access.",
   "question_counter": "Question {{numero}} of {{total}}",

@@ -547,6 +547,8 @@
   "premium_reason_tiro_certeiro": "Jau žaidėte šiandienos „Tikslaus šūvio“ žaidimo partijas. Tapkite premium, kad žaistumėte be apribojimų.",
   "daily_limit_reached_title": "Dienos kreditai išnaudoti",
   "daily_limit_premium_cta": "Prenumeruoti Premium",
+  "daily_limit_premium_hint_traducao": "Prenumeruok Premium ir gauk iki 10 vertimų per dieną vietoj 2.",
+  "daily_limit_premium_hint_perguntas": "Prenumeruok Premium ir gauk iki 10 klausimų per dieną vietoj 1.",
   "premium_reason_perguntas_ia": "Jau panaudojote šiandienos klausimą. Tapkite premium, kad turėtumėte daugiau klausimų per dieną.",
   "premium_reason_frase_dia_ia": "Jau panaudojote nemokamą Kasdienės tarimo treniruotės bandymą. Tapkite premium, kad turėtumėte kasdienę prieigą.",
   "question_counter": "{{numero}} klausimas iš {{total}}",

@@ -545,6 +545,8 @@
   "premium_reason_tiro_certeiro": "Hai già giocato le tue partite di oggi di Tiro Preciso. Passa a premium per giocare senza limiti.",
   "daily_limit_reached_title": "Crediti giornalieri esauriti",
   "daily_limit_premium_cta": "Abbonati a Premium",
+  "daily_limit_premium_hint_traducao": "Abbonati a Premium e ottieni fino a 10 traduzioni al giorno invece di 2.",
+  "daily_limit_premium_hint_perguntas": "Abbonati a Premium e ottieni fino a 10 domande al giorno invece di 1.",
   "premium_reason_perguntas_ia": "Hai usato la tua domanda di oggi. Passa a premium per più domande al giorno.",
   "premium_reason_frase_dia_ia": "Hai esaurito la tua prova gratuita dell'allenamento quotidiano di pronuncia. Passa a premium per l'accesso giornaliero.",
   "question_counter": "Domanda {{numero}} di {{total}}",

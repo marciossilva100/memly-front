@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { Volume2, Mic, Square, RotateCcw, History, SkipForward, Send, Languages, Ban, AlertCircle, Keyboard, Loader2, Check, ArrowRight } from "lucide-react";
+import { Volume2, Mic, Square, RotateCcw, History, SkipForward, Send, Languages, Ban, AlertCircle, Keyboard, Loader2, Check, ArrowRight, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { playAudio, pararAudio } from "../utils/audioPlayer";
 import { useAuth } from "../context/AuthContext";
@@ -7,7 +7,6 @@ import { useTranslation } from "react-i18next";
 import useAudioRecorder from "../hooks/useAudioRecorder";
 import AudioPreviewPlayer from "../components/AudioPreviewPlayer";
 import PremiumModal from "../components/PremiumModal";
-import LimiteDiarioModal from "../components/LimiteDiarioModal";
 import IaLoading from "../components/IaLoading"
 
 function corNota(nota) {
@@ -62,7 +61,6 @@ export default function TraducaoReversa() {
     const [insufficientContent, setInsufficientContent] = useState(false);
     const [frasesCurtas, setFrasesCurtas] = useState(false);
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
-    const [limiteModalOpen, setLimiteModalOpen] = useState(false);
     const [motivoPremium, setMotivoPremium] = useState(null);
     const API_URL = import.meta.env.VITE_API_URL;
 
@@ -123,9 +121,6 @@ export default function TraducaoReversa() {
                         setLimitReached(true);
                         setTextoNativo('');
                         setMensagemLimite(data.message || null);
-                        if (user?.plano === 3) {
-                            setLimiteModalOpen(true);
-                        }
                         return;
                     }
                     if (data.conteudo_insuficiente) {
@@ -496,7 +491,20 @@ export default function TraducaoReversa() {
         const limiteVitalicio = user?.plano === 3;
 
         return (
-            <div className="h-screen flex flex-col items-center justify-center text-center p-6 from-gray-900 to-gray-800 bg-gradient-to-br">
+            <div className="h-screen flex flex-col items-center justify-center text-center p-6 from-gray-900 to-gray-800 bg-gradient-to-br relative">
+                {/* Histórico como link discreto no canto, não na pilha de
+                    botões principal - competia visualmente com a narrativa
+                    de limite/upsell, sem ter relação nenhuma com ela (pedido
+                    do usuário). Mesmo estilo/posição do botão de histórico já
+                    usado no cabeçalho da tela normal de treino. */}
+                <button
+                    onClick={() => navigate('/traducaoreversa/historico')}
+                    className="absolute top-6 right-6 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-gray-300 text-xs hover:bg-gray-700/50 transition-colors"
+                >
+                    <History className="w-3.5 h-3.5" />
+                    {t("view_history")}
+                </button>
+
                 <div className="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center mb-5">
                     <Ban className="w-8 h-8 text-red-400" />
                 </div>
@@ -505,45 +513,62 @@ export default function TraducaoReversa() {
                     {t("daily_limit_reached")}
                 </h1>
                 <p className="text-gray-400 text-sm max-w-xs">
-                    {t("come_back_tomorrow")}
+                    {mensagemLimite || t("come_back_tomorrow")}
                 </p>
 
-                <div className="mt-8 flex flex-col gap-3 w-full max-w-xs">
-                    <button
-                        onClick={() => navigate('/traducaoreversa/historico')}
-                        className="px-6 py-3 rounded-full bg-[#4cb8c4] hover:bg-[#3da5b0] text-white font-medium transition-colors flex items-center justify-center gap-2"
-                    >
-                        <History className="w-4 h-4" />
-                        {t("view_history")}
-                    </button>
-                    <button
-                        onClick={() => navigate(-1)}
-                        className="px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white font-medium transition-colors"
-                    >
-                        {t("back")}
-                    </button>
-                </div>
-
                 {limiteVitalicio && (
-                    <>
-                        <LimiteDiarioModal
-                            isOpen={limiteModalOpen}
-                            mensagem={mensagemLimite || t("come_back_tomorrow")}
-                            onClose={() => setLimiteModalOpen(false)}
-                            onAssinarPremium={() => {
-                                setLimiteModalOpen(false);
+                    <div className="mt-4 rounded-xl border border-[#4cb8c4]/30 bg-[#4cb8c4]/10 px-4 py-3 max-w-xs">
+                        <p className="text-[#4cb8c4] text-sm font-medium">{t("daily_limit_premium_hint_traducao")}</p>
+                    </div>
+                )}
+
+                {/* Uma tela só, sem modal separado por cima - mesmo ajuste já
+                    feito em treinoIA.jsx (ver comentário lá): o limitado via o
+                    mesmo aviso duas vezes (um modal "Créditos esgotados" logo
+                    de cara, e essa mesma tela por trás dele). Diferente de
+                    treinoIA.jsx, aqui a cota do limitado
+                    (LIMITE_DIARIO_LIMITADO) reseta todo dia, não é amostra
+                    vitalícia única - por isso a mensagem de fallback é a
+                    mesma genérica dos dois planos, só o texto real vindo do
+                    backend (mensagemLimite) já deixa claro quantos textos
+                    cada plano tem por dia. Pro limitado, o botão já vira
+                    direto pra "assinar premium" (mais textos/dia); pro
+                    premium, continua "Voltar". */}
+                <div className="mt-8 flex flex-col gap-3 w-full max-w-xs">
+                    {limiteVitalicio ? (
+                        <button
+                            onClick={() => {
                                 setMotivoPremium("traducao_reversa_ia");
                                 setIsPremiumModalOpen(true);
                             }}
-                        />
-                        <PremiumModal
-                            isOpen={isPremiumModalOpen}
-                            setIsPremiumModalOpen={setIsPremiumModalOpen}
-                            onClose={() => setIsPremiumModalOpen(false)}
-                            motivo={motivoPremium}
-                        />
-                    </>
-                )}
+                            className="px-6 py-3 rounded-full bg-gradient-to-r from-[#4cb8c4] to-[#085078] hover:from-[#3da5b0] hover:to-[#064060] text-white font-bold shadow-lg shadow-[#4cb8c4]/20 transition-all flex items-center justify-center gap-2 group"
+                        >
+                            <Sparkles className="w-4 h-4" />
+                            {t("daily_limit_premium_cta")}
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </button>
+                    ) : (
+                        <button
+                            onClick={() => navigate(-1)}
+                            className="px-6 py-3 rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white font-medium transition-colors"
+                        >
+                            {t("back")}
+                        </button>
+                    )}
+                    <button
+                        onClick={() => navigate('/home')}
+                        className="px-6 py-3 rounded-full text-gray-400 hover:text-white transition-colors"
+                    >
+                        {t("back_to_home")}
+                    </button>
+                </div>
+
+                <PremiumModal
+                    isOpen={isPremiumModalOpen}
+                    setIsPremiumModalOpen={setIsPremiumModalOpen}
+                    onClose={() => setIsPremiumModalOpen(false)}
+                    motivo={motivoPremium}
+                />
             </div>
         );
     }
@@ -866,7 +891,7 @@ export default function TraducaoReversa() {
                         {t("try_again")}
                     </button>
                     <button
-                        onClick={proximoTexto}
+                        onClick={handleSkip}
                         className="px-6 py-3 w-full rounded-full bg-gray-800/50 backdrop-blur-sm border border-gray-700 text-white flex items-center justify-center gap-2 hover:bg-gray-700/50 transition-colors">
                         <SkipForward className="w-4 h-4" />
                         {t("next_question")}

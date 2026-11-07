@@ -545,6 +545,8 @@
   "premium_reason_tiro_certeiro": "Du hast deine heutigen Partien von Zielschuss schon gespielt. Werde Premium, um ohne Limit zu spielen.",
   "daily_limit_reached_title": "Tägliches Guthaben aufgebraucht",
   "daily_limit_premium_cta": "Premium abonnieren",
+  "daily_limit_premium_hint_traducao": "Abonniere Premium und erhalte bis zu 10 Übersetzungen pro Tag statt 2.",
+  "daily_limit_premium_hint_perguntas": "Abonniere Premium und erhalte bis zu 10 Fragen pro Tag statt 1.",
   "premium_reason_perguntas_ia": "Du hast deine heutige Frage genutzt. Werde Premium-Mitglied für mehr Fragen pro Tag.",
   "premium_reason_frase_dia_ia": "Du hast deine kostenlose Probe des täglichen Aussprachetrainings aufgebraucht. Werde Premium-Mitglied für täglichen Zugang.",
   "question_counter": "Frage {{numero}} von {{total}}",

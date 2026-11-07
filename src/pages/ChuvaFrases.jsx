@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { playAudio, pararAudio } from "../utils/audioPlayer";
 import { tocarSomAcerto } from "../utils/somJogo";
-import { Heart, Trophy, Loader2, CloudRain, Check, Volume2, Settings, X, Target, Flame, Sparkles } from "lucide-react";
+import { Heart, Trophy, Loader2, CloudRain, Check, Volume2, Settings, X, Target, Flame, Sparkles, ArrowRight } from "lucide-react";
 import PremiumModal from "../components/PremiumModal";
 import LimiteDiarioModal from "../components/LimiteDiarioModal";
 import imgFundoChuva from "../assets/img/chuva-frases-bg.png";
@@ -139,6 +139,12 @@ export default function ChuvaFrases() {
 
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
     const [limiteModalOpen, setLimiteModalOpen] = useState(false);
+    // Só pro bloqueio detectado na checagem inicial (status_acesso), que já
+    // tem sua própria tela de fundo - usar o modal AQUI TAMBÉM duplicava o
+    // mesmo aviso (reportado pelo usuário). A checagem feita ao clicar em
+    // "Jogar" (verificarAcessoEJogar) não tem tela de fundo própria, então
+    // continua usando o modal normalmente ali, sem duplicar nada.
+    const [limiteAtingidoInicial, setLimiteAtingidoInicial] = useState(false);
     const [motivoPremium, setMotivoPremium] = useState(null);
 
     // Configurações do jogo (velocidade de queda + áudio automático),
@@ -228,7 +234,7 @@ export default function ChuvaFrases() {
                     // usuário engajado que só bateu no teto de hoje, não
                     // precisa da vitrine completa de novo.
                     if (data?.limite_atingido) {
-                        setLimiteModalOpen(true);
+                        setLimiteAtingidoInicial(true);
                     } else {
                         setMotivoPremium("jogo_chuva");
                         setIsPremiumModalOpen(true);
@@ -706,20 +712,35 @@ export default function ChuvaFrases() {
                         )}
 
                         {acessoBloqueado === true && !saindoParaHome && (
-                            <div className="text-center py-10">
+                            <div className="text-center py-10 flex flex-col items-center">
                                 <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center">
                                     <Trophy className="w-6 h-6 text-yellow-400" />
                                 </div>
-                                <p className="text-gray-300 mb-4">{mensagemBloqueio || t("premium_reason_audio")}</p>
-                                <button
-                                    onClick={() => {
-                                        setSaindoParaHome(true);
-                                        navigate(-1);
-                                    }}
-                                    className="px-6 py-3 rounded-full bg-gray-800/50 border border-gray-700 text-white font-medium hover:bg-gray-700/50 transition-colors"
-                                >
-                                    {t("back_to_home")}
-                                </button>
+                                <p className="text-gray-300 mb-4 max-w-xs">{mensagemBloqueio || t("premium_reason_audio")}</p>
+                                <div className="flex flex-col gap-3 w-full max-w-xs">
+                                    {limiteAtingidoInicial && (
+                                        <button
+                                            onClick={() => {
+                                                setMotivoPremium("jogo_chuva");
+                                                setIsPremiumModalOpen(true);
+                                            }}
+                                            className="px-6 py-3 rounded-full bg-gradient-to-r from-[#4cb8c4] to-[#085078] hover:from-[#3da5b0] hover:to-[#064060] text-white font-bold shadow-lg shadow-[#4cb8c4]/20 transition-all flex items-center justify-center gap-2 group"
+                                        >
+                                            <Sparkles className="w-4 h-4" />
+                                            {t("daily_limit_premium_cta")}
+                                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={() => {
+                                            setSaindoParaHome(true);
+                                            navigate(-1);
+                                        }}
+                                        className="px-6 py-3 rounded-full bg-gray-800/50 border border-gray-700 text-white font-medium hover:bg-gray-700/50 transition-colors"
+                                    >
+                                        {t("back_to_home")}
+                                    </button>
+                                </div>
                             </div>
                         )}
 

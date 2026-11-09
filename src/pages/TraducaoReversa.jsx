@@ -660,40 +660,38 @@ export default function TraducaoReversa() {
                         </div>
 
                         <div className="flex justify-center gap-2 mt-3">
-                            <button
-                                // No texto NATIVO, forcarVozPadrao=true sempre (voz padrão/Google,
-                                // nunca a natural/premium) - pedido explícito do usuário, não faz
-                                // sentido gastar voz natural no idioma que o aluno já fala. Depois
-                                // do "Não sei", o card pode virar pra mostrar o gabarito
-                                // (traducaoGabarito, no idioma APRENDENDO) - aí sim deve valer a voz
-                                // natural pra quem é premium, igual nos outros treinos de IA (bug
-                                // real reportado: o verso também tocava sempre com voz padrão).
-                                disabled={buscandoAudio}
-                                onClick={() => {
-                                    if (tocandoOuvir) {
-                                        pararAudio();
-                                        setTocandoOuvir(false);
-                                        return;
-                                    }
-                                    const verso = naoSeiClicado && flipped;
-                                    const texto = verso ? traducaoGabarito : textoNativo;
-                                    const idioma = verso ? user?.learning_language : user?.native_language;
-
-                                    setBuscandoAudio(true);
-                                    playAudio(texto, user, true, idioma, !verso, false, () => {
-                                        setBuscandoAudio(false);
-                                        setTocandoOuvir(true);
-                                    })
-                                        .finally(() => {
-                                            setBuscandoAudio(false);
+                            {/* Só no verso (idioma que o aluno está aprendendo, traducaoGabarito,
+                                só existe depois do "Não sei" + card virado) - pedido do usuário:
+                                texto NATIVO nunca tem botão de ouvir nos treinos de IA (o texto
+                                gerado passa fácil de 200 caracteres no intermediário/avançado, e
+                                o fallback de voz padrão - API não-oficial do Google - rejeita
+                                qualquer texto acima disso, falhando em silêncio). Antes era o
+                                oposto (só na frente, nativo, forçando voz padrão sempre). */}
+                            {naoSeiClicado && flipped && (
+                                <button
+                                    disabled={buscandoAudio}
+                                    onClick={() => {
+                                        if (tocandoOuvir) {
+                                            pararAudio();
                                             setTocandoOuvir(false);
-                                        });
-                                }}
-                                className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-400/10 border border-purple-400/30 text-purple-400 text-xs hover:bg-purple-400/20 transition-colors disabled:opacity-70"
-                            >
-                                {buscandoAudio ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : tocandoOuvir ? <Square className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
-                                {buscandoAudio ? t("generating_audio") : tocandoOuvir ? t("stop") : t("listen")}
-                            </button>
+                                            return;
+                                        }
+                                        setBuscandoAudio(true);
+                                        playAudio(traducaoGabarito, user, true, user?.learning_language, false, false, () => {
+                                            setBuscandoAudio(false);
+                                            setTocandoOuvir(true);
+                                        })
+                                            .finally(() => {
+                                                setBuscandoAudio(false);
+                                                setTocandoOuvir(false);
+                                            });
+                                    }}
+                                    className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-400/10 border border-purple-400/30 text-purple-400 text-xs hover:bg-purple-400/20 transition-colors disabled:opacity-70"
+                                >
+                                    {buscandoAudio ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : tocandoOuvir ? <Square className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+                                    {buscandoAudio ? t("generating_audio") : tocandoOuvir ? t("stop") : t("listen")}
+                                </button>
+                            )}
 
                             {!naoSeiClicado &&
                                 <button

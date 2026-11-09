@@ -704,32 +704,40 @@ export default function Perguntas() {
                         </div>
                         <p className="text-center text-gray-500 text-xs mt-2">{t("tap_card_to_flip")}</p>
 
-                        <div className={`flex justify-center gap-2 mt-3 ${flipped ? "hidden" : ""}`}>
-                            <button
-                                disabled={buscandoAudio}
-                                onClick={() => {
-                                    if (tocandoOuvir) {
-                                        pararAudio();
-                                        setTocandoOuvir(false);
-                                        return;
-                                    }
-                                    setBuscandoAudio(true);
-                                    playAudio(question, user, true, null, false, false, () => {
-                                        setBuscandoAudio(false);
-                                        setTocandoOuvir(true);
-                                    })
-                                        .finally(() => {
-                                            setBuscandoAudio(false);
+                        <div className="flex justify-center gap-2 mt-3">
+                            {/* Só no verso (idioma que o aluno está aprendendo, questionTraducao) -
+                                pedido do usuário: texto NATIVO nunca tem botão de ouvir nos
+                                treinos de IA (a pergunta gerada passa fácil de 200 caracteres no
+                                intermediário/avançado, e o fallback de voz padrão - API não-
+                                oficial do Google - rejeita qualquer texto acima disso, falhando
+                                em silêncio). Antes era o oposto (só na frente, nativo). */}
+                            {flipped && (
+                                <button
+                                    disabled={buscandoAudio}
+                                    onClick={() => {
+                                        if (tocandoOuvir) {
+                                            pararAudio();
                                             setTocandoOuvir(false);
-                                        });
-                                }}
-                                className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors disabled:opacity-70"
-                            >
-                                {buscandoAudio ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : tocandoOuvir ? <Square className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
-                                {buscandoAudio ? t("generating_audio") : tocandoOuvir ? t("stop") : t("listen")}
-                            </button>
+                                            return;
+                                        }
+                                        setBuscandoAudio(true);
+                                        playAudio(questionTraducao, user, true, null, false, false, () => {
+                                            setBuscandoAudio(false);
+                                            setTocandoOuvir(true);
+                                        })
+                                            .finally(() => {
+                                                setBuscandoAudio(false);
+                                                setTocandoOuvir(false);
+                                            });
+                                    }}
+                                    className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors disabled:opacity-70"
+                                >
+                                    {buscandoAudio ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : tocandoOuvir ? <Square className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+                                    {buscandoAudio ? t("generating_audio") : tocandoOuvir ? t("stop") : t("listen")}
+                                </button>
+                            )}
 
-                            {categoriasSelecionadas.length > 0 && (
+                            {!flipped && categoriasSelecionadas.length > 0 && (
                                 <button
                                     type="button"
                                     onClick={abrirVocabulario}

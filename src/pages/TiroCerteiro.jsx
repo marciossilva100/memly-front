@@ -967,7 +967,7 @@ export default function TiroCerteiro() {
             // Sempre a voz padrão gratuita (nunca a natural/premium), mesmo
             // padrão de ChuvaFrases.jsx - reforça a pronúncia certa assim
             // que o jogador acerta, sem depender do plano dele.
-            playAudio(alvoAtingido.texto, user, false, null, true, true).catch(() => { });
+            playAudio(alvoAtingido.texto, user, false, null, true, true, null, "verso").catch(() => { });
 
             removerCaindo(alvoAtingido.uid);
             setPontos((prev) => prev + 10 + nivelAtual(prev));

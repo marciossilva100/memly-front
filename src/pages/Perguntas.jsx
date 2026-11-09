@@ -724,7 +724,7 @@ export default function Perguntas() {
                                         playAudio(questionTraducao, user, true, null, false, false, () => {
                                             setBuscandoAudio(false);
                                             setTocandoOuvir(true);
-                                        })
+                                        }, "vozNaturalIa")
                                             .finally(() => {
                                                 setBuscandoAudio(false);
                                                 setTocandoOuvir(false);

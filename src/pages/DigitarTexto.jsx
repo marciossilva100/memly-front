@@ -219,7 +219,7 @@ export default function DigitarTexto() {
         if (!frase || !user) return;
         if (localStorage.getItem('zaldemy_autoplay_frente') !== '1') return;
 
-        playAudio(frase.texto_nativo, user, false, user?.native_language || user?.learning_language, true);
+        playAudio(frase.texto_nativo, user, false, user?.native_language || user?.learning_language, true, false, null, "frente");
     }, [index, frases, user, mode]);
 
     // Pré-carrega os dois áudios do card assim que ele aparece - sem isso, a
@@ -259,7 +259,7 @@ export default function DigitarTexto() {
         flipTimeoutRef.current = setTimeout(() => {
 
             setShowBackContent(true);
-            playAudio(frases[currentIndex].texto_traduzido, user);
+            playAudio(frases[currentIndex].texto_traduzido, user, false, null, false, false, null, "verso");
             flipTimeoutRef.current = null;
 
         }, 200);
@@ -374,7 +374,7 @@ export default function DigitarTexto() {
             const currentIndex = index;
             flipTimeoutRef.current = setTimeout(() => {
                 setShowBackContent(true);
-                playAudio(frases[currentIndex].texto_traduzido, user);
+                playAudio(frases[currentIndex].texto_traduzido, user, false, null, false, false, null, "verso");
                 flipTimeoutRef.current = null;
             }, 200);
         } else {
@@ -398,7 +398,7 @@ export default function DigitarTexto() {
             const currentIndex = index;
             flipTimeoutRef.current = setTimeout(() => {
                 setShowBackContent(true);
-                playAudio(frases[currentIndex].texto_traduzido, user);
+                playAudio(frases[currentIndex].texto_traduzido, user, false, null, false, false, null, "verso");
                 flipTimeoutRef.current = null;
             }, 200);
         } else {
@@ -624,7 +624,7 @@ export default function DigitarTexto() {
                             onClick={(e) => {
                                 e.preventDefault();
                                 setBuscandoAudio(true);
-                                playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, true, false, () => setBuscandoAudio(false))
+                                playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, true, false, () => setBuscandoAudio(false), "frente")
                                     .finally(() => setBuscandoAudio(false));
                             }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4cb8c4]/10 border border-[#4cb8c4]/30 text-[#4cb8c4] text-xs hover:bg-[#4cb8c4]/20 transition-colors disabled:opacity-70">
                             {buscandoAudio ? <Loader2 className="w-4 h-4 animate-spin" /> : <Volume className="w-4 h-4" />}
@@ -642,7 +642,7 @@ export default function DigitarTexto() {
                                 onClick={(e) => {
                                     e.preventDefault();
                                     setBuscandoAudio(true);
-                                    playAudio(frases[index].texto_traduzido, user, false, null, false, false, () => setBuscandoAudio(false))
+                                    playAudio(frases[index].texto_traduzido, user, false, null, false, false, () => setBuscandoAudio(false), "verso")
                                         .finally(() => setBuscandoAudio(false));
                                 }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-700/50 border border-gray-600 text-gray-300 text-xs hover:bg-gray-700 transition-colors disabled:opacity-70">
                                 {buscandoAudio ? <Loader2 className="w-4 h-4 animate-spin" /> : <Volume className="w-4 h-4" />}
@@ -754,7 +754,7 @@ export default function DigitarTexto() {
                                 onClick={(e) => {
                                     e.preventDefault();
                                     setBuscandoAudio(true);
-                                    playAudio(frases[index].texto_traduzido, user, false, null, false, false, () => setBuscandoAudio(false))
+                                    playAudio(frases[index].texto_traduzido, user, false, null, false, false, () => setBuscandoAudio(false), "verso")
                                         .finally(() => setBuscandoAudio(false));
                                 }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-700/50 border border-gray-600 text-gray-300 text-xs hover:bg-gray-700 transition-colors disabled:opacity-70">
                                 {buscandoAudio ? <Loader2 className="w-4 h-4 animate-spin" /> : <Volume className="w-4 h-4" />}

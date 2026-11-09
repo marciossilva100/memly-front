@@ -32,49 +32,40 @@ function limparMediaSession() {
     navigator.mediaSession.playbackState = "none";
 }
 
-// Chave de localStorage por tipo de voz - natural e padrão (Google) são
-// independentes uma da outra (o usuário quer poder escolher velocidades
-// diferentes pra cada), mas cada uma precisa valer de forma ÚNICA e
-// consistente em TODO o app - qualquer tela que toque voz natural usa a
-// MESMA chave/valor, idem pra voz padrão.
-const CHAVE_VELOCIDADE = {
-    natural: "zaldemy_velocidade_tts",
-    padrao: "zaldemy_velocidade_tts_padrao",
-};
-
-// Só pros Flashcards (ver parâmetro `lado` de playAudio) - velocidade por
-// lado do CARTÃO (frente/verso), não por tipo de VOZ. Independente das duas
-// chaves acima, que continuam controlando as outras telas sem cartão
-// (DigitarTexto, Perguntas-IA, Tradução Reversa etc.) exatamente como
-// sempre controlaram - essa chave nova não substitui nem interfere nelas.
+// Chave de localStorage por LADO DO CARTÃO (frente/verso) - não mais por
+// tipo de voz (natural/padrão). Antes a velocidade dependia de qual VOZ
+// terminava tocando (natural ou o fallback padrão/Google), o que confundia
+// o usuário (o nome técnico da voz não diz nada sobre o conteúdo) e ficava
+// inconsistente quando a voz natural falhava/cota acabava no meio da sessão
+// e trocava de voz sem avisar. Agora é só isso: qual lado do cartão (idioma
+// nativo = frente, idioma aprendendo = verso) está tocando, não importa qual
+// voz termine sendo usada por trás. Precisa valer de forma ÚNICA e
+// consistente em TODO o app - qualquer tela toca a mesma chave/valor.
 const CHAVE_VELOCIDADE_LADO = {
     frente: "zaldemy_velocidade_card_frente",
     verso: "zaldemy_velocidade_card_verso",
+    // Treinos de IA (Frase do Dia, Perguntas, Tradução Reversa) não usam
+    // frente/verso - lá é sempre voz natural, configuração própria e
+    // independente das duas acima (pedido explícito do usuário).
+    vozNaturalIa: "zaldemy_velocidade_voz_natural_ia",
 };
 
 // Única fonte de verdade pra "qual velocidade tocar esse áudio" - antes essa
-// leitura (chave certa + parseFloat + fallback pra 1.0 + override de
-// velocidadeNormal) estava duplicada nos dois ramos de playAudio (natural e
-// padrão), cada um com sua própria cópia quase idêntica; relatado múltiplas
-// vezes como "velocidade inconsistente/não bate com Configurações" entre
-// telas, sempre porque uma das duas cópias tinha ficado defasada da outra
-// depois de algum ajuste. Concentrando aqui, só existe UM lugar pra
-// verificar/corrigir quando o comportamento de velocidade mudar de novo.
+// leitura estava duplicada nos dois ramos de playAudio (natural e padrão),
+// cada um com sua própria cópia quase idêntica; relatado múltiplas vezes
+// como "velocidade inconsistente/não bate com Configurações" entre telas,
+// sempre porque uma das duas cópias tinha ficado defasada da outra depois
+// de algum ajuste. Concentrando aqui, só existe UM lugar pra verificar/
+// corrigir quando o comportamento de velocidade mudar de novo.
 // velocidadeNormal (ex: acerto no jogo Chuva de Frases/Tiro Certeiro) sempre
-// vence e força 1.0x, independente da preferência salva.
-// `lado` (opcional, "frente"|"verso") é só pros Flashcards - quando presente,
-// vence sobre `tipo`: a velocidade passa a depender de qual LADO do cartão
-// está tocando, não de qual VOZ terminou tocando (natural ou padrão) - nem
-// quando a voz natural falha/cota acaba e cai pro fallback de voz padrão no
-// meio da sessão, o lado continua sendo a fonte de velocidade certa (ver os
-// dois pontos onde aplicarVelocidade é chamado, mais abaixo). Sem `lado`
-// (undefined, todo chamador que não é Flashcards), comportamento idêntico a
-// antes - essa função não muda nada pra quem não passa esse parâmetro novo.
-function velocidadePreferida(tipo, velocidadeNormal, lado) {
+// vence e força 1.0x, independente da preferência salva. `lado` precisa
+// valer nos DOIS ramos de playAudio (natural e fallback padrão) - mesmo
+// quando a voz natural falha/cota acaba e cai pro fallback no meio da
+// sessão, o lado continua sendo a fonte de velocidade certa.
+function velocidadePreferida(velocidadeNormal, lado) {
     if (velocidadeNormal) return 1.0;
 
-    const chave = lado ? CHAVE_VELOCIDADE_LADO[lado] : CHAVE_VELOCIDADE[tipo];
-    const valor = parseFloat(localStorage.getItem(chave));
+    const valor = parseFloat(localStorage.getItem(CHAVE_VELOCIDADE_LADO[lado]));
     return Number.isFinite(valor) ? valor : 1.0;
 }
 
@@ -85,8 +76,8 @@ function velocidadePreferida(tipo, velocidadeNormal, lado) {
 // (dispara de novo antes de tocar) e 'playing' (dispara já tocando, rede
 // mais lenta) pra garantir que a velocidade escolhida realmente "gruda",
 // não só na tentativa inicial.
-function aplicarVelocidade(audio, tipo, velocidadeNormal, lado) {
-    const rate = velocidadePreferida(tipo, velocidadeNormal, lado);
+function aplicarVelocidade(audio, velocidadeNormal, lado) {
+    const rate = velocidadePreferida(velocidadeNormal, lado);
     audio.playbackRate = rate;
     const reaplicar = () => { audio.playbackRate = rate; };
     audio.addEventListener("loadedmetadata", reaplicar);
@@ -286,10 +277,9 @@ export async function sincronizarVelocidadesAudio(user) {
         const data = await res.json();
 
         if (data?.success) {
-            localStorage.setItem(CHAVE_VELOCIDADE.natural, String(data.velocidade_tts ?? 1.0));
-            localStorage.setItem(CHAVE_VELOCIDADE.padrao, String(data.velocidade_tts_padrao ?? 1.0));
             localStorage.setItem(CHAVE_VELOCIDADE_LADO.frente, String(data.velocidade_card_frente ?? 1.0));
             localStorage.setItem(CHAVE_VELOCIDADE_LADO.verso, String(data.velocidade_card_verso ?? 1.0));
+            localStorage.setItem(CHAVE_VELOCIDADE_LADO.vozNaturalIa, String(data.velocidade_voz_natural_ia ?? 1.0));
         }
     } catch (error) {
         console.error('Erro ao sincronizar velocidade de áudio:', error);
@@ -477,11 +467,13 @@ export function preloadAudio(text, user, lang = null, forcarVozPadrao = false) {
 // sem precisar duplicar a lógica de busca em cada tela (útil sobretudo pro
 // limitado, que não pré-carrega o verso do flashcard - ver Flashcards.jsx -
 // então a geração acontece na hora do flip, de forma perceptível).
-// lado (opcional, "frente"|"verso"): só os Flashcards passam isso - ver
-// velocidadePreferida/aplicarVelocidade acima. Todo outro chamador
-// existente não passa esse parâmetro (undefined), então continua com a
-// velocidade por tipo de voz (natural/padrão) de sempre, sem nenhuma
-// mudança de comportamento.
+// lado ("frente"|"verso"|"vozNaturalIa", obrigatório na prática): determina
+// a velocidade (ver velocidadePreferida/aplicarVelocidade acima), não
+// importa qual voz termine tocando por trás. "frente"/"verso" = lado do
+// cartão (nativo/aprendendo) em telas com cartão de flip normal (Flashcards,
+// DigitarTexto etc.). "vozNaturalIa" = treinos de IA (Frase do Dia,
+// Perguntas, Tradução Reversa) - lá não é por lado de cartão, é sempre voz
+// natural, configuração própria.
 export const playAudio = async (text, user, ia = false, lang = null, forcarVozPadrao = false, velocidadeNormal = false, onAudioIniciado = null, lado = null) => {
     const API_URL = import.meta.env.VITE_API_URL;
     if (!text) return;
@@ -577,7 +569,7 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
             // Velocidade da voz natural - ver velocidadePreferida/aplicarVelocidade
             // (única fonte de verdade, compartilhada com o ramo de voz padrão
             // abaixo).
-            aplicarVelocidade(audio, "natural", velocidadeNormal, lado);
+            aplicarVelocidade(audio, velocidadeNormal, lado);
             onAudioIniciado?.();
             marcarMediaSessionTocando();
 
@@ -649,7 +641,7 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
             // diferente da escolha de voz (só premium). Velocidade da voz
             // padrão - ver velocidadePreferida/aplicarVelocidade (única fonte
             // de verdade, compartilhada com o ramo de voz natural acima).
-            aplicarVelocidade(audio, "padrao", velocidadeNormal, lado);
+            aplicarVelocidade(audio, velocidadeNormal, lado);
 
             await audio.play().catch(err => {
                 console.error("ERRO PLAY:", err);

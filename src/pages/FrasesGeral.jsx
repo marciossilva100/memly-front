@@ -165,7 +165,7 @@ export default function FrasesGeral() {
                                     <Volume2 size={18} className="text-blue-400 shrink-0" onClick={async () => {
                                         setTocandoAudioId(item.id);
                                         try {
-                                            await playAudio(item.texto_traduzido, user);
+                                            await playAudio(item.texto_traduzido, user, false, null, false, false, null, "verso");
                                         } finally {
                                             setTocandoAudioId(null);
                                         }

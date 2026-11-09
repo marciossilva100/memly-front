@@ -285,7 +285,7 @@ export default function ModalPhrase({ openPhrase, setOpenPhrase, category, listP
                                     ) : (
                                         <PlayCircle className="text-[#4cb8c4] cursor-pointer" onClick={() => {
                                             setBuscandoAudio(true);
-                                            playAudio(translatedPhrase, user, false, null, false, false, () => setBuscandoAudio(false))
+                                            playAudio(translatedPhrase, user, false, null, false, false, () => setBuscandoAudio(false), "verso")
                                                 .finally(() => setBuscandoAudio(false));
                                         }} />
                                     )

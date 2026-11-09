@@ -680,7 +680,7 @@ export default function TraducaoReversa() {
                                         playAudio(traducaoGabarito, user, true, user?.learning_language, false, false, () => {
                                             setBuscandoAudio(false);
                                             setTocandoOuvir(true);
-                                        })
+                                        }, "vozNaturalIa")
                                             .finally(() => {
                                                 setBuscandoAudio(false);
                                                 setTocandoOuvir(false);

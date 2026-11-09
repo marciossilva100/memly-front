@@ -68,7 +68,7 @@ export default function VocabularioCategoriaModal({ isOpen, onClose, frases, loa
                                     onClick={async () => {
                                         setTocandoAudioId(item.id);
                                         try {
-                                            await playAudio(item.texto_traduzido, user);
+                                            await playAudio(item.texto_traduzido, user, false, null, false, false, null, "verso");
                                         } finally {
                                             setTocandoAudioId(null);
                                         }

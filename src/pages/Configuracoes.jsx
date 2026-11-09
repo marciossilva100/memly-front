@@ -158,22 +158,11 @@ export default function Configuracoes() {
     const [salvandoVoz, setSalvandoVoz] = useState(false);
     const [erroVoz, setErroVoz] = useState('');
 
-    const [velocidadeTts, setVelocidadeTts] = useState(1.00);
-    const [salvandoVelocidade, setSalvandoVelocidade] = useState(false);
-    const [erroVelocidade, setErroVelocidade] = useState('');
-
-    // Velocidade da voz padrão (Google) - independente da voz natural acima,
-    // usuário pediu controles separados (antes as duas compartilhavam a
-    // mesma preferência).
-    const [velocidadeTtsPadrao, setVelocidadeTtsPadrao] = useState(1.00);
-    const [salvandoVelocidadePadrao, setSalvandoVelocidadePadrao] = useState(false);
-    const [erroVelocidadePadrao, setErroVelocidadePadrao] = useState('');
-
-    // Velocidade por lado do cartão nos Flashcards (frente/verso) -
-    // independente das duas acima (que continuam controlando as outras
-    // telas sem cartão, ex: DigitarTexto, Perguntas-IA). Pedido do usuário:
-    // em vez de só "voz natural"/"voz padrão", poder escolher a velocidade
-    // de cada lado do cartão, não importa qual voz termine tocando.
+    // Velocidade por lado do cartão (frente = idioma nativo, verso = idioma
+    // aprendendo) - vale em todo o app com cartão de flip (Flashcards,
+    // DigitarTexto etc.), não importa qual voz termine tocando por trás.
+    // Substituiu os controles antigos por tipo de voz (natural/padrão), que
+    // confundiam o usuário sem dizer nada sobre o conteúdo.
     const [velocidadeCardFrente, setVelocidadeCardFrente] = useState(1.00);
     const [salvandoVelocidadeCardFrente, setSalvandoVelocidadeCardFrente] = useState(false);
     const [erroVelocidadeCardFrente, setErroVelocidadeCardFrente] = useState('');
@@ -181,6 +170,14 @@ export default function Configuracoes() {
     const [velocidadeCardVerso, setVelocidadeCardVerso] = useState(1.00);
     const [salvandoVelocidadeCardVerso, setSalvandoVelocidadeCardVerso] = useState(false);
     const [erroVelocidadeCardVerso, setErroVelocidadeCardVerso] = useState('');
+
+    // Velocidade da voz natural especificamente nos treinos de IA (Frase do
+    // Dia, Perguntas, Tradução Reversa) - não é por lado de cartão lá
+    // (pedido explícito do usuário), é sempre voz natural, configuração
+    // própria e independente das duas acima.
+    const [velocidadeVozNaturalIa, setVelocidadeVozNaturalIa] = useState(1.00);
+    const [salvandoVelocidadeVozNaturalIa, setSalvandoVelocidadeVozNaturalIa] = useState(false);
+    const [erroVelocidadeVozNaturalIa, setErroVelocidadeVozNaturalIa] = useState('');
 
     // Preferência só do dispositivo (não precisa sincronizar entre aparelhos,
     // mesmo padrão de armazenamento já usado pra velocidade de fallback em
@@ -451,14 +448,12 @@ export default function Configuracoes() {
                 if (data.success) {
                     setQuantidadeFrases(String(data.quantidade_frases_aprender));
                     setVozTts(data.voz_tts || 'nova');
-                    setVelocidadeTts(data.velocidade_tts ?? 1.00);
-                    localStorage.setItem('zaldemy_velocidade_tts', String(data.velocidade_tts ?? 1.00));
-                    setVelocidadeTtsPadrao(data.velocidade_tts_padrao ?? 1.00);
-                    localStorage.setItem('zaldemy_velocidade_tts_padrao', String(data.velocidade_tts_padrao ?? 1.00));
                     setVelocidadeCardFrente(data.velocidade_card_frente ?? 1.00);
                     localStorage.setItem('zaldemy_velocidade_card_frente', String(data.velocidade_card_frente ?? 1.00));
                     setVelocidadeCardVerso(data.velocidade_card_verso ?? 1.00);
                     localStorage.setItem('zaldemy_velocidade_card_verso', String(data.velocidade_card_verso ?? 1.00));
+                    setVelocidadeVozNaturalIa(data.velocidade_voz_natural_ia ?? 1.00);
+                    localStorage.setItem('zaldemy_velocidade_voz_natural_ia', String(data.velocidade_voz_natural_ia ?? 1.00));
                 }
             } catch (error) {
                 console.error('Erro ao carregar configurações:', error);
@@ -651,48 +646,13 @@ export default function Configuracoes() {
         }
     }
 
-    async function handleSelecionarVelocidade(velocidade) {
-        if (velocidade === velocidadeTts || salvandoVelocidade) return;
+    async function handleSelecionarVelocidadeVozNaturalIa(velocidade) {
+        if (velocidade === velocidadeVozNaturalIa || salvandoVelocidadeVozNaturalIa) return;
 
-        const velocidadeAnterior = velocidadeTts;
-        setVelocidadeTts(velocidade);
-        setErroVelocidade('');
-        setSalvandoVelocidade(true);
-
-        try {
-            const res = await fetch(`${API_URL}/controller/configuracoes.php`, {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                },
-                body: JSON.stringify({ action: 'atualizar_velocidade_tts', velocidade_tts: velocidade })
-            });
-
-            const data = await res.json();
-
-            if (!data.success) {
-                setVelocidadeTts(velocidadeAnterior);
-                setErroVelocidade(data.message || t("unexpected_error"));
-            } else {
-                localStorage.setItem('zaldemy_velocidade_tts', String(velocidade));
-            }
-        } catch (error) {
-            console.error('Erro ao salvar velocidade:', error);
-            setVelocidadeTts(velocidadeAnterior);
-            setErroVelocidade(t("server_connection_error"));
-        } finally {
-            setSalvandoVelocidade(false);
-        }
-    }
-
-    async function handleSelecionarVelocidadePadrao(velocidade) {
-        if (velocidade === velocidadeTtsPadrao || salvandoVelocidadePadrao) return;
-
-        const velocidadeAnterior = velocidadeTtsPadrao;
-        setVelocidadeTtsPadrao(velocidade);
-        setErroVelocidadePadrao('');
-        setSalvandoVelocidadePadrao(true);
+        const velocidadeAnterior = velocidadeVozNaturalIa;
+        setVelocidadeVozNaturalIa(velocidade);
+        setErroVelocidadeVozNaturalIa('');
+        setSalvandoVelocidadeVozNaturalIa(true);
 
         try {
             const res = await fetch(`${API_URL}/controller/configuracoes.php`, {
@@ -701,23 +661,23 @@ export default function Configuracoes() {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 },
-                body: JSON.stringify({ action: 'atualizar_velocidade_tts_padrao', velocidade_tts_padrao: velocidade })
+                body: JSON.stringify({ action: 'atualizar_velocidade_voz_natural_ia', velocidade_voz_natural_ia: velocidade })
             });
 
             const data = await res.json();
 
             if (!data.success) {
-                setVelocidadeTtsPadrao(velocidadeAnterior);
-                setErroVelocidadePadrao(data.message || t("unexpected_error"));
+                setVelocidadeVozNaturalIa(velocidadeAnterior);
+                setErroVelocidadeVozNaturalIa(data.message || t("unexpected_error"));
             } else {
-                localStorage.setItem('zaldemy_velocidade_tts_padrao', String(velocidade));
+                localStorage.setItem('zaldemy_velocidade_voz_natural_ia', String(velocidade));
             }
         } catch (error) {
-            console.error('Erro ao salvar velocidade padrão:', error);
-            setVelocidadeTtsPadrao(velocidadeAnterior);
-            setErroVelocidadePadrao(t("server_connection_error"));
+            console.error('Erro ao salvar velocidade da voz natural nos treinos de IA:', error);
+            setVelocidadeVozNaturalIa(velocidadeAnterior);
+            setErroVelocidadeVozNaturalIa(t("server_connection_error"));
         } finally {
-            setSalvandoVelocidadePadrao(false);
+            setSalvandoVelocidadeVozNaturalIa(false);
         }
     }
 
@@ -1039,17 +999,17 @@ export default function Configuracoes() {
                             <div className={isPremium ? "mt-4 pt-4 border-t border-gray-700" : ""}>
                                 <div className="flex items-center gap-2 mb-2">
                                     <Gauge className="w-4 h-4 text-[#4cb8c4]" />
-                                    <span className="text-white text-sm">{t("voice_speed_natural")}</span>
+                                    <span className="text-white text-sm">{t("voice_speed_ai_training")}</span>
                                 </div>
                                 <div className="grid grid-cols-4 gap-2">
                                     {VELOCIDADES_TTS.map((velocidade) => {
-                                        const selecionada = velocidadeTts === velocidade;
+                                        const selecionada = velocidadeVozNaturalIa === velocidade;
                                         return (
                                             <button
                                                 key={velocidade}
                                                 type="button"
-                                                disabled={salvandoVelocidade}
-                                                onClick={() => handleSelecionarVelocidade(velocidade)}
+                                                disabled={salvandoVelocidadeVozNaturalIa}
+                                                onClick={() => handleSelecionarVelocidadeVozNaturalIa(velocidade)}
                                                 className={`rounded-lg border py-1.5 text-sm font-medium transition-colors disabled:opacity-60 ${
                                                     selecionada
                                                         ? "border-[#4cb8c4] bg-[#4cb8c4]/10 text-[#4cb8c4]"
@@ -1061,43 +1021,13 @@ export default function Configuracoes() {
                                         );
                                     })}
                                 </div>
-                                {erroVelocidade && (
-                                    <p className="text-red-400 text-xs mt-2">{erroVelocidade}</p>
+                                {erroVelocidadeVozNaturalIa && (
+                                    <p className="text-red-400 text-xs mt-2">{erroVelocidadeVozNaturalIa}</p>
                                 )}
                             </div>
                         )}
 
                         <div className={temVozNatural || isPremium ? "mt-4 pt-4 border-t border-gray-700" : ""}>
-                            <div className="flex items-center gap-2 mb-2">
-                                <Gauge className="w-4 h-4 text-[#4cb8c4]" />
-                                <span className="text-white text-sm">{t("voice_speed")}</span>
-                            </div>
-                            <div className="grid grid-cols-4 gap-2">
-                                {VELOCIDADES_TTS.map((velocidade) => {
-                                    const selecionada = velocidadeTtsPadrao === velocidade;
-                                    return (
-                                        <button
-                                            key={velocidade}
-                                            type="button"
-                                            disabled={salvandoVelocidadePadrao}
-                                            onClick={() => handleSelecionarVelocidadePadrao(velocidade)}
-                                            className={`rounded-lg border py-1.5 text-sm font-medium transition-colors disabled:opacity-60 ${
-                                                selecionada
-                                                    ? "border-[#4cb8c4] bg-[#4cb8c4]/10 text-[#4cb8c4]"
-                                                    : "border-gray-700 bg-gray-900/40 text-gray-300 hover:bg-gray-700/40"
-                                            }`}
-                                        >
-                                            {velocidade}x
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                            {erroVelocidadePadrao && (
-                                <p className="text-red-400 text-xs mt-2">{erroVelocidadePadrao}</p>
-                            )}
-                        </div>
-
-                        <div className="mt-4 pt-4 border-t border-gray-700">
                             <div className="flex items-center gap-2 mb-2">
                                 <Gauge className="w-4 h-4 text-[#4cb8c4]" />
                                 <span className="text-white text-sm">{t("flashcard_speed_front")}</span>

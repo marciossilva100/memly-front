@@ -480,7 +480,7 @@ export default function ChuvaFrases() {
     function tocarAudioAlvo() {
         if (!alvo) return;
         setBuscandoAudioAlvo(true);
-        playAudio(alvo.texto_traduzido, user, false, null, true, true, () => setBuscandoAudioAlvo(false))
+        playAudio(alvo.texto_traduzido, user, false, null, true, true, () => setBuscandoAudioAlvo(false), "verso")
             .catch(() => { })
             .finally(() => setBuscandoAudioAlvo(false));
     }

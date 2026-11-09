@@ -208,7 +208,7 @@ export default function JogoFrases() {
       // utils/audioPlayer.js). Sem isso, um timeout fixo podia cortar o
       // áudio no meio, principalmente na troca de tela pro Flashcards
       // depois do último par do último lote.
-      playAudio(selecionadaDireita.texto_traduzido, user).then(() => {
+      playAudio(selecionadaDireita.texto_traduzido, user, false, null, false, false, null, "verso").then(() => {
         finalizarAcerto();
       });
     } else {

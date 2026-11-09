@@ -705,13 +705,15 @@ export default function Perguntas() {
                         <p className="text-center text-gray-500 text-xs mt-2">{t("tap_card_to_flip")}</p>
 
                         <div className="flex justify-center gap-2 mt-3">
-                            {/* Só no verso (idioma que o aluno está aprendendo, questionTraducao) -
-                                pedido do usuário: texto NATIVO nunca tem botão de ouvir nos
-                                treinos de IA (a pergunta gerada passa fácil de 200 caracteres no
-                                intermediário/avançado, e o fallback de voz padrão - API não-
-                                oficial do Google - rejeita qualquer texto acima disso, falhando
-                                em silêncio). Antes era o oposto (só na frente, nativo). */}
-                            {flipped && (
+                            {/* Só na frente (idioma que o aluno está aprendendo, campo "question" -
+                                CONFIRMADO no backend: DailyQuestionOpenAI::obterPergunta escreve
+                                "question" em idiomaNome=getIdiomaAprendendo, e "traducao"/
+                                questionTraducao em idiomaNativoNome. O verso (questionTraducao) é
+                                o NATIVO - nunca tem botão de ouvir nos treinos de IA (texto
+                                gerado passa fácil de 200 caracteres no intermediário/avançado, e
+                                o fallback de voz padrão - API não-oficial do Google - rejeita
+                                isso, falhando em silêncio). */}
+                            {!flipped && (
                                 <button
                                     disabled={buscandoAudio}
                                     onClick={() => {
@@ -721,7 +723,7 @@ export default function Perguntas() {
                                             return;
                                         }
                                         setBuscandoAudio(true);
-                                        playAudio(questionTraducao, user, true, null, false, false, () => {
+                                        playAudio(question, user, true, null, false, false, () => {
                                             setBuscandoAudio(false);
                                             setTocandoOuvir(true);
                                         }, "vozNaturalIa")

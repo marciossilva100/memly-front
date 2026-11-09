@@ -569,13 +569,14 @@ export default function TreinoIA() {
                         </div>
                         <p className="text-center text-gray-500 text-xs mt-2">{t("tap_card_to_flip")}</p>
 
-                        {/* Só no verso (idioma que o aluno está aprendendo, fraseTraducao) -
-                            pedido do usuário: texto NATIVO nunca tem botão de ouvir nos treinos
-                            de IA (a frase gerada passa fácil de 200 caracteres no intermediário/
-                            avançado, e o fallback de voz padrão - API não-oficial do Google -
-                            rejeita qualquer texto acima disso, falhando em silêncio). Antes era
-                            o oposto (só na frente, nativo). */}
-                        {flipped && (
+                        {/* Só na frente (idioma que o aluno está aprendendo, campo "frase" -
+                            CONFIRMADO no backend: FraseDoDia::obterFraseDoDia escreve "frase"
+                            em idiomaNome=getIdiomaAprendendo, e "traducao"/fraseTraducao em
+                            idiomaNativoNome. O verso (fraseTraducao) é o NATIVO - nunca tem
+                            botão de ouvir nos treinos de IA (texto gerado passa fácil de 200
+                            caracteres no intermediário/avançado, e o fallback de voz padrão -
+                            API não-oficial do Google - rejeita isso, falhando em silêncio). */}
+                        {!flipped && (
                             <div className="flex justify-center mt-3">
                                 <button
                                     disabled={buscandoAudio}
@@ -586,7 +587,7 @@ export default function TreinoIA() {
                                             return;
                                         }
                                         setBuscandoAudio(true);
-                                        playAudio(fraseTraducao, user, true, null, false, false, () => {
+                                        playAudio(frase, user, true, null, false, false, () => {
                                             setBuscandoAudio(false);
                                             setTocandoOuvir(true);
                                         }, "vozNaturalIa")

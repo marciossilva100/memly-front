@@ -590,7 +590,7 @@ export default function TreinoIA() {
                                         playAudio(frase, user, true, null, false, false, () => {
                                             setBuscandoAudio(false);
                                             setTocandoOuvir(true);
-                                        }, "vozNaturalIa")
+                                        }, "vozNaturalIaFraseDoDia")
                                             .finally(() => {
                                                 setBuscandoAudio(false);
                                                 setTocandoOuvir(false);

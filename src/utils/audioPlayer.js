@@ -504,18 +504,23 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
     // Flashcards.jsx) de sempre RESOLVER, nunca rejeitar. Sem essa proteção,
     // um erro aqui dentro (rede, audio.play() etc.) rejeitava a Promise e
     // travava quem await'ava ela sem try/catch próprio.
-    // Treinos de IA (Frase do Dia, Perguntas, Tradução Reversa) - "lado"
-    // identifica esse contexto independente do plano (usado abaixo pra
-    // sempre mandar o contexto certo pro backend, que usa isso pra pular um
-    // teto de caracteres por chamada que não faz sentido pra esse conteúdo -
-    // ver tts.php). "semLimiteNatural" (só pro PREMIUM, pedido explícito do
-    // usuário) vai além: ignora também o BLOQUEIO por cota, local e no
-    // servidor - o fallback de voz padrão quebra nesses textos (passam dos
-    // ~200 caracteres que a API não-oficial do Google aceita), então o
-    // premium nunca deve cair nele aqui. O limitado continua com a cota
-    // vitalícia normal (só não trava mais no teto de caracteres).
-    const ladoVozNaturalIa = lado === "vozNaturalIa";
-    const semLimiteNatural = ladoVozNaturalIa && user?.plano === 1;
+    // Treinos de IA - dois contextos com alcance diferente (ver
+    // CONTEXTOS_AUDIO_SEM_LIMITE_PREMIUM/QUALQUER_PLANO em tts.php):
+    // - "vozNaturalIa" (Perguntas, Tradução Reversa): sem bloqueio de cota
+    //   só pro PREMIUM. São recursos DIÁRIOS pro limitado (usa todo dia),
+    //   então o controle de custo continua fazendo sentido pra ele aí.
+    // - "vozNaturalIaFraseDoDia" (só Frase do Dia / treinoIA.jsx): sem
+    //   bloqueio de cota pra QUALQUER plano. A Frase do Dia do limitado é
+    //   uma amostra VITALÍCIA única (1 vez na vida, nunca mais até virar
+    //   premium) - não existe custo recorrente a controlar aqui, então não
+    //   faz sentido limitar voz/tamanho de texto só nessa única vez (pedido
+    //   explícito do usuário).
+    // Em ambos, o "lado" (independente de bypassar cota ou não) também
+    // manda o contexto certo pro backend pular um teto de caracteres por
+    // chamada que não faz sentido pra esse conteúdo - ver tts.php.
+    const ladoVozNaturalIaPremium = lado === "vozNaturalIa";
+    const ladoVozNaturalIaQualquerPlano = lado === "vozNaturalIaFraseDoDia";
+    const semLimiteNatural = ladoVozNaturalIaQualquerPlano || (ladoVozNaturalIaPremium && user?.plano === 1);
 
     try {
     if (!forcarVozPadrao && (semLimiteNatural || (!cotaNaturalEsgotada(user) && !limiteReproducoesLimitadoAtingido(user))) && (user.plano === 1 || user.plano === 3)) {
@@ -539,7 +544,7 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
         const chaveNatural = chaveCacheAudio("natural", voiceLang, text);
         let resultado;
         try {
-            resultado = await obterOuBuscarAudio(chaveNatural, () => gerarAudio(text, false, ladoVozNaturalIa ? "voz_natural_ia" : null));
+            resultado = await obterOuBuscarAudio(chaveNatural, () => gerarAudio(text, false, ladoVozNaturalIaQualquerPlano ? "voz_natural_ia_frase_dia" : (ladoVozNaturalIaPremium ? "voz_natural_ia" : null)));
         } catch {
             // Cai pro fallback de voz padrão abaixo em vez de travar em
             // silêncio com uma exceção não capturada.

@@ -504,8 +504,21 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
     // Flashcards.jsx) de sempre RESOLVER, nunca rejeitar. Sem essa proteção,
     // um erro aqui dentro (rede, audio.play() etc.) rejeitava a Promise e
     // travava quem await'ava ela sem try/catch próprio.
+    // Treinos de IA (Frase do Dia, Perguntas, Tradução Reversa) - "lado"
+    // identifica esse contexto independente do plano (usado abaixo pra
+    // sempre mandar o contexto certo pro backend, que usa isso pra pular um
+    // teto de caracteres por chamada que não faz sentido pra esse conteúdo -
+    // ver tts.php). "semLimiteNatural" (só pro PREMIUM, pedido explícito do
+    // usuário) vai além: ignora também o BLOQUEIO por cota, local e no
+    // servidor - o fallback de voz padrão quebra nesses textos (passam dos
+    // ~200 caracteres que a API não-oficial do Google aceita), então o
+    // premium nunca deve cair nele aqui. O limitado continua com a cota
+    // vitalícia normal (só não trava mais no teto de caracteres).
+    const ladoVozNaturalIa = lado === "vozNaturalIa";
+    const semLimiteNatural = ladoVozNaturalIa && user?.plano === 1;
+
     try {
-    if (!forcarVozPadrao && !cotaNaturalEsgotada(user) && !limiteReproducoesLimitadoAtingido(user) && (user.plano === 1 || user.plano === 3)) {
+    if (!forcarVozPadrao && (semLimiteNatural || (!cotaNaturalEsgotada(user) && !limiteReproducoesLimitadoAtingido(user))) && (user.plano === 1 || user.plano === 3)) {
         // Reserva o slot ANTES do fetch (que é assíncrono) - contar só depois
         // de buscar o áudio permitia que múltiplas chamadas simultâneas (ex:
         // acertar vários pares rápido em Emparelhar.jsx, ou tocar frases
@@ -513,8 +526,12 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
         // MESMA contagem ainda não incrementada e passassem juntas, furando
         // o teto de 10 em paralelo. Reservar aqui é conservador (uma
         // tentativa que falha depois ainda consome o slot), mas nunca deixa
-        // passar do limite - a prioridade é o teto ser confiável.
-        if (user.plano === 3 && registrarReproducaoNaturalLimitado(user)) {
+        // passar do limite - a prioridade é o teto ser confiável. Não conta
+        // pro teto local do limitado quando é voz natural sem limite (essa
+        // reprodução não é restringida por essa cota de qualquer forma) -
+        // mas isso só acontece pro premium, então na prática o limitado
+        // sempre conta normalmente aqui.
+        if (!semLimiteNatural && user.plano === 3 && registrarReproducaoNaturalLimitado(user)) {
             marcarCotaNaturalEsgotada(user);
             avisarLimiteAudioSeNecessario(user);
         }
@@ -522,7 +539,7 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
         const chaveNatural = chaveCacheAudio("natural", voiceLang, text);
         let resultado;
         try {
-            resultado = await obterOuBuscarAudio(chaveNatural, () => gerarAudio(text));
+            resultado = await obterOuBuscarAudio(chaveNatural, () => gerarAudio(text, false, ladoVozNaturalIa ? "voz_natural_ia" : null));
         } catch {
             // Cai pro fallback de voz padrão abaixo em vez de travar em
             // silêncio com uma exceção não capturada.
@@ -685,7 +702,10 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
 // chave de cache do service worker - se fosse na URL, o preload e o play
 // explícito da mesma frase virariam URLs diferentes e nunca reaproveitariam
 // o áudio já baixado um do outro.
-const gerarAudio = async (texto, isPreload = false) => {
+// contexto (opcional): identifica um caso que pula o bloqueio de cota do
+// lado do servidor (ver tts.php) - hoje só "voz_natural_ia" (treinos de IA,
+// onde a voz natural é sempre tentada, nunca bloqueada pela cota).
+const gerarAudio = async (texto, isPreload = false, contexto = null) => {
     const API_URL = import.meta.env.VITE_API_URL;
 
     try {
@@ -696,7 +716,8 @@ const gerarAudio = async (texto, isPreload = false) => {
         // dava pra cachear.
         const url =
             `${API_URL}/controller/tts.php?action=stream_audio` +
-            "&texto=" + encodeURIComponent(texto);
+            "&texto=" + encodeURIComponent(texto) +
+            (contexto ? "&contexto=" + encodeURIComponent(contexto) : "");
 
         const res = await fetch(url, {
             method: "GET",

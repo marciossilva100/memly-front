@@ -560,6 +560,7 @@
   "onboarding_slide_ai_title": "🤖 あなたの学習内容に基づくAI",
   "onboarding_slide_ai_subtitle": "質問もフレーズも、あなたが実際に学んでいる内容から生成されます。ありきたりな内容ではなく、常にあなた自身の語彙です。",
   "tap_card_to_flip": "カードをタップして翻訳を見る",
+  "longer_text_premium_hint": "プレミアムプランでは、テキストがより長くなります。",
   "choose_level_prompt": "現在のレベルは？",
   "choose_level_subtitle": "これを使ってAIが生成する質問やフレーズの難易度を調整します。",
   "choose_a_level": "続けるにはレベルを選んでください",

@@ -703,6 +703,9 @@ export default function Perguntas() {
                             </div>
                         </div>
                         <p className="text-center text-gray-500 text-xs mt-2">{t("tap_card_to_flip")}</p>
+                        {user?.plano === 3 && (
+                            <p className="text-center text-[#4cb8c4] text-xs mt-1">{t("longer_text_premium_hint")}</p>
+                        )}
 
                         <div className="flex justify-center gap-2 mt-3">
                             {/* Só na frente (idioma que o aluno está aprendendo, campo "question" -

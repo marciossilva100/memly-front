@@ -459,6 +459,8 @@
   "voice_female": "女性",
   "voice_male": "男性",
   "voice_speed": "標準音声の速度",
+  "flashcard_speed_front": "カードの表の速度（フラッシュカード）",
+  "flashcard_speed_back": "カードの裏の速度（フラッシュカード）",
   "game_speed": "ゲームの速度",
   "game_speed_chuva_frases": "フレーズレインのゲーム速度",
   "game_settings": "ゲーム設定",

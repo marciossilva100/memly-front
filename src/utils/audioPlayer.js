@@ -42,6 +42,16 @@ const CHAVE_VELOCIDADE = {
     padrao: "zaldemy_velocidade_tts_padrao",
 };
 
+// Só pros Flashcards (ver parâmetro `lado` de playAudio) - velocidade por
+// lado do CARTÃO (frente/verso), não por tipo de VOZ. Independente das duas
+// chaves acima, que continuam controlando as outras telas sem cartão
+// (DigitarTexto, Perguntas-IA, Tradução Reversa etc.) exatamente como
+// sempre controlaram - essa chave nova não substitui nem interfere nelas.
+const CHAVE_VELOCIDADE_LADO = {
+    frente: "zaldemy_velocidade_card_frente",
+    verso: "zaldemy_velocidade_card_verso",
+};
+
 // Única fonte de verdade pra "qual velocidade tocar esse áudio" - antes essa
 // leitura (chave certa + parseFloat + fallback pra 1.0 + override de
 // velocidadeNormal) estava duplicada nos dois ramos de playAudio (natural e
@@ -52,10 +62,19 @@ const CHAVE_VELOCIDADE = {
 // verificar/corrigir quando o comportamento de velocidade mudar de novo.
 // velocidadeNormal (ex: acerto no jogo Chuva de Frases/Tiro Certeiro) sempre
 // vence e força 1.0x, independente da preferência salva.
-function velocidadePreferida(tipo, velocidadeNormal) {
+// `lado` (opcional, "frente"|"verso") é só pros Flashcards - quando presente,
+// vence sobre `tipo`: a velocidade passa a depender de qual LADO do cartão
+// está tocando, não de qual VOZ terminou tocando (natural ou padrão) - nem
+// quando a voz natural falha/cota acaba e cai pro fallback de voz padrão no
+// meio da sessão, o lado continua sendo a fonte de velocidade certa (ver os
+// dois pontos onde aplicarVelocidade é chamado, mais abaixo). Sem `lado`
+// (undefined, todo chamador que não é Flashcards), comportamento idêntico a
+// antes - essa função não muda nada pra quem não passa esse parâmetro novo.
+function velocidadePreferida(tipo, velocidadeNormal, lado) {
     if (velocidadeNormal) return 1.0;
 
-    const valor = parseFloat(localStorage.getItem(CHAVE_VELOCIDADE[tipo]));
+    const chave = lado ? CHAVE_VELOCIDADE_LADO[lado] : CHAVE_VELOCIDADE[tipo];
+    const valor = parseFloat(localStorage.getItem(chave));
     return Number.isFinite(valor) ? valor : 1.0;
 }
 
@@ -66,8 +85,8 @@ function velocidadePreferida(tipo, velocidadeNormal) {
 // (dispara de novo antes de tocar) e 'playing' (dispara já tocando, rede
 // mais lenta) pra garantir que a velocidade escolhida realmente "gruda",
 // não só na tentativa inicial.
-function aplicarVelocidade(audio, tipo, velocidadeNormal) {
-    const rate = velocidadePreferida(tipo, velocidadeNormal);
+function aplicarVelocidade(audio, tipo, velocidadeNormal, lado) {
+    const rate = velocidadePreferida(tipo, velocidadeNormal, lado);
     audio.playbackRate = rate;
     const reaplicar = () => { audio.playbackRate = rate; };
     audio.addEventListener("loadedmetadata", reaplicar);
@@ -269,6 +288,8 @@ export async function sincronizarVelocidadesAudio(user) {
         if (data?.success) {
             localStorage.setItem(CHAVE_VELOCIDADE.natural, String(data.velocidade_tts ?? 1.0));
             localStorage.setItem(CHAVE_VELOCIDADE.padrao, String(data.velocidade_tts_padrao ?? 1.0));
+            localStorage.setItem(CHAVE_VELOCIDADE_LADO.frente, String(data.velocidade_card_frente ?? 1.0));
+            localStorage.setItem(CHAVE_VELOCIDADE_LADO.verso, String(data.velocidade_card_verso ?? 1.0));
         }
     } catch (error) {
         console.error('Erro ao sincronizar velocidade de áudio:', error);
@@ -456,7 +477,12 @@ export function preloadAudio(text, user, lang = null, forcarVozPadrao = false) {
 // sem precisar duplicar a lógica de busca em cada tela (útil sobretudo pro
 // limitado, que não pré-carrega o verso do flashcard - ver Flashcards.jsx -
 // então a geração acontece na hora do flip, de forma perceptível).
-export const playAudio = async (text, user, ia = false, lang = null, forcarVozPadrao = false, velocidadeNormal = false, onAudioIniciado = null) => {
+// lado (opcional, "frente"|"verso"): só os Flashcards passam isso - ver
+// velocidadePreferida/aplicarVelocidade acima. Todo outro chamador
+// existente não passa esse parâmetro (undefined), então continua com a
+// velocidade por tipo de voz (natural/padrão) de sempre, sem nenhuma
+// mudança de comportamento.
+export const playAudio = async (text, user, ia = false, lang = null, forcarVozPadrao = false, velocidadeNormal = false, onAudioIniciado = null, lado = null) => {
     const API_URL = import.meta.env.VITE_API_URL;
     if (!text) return;
 
@@ -551,7 +577,7 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
             // Velocidade da voz natural - ver velocidadePreferida/aplicarVelocidade
             // (única fonte de verdade, compartilhada com o ramo de voz padrão
             // abaixo).
-            aplicarVelocidade(audio, "natural", velocidadeNormal);
+            aplicarVelocidade(audio, "natural", velocidadeNormal, lado);
             onAudioIniciado?.();
             marcarMediaSessionTocando();
 
@@ -623,7 +649,7 @@ export const playAudio = async (text, user, ia = false, lang = null, forcarVozPa
             // diferente da escolha de voz (só premium). Velocidade da voz
             // padrão - ver velocidadePreferida/aplicarVelocidade (única fonte
             // de verdade, compartilhada com o ramo de voz natural acima).
-            aplicarVelocidade(audio, "padrao", velocidadeNormal);
+            aplicarVelocidade(audio, "padrao", velocidadeNormal, lado);
 
             await audio.play().catch(err => {
                 console.error("ERRO PLAY:", err);

@@ -459,6 +459,8 @@
   "voice_female": "Женский",
   "voice_male": "Мужской",
   "voice_speed": "Скорость стандартного голоса",
+  "flashcard_speed_front": "Скорость лицевой стороны карточки (Карточки)",
+  "flashcard_speed_back": "Скорость обратной стороны карточки (Карточки)",
   "game_speed": "Скорость игры",
   "game_speed_chuva_frases": "Скорость игры «Дождь фраз»",
   "game_settings": "Настройки игры",

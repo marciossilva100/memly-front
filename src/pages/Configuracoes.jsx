@@ -169,6 +169,19 @@ export default function Configuracoes() {
     const [salvandoVelocidadePadrao, setSalvandoVelocidadePadrao] = useState(false);
     const [erroVelocidadePadrao, setErroVelocidadePadrao] = useState('');
 
+    // Velocidade por lado do cartão nos Flashcards (frente/verso) -
+    // independente das duas acima (que continuam controlando as outras
+    // telas sem cartão, ex: DigitarTexto, Perguntas-IA). Pedido do usuário:
+    // em vez de só "voz natural"/"voz padrão", poder escolher a velocidade
+    // de cada lado do cartão, não importa qual voz termine tocando.
+    const [velocidadeCardFrente, setVelocidadeCardFrente] = useState(1.00);
+    const [salvandoVelocidadeCardFrente, setSalvandoVelocidadeCardFrente] = useState(false);
+    const [erroVelocidadeCardFrente, setErroVelocidadeCardFrente] = useState('');
+
+    const [velocidadeCardVerso, setVelocidadeCardVerso] = useState(1.00);
+    const [salvandoVelocidadeCardVerso, setSalvandoVelocidadeCardVerso] = useState(false);
+    const [erroVelocidadeCardVerso, setErroVelocidadeCardVerso] = useState('');
+
     // Preferência só do dispositivo (não precisa sincronizar entre aparelhos,
     // mesmo padrão de armazenamento já usado pra velocidade de fallback em
     // src/utils/audioPlayer.js) - controla se a frente do flashcard em
@@ -442,6 +455,10 @@ export default function Configuracoes() {
                     localStorage.setItem('zaldemy_velocidade_tts', String(data.velocidade_tts ?? 1.00));
                     setVelocidadeTtsPadrao(data.velocidade_tts_padrao ?? 1.00);
                     localStorage.setItem('zaldemy_velocidade_tts_padrao', String(data.velocidade_tts_padrao ?? 1.00));
+                    setVelocidadeCardFrente(data.velocidade_card_frente ?? 1.00);
+                    localStorage.setItem('zaldemy_velocidade_card_frente', String(data.velocidade_card_frente ?? 1.00));
+                    setVelocidadeCardVerso(data.velocidade_card_verso ?? 1.00);
+                    localStorage.setItem('zaldemy_velocidade_card_verso', String(data.velocidade_card_verso ?? 1.00));
                 }
             } catch (error) {
                 console.error('Erro ao carregar configurações:', error);
@@ -701,6 +718,76 @@ export default function Configuracoes() {
             setErroVelocidadePadrao(t("server_connection_error"));
         } finally {
             setSalvandoVelocidadePadrao(false);
+        }
+    }
+
+    async function handleSelecionarVelocidadeCardFrente(velocidade) {
+        if (velocidade === velocidadeCardFrente || salvandoVelocidadeCardFrente) return;
+
+        const velocidadeAnterior = velocidadeCardFrente;
+        setVelocidadeCardFrente(velocidade);
+        setErroVelocidadeCardFrente('');
+        setSalvandoVelocidadeCardFrente(true);
+
+        try {
+            const res = await fetch(`${API_URL}/controller/configuracoes.php`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({ action: 'atualizar_velocidade_card_frente', velocidade_card_frente: velocidade })
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                setVelocidadeCardFrente(velocidadeAnterior);
+                setErroVelocidadeCardFrente(data.message || t("unexpected_error"));
+            } else {
+                localStorage.setItem('zaldemy_velocidade_card_frente', String(velocidade));
+            }
+        } catch (error) {
+            console.error('Erro ao salvar velocidade do card da frente:', error);
+            setVelocidadeCardFrente(velocidadeAnterior);
+            setErroVelocidadeCardFrente(t("server_connection_error"));
+        } finally {
+            setSalvandoVelocidadeCardFrente(false);
+        }
+    }
+
+    async function handleSelecionarVelocidadeCardVerso(velocidade) {
+        if (velocidade === velocidadeCardVerso || salvandoVelocidadeCardVerso) return;
+
+        const velocidadeAnterior = velocidadeCardVerso;
+        setVelocidadeCardVerso(velocidade);
+        setErroVelocidadeCardVerso('');
+        setSalvandoVelocidadeCardVerso(true);
+
+        try {
+            const res = await fetch(`${API_URL}/controller/configuracoes.php`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify({ action: 'atualizar_velocidade_card_verso', velocidade_card_verso: velocidade })
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                setVelocidadeCardVerso(velocidadeAnterior);
+                setErroVelocidadeCardVerso(data.message || t("unexpected_error"));
+            } else {
+                localStorage.setItem('zaldemy_velocidade_card_verso', String(velocidade));
+            }
+        } catch (error) {
+            console.error('Erro ao salvar velocidade do card de trás:', error);
+            setVelocidadeCardVerso(velocidadeAnterior);
+            setErroVelocidadeCardVerso(t("server_connection_error"));
+        } finally {
+            setSalvandoVelocidadeCardVerso(false);
         }
     }
 
@@ -1007,6 +1094,66 @@ export default function Configuracoes() {
                             </div>
                             {erroVelocidadePadrao && (
                                 <p className="text-red-400 text-xs mt-2">{erroVelocidadePadrao}</p>
+                            )}
+                        </div>
+
+                        <div className="mt-4 pt-4 border-t border-gray-700">
+                            <div className="flex items-center gap-2 mb-2">
+                                <Gauge className="w-4 h-4 text-[#4cb8c4]" />
+                                <span className="text-white text-sm">{t("flashcard_speed_front")}</span>
+                            </div>
+                            <div className="grid grid-cols-4 gap-2">
+                                {VELOCIDADES_TTS.map((velocidade) => {
+                                    const selecionada = velocidadeCardFrente === velocidade;
+                                    return (
+                                        <button
+                                            key={velocidade}
+                                            type="button"
+                                            disabled={salvandoVelocidadeCardFrente}
+                                            onClick={() => handleSelecionarVelocidadeCardFrente(velocidade)}
+                                            className={`rounded-lg border py-1.5 text-sm font-medium transition-colors disabled:opacity-60 ${
+                                                selecionada
+                                                    ? "border-[#4cb8c4] bg-[#4cb8c4]/10 text-[#4cb8c4]"
+                                                    : "border-gray-700 bg-gray-900/40 text-gray-300 hover:bg-gray-700/40"
+                                            }`}
+                                        >
+                                            {velocidade}x
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                            {erroVelocidadeCardFrente && (
+                                <p className="text-red-400 text-xs mt-2">{erroVelocidadeCardFrente}</p>
+                            )}
+                        </div>
+
+                        <div className="mt-4 pt-4 border-t border-gray-700">
+                            <div className="flex items-center gap-2 mb-2">
+                                <Gauge className="w-4 h-4 text-[#4cb8c4]" />
+                                <span className="text-white text-sm">{t("flashcard_speed_back")}</span>
+                            </div>
+                            <div className="grid grid-cols-4 gap-2">
+                                {VELOCIDADES_TTS.map((velocidade) => {
+                                    const selecionada = velocidadeCardVerso === velocidade;
+                                    return (
+                                        <button
+                                            key={velocidade}
+                                            type="button"
+                                            disabled={salvandoVelocidadeCardVerso}
+                                            onClick={() => handleSelecionarVelocidadeCardVerso(velocidade)}
+                                            className={`rounded-lg border py-1.5 text-sm font-medium transition-colors disabled:opacity-60 ${
+                                                selecionada
+                                                    ? "border-[#4cb8c4] bg-[#4cb8c4]/10 text-[#4cb8c4]"
+                                                    : "border-gray-700 bg-gray-900/40 text-gray-300 hover:bg-gray-700/40"
+                                            }`}
+                                        >
+                                            {velocidade}x
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                            {erroVelocidadeCardVerso && (
+                                <p className="text-red-400 text-xs mt-2">{erroVelocidadeCardVerso}</p>
                             )}
                         </div>
 

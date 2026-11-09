@@ -461,6 +461,8 @@
   "voice_female": "Moteriškas",
   "voice_male": "Vyriškas",
   "voice_speed": "Standartinio balso greitis",
+  "flashcard_speed_front": "Kortelės priekio greitis (Kortelės)",
+  "flashcard_speed_back": "Kortelės nugarėlės greitis (Kortelės)",
   "game_speed": "Žaidimo greitis",
   "game_speed_chuva_frases": "Frazių lietaus žaidimo greitis",
   "game_settings": "Žaidimo nustatymai",

@@ -459,6 +459,8 @@
   "voice_female": "女声",
   "voice_male": "男声",
   "voice_speed": "标准语音速度",
+  "flashcard_speed_front": "卡片正面速度（抽认卡）",
+  "flashcard_speed_back": "卡片背面速度（抽认卡）",
   "game_speed": "游戏速度",
   "game_speed_chuva_frases": "短语雨游戏速度",
   "game_settings": "游戏设置",

@@ -459,6 +459,8 @@
   "voice_female": "Vrouwelijk",
   "voice_male": "Mannelijk",
   "voice_speed": "Snelheid van de standaardstem",
+  "flashcard_speed_front": "Snelheid voorkant kaart (Flashcards)",
+  "flashcard_speed_back": "Snelheid achterkant kaart (Flashcards)",
   "game_speed": "Spelsnelheid",
   "game_speed_chuva_frases": "Snelheid van het zinnenregen-spel",
   "game_settings": "Spelinstellingen",

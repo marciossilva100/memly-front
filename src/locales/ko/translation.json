@@ -459,6 +459,8 @@
   "voice_female": "여성",
   "voice_male": "남성",
   "voice_speed": "기본 음성 속도",
+  "flashcard_speed_front": "카드 앞면 속도 (플래시카드)",
+  "flashcard_speed_back": "카드 뒷면 속도 (플래시카드)",
   "game_speed": "게임 속도",
   "game_speed_chuva_frases": "프레이즈 레인 게임 속도",
   "game_settings": "게임 설정",

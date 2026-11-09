@@ -461,6 +461,8 @@
   "voice_female": "Female",
   "voice_male": "Male",
   "voice_speed": "Standard voice speed",
+  "flashcard_speed_front": "Front card speed (Flashcards)",
+  "flashcard_speed_back": "Back card speed (Flashcards)",
   "game_speed": "Game speed",
   "game_speed_chuva_frases": "Phrase rain game speed",
   "game_settings": "Game settings",

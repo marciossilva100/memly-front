@@ -459,6 +459,8 @@
   "voice_female": "महिला",
   "voice_male": "पुरुष",
   "voice_speed": "मानक आवाज़ की गति",
+  "flashcard_speed_front": "फ्लैशकार्ड के आगे की गति (फ्लैशकार्ड्स)",
+  "flashcard_speed_back": "फ्लैशकार्ड के पीछे की गति (फ्लैशकार्ड्स)",
   "game_speed": "गेम की स्पीड",
   "game_speed_chuva_frases": "फ्रेज़ रेन गेम की गति",
   "game_settings": "गेम सेटिंग्स",

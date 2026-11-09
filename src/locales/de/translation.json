@@ -459,6 +459,8 @@
   "voice_female": "Weiblich",
   "voice_male": "Männlich",
   "voice_speed": "Geschwindigkeit der Standardstimme",
+  "flashcard_speed_front": "Geschwindigkeit der Kartenvorderseite (Lernkarten)",
+  "flashcard_speed_back": "Geschwindigkeit der Kartenrückseite (Lernkarten)",
   "game_speed": "Spielgeschwindigkeit",
   "game_speed_chuva_frases": "Geschwindigkeit im Satzregen-Spiel",
   "game_settings": "Spieleinstellungen",

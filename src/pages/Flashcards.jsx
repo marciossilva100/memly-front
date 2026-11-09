@@ -195,7 +195,7 @@ export default function Flashcards() {
     if (!frases[index]?.texto_nativo || !user) return;
     if (localStorage.getItem('zaldemy_autoplay_frente') !== '1') return;
 
-    playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, true);
+    playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, true, false, null, "frente");
   }, [index, frases, user]);
 
   // Pré-carrega o áudio do verso (texto_traduzido) assim que o card atual
@@ -243,7 +243,7 @@ export default function Flashcards() {
       const currentIndex = index;
       flipTimeoutRef.current = setTimeout(() => {
         setBuscandoAudioVerso(true);
-        audioVersoPromiseRef.current = playAudio(frases[currentIndex].texto_traduzido, user, false, null, false, false, () => setBuscandoAudioVerso(false))
+        audioVersoPromiseRef.current = playAudio(frases[currentIndex].texto_traduzido, user, false, null, false, false, () => setBuscandoAudioVerso(false), "verso")
           .finally(() => setBuscandoAudioVerso(false));
         flipTimeoutRef.current = null;
       }, FLIP_DURATION / 2);
@@ -384,7 +384,7 @@ export default function Flashcards() {
         clearTimeout(flipTimeoutRef.current);
         flipTimeoutRef.current = null;
         setBuscandoAudioVerso(true);
-        audioVersoPromiseRef.current = playAudio(frases[index].texto_traduzido, user, false, null, false, false, () => setBuscandoAudioVerso(false))
+        audioVersoPromiseRef.current = playAudio(frases[index].texto_traduzido, user, false, null, false, false, () => setBuscandoAudioVerso(false), "verso")
           .finally(() => setBuscandoAudioVerso(false));
       }
 
@@ -637,7 +637,7 @@ export default function Flashcards() {
                 onClick={(e) => {
                   e.preventDefault();
                   setBuscandoAudioFrente(true);
-                  playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, true, false, () => setBuscandoAudioFrente(false))
+                  playAudio(frases[index].texto_nativo, user, false, user?.native_language || user?.learning_language, true, false, () => setBuscandoAudioFrente(false), "frente")
                     .finally(() => setBuscandoAudioFrente(false));
                 }} className="px-4 py-2 rounded-md bg-slate-500 text-white text-sm transition flex disabled:opacity-70">
                 {buscandoAudioFrente ? (
@@ -661,7 +661,7 @@ export default function Flashcards() {
                 onClick={(e) => {
                   e.preventDefault();
                   setBuscandoAudioVerso(true);
-                  playAudio(frases[index].texto_traduzido, user, false, null, false, false, () => setBuscandoAudioVerso(false))
+                  playAudio(frases[index].texto_traduzido, user, false, null, false, false, () => setBuscandoAudioVerso(false), "verso")
                     .finally(() => setBuscandoAudioVerso(false));
                 }} className="px-4 py-2 rounded-md bg-slate-500 text-white text-sm transition flex disabled:opacity-70">
                 {buscandoAudioVerso ? (

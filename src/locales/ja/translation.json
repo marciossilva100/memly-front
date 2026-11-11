@@ -241,6 +241,8 @@
   "already_did_questions_today": "今日はすでに {{count}} 問の質問を行いました。",
   "come_back_tomorrow": "また明日、練習を続けに来てください",
   "free_sample_available_in_history_hint": "無料サンプルはすでに使用済みですが、今日の履歴で回答を確認できます。",
+  "pending_other_pair_title": "別の言語で保留中のフレーズがあります",
+  "pending_other_pair_message": "{{nativo}} → {{aprender}} で今日の一言はすでに生成されています。新しく生成する前に、その言語ペアに戻って回答してください。",
   "questions_today_progress": "今日 {{count}}/4 問",
   "leave_answer_in_english": "回答は英語で入力してください",
   "next_question": "次へ",

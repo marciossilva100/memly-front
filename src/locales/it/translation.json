@@ -241,6 +241,8 @@
   "already_did_questions_today": "Hai già fatto {{count}} domande oggi.",
   "come_back_tomorrow": "Torna domani per continuare a esercitarti",
   "free_sample_available_in_history_hint": "Hai già usato il tuo campione gratuito, ma puoi ancora vedere la tua risposta nella cronologia di oggi.",
+  "pending_other_pair_title": "Frase in sospeso in un'altra lingua",
+  "pending_other_pair_message": "Hai già generato la frase del giorno oggi in {{nativo}} → {{aprender}}. Torna a quella coppia di lingue per risponderle prima di generarne una nuova.",
   "questions_today_progress": "{{count}}/4 domande oggi",
   "leave_answer_in_english": "Lascia la tua risposta in inglese",
   "next_question": "Successiva",

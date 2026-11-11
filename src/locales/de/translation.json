@@ -241,6 +241,8 @@
   "already_did_questions_today": "Du hast heute bereits {{count}} Fragen beantwortet.",
   "come_back_tomorrow": "Komm morgen wieder, um weiter zu üben",
   "free_sample_available_in_history_hint": "Du hast dein kostenloses Muster bereits genutzt, kannst deine Antwort aber noch im heutigen Verlauf sehen.",
+  "pending_other_pair_title": "Ausstehender Satz in einer anderen Sprache",
+  "pending_other_pair_message": "Du hast den heutigen Satz des Tages bereits in {{nativo}} → {{aprender}} erstellt. Wechsle zurück zu diesem Sprachpaar, um ihn zu beantworten, bevor du einen neuen erstellst.",
   "questions_today_progress": "{{count}}/4 Fragen heute",
   "leave_answer_in_english": "Gib deine Antwort auf Englisch ein",
   "next_question": "Nächste",

@@ -241,6 +241,8 @@
   "already_did_questions_today": "आपने आज पहले ही {{count}} प्रश्न कर लिए हैं।",
   "come_back_tomorrow": "अभ्यास जारी रखने के लिए कल वापस आएं",
   "free_sample_available_in_history_hint": "आपने अपना मुफ़्त नमूना पहले ही इस्तेमाल कर लिया है, लेकिन आज के इतिहास में अपना जवाब अभी भी देख सकते हैं।",
+  "pending_other_pair_title": "दूसरी भाषा में एक वाक्य अभी भी लंबित है",
+  "pending_other_pair_message": "आपने आज का वाक्य {{nativo}} → {{aprender}} में पहले ही बना लिया है। नया वाक्य बनाने से पहले उस भाषा जोड़ी पर वापस जाकर इसका जवाब दें।",
   "questions_today_progress": "आज {{count}}/4 प्रश्न",
   "leave_answer_in_english": "अपना उत्तर अंग्रेज़ी में दें",
   "next_question": "अगला",

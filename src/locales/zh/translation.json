@@ -241,6 +241,8 @@
   "already_did_questions_today": "你今天已完成 {{count}} 道题。",
   "come_back_tomorrow": "明天再来继续练习吧",
   "free_sample_available_in_history_hint": "你已经用过免费样本了，不过今天的历史记录里还能看到你的回答。",
+  "pending_other_pair_title": "另一种语言中有待回答的句子",
+  "pending_other_pair_message": "你今天已经在 {{nativo}} → {{aprender}} 生成了每日一句。请先切换回该语言对并回答它，然后再生成新的。",
   "questions_today_progress": "今日 {{count}}/4 题",
   "leave_answer_in_english": "请用英语作答",
   "next_question": "下一题",

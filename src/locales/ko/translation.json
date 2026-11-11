@@ -241,6 +241,8 @@
   "already_did_questions_today": "오늘 이미 질문 {{count}}개를 풀었습니다.",
   "come_back_tomorrow": "내일 다시 와서 계속 연습해 보세요",
   "free_sample_available_in_history_hint": "무료 샘플을 이미 사용했지만 오늘의 기록에서 답변을 확인할 수 있어요.",
+  "pending_other_pair_title": "다른 언어로 대기 중인 문장이 있습니다",
+  "pending_other_pair_message": "{{nativo}} → {{aprender}} 에서 오늘의 문장을 이미 생성했습니다. 새 문장을 생성하기 전에 해당 언어 쌍으로 돌아가 답변해 주세요.",
   "questions_today_progress": "오늘 {{count}}/4 질문",
   "leave_answer_in_english": "영어로 답변을 남겨주세요",
   "next_question": "다음 문제",

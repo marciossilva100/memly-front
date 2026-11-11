@@ -242,6 +242,8 @@
   "already_did_questions_today": "Šiandien jau atsakėte {{count}} klausimų.",
   "come_back_tomorrow": "Grįžkite rytoj tęsti praktiką",
   "free_sample_available_in_history_hint": "Jau išnaudojote nemokamą bandymą, bet vis dar galite peržiūrėti savo atsakymą šiandienos istorijoje.",
+  "pending_other_pair_title": "Neatsakytas sakinys kita kalbų pora",
+  "pending_other_pair_message": "Šiandienos sakinį jau sugeneravote kalbų poroje {{nativo}} → {{aprender}}. Grįžkite prie šios kalbų poros ir atsakykite į jį, prieš generuodami naują.",
   "questions_today_progress": "{{count}}/4 klausimai šiandien",
   "leave_answer_in_english": "Palikite atsakymą anglų kalba",
   "next_question": "Kitas",

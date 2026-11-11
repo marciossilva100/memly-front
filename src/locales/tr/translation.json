@@ -241,6 +241,8 @@
   "already_did_questions_today": "Bugün zaten {{count}} soru yaptın.",
   "come_back_tomorrow": "Pratik yapmaya devam etmek için yarın tekrar gel",
   "free_sample_available_in_history_hint": "Ücretsiz deneme hakkını zaten kullandın, ama bugünkü geçmişinde cevabını hâlâ görebilirsin.",
+  "pending_other_pair_title": "Başka bir dilde bekleyen cümle",
+  "pending_other_pair_message": "Bugünün cümlesini zaten {{nativo}} → {{aprender}} dil çiftinde oluşturdunuz. Yeni bir cümle oluşturmadan önce o dil çiftine geri dönüp yanıtlayın.",
   "questions_today_progress": "Bugün {{count}}/4 soru",
   "leave_answer_in_english": "Cevabını İngilizce olarak bırak",
   "next_question": "Sonraki",

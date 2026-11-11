@@ -241,6 +241,8 @@
   "already_did_questions_today": "Odpowiedziałeś już na {{count}} pytań dzisiaj.",
   "come_back_tomorrow": "Wróć jutro, aby kontynuować ćwiczenia",
   "free_sample_available_in_history_hint": "Wykorzystałeś już swoją darmową próbkę, ale nadal możesz zobaczyć swoją odpowiedź w dzisiejszej historii.",
+  "pending_other_pair_title": "Oczekujące zdanie w innym języku",
+  "pending_other_pair_message": "Już wygenerowałeś dzisiejsze zdanie dnia w parze {{nativo}} → {{aprender}}. Wróć do tej pary języków, aby na nie odpowiedzieć, zanim wygenerujesz nowe.",
   "questions_today_progress": "{{count}}/4 pytania dzisiaj",
   "leave_answer_in_english": "Odpowiedz po angielsku",
   "next_question": "Następne",

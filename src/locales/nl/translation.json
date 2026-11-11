@@ -241,6 +241,8 @@
   "already_did_questions_today": "Je hebt vandaag al {{count}} vragen gedaan.",
   "come_back_tomorrow": "Kom morgen terug om verder te oefenen",
   "free_sample_available_in_history_hint": "Je hebt je gratis voorbeeld al gebruikt, maar je kunt je antwoord nog steeds in de geschiedenis van vandaag zien.",
+  "pending_other_pair_title": "Openstaande zin in een andere taal",
+  "pending_other_pair_message": "Je hebt de zin van de dag vandaag al gegenereerd in {{nativo}} → {{aprender}}. Ga terug naar dat talenpaar om deze te beantwoorden voordat je een nieuwe genereert.",
   "questions_today_progress": "{{count}}/4 vragen vandaag",
   "leave_answer_in_english": "Geef je antwoord in het Engels",
   "next_question": "Volgende",

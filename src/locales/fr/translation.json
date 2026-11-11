@@ -241,6 +241,8 @@
   "already_did_questions_today": "Vous avez déjà répondu à {{count}} questions aujourd'hui.",
   "come_back_tomorrow": "Revenez demain pour continuer à vous entraîner",
   "free_sample_available_in_history_hint": "Vous avez déjà utilisé votre échantillon gratuit, mais vous pouvez encore voir votre réponse dans l'historique d'aujourd'hui.",
+  "pending_other_pair_title": "Phrase en attente dans une autre langue",
+  "pending_other_pair_message": "Vous avez déjà généré la phrase du jour aujourd'hui en {{nativo}} → {{aprender}}. Revenez à cette paire de langues pour y répondre avant d'en générer une nouvelle.",
   "questions_today_progress": "{{count}}/4 questions aujourd'hui",
   "leave_answer_in_english": "Laissez votre réponse en anglais",
   "next_question": "Suivante",

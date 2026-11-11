@@ -241,6 +241,8 @@
   "already_did_questions_today": "Вы уже ответили на {{count}} вопросов сегодня.",
   "come_back_tomorrow": "Возвращайтесь завтра, чтобы продолжить практику",
   "free_sample_available_in_history_hint": "Вы уже использовали бесплатный образец, но всё ещё можете увидеть свой ответ в истории за сегодня.",
+  "pending_other_pair_title": "Ожидающая фраза на другом языке",
+  "pending_other_pair_message": "Вы уже сгенерировали фразу дня сегодня для пары {{nativo}} → {{aprender}}. Вернитесь к этой паре языков, чтобы ответить на неё, прежде чем создавать новую.",
   "questions_today_progress": "{{count}}/4 вопросов сегодня",
   "leave_answer_in_english": "Оставьте свой ответ на английском",
   "next_question": "Далее",

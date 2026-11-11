@@ -241,6 +241,8 @@
   "already_did_questions_today": "لقد أجبت بالفعل على {{count}} أسئلة اليوم.",
   "come_back_tomorrow": "عد غدًا لمواصلة التدريب",
   "free_sample_available_in_history_hint": "لقد استخدمت بالفعل عينتك المجانية، لكن لا يزال بإمكانك رؤية إجابتك في سجل اليوم.",
+  "pending_other_pair_title": "عبارة معلّقة بلغة أخرى",
+  "pending_other_pair_message": "لقد أنشأت عبارة اليوم بالفعل في {{nativo}} → {{aprender}}. عد إلى هذا الزوج من اللغات للرد عليها قبل إنشاء عبارة جديدة.",
   "questions_today_progress": "{{count}}/4 أسئلة اليوم",
   "leave_answer_in_english": "اكتب إجابتك بالإنجليزية",
   "next_question": "التالي",

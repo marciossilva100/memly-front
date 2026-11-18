@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 // normal).
 function classeFontePorTamanho(texto) {
   const tamanho = (texto || "").length;
+  if (tamanho > 90) return "text-[10px] leading-tight [@media(max-height:700px)]:text-[9px]";
   if (tamanho > 40) return "text-xs [@media(max-height:700px)]:text-[11px]";
   if (tamanho > 25) return "text-sm [@media(max-height:700px)]:text-xs";
   return "text-base [@media(max-height:700px)]:text-sm";
@@ -364,7 +365,7 @@ export default function JogoFrases() {
                 key={frase.id}
                 disabled={bloqueado}
                 onClick={() => setSelecionadaEsquerda(frase)}
-                className={`p-4 [@media(max-height:700px)]:p-2 ${classeFontePorTamanho(frase.texto_nativo)} rounded-lg border text-white border-slate-400
+                className={`p-4 [@media(max-height:700px)]:p-2 overflow-y-auto scrollbar-hide ${classeFontePorTamanho(frase.texto_nativo)} rounded-lg border text-white border-slate-400
                   ${sucessoEsquerdaId === frase.id
                     ? "bg-[#469118]"
                     : erroEsquerdaId === frase.id
@@ -385,7 +386,7 @@ export default function JogoFrases() {
                 key={frase.id}
                 disabled={bloqueado}
                 onClick={() => setSelecionadaDireita(frase)}
-                className={`p-4 [@media(max-height:700px)]:p-2 ${classeFontePorTamanho(frase.texto_traduzido)} rounded-lg border text-white border-slate-400
+                className={`p-4 [@media(max-height:700px)]:p-2 overflow-y-auto scrollbar-hide ${classeFontePorTamanho(frase.texto_traduzido)} rounded-lg border text-white border-slate-400
                   ${sucessoDireitaId === frase.id
                     ? "bg-[#469118]"
                     : erroDireitaId === frase.id

@@ -33,6 +33,10 @@ export default function DigitarTexto() {
     const [correctIds, setCorrectIds] = useState([]);
     const [idPhrases, setIdPhrases] = useState([])
     const [vh, setVh] = useState(window.innerHeight);
+    // Referência capturada 1x no mount (antes do teclado abrir) - usada só
+    // pra detectar proporcionalmente o quanto o teclado encolheu a viewport
+    // visível, não muda depois.
+    const [vhInicial] = useState(() => window.innerHeight);
     const [viewportTop, setViewportTop] = useState(0);
     const navigate = useNavigate();
     const textareaRef = useRef(null);
@@ -245,6 +249,17 @@ export default function DigitarTexto() {
         preloadAudio(frase.texto_traduzido, user);
     }, [index, frases, user, mode]);
 
+
+    // Teclado aberto = viewport visível (vh) bem menor que a altura inicial
+    // (antes do teclado) - nesse caso o card (h-[40%] desse mesmo container
+    // encolhido) sobra pouco espaço, então usa fonte menor pra continuar
+    // cabendo sem cortar. 0.75 é uma margem segura: teclados típicos tiram
+    // bem mais que 25% da altura da tela.
+    function classeFonteCartao() {
+        const tecladoAberto = vh < vhInicial * 0.75;
+        if (tecladoAberto) return "text-sm";
+        return "text-xl [@media(max-height:700px)]:text-lg";
+    }
 
     function virarFlashcard() {
 
@@ -580,6 +595,14 @@ export default function DigitarTexto() {
                     o card + os campos abaixo somados ficavam maiores que a
                     tela, empurrando os botões pra cima/fora do lugar. Mesmo
                     padrão de breakpoint já usado em treinoIA/Perguntas/Flashcards. */}
+                {/* h-[40%] é % do container, que encolhe quando o teclado abre
+                    (ver useEffect de vh/viewportTop, abaixo do visualViewport)
+                    - sem reduzir a fonte junto, o texto do card (position:
+                    absolute, sem scroll próprio) saía cortado/sobreposto
+                    nessa caixa menor. classeFonteCartao() detecta o teclado
+                    aberto (vh bem menor que a altura inicial) e usa uma fonte
+                    proporcionalmente menor. overflow-y-auto fica como rede de
+                    segurança pro caso extremo mesmo assim. */}
                 <div className="flex h-[40%] [@media(max-height:700px)]:h-[30%]">
                     <div className="perspective flashcard justify-center flex w-full h-full">
 
@@ -588,9 +611,9 @@ export default function DigitarTexto() {
                             className={`card card-digitar-texto h-full ${isFlipped ? "flip" : ""} `}
                         >
 
-                            <div className="rounded-lg card-front bg-[linear-gradient(to_right,#233245,#0d1425)] shadow-[0_10px_40px_rgba(0,0,0,0.08)] px-5 py-4 [@media(max-height:700px)]:py-2 text-center">
+                            <div className="rounded-lg card-front bg-[linear-gradient(to_right,#233245,#0d1425)] shadow-[0_10px_40px_rgba(0,0,0,0.08)] px-5 py-4 [@media(max-height:700px)]:py-2 text-center overflow-y-auto scrollbar-hide">
 
-                                <span className="text-xl [@media(max-height:700px)]:text-lg">
+                                <span className={`${classeFonteCartao()}`}>
                                     {frases[index].texto_nativo}
                                 </span>
                                 {!diff || diff.isCorrect && (
@@ -600,9 +623,9 @@ export default function DigitarTexto() {
                                 )}
                             </div>
 
-                            <div className="rounded-lg card-back bg-[linear-gradient(to_right,#0d1425,#233245)] shadow-[0_10px_40px_rgba(0,0,0,0.09)] px-5 py-4 [@media(max-height:700px)]:py-2 text-center">
+                            <div className="rounded-lg card-back bg-[linear-gradient(to_right,#0d1425,#233245)] shadow-[0_10px_40px_rgba(0,0,0,0.09)] px-5 py-4 [@media(max-height:700px)]:py-2 text-center overflow-y-auto scrollbar-hide">
 
-                                <span className="text-xl [@media(max-height:700px)]:text-lg text-white">
+                                <span className={`${classeFonteCartao()} text-white`}>
                                     {showBackContent && frases[index].texto_traduzido}
                                 </span>
                                 {!diff || diff.isCorrect && (

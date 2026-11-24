@@ -635,6 +635,8 @@
   "ia_loading_msg_quase": "Почти готово...",
   "category_selector_title": "Выберите тему на сегодня",
   "category_selector_subtitle": "Выберите 1 категорию для сегодняшней фразы.",
+  "category_selector_subtitle_perguntas": "Выберите до 5 категорий - каждый вопрос будет использовать одну из них.",
+  "category_selector_subtitle_traducao_reversa": "Выберите до 5 категорий - каждый текст будет использовать одну из них.",
   "category_selector_all_categories": "Все категории",
   "category_selector_all_categories_desc": "ИИ сам выберет тему (по умолчанию)",
   "category_selector_or_choose": "Или выберите до 2 категорий",

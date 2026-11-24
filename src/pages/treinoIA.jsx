@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Volume2, Mic, Square, RotateCcw, History, Send, BookOpenText, Ban, AlertCircle, Lightbulb, Loader2, Check, ArrowRight, Sparkles } from "lucide-react";
+import { Volume2, Mic, Square, RotateCcw, History, Send, BookOpenText, Ban, AlertCircle, Lightbulb, Loader2, Check, ArrowRight, Sparkles, Tag } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -54,6 +54,7 @@ export default function TreinoIA() {
     const [frase, setFrase] = useState('');
     const [fraseTraducao, setFraseTraducao] = useState('');
     const [fraseDestacada, setFraseDestacada] = useState(null);
+    const [categoriaUsadaNome, setCategoriaUsadaNome] = useState(null);
     const [mostrarVocabulario, setMostrarVocabulario] = useState(false);
     const [flipped, setFlipped] = useState(false);
     const [enviando, setEnviando] = useState(false);
@@ -167,6 +168,7 @@ export default function TreinoIA() {
         setError(null);
         setInsufficientContent(false);
         setPendingOutroPar(null);
+        setCategoriaUsadaNome(null);
         setFlipped(false);
 
         fetch(`${API_URL}/controller/fraseDoDia.php`, {
@@ -218,6 +220,7 @@ export default function TreinoIA() {
                 setFrase(data.frase);
                 setFraseTraducao(data.traducao || '');
                 setFraseDestacada(data.frase_destacada || null);
+                setCategoriaUsadaNome(data.categoria_usada_nome || null);
             })
             .catch(err => {
                 console.error(err);
@@ -562,6 +565,20 @@ export default function TreinoIA() {
                 <p className="text-gray-400 text-xs text-center mb-2 px-4">
                     {t("daily_phrase_subtitle")}
                 </p>
+
+                {/* Categoria que de fato gerou essa frase (só vem preenchida
+                    quando o aluno escolheu 1 categoria à mão - ver
+                    controller/fraseDoDia.php). max-w-[80%] + truncate pra
+                    nunca estourar a largura em tela pequena, mesmo com nome
+                    de categoria longo. */}
+                {categoriaUsadaNome && (
+                    <div className="flex justify-center mb-2">
+                        <span className="inline-flex items-center gap-1.5 max-w-[80%] px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700 text-gray-300 text-xs">
+                            <Tag className="w-3 h-3 shrink-0" />
+                            <span className="truncate">{categoriaUsadaNome}</span>
+                        </span>
+                    </div>
+                )}
 
                 {fraseDestacada && !resultado && (
                     <div className="flex flex-col items-center mb-2 mt-4 gap-1.5">

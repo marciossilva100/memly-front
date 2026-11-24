@@ -635,6 +635,8 @@
   "ia_loading_msg_quase": "على وشك الانتهاء...",
   "category_selector_title": "اختر موضوع اليوم",
   "category_selector_subtitle": "اختر فئة واحدة لجملة اليوم.",
+  "category_selector_subtitle_perguntas": "اختر حتى 5 فئات - سيستخدم كل سؤال واحدة منها.",
+  "category_selector_subtitle_traducao_reversa": "اختر حتى 5 فئات - سيستخدم كل نص واحدة منها.",
   "category_selector_all_categories": "كل الفئات",
   "category_selector_all_categories_desc": "يختار الذكاء الاصطناعي الموضوع (افتراضي)",
   "category_selector_or_choose": "أو اختر حتى فئتين",

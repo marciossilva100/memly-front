@@ -635,6 +635,8 @@
   "ia_loading_msg_quase": "もうすぐ完成...",
   "category_selector_title": "今日のテーマを選ぶ",
   "category_selector_subtitle": "今日の文の元になるカテゴリーを1つ選んでください。",
+  "category_selector_subtitle_perguntas": "最大5つのカテゴリーを選べます。各質問はそのうちの1つを使用します。",
+  "category_selector_subtitle_traducao_reversa": "最大5つのカテゴリーを選べます。各テキストはそのうちの1つを使用します。",
   "category_selector_all_categories": "すべてのカテゴリー",
   "category_selector_all_categories_desc": "AIがテーマを選びます（デフォルト）",
   "category_selector_or_choose": "またはカテゴリーを2つまで選択",

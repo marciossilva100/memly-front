@@ -635,6 +635,8 @@
   "ia_loading_msg_quase": "Presque prêt...",
   "category_selector_title": "Choisissez le thème du jour",
   "category_selector_subtitle": "Choisissez 1 catégorie pour la phrase du jour.",
+  "category_selector_subtitle_perguntas": "Choisissez jusqu'à 5 catégories - chaque question utilisera l'une d'elles.",
+  "category_selector_subtitle_traducao_reversa": "Choisissez jusqu'à 5 catégories - chaque texte utilisera l'une d'elles.",
   "category_selector_all_categories": "Toutes les catégories",
   "category_selector_all_categories_desc": "Laisser l'IA choisir le thème (par défaut)",
   "category_selector_or_choose": "Ou choisissez jusqu'à 2 catégories",

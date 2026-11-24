@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { Volume2, Mic, Square, RotateCcw, History, SkipForward, Send, MessageCircleQuestion, Ban, AlertCircle, Lightbulb, Keyboard, Loader2, Check, ArrowRight, BookOpen, Sparkles } from "lucide-react";
+import { Volume2, Mic, Square, RotateCcw, History, SkipForward, Send, MessageCircleQuestion, Ban, AlertCircle, Lightbulb, Keyboard, Loader2, Check, ArrowRight, BookOpen, Sparkles, Tag } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { playAudio, pararAudio } from "../utils/audioPlayer";
 import { useAuth } from "../context/AuthContext";
@@ -39,6 +39,7 @@ export default function Perguntas() {
     const [question, setQuestion] = useState('')
     const [questionTraducao, setQuestionTraducao] = useState('')
     const [questionDestacada, setQuestionDestacada] = useState(null)
+    const [categoriaUsadaNome, setCategoriaUsadaNome] = useState(null)
     const [mostrarVocabulario, setMostrarVocabulario] = useState(false)
     const [flipped, setFlipped] = useState(false)
     const [numeroPergunta, setNumeroPergunta] = useState(null)
@@ -103,6 +104,7 @@ export default function Perguntas() {
         setFlipped(false);
         setModoTexto(false);
         setRespostaTexto("");
+        setCategoriaUsadaNome(null);
         limpar();
 
         const query = categoriaIds?.length > 0 ? `?category_ids=${categoriaIds.join(',')}` : '';
@@ -153,6 +155,7 @@ export default function Perguntas() {
                 setQuestionDestacada(data.question_destacada || null);
                 setNumeroPergunta(data.numero ?? null);
                 setTotalPerguntas(data.total ?? null);
+                setCategoriaUsadaNome(data.categoria_usada_nome || null);
                 // O backend sempre devolve a(s) categoria(s) de fato usada(s)
                 // (da requisição ou da escolha de hoje já persistida) - sem
                 // isso, categoriasSelecionadas ficava [] a partir da 2ª
@@ -220,10 +223,26 @@ export default function Perguntas() {
             });
     }
 
-    // Só 1 categoria por vez (não mais até 2) - pedido do usuário pra evitar
-    // frases geradas pela IA misturando assuntos sem coesão/concordância.
+    // Múltiplas categorias permitidas (até MAX_CATEGORIAS_ESCOLHA_MANUAL no
+    // backend) - cada pergunta gerada usa só 1 delas por vez (sorteada no
+    // backend a cada chamada, nunca mistura frases de categorias diferentes
+    // na mesma pergunta - ver DailyQuestionController::getUserPhrases), mas
+    // entre uma pergunta e outra a categoria usada varia. Mesmo limite do
+    // backend (MAX_CATEGORIAS_ESCOLHA_MANUAL) - além dele o backend já
+    // ignora o excedente silenciosamente, então trava aqui também pra não
+    // deixar o aluno achar que selecionou mais do que realmente conta.
+    const MAX_CATEGORIAS_ESCOLHA_MANUAL = 5;
+
     function alternarCategoria(id) {
-        setCategoriasSelecionadas((prev) => (prev.includes(id) ? [] : [id]));
+        setCategoriasSelecionadas((prev) => {
+            if (prev.includes(id)) {
+                return prev.filter((catId) => catId !== id);
+            }
+            if (prev.length >= MAX_CATEGORIAS_ESCOLHA_MANUAL) {
+                return prev;
+            }
+            return [...prev, id];
+        });
     }
 
     function confirmarCategoria() {
@@ -433,7 +452,7 @@ export default function Perguntas() {
                             <MessageCircleQuestion className="w-6 h-6 text-[#4cb8c4]" />
                         </div>
                         <h1 className="text-lg font-semibold text-white mb-1">{t("category_selector_title")}</h1>
-                        <p className="text-gray-400 text-sm max-w-xs">{t("category_selector_subtitle")}</p>
+                        <p className="text-gray-400 text-sm max-w-xs">{t("category_selector_subtitle_perguntas")}</p>
                     </div>
 
                     <div className="flex flex-col gap-2.5">
@@ -638,6 +657,20 @@ export default function Perguntas() {
                 <p className="text-gray-400 text-xs text-center mb-2 px-4">
                     {t("questions_training_desc")}
                 </p>
+
+                {/* Categoria que de fato gerou essa pergunta (só vem preenchida
+                    quando dá pra apontar 1 única - ver comentário no backend em
+                    DailyQuestionController::$categoriaUsadaId). max-w-[80%] +
+                    truncate pra nunca estourar a largura em tela pequena,
+                    mesmo com nome de categoria longo. */}
+                {categoriaUsadaNome && (
+                    <div className="flex justify-center mb-2">
+                        <span className="inline-flex items-center gap-1.5 max-w-[80%] px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700 text-gray-300 text-xs">
+                            <Tag className="w-3 h-3 shrink-0" />
+                            <span className="truncate">{categoriaUsadaNome}</span>
+                        </span>
+                    </div>
+                )}
 
                 {questionDestacada && !resultado && (
                     <div className="flex flex-col items-center mt-4 mb-4 gap-1.5">

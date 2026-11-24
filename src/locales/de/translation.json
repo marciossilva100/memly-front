@@ -635,6 +635,8 @@
   "ia_loading_msg_quase": "Fast fertig...",
   "category_selector_title": "Wähle das heutige Thema",
   "category_selector_subtitle": "Wähle 1 Kategorie für den heutigen Satz.",
+  "category_selector_subtitle_perguntas": "Wähle bis zu 5 Kategorien - jede Frage verwendet eine davon.",
+  "category_selector_subtitle_traducao_reversa": "Wähle bis zu 5 Kategorien - jeder Text verwendet eine davon.",
   "category_selector_all_categories": "Alle Kategorien",
   "category_selector_all_categories_desc": "Die KI wählt das Thema (Standard)",
   "category_selector_or_choose": "Oder wähle bis zu 2 Kategorien",

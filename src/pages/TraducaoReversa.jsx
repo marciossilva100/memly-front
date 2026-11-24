@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { Volume2, Mic, Square, RotateCcw, History, SkipForward, Send, Languages, Ban, AlertCircle, Keyboard, Loader2, Check, ArrowRight, Sparkles } from "lucide-react";
+import { Volume2, Mic, Square, RotateCcw, History, SkipForward, Send, Languages, Ban, AlertCircle, Keyboard, Loader2, Check, ArrowRight, Sparkles, Tag } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { playAudio, pararAudio } from "../utils/audioPlayer";
 import { useAuth } from "../context/AuthContext";
@@ -50,6 +50,7 @@ export default function TraducaoReversa() {
     // classes de Perguntas.jsx); depois disso nenhuma resposta é mais aceita.
     const [naoSeiClicado, setNaoSeiClicado] = useState(false)
     const [traducaoGabarito, setTraducaoGabarito] = useState('')
+    const [categoriaUsadaNome, setCategoriaUsadaNome] = useState(null)
     const [flipped, setFlipped] = useState(false)
     const jaBuscou = useRef(false);
     const navigate = useNavigate();
@@ -65,7 +66,8 @@ export default function TraducaoReversa() {
     const API_URL = import.meta.env.VITE_API_URL;
 
     // Seletor de categoria (só aparece 1x por dia, mesmo padrão de
-    // treinoIA.jsx/Perguntas.jsx) - obrigatório escolher 1 categoria.
+    // treinoIA.jsx/Perguntas.jsx) - obrigatório escolher ao menos 1
+    // categoria (pode escolher várias).
     const [mostrarSeletor, setMostrarSeletor] = useState(false);
     const [categorias, setCategorias] = useState([]);
     const [categoriasSelecionadas, setCategoriasSelecionadas] = useState([]);
@@ -94,6 +96,7 @@ export default function TraducaoReversa() {
         setNaoSeiClicado(false);
         setTraducaoGabarito('');
         setFlipped(false);
+        setCategoriaUsadaNome(null);
         limpar();
 
         const query = categoriaIds?.length > 0 ? `?category_ids=${categoriaIds.join(',')}` : '';
@@ -143,6 +146,7 @@ export default function TraducaoReversa() {
                 setIdiomaAlvo(data.idioma_alvo || '');
                 setNumero(data.numero ?? null);
                 setTotal(data.total ?? null);
+                setCategoriaUsadaNome(data.categoria_usada_nome || null);
             })
             .catch(err => {
                 console.error(err);
@@ -201,10 +205,26 @@ export default function TraducaoReversa() {
             });
     }
 
-    // Só 1 categoria por vez (não mais até 2) - pedido do usuário pra evitar
-    // frases geradas pela IA misturando assuntos sem coesão/concordância.
+    // Múltiplas categorias permitidas (até MAX_CATEGORIAS_ESCOLHA_MANUAL no
+    // backend) - cada texto gerado usa só 1 delas por vez (sorteada no
+    // backend a cada chamada, nunca mistura frases de categorias diferentes
+    // no mesmo texto - ver TraducaoReversaController::getUserPhrases), mas
+    // entre um texto e outro a categoria usada varia. Mesmo limite do
+    // backend - além dele o backend já ignora o excedente silenciosamente,
+    // então trava aqui também pra não deixar o aluno achar que selecionou
+    // mais do que realmente conta.
+    const MAX_CATEGORIAS_ESCOLHA_MANUAL = 5;
+
     function alternarCategoria(id) {
-        setCategoriasSelecionadas((prev) => (prev.includes(id) ? [] : [id]));
+        setCategoriasSelecionadas((prev) => {
+            if (prev.includes(id)) {
+                return prev.filter((catId) => catId !== id);
+            }
+            if (prev.length >= MAX_CATEGORIAS_ESCOLHA_MANUAL) {
+                return prev;
+            }
+            return [...prev, id];
+        });
     }
 
     function confirmarCategoria() {
@@ -390,7 +410,7 @@ export default function TraducaoReversa() {
                             <Languages className="w-6 h-6 text-[#4cb8c4]" />
                         </div>
                         <h1 className="text-lg font-semibold text-white mb-1">{t("category_selector_title")}</h1>
-                        <p className="text-gray-400 text-sm max-w-xs">{t("category_selector_subtitle")}</p>
+                        <p className="text-gray-400 text-sm max-w-xs">{t("category_selector_subtitle_traducao_reversa")}</p>
                     </div>
 
                     <div className="flex flex-col gap-2.5">
@@ -604,6 +624,20 @@ export default function TraducaoReversa() {
                 <p className="text-gray-400 text-xs text-center mb-2 px-4">
                     {t("traducao_reversa_training_desc")}
                 </p>
+
+                {/* Categoria que de fato gerou esse texto (só vem preenchida
+                    quando dá pra apontar 1 única - ver comentário no backend em
+                    TraducaoReversaController::$categoriaUsadaId). max-w-[80%] +
+                    truncate pra nunca estourar a largura em tela pequena,
+                    mesmo com nome de categoria longo. */}
+                {categoriaUsadaNome && (
+                    <div className="flex justify-center mb-2">
+                        <span className="inline-flex items-center gap-1.5 max-w-[80%] px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700 text-gray-300 text-xs">
+                            <Tag className="w-3 h-3 shrink-0" />
+                            <span className="truncate">{categoriaUsadaNome}</span>
+                        </span>
+                    </div>
+                )}
 
                 {!resultado &&
                     <div>

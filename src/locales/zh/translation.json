@@ -635,6 +635,8 @@
   "ia_loading_msg_quase": "快好了...",
   "category_selector_title": "选择今天的主题",
   "category_selector_subtitle": "选择1个分类作为今天句子的基础。",
+  "category_selector_subtitle_perguntas": "最多可选择5个类别——每个问题将使用其中一个。",
+  "category_selector_subtitle_traducao_reversa": "最多可选择5个类别——每段文本将使用其中一个。",
   "category_selector_all_categories": "所有分类",
   "category_selector_all_categories_desc": "由AI选择主题(默认)",
   "category_selector_or_choose": "或选择最多2个分类",

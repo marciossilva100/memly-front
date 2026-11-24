@@ -635,6 +635,8 @@
   "ia_loading_msg_quase": "Quasi pronto...",
   "category_selector_title": "Scegli l'argomento di oggi",
   "category_selector_subtitle": "Scegli 1 categoria per la frase di oggi.",
+  "category_selector_subtitle_perguntas": "Scegli fino a 5 categorie - ogni domanda userà una di esse.",
+  "category_selector_subtitle_traducao_reversa": "Scegli fino a 5 categorie - ogni testo userà una di esse.",
   "category_selector_all_categories": "Tutte le categorie",
   "category_selector_all_categories_desc": "Lascia che l'IA scelga l'argomento (predefinito)",
   "category_selector_or_choose": "Oppure scegli fino a 2 categorie",

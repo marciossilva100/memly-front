@@ -635,6 +635,8 @@
   "ia_loading_msg_quase": "Prawie gotowe...",
   "category_selector_title": "Wybierz dzisiejszy temat",
   "category_selector_subtitle": "Wybierz 1 kategorię jako podstawę dzisiejszego zdania.",
+  "category_selector_subtitle_perguntas": "Wybierz do 5 kategorii - każde pytanie użyje jednej z nich.",
+  "category_selector_subtitle_traducao_reversa": "Wybierz do 5 kategorii - każdy tekst użyje jednej z nich.",
   "category_selector_all_categories": "Wszystkie kategorie",
   "category_selector_all_categories_desc": "AI wybiera temat (domyślnie)",
   "category_selector_or_choose": "Albo wybierz do 2 kategorii",

@@ -635,6 +635,8 @@
   "ia_loading_msg_quase": "Bijna klaar...",
   "category_selector_title": "Kies het onderwerp van vandaag",
   "category_selector_subtitle": "Kies 1 categorie voor de zin van vandaag.",
+  "category_selector_subtitle_perguntas": "Kies tot 5 categorieën - elke vraag gebruikt er één van.",
+  "category_selector_subtitle_traducao_reversa": "Kies tot 5 categorieën - elke tekst gebruikt er één van.",
   "category_selector_all_categories": "Alle categorieën",
   "category_selector_all_categories_desc": "Laat de AI het onderwerp kiezen (standaard)",
   "category_selector_or_choose": "Of kies tot 2 categorieën",

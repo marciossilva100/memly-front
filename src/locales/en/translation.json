@@ -637,6 +637,8 @@
   "ia_loading_msg_quase": "Almost ready...",
   "category_selector_title": "Choose today's topic",
   "category_selector_subtitle": "Choose 1 category to base today's phrase on.",
+  "category_selector_subtitle_perguntas": "Choose up to 5 categories - each question will use one of them.",
+  "category_selector_subtitle_traducao_reversa": "Choose up to 5 categories - each text will use one of them.",
   "category_selector_all_categories": "All categories",
   "category_selector_all_categories_desc": "Let the AI choose the topic (default)",
   "category_selector_or_choose": "Or choose up to 2 categories",

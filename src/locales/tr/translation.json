@@ -635,6 +635,8 @@
   "ia_loading_msg_quase": "Neredeyse hazır...",
   "category_selector_title": "Bugünün konusunu seç",
   "category_selector_subtitle": "Bugünün cümlesi için 1 kategori seç.",
+  "category_selector_subtitle_perguntas": "En fazla 5 kategori seçin - her soru bunlardan birini kullanacak.",
+  "category_selector_subtitle_traducao_reversa": "En fazla 5 kategori seçin - her metin bunlardan birini kullanacak.",
   "category_selector_all_categories": "Tüm kategoriler",
   "category_selector_all_categories_desc": "Konuyu yapay zeka seçsin (varsayılan)",
   "category_selector_or_choose": "Ya da en fazla 2 kategori seç",

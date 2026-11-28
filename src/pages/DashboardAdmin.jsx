@@ -22,8 +22,14 @@ import {
     TrendingUp,
     Clock,
     BarChart3,
-    PieChart
+    PieChart,
+    MapPin
 } from 'lucide-react';
+
+function formatarLocalizacao(u) {
+    const partes = [u.cidade_cadastro, u.regiao_cadastro, u.pais_cadastro].filter(Boolean);
+    return partes.length > 0 ? partes.join(', ') : null;
+}
 
 const CORES = ['#00ff88', '#4ecdc4', '#ffe66d', '#c3447a', '#a78bfa', '#f472b6'];
 
@@ -538,6 +544,12 @@ export default function DashboardAdmin() {
                                         <div className="min-w-0">
                                             <p className="text-white text-sm font-medium truncate">{u.nome || u.apelido}</p>
                                             <p className="text-gray-500 text-xs truncate">{u.email}</p>
+                                            {formatarLocalizacao(u) && (
+                                                <p className="text-gray-500 text-xs truncate flex items-center gap-1 mt-0.5">
+                                                    <MapPin className="w-3 h-3 shrink-0" />
+                                                    {formatarLocalizacao(u)}
+                                                </p>
+                                            )}
                                         </div>
                                         <div className="flex items-center gap-3 shrink-0">
                                             <span className="text-xs text-gray-400 hidden sm:inline">{u.total_categorias} cat · {u.total_frases} frases</span>
@@ -630,6 +642,12 @@ export default function DashboardAdmin() {
                                         <p className="text-gray-500 text-xs mt-2">
                                             Cadastrado em {new Date(detalhesUsuario.usuario.create_date).toLocaleDateString('pt-BR')}
                                         </p>
+                                        {formatarLocalizacao(detalhesUsuario.usuario) && (
+                                            <p className="text-gray-500 text-xs mt-1 flex items-center gap-1">
+                                                <MapPin className="w-3 h-3 shrink-0" />
+                                                {formatarLocalizacao(detalhesUsuario.usuario)}
+                                            </p>
+                                        )}
                                     </div>
 
                                     <div className="grid grid-cols-3 gap-3">

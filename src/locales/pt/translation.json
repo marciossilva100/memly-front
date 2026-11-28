@@ -40,6 +40,7 @@
   "go_premium": "Seja Premium",
   "added_successfully": "Adicionado com sucesso",
   "add_category": "Adicionar categoria",
+  "train_selected_categories": "Treinar {{count}} categorias selecionadas",
   "first_category_hint": "Toque aqui para criar sua categoria!",
   "home_next_step_add_phrases": "Adicione frases nessa categoria pra começar a estudar.",
   "home_next_step_add_phrases_cta": "Adicionar frases",

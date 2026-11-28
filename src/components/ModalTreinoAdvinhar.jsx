@@ -10,9 +10,12 @@ import {
     Type
 } from "lucide-react";
 
-export default function ModalTreinoAdvinhar({ setOpenTreinoAdvinhar, openTreinoAdvinhar, categoriaId }) {
+// categoriaIds: array (mesmo padrão de ModaTreino.jsx - 1 ou várias
+// categorias, sempre o mesmo código, só muda a string que viaja nas rotas).
+export default function ModalTreinoAdvinhar({ setOpenTreinoAdvinhar, openTreinoAdvinhar, categoriaIds }) {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const categoriaIdsStr = (categoriaIds || []).join(',');
 
     return (
         <Dialog
@@ -41,10 +44,10 @@ export default function ModalTreinoAdvinhar({ setOpenTreinoAdvinhar, openTreinoA
                             <Shuffle width={38} height={38} className="text-purple-400" />
                         </div>
                         <div className="flex flex-col cursor-pointer" onClick={() => {
-                            if (!categoriaId) return;
+                            if (!categoriaIdsStr) return;
                             setOpenTreinoAdvinhar(false);
-                            navigate(`/emparelhar/${categoriaId}/traine`);
-                        }}> 
+                            navigate(`/emparelhar/${categoriaIdsStr}/traine`);
+                        }}>
                             <span className="text-lg text-white">{t("match")}</span>
                         </div>
                     </div>
@@ -53,9 +56,9 @@ export default function ModalTreinoAdvinhar({ setOpenTreinoAdvinhar, openTreinoA
                             <History width={38} height={38} className="text-green-600" />
                         </div>
                         <div className="flex flex-col" onClick={() => {
-                            if (!categoriaId) return;
+                            if (!categoriaIdsStr) return;
                             setOpenTreinoAdvinhar(false);
-                            navigate(`/flashcards/${categoriaId}/traine`);
+                            navigate(`/flashcards/${categoriaIdsStr}/traine`);
                         }}>
                             <span className="text-lg text-white leading-tight">{t("remember")}</span>
                         </div>
@@ -65,9 +68,9 @@ export default function ModalTreinoAdvinhar({ setOpenTreinoAdvinhar, openTreinoA
                             <Type width={38} height={38} className="text-yellow-500" />
                         </div>
                         <div className="flex flex-col " onClick={() => {
-                            if (!categoriaId) return;
+                            if (!categoriaIdsStr) return;
                             setOpenTreinoAdvinhar(false);
-                            navigate(`/digitartexto/${categoriaId}/traine`);
+                            navigate(`/digitartexto/${categoriaIdsStr}/traine`);
                         }}>
                             <span className="text-lg leading-tight  flex text-white">{t("type")}</span>
                         </div>

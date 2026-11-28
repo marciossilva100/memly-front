@@ -40,6 +40,7 @@
   "go_premium": "Стать Premium",
   "added_successfully": "Успешно добавлено",
   "add_category": "Добавить колоду",
+  "train_selected_categories": "Тренировать {{count}} выбранных категорий",
   "first_category_hint": "Нажмите здесь, чтобы создать колоду!",
   "home_next_step_add_phrases": "Добавьте фразы в эту категорию, чтобы начать учиться.",
   "home_next_step_add_phrases_cta": "Добавить фразы",

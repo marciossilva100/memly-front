@@ -15,7 +15,7 @@ import { treinoStatsCache } from "../utils/treinoStatsCache";
 import { carregarFrasesIaVistas } from "../utils/frasesIaVistas";
 
 
-import { BookOpen, BarChart3, Bot, Plus, Home as HomeIcon, CheckCircle2, Flame, Gamepad2, Crown, Search, AlertTriangle, RefreshCw, Sparkles, MoreVertical, Star } from "lucide-react";
+import { BookOpen, BarChart3, Bot, Plus, Home as HomeIcon, CheckCircle2, Flame, Gamepad2, Crown, Search, AlertTriangle, RefreshCw, Sparkles, MoreVertical, Star, Check, X } from "lucide-react";
 
 const AVATAR_COLORS = [
     'bg-emerald-500',
@@ -117,6 +117,16 @@ export default function Home() {
     const [openTreinoIA, setOpenTreinoIA] = useState(false)
     const [openModalSucesso, setOpenModalSucesso] = useState(false)
     const [categoriaId, setCategoriaId] = useState(0)
+    // Seleção múltipla de categorias (pressionar e segurar um card) - pra
+    // abrir Aprender/Treinar/Revisar combinando o conteúdo de várias
+    // categorias de uma vez (ver ModaTreino.jsx/ModalTreinoAdvinhar.jsx,
+    // categoriaIds). Separado de categoriaId (acima) de propósito - esse
+    // outro estado continua servindo só editar/excluir 1 categoria por vez,
+    // sem relação nenhuma com isso.
+    const [modoSelecao, setModoSelecao] = useState(false);
+    const [categoriasParaTreinar, setCategoriasParaTreinar] = useState([]);
+    const pressaoLongaTimer = useRef(null);
+    const pressaoLongaDisparada = useRef(false);
     const [categoriaClick, setCategoriaClick] = useState('')
     const [categoriaPublicaClick, setCategoriaPublicaClick] = useState(0)
     const [categoriaGerarFraseDiariaClick, setCategoriaGerarFraseDiariaClick] = useState(0)
@@ -435,6 +445,70 @@ export default function Home() {
 
         //if(length > 0)
         navigate(`/frases/${id}`)
+    }
+
+    // ===========================================
+    // SELEÇÃO MÚLTIPLA DE CATEGORIAS (pressionar e segurar)
+    // ===========================================
+    // 500ms segurando entra no modo seleção (sem soltar antes disso) - sem
+    // padrão existente no app pra pressionar e segurar, implementado do
+    // zero com setTimeout. onTouchMove/onMouseLeave cancelam o timer (dedo/
+    // mouse saiu do card antes de completar, não deve contar como
+    // pressionar e segurar).
+    const LONG_PRESS_MS = 500;
+
+    function iniciarPressaoLonga(id) {
+        pressaoLongaDisparada.current = false;
+        pressaoLongaTimer.current = setTimeout(() => {
+            pressaoLongaDisparada.current = true;
+            setModoSelecao(true);
+            setCategoriasParaTreinar([id]);
+        }, LONG_PRESS_MS);
+    }
+
+    function cancelarPressaoLonga() {
+        if (pressaoLongaTimer.current) {
+            clearTimeout(pressaoLongaTimer.current);
+            pressaoLongaTimer.current = null;
+        }
+    }
+
+    function alternarSelecaoCategoria(id) {
+        setCategoriasParaTreinar((prev) => {
+            const next = prev.includes(id) ? prev.filter((catId) => catId !== id) : [...prev, id];
+            if (next.length === 0) {
+                setModoSelecao(false);
+            }
+            return next;
+        });
+    }
+
+    function cancelarModoSelecao() {
+        setModoSelecao(false);
+        setCategoriasParaTreinar([]);
+    }
+
+    // Clique "de verdade" no card: se o modo seleção já está ativo, alterna
+    // a seleção em vez de abrir a lista de frases. Se a pressão longa
+    // ACABOU de disparar (ativou o modo seleção agora mesmo), ignora esse
+    // clique fantasma que o touchend/mouseup dispara em seguida - sem essa
+    // checagem, o card que acabou de entrar em seleção imediatamente
+    // navegaria pra lista de frases dele.
+    function clicarCategoria(length, id) {
+        if (pressaoLongaDisparada.current) {
+            pressaoLongaDisparada.current = false;
+            return;
+        }
+        if (modoSelecao) {
+            alternarSelecaoCategoria(id);
+            return;
+        }
+        validar(length, id);
+    }
+
+    function abrirTreinoCombinado() {
+        dispensarGuiaTreino();
+        setOpenTreino(true);
     }
 
     // Guarda em ref (não só no estado do usuário) porque o clique fora
@@ -763,7 +837,17 @@ export default function Home() {
                         const temFraseNova = item.fraseNovaId && !frasesIaVistas.has(item.fraseNovaId);
 
                         return (
-                            <div key={item.id} onClick={() => validar(item.quantidade, item.id)} className={`relative flex bg-gray-800/50   border border-gray-700 items-center justify-between py-3 px-4  rounded-xl  shadow-lg mb-4 ${temFraseNova ? "mt-3" : ""}`}>
+                            <div
+                                key={item.id}
+                                onClick={() => clicarCategoria(item.quantidade, item.id)}
+                                onMouseDown={() => iniciarPressaoLonga(item.id)}
+                                onMouseUp={cancelarPressaoLonga}
+                                onMouseLeave={cancelarPressaoLonga}
+                                onTouchStart={() => iniciarPressaoLonga(item.id)}
+                                onTouchEnd={cancelarPressaoLonga}
+                                onTouchMove={cancelarPressaoLonga}
+                                className={`relative flex bg-gray-800/50 border items-center justify-between py-3 px-4 rounded-xl shadow-lg mb-4 ${temFraseNova ? "mt-3" : ""} ${modoSelecao && categoriasParaTreinar.includes(item.id) ? "border-[#4cb8c4] bg-[#4cb8c4]/10" : "border-gray-700"}`}
+                            >
                                 {temFraseNova && (
                                     // mt-3 no card (acima) reserva espaço pra esse selo não
                                     // encostar/ficar apertado contra o card anterior - com
@@ -797,68 +881,82 @@ export default function Home() {
                                 </div>
 
                                 <div className="flex items-center gap-3 relative z-60 shrink-0">
-                                    <button
-                                        className="shadow-md px-3 py-1 text-sm rounded-full bg-[#4cb8c4] text-white hover:opacity-90"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            dispensarGuiaTreino();
-                                            setCategoriaId(item.id);
-                                            setOpenTreino(true);
-                                        }}
-                                    >
-                                        {t("training")}
-                                    </button>
-
-                                    {/* Botão dos 3 pontinhos - ícone de verdade
-                                        (lucide-react), não mais o caractere
-                                        "⋮" cru estilizado como texto grande,
-                                        inconsistente com o resto dos ícones
-                                        da interface. */}
-                                    <button
-                                        className="text-slate-300 p-1"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setMenuOpenId(menuOpenId === item.id ? null : item.id);
-                                        }}
-                                    >
-                                        <MoreVertical size={20} />
-                                    </button>
-
-                                    {/* Menu */}
-                                    {menuOpenId === item.id && (
-                                        <div
-                                            ref={menuRef}
-                                            className="absolute right-0 top-10 bg-gray-800   border border-gray-700 shadow-lg rounded-lg p-2 w-32 z-40"
-                                        >
-                                            <button
-                                                className="block w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-white"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setCategoriaClick(item.categoria);
-                                                    setCategoriaPublicaClick(item.categoriaPublica);
-                                                    setCategoriaGerarFraseDiariaClick(item.gerarFraseDiaria);
-                                                    setOpenCategoriaEditar(true);
-                                                    setCategoriaId(item.id);
-                                                    setMenuOpenId(false);
-                                                }}
-                                            >
-                                                {t("edit")}
-                                            </button>
-
-                                            <button
-                                                className="block w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-white"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setDeleteId(item.id);
-                                                    setMsgModalConfirm(translations.confirmDelete ?? 'Deseja excluir esta categoria?');
-                                                    setOpenModalConfirm(true);
-                                                    setMenuOpenId(false);
-
-                                                }}
-                                            >
-                                                {t("delete")}
-                                            </button>
+                                    {modoSelecao ? (
+                                        // Indicador de selecionado - substitui o botão "Treinar"
+                                        // e o menu de 3 pontos enquanto dura o modo seleção (eles
+                                        // ficariam ambíguos: treinar/editar/excluir só essa 1
+                                        // categoria não faz sentido no meio de uma seleção de
+                                        // várias).
+                                        <div className={`w-7 h-7 rounded-full border flex items-center justify-center transition-colors ${categoriasParaTreinar.includes(item.id) ? "bg-[#4cb8c4] border-[#4cb8c4]" : "border-gray-500"}`}>
+                                            {categoriasParaTreinar.includes(item.id) && <Check className="w-4 h-4 text-white" />}
                                         </div>
+                                    ) : (
+                                        <>
+                                            <button
+                                                className="shadow-md px-3 py-1 text-sm rounded-full bg-[#4cb8c4] text-white hover:opacity-90"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    dispensarGuiaTreino();
+                                                    setCategoriaId(item.id);
+                                                    setCategoriasParaTreinar([item.id]);
+                                                    setOpenTreino(true);
+                                                }}
+                                            >
+                                                {t("training")}
+                                            </button>
+
+                                            {/* Botão dos 3 pontinhos - ícone de verdade
+                                                (lucide-react), não mais o caractere
+                                                "⋮" cru estilizado como texto grande,
+                                                inconsistente com o resto dos ícones
+                                                da interface. */}
+                                            <button
+                                                className="text-slate-300 p-1"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setMenuOpenId(menuOpenId === item.id ? null : item.id);
+                                                }}
+                                            >
+                                                <MoreVertical size={20} />
+                                            </button>
+
+                                            {/* Menu */}
+                                            {menuOpenId === item.id && (
+                                                <div
+                                                    ref={menuRef}
+                                                    className="absolute right-0 top-10 bg-gray-800   border border-gray-700 shadow-lg rounded-lg p-2 w-32 z-40"
+                                                >
+                                                    <button
+                                                        className="block w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-white"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setCategoriaClick(item.categoria);
+                                                            setCategoriaPublicaClick(item.categoriaPublica);
+                                                            setCategoriaGerarFraseDiariaClick(item.gerarFraseDiaria);
+                                                            setOpenCategoriaEditar(true);
+                                                            setCategoriaId(item.id);
+                                                            setMenuOpenId(false);
+                                                        }}
+                                                    >
+                                                        {t("edit")}
+                                                    </button>
+
+                                                    <button
+                                                        className="block w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-white"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setDeleteId(item.id);
+                                                            setMsgModalConfirm(translations.confirmDelete ?? 'Deseja excluir esta categoria?');
+                                                            setOpenModalConfirm(true);
+                                                            setMenuOpenId(false);
+
+                                                        }}
+                                                    >
+                                                        {t("delete")}
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </>
                                     )}
                                 </div>
                             </div>
@@ -926,7 +1024,28 @@ export default function Home() {
             >
 
                 <div className="relative inline-block w-full px-4">
-                    <button className={`
+                    {modoSelecao ? (
+                        // Substitui o botão "Adicionar categoria" nesse mesmo lugar
+                        // enquanto dura o modo seleção - em vez de um elemento fixed
+                        // novo, que arriscaria sobrepor a fileira de ícones de
+                        // navegação logo abaixo.
+                        <div className="flex items-center gap-2 mb-4">
+                            <button
+                                className="px-4 py-3 rounded-full bg-gray-700/60 text-white font-medium"
+                                onClick={cancelarModoSelecao}
+                            >
+                                <X size={18} />
+                            </button>
+                            <button
+                                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-full bg-gradient-to-r from-blue-500 to-emerald-500 hover:opacity-90 text-white font-medium text-lg transition disabled:opacity-40"
+                                disabled={categoriasParaTreinar.length === 0}
+                                onClick={abrirTreinoCombinado}
+                            >
+                                {t("train_selected_categories", { count: categoriasParaTreinar.length })}
+                            </button>
+                        </div>
+                    ) : (
+                        <button className={`
                         flex items-center justify-center gap-2
                         w-full
                         mb-4
@@ -939,9 +1058,10 @@ export default function Home() {
                         transition
                         ${mostrarGuiaCategoria ? "animate-pulse-glow-ring" : ""}
                         `} onClick={abrirAdicionarCategoria}>
-                        <Plus size={20} />
-                        {t("add_category")}
-                    </button>
+                            <Plus size={20} />
+                            {t("add_category")}
+                        </button>
+                    )}
                 </div>
 
                 <div className=" w-full ">
@@ -1047,10 +1167,10 @@ export default function Home() {
                     setOpenTreinoIA(true);
                 }}
 
-                categoriaId={categoriaId}
+                categoriaIds={categoriasParaTreinar}
             />
 
-            <ModalTreinoAdvinhar categoriaId={categoriaId} setOpenTreinoAdvinhar={setOpenTreinoAdvinhar} openTreinoAdvinhar={openTreinoAdvinhar} />
+            <ModalTreinoAdvinhar categoriaIds={categoriasParaTreinar} setOpenTreinoAdvinhar={setOpenTreinoAdvinhar} openTreinoAdvinhar={openTreinoAdvinhar} />
             <ModalIA setOpenTreinoIA={setOpenTreinoIA} openTreinoIA={openTreinoIA} />
             <ModalSucesso msg={msgModalSucesso} openModalSucesso={openModalSucesso} setOpenModalSucesso={setOpenModalSucesso} />
             <PremiumModal isOpen={isPremiumModalOpen} setIsPremiumModalOpen={setIsPremiumModalOpen} onClose={() => { setIsPremiumModalOpen(false); setMotivoPremium(null); }} motivo={motivoPremium} />

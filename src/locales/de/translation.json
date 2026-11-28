@@ -40,6 +40,7 @@
   "go_premium": "Premium werden",
   "added_successfully": "Erfolgreich hinzugefügt",
   "add_category": "Stapel hinzufügen",
+  "train_selected_categories": "{{count}} ausgewählte Kategorien trainieren",
   "first_category_hint": "Tippe hier, um deinen Stapel zu erstellen!",
   "home_next_step_add_phrases": "Füge dieser Kategorie Sätze hinzu, um mit dem Lernen zu beginnen.",
   "home_next_step_add_phrases_cta": "Sätze hinzufügen",

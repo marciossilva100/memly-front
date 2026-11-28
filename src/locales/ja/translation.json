@@ -40,6 +40,7 @@
   "go_premium": "プレミアムになる",
   "added_successfully": "正常に追加されました",
   "add_category": "デッキを追加",
+  "train_selected_categories": "選択した{{count}}個のカテゴリーを学習",
   "first_category_hint": "ここをタップしてデッキを作成しましょう！",
   "home_next_step_add_phrases": "このカテゴリーにフレーズを追加して学習を始めましょう。",
   "home_next_step_add_phrases_cta": "フレーズを追加",

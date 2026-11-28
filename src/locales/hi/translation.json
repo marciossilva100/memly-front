@@ -40,6 +40,7 @@
   "go_premium": "प्रीमियम लें",
   "added_successfully": "सफलतापूर्वक जोड़ा गया",
   "add_category": "डेक जोड़ें",
+  "train_selected_categories": "चयनित {{count}} श्रेणियों का अभ्यास करें",
   "first_category_hint": "अपना डेक बनाने के लिए यहां टैप करें!",
   "home_next_step_add_phrases": "पढ़ाई शुरू करने के लिए इस श्रेणी में वाक्य जोड़ें।",
   "home_next_step_add_phrases_cta": "वाक्य जोड़ें",

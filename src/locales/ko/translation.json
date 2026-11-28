@@ -40,6 +40,7 @@
   "go_premium": "프리미엄 가입하기",
   "added_successfully": "성공적으로 추가되었습니다",
   "add_category": "덱 추가",
+  "train_selected_categories": "선택한 {{count}}개 카테고리 학습하기",
   "first_category_hint": "여기를 눌러 덱을 만들어 보세요!",
   "home_next_step_add_phrases": "이 카테고리에 문장을 추가해서 학습을 시작하세요.",
   "home_next_step_add_phrases_cta": "문장 추가",

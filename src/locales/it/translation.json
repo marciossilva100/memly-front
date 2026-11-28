@@ -40,6 +40,7 @@
   "go_premium": "Passa a Premium",
   "added_successfully": "Aggiunto con successo",
   "add_category": "Aggiungi mazzo",
+  "train_selected_categories": "Allena {{count}} categorie selezionate",
   "first_category_hint": "Tocca qui per creare il tuo mazzo!",
   "home_next_step_add_phrases": "Aggiungi frasi a questa categoria per iniziare a studiare.",
   "home_next_step_add_phrases_cta": "Aggiungi frasi",

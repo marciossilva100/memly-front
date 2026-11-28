@@ -40,6 +40,7 @@
   "go_premium": "Zostań Premium",
   "added_successfully": "Dodano pomyślnie",
   "add_category": "Dodaj talię",
+  "train_selected_categories": "Trenuj {{count}} wybranych kategorii",
   "first_category_hint": "Dotknij tutaj, aby utworzyć swoją talię!",
   "home_next_step_add_phrases": "Dodaj zwroty do tej kategorii, aby zacząć się uczyć.",
   "home_next_step_add_phrases_cta": "Dodaj zwroty",

@@ -40,6 +40,7 @@
   "go_premium": "Premium Ol",
   "added_successfully": "Başarıyla eklendi",
   "add_category": "Deste ekle",
+  "train_selected_categories": "Seçilen {{count}} kategoriyi çalış",
   "first_category_hint": "Desteni oluşturmak için buraya dokun!",
   "home_next_step_add_phrases": "Çalışmaya başlamak için bu kategoriye cümleler ekle.",
   "home_next_step_add_phrases_cta": "Cümle ekle",

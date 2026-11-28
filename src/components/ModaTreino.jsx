@@ -1,5 +1,5 @@
 import { Dialog } from "@headlessui/react";
-import { Play, Repeat, Check, Clock, ChevronRight, Sparkles, X, BookOpen } from "lucide-react";
+import { Play, Repeat, Check, Clock, ChevronRight, Sparkles, X, BookOpen, Tag } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -7,17 +7,26 @@ import { treinoStatsCache } from "../utils/treinoStatsCache";
 import { useTranslation } from "react-i18next";
 import { Trans } from "react-i18next";
 
+// categoriaIds sempre um array - 1 categoria (botão "Treinar" de sempre, em
+// cada card) ou várias (seleção múltipla na Home, pressionar e segurar um
+// card) usam exatamente o mesmo código daqui pra baixo, sem nenhum branch
+// "single vs multi". category_id manda sempre como string separada por
+// vírgula ("12" ou "12,34,56") - mesmo formato que o backend já espera
+// (ver model/Frases.php::categoriaIdsParaFiltro / model/Treino.php -
+// convertidos pra IN(...) justamente pra aceitar isso).
 export default function ModalTreino({
   openTreino,
   onClose,
   onOpenPremium,
   onOpenAdvinhar,
   onOpenIA,
-  categoriaId
+  categoriaIds
 }) {
   const { t } = useTranslation();
 
   const navigate = useNavigate();
+  const categoriaIdsStr = (categoriaIds || []).join(',');
+  const [nomesCategorias, setNomesCategorias] = useState({});
 
   // Só o texto da contagem regressiva ("próximo treino em Xmin") - null
   // quando não está esperando, pra cair na descrição padrão da opção em vez
@@ -45,7 +54,11 @@ export default function ModalTreino({
     // Home.jsx já busca esses mesmos dados pra toda categoria assim que a
     // lista carrega (pros badges dos cards) e guarda no cache compartilhado -
     // se já tiver chegado, mostra na hora, sem o "pisca zerado" de antes.
-    const cached = statsCache.current[categoriaId] ?? treinoStatsCache.get(categoriaId);
+    // Só serve pro caso de 1 categoria (cache de Home.jsx é por card, não
+    // combinado) - com várias, essa chave composta nunca bate no cache de
+    // Home.jsx, então só busca mesmo, igual sempre fez antes de existir o
+    // cache.
+    const cached = statsCache.current[categoriaIdsStr] ?? treinoStatsCache.get(categoriaIdsStr);
 
     if (cached) {
       // Mostra o dado já conhecido na hora, sem esperar a rede
@@ -59,7 +72,7 @@ export default function ModalTreino({
       },
       body: JSON.stringify({
         action: "training_stats",
-        category_id: categoriaId
+        category_id: categoriaIdsStr
       })
     })
       .then(res => res.json())
@@ -77,8 +90,8 @@ export default function ModalTreino({
           traine: data.data?.[1]?.segundos_restantes ?? 0
         };
 
-        statsCache.current[categoriaId] = newState;
-        treinoStatsCache.set(categoriaId, newState);
+        statsCache.current[categoriaIdsStr] = newState;
+        treinoStatsCache.set(categoriaIdsStr, newState);
         setCountPhrases(newState);
 
       })
@@ -86,7 +99,38 @@ export default function ModalTreino({
         console.error("Erro ao buscar treino:", err);
       });
 
-  }, [categoriaId, openTreino]);
+  }, [categoriaIdsStr, openTreino]);
+
+  // Nome(s) de categoria pra mostrar no topo do modal - só importa de
+  // verdade com várias selecionadas (com 1 só, o contexto já é óbvio pelo
+  // card que o aluno acabou de tocar, igual sempre foi). Busca em lote
+  // (controller/categorias.php, action=obter_nomes) só quando houver mais
+  // de 1 id.
+  useEffect(() => {
+
+    if (!openTreino || (categoriaIds || []).length < 2) {
+      setNomesCategorias({});
+      return;
+    }
+
+    fetch(`${API_URL}/controller/categorias.php`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + localStorage.getItem("token")
+      },
+      body: JSON.stringify({
+        action: "obter_nomes",
+        category_id: categoriaIdsStr
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        setNomesCategorias(data.success ? (data.categorias || {}) : {});
+      })
+      .catch(() => setNomesCategorias({}));
+
+  }, [categoriaIdsStr, openTreino]);
 
 
 
@@ -179,7 +223,7 @@ export default function ModalTreino({
       },
       body: JSON.stringify({
         action: "update_repeat",
-        category_id: categoriaId
+        category_id: categoriaIdsStr
       })
     })
       .then(res => res.json())
@@ -233,7 +277,7 @@ export default function ModalTreino({
       descricao: t("learn_training_desc"),
       contagem: countPhrases.learn,
       disabled: countPhrases.learn < 1,
-      onClick: () => go(`/digitartexto/${categoriaId}/learn`, countPhrases.learn),
+      onClick: () => go(`/digitartexto/${categoriaIdsStr}/learn`, countPhrases.learn),
     },
     {
       icon: repetirDesabilitado && waiting ? Clock : Repeat,
@@ -257,7 +301,7 @@ export default function ModalTreino({
       descricao: t("review_training_desc"),
       contagem: countPhrases.review,
       disabled: countPhrases.review < 1,
-      onClick: () => go(`/flashcards/${categoriaId}/review`, countPhrases.review),
+      onClick: () => go(`/flashcards/${categoriaIdsStr}/review`, countPhrases.review),
     },
   ];
 
@@ -281,12 +325,25 @@ export default function ModalTreino({
             <X className="w-5 h-5" />
           </button>
 
-          <div className="flex items-center gap-2 mb-5">
+          <div className="flex items-center gap-2 mb-2">
             <BookOpen className="w-5 h-5 text-[#4cb8c4]" />
             <Dialog.Title className="text-lg font-semibold text-white">
               {t("training")}
             </Dialog.Title>
           </div>
+
+          {/* Nomes das categorias combinadas - só aparece com 2+ (ver
+              useEffect de nomesCategorias acima). max-w-[85%] + truncate
+              pra nunca estourar o card mesmo com vários nomes longos
+              juntos - mesmo padrão testado em Perguntas.jsx/TraducaoReversa.jsx. */}
+          {Object.keys(nomesCategorias).length > 1 && (
+            <div className="flex justify-center mb-3">
+              <span className="inline-flex items-center gap-1.5 max-w-[85%] px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700 text-gray-300 text-xs">
+                <Tag className="w-3 h-3 shrink-0" />
+                <span className="truncate">{Object.values(nomesCategorias).join(', ')}</span>
+              </span>
+            </div>
+          )}
 
           <div className="flex flex-col gap-3">
             {opcoes.map((opcao, i) => (

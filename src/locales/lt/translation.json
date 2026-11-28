@@ -40,7 +40,7 @@
   "go_premium": "Tapti Premium",
   "added_successfully": "Sėkmingai pridėta",
   "add_category": "Pridėti kategoriją",
-  "train_selected_categories": "Mokytis {{count}} pasirinktų kategorijų",
+  "train_selected_categories": "Mokytis ({{count}})",
   "first_category_hint": "Palieskite čia, kad sukurtumėte savo kategoriją!",
   "home_next_step_add_phrases": "Pridėkite frazių šioje kategorijoje, kad pradėtumėte mokytis.",
   "home_next_step_add_phrases_cta": "Pridėti frazes",

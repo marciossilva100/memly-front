@@ -40,7 +40,7 @@
   "go_premium": "Passer Premium",
   "added_successfully": "Ajouté avec succès",
   "add_category": "Ajouter un paquet",
-  "train_selected_categories": "Entraîner {{count}} catégories sélectionnées",
+  "train_selected_categories": "Entraîner ({{count}})",
   "first_category_hint": "Appuyez ici pour créer votre paquet !",
   "home_next_step_add_phrases": "Ajoutez des phrases à cette catégorie pour commencer à étudier.",
   "home_next_step_add_phrases_cta": "Ajouter des phrases",

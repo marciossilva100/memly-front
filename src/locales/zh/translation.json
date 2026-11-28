@@ -40,7 +40,7 @@
   "go_premium": "升级高级版",
   "added_successfully": "添加成功",
   "add_category": "添加牌组",
-  "train_selected_categories": "训练已选择的{{count}}个类别",
+  "train_selected_categories": "训练 ({{count}})",
   "first_category_hint": "点击这里创建你的牌组！",
   "home_next_step_add_phrases": "在此分类中添加短语，开始学习吧。",
   "home_next_step_add_phrases_cta": "添加短语",

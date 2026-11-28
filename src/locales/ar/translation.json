@@ -40,7 +40,7 @@
   "go_premium": "اشترك في Premium",
   "added_successfully": "تمت الإضافة بنجاح",
   "add_category": "إضافة مجموعة",
-  "train_selected_categories": "تدريب {{count}} فئة محددة",
+  "train_selected_categories": "تدريب ({{count}})",
   "first_category_hint": "اضغط هنا لإنشاء مجموعتك!",
   "home_next_step_add_phrases": "أضف عبارات إلى هذه الفئة لتبدأ الدراسة.",
   "home_next_step_add_phrases_cta": "إضافة عبارات",

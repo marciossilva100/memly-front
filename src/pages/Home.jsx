@@ -997,7 +997,17 @@ export default function Home() {
                 // vazio visível entre os ícones e a barra de navegação do Android
                 // (bug real reportado, confirmado inspecionando o app de verdade
                 // via chrome://inspect).
-                className="relative sticky z-10 bottom-0 text-center w-full justify-items-center justify-center items-center pb-4"
+                // pointer-events-none aqui + pointer-events-auto nos 2 filhos
+                // reais abaixo - a máscara (WebkitMaskImage/maskImage) só
+                // afeta a APARÊNCIA (torna os 60px do topo transparentes),
+                // não captura de clique: sem isso, esses 60px "invisíveis"
+                // ainda interceptavam toque por cima do conteúdo da lista
+                // que deveria estar visível/clicável ali (bug real: card de
+                // categoria perto do fim de uma lista curta ficava
+                // impossível de tocar, o clique sempre caía nessa faixa
+                // mascarada em vez do card - afetava até o botão "Treino"
+                // normal, não só a seleção múltipla nova).
+                className="relative sticky z-10 bottom-0 text-center w-full justify-items-center justify-center items-center pb-4 pointer-events-none"
                 style={{
                     backgroundImage: "none",
                     boxShadow: "none",
@@ -1023,7 +1033,7 @@ export default function Home() {
                 }}
             >
 
-                <div className="relative inline-block w-full px-4">
+                <div className="relative inline-block w-full px-4 pointer-events-auto">
                     {modoSelecao ? (
                         // Substitui o botão "Adicionar categoria" nesse mesmo lugar
                         // enquanto dura o modo seleção - em vez de um elemento fixed
@@ -1036,8 +1046,18 @@ export default function Home() {
                             >
                                 <X size={18} />
                             </button>
+                            {/* whitespace-nowrap - essencial, não só estético: essa
+                                barra é "sticky" sobreposta à lista por baixo (ver
+                                comentário no container pai) - se o texto quebrasse
+                                linha, a barra cresceria e cobriria o último card da
+                                lista, tornando-o impossível de tocar (bug real
+                                encontrado testando com só 3 categorias). Texto
+                                curto ("Treinar (N)", não "Treinar N categorias
+                                selecionadas") por isso mesmo - precisa caber numa
+                                linha só mesmo com N=2 dígitos e nos idiomas mais
+                                longos (alemão etc). */}
                             <button
-                                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-full bg-gradient-to-r from-blue-500 to-emerald-500 hover:opacity-90 text-white font-medium text-lg transition disabled:opacity-40"
+                                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-full bg-gradient-to-r from-blue-500 to-emerald-500 hover:opacity-90 text-white font-medium text-lg transition disabled:opacity-40 whitespace-nowrap overflow-hidden"
                                 disabled={categoriasParaTreinar.length === 0}
                                 onClick={abrirTreinoCombinado}
                             >
@@ -1064,7 +1084,7 @@ export default function Home() {
                     )}
                 </div>
 
-                <div className=" w-full ">
+                <div className=" w-full pointer-events-auto">
                     <div className='flex  left-0   w-full justify-around py-2 '>
                         <button type="button" className="flex flex-col items-center gap-1">
                             <HomeIcon width={26} height={26} className='text-violet-400' />

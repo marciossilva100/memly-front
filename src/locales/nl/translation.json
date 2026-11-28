@@ -40,7 +40,7 @@
   "go_premium": "Word Premium",
   "added_successfully": "Succesvol toegevoegd",
   "add_category": "Stapel toevoegen",
-  "train_selected_categories": "Train {{count}} geselecteerde categorieën",
+  "train_selected_categories": "Train ({{count}})",
   "first_category_hint": "Tik hier om je stapel aan te maken!",
   "home_next_step_add_phrases": "Voeg zinnen toe aan deze categorie om te beginnen met leren.",
   "home_next_step_add_phrases_cta": "Zinnen toevoegen",
